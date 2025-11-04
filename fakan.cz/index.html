@@ -26,7 +26,7 @@
       font: 16px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
-      /* povolit jen jeden scroll na stránce (tento) */
+      /* jen jeden scroll (tento) */
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -40,25 +40,14 @@
       padding: 1rem;
     }
 
-    header {
-      background: linear-gradient(180deg, rgba(10,10,10,0.95), rgba(10,10,10,0.75));
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .tree {
-      white-space: pre;
-      font-size: 14px;
-      line-height: 1.35;
-    }
-
-    .tree .accent { color: var(--accent); }
-    .tree .muted  { color: var(--muted); }
-
-    .crumbs {
-      margin-top: .25rem;
-      color: var(--muted);
-      font-size: 12px;
+    /* HEADER: bez vnitřního scrollu */
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter:saturate(1.2) blur(6px);
+      -webkit-backdrop-filter:saturate(1.2) blur(6px);
+      border-bottom:1px solid var(--border);
+      overflow: visible;
     }
 
     main { display: grid; gap: 2rem; padding-top: 1.25rem; }
@@ -69,31 +58,50 @@
     section { border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
     h1, h2, h3 { margin: 0 0 .5rem 0; }
 
-    .hero {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 1rem;
-      align-items: start;
+    /* Terminal-like header */
+    #terminal-header .wrap{ max-width: 980px; margin: 0 auto; padding: 12px 16px; }
+    .term{ font-size: 14px; line-height: 1.45; color: var(--fg); }
+    .term .line{ display:flex; gap:8px; align-items:baseline; white-space: normal; overflow: visible; }
+    .term .prompt{ color: var(--muted); flex: 0 0 auto; }
+    .term .cmd{ color: var(--fg); text-decoration: none; border-bottom: 1px dotted var(--border); }
+    .term .cmd:hover{ text-decoration: underline; }
+    .term .cat{ margin: 8px 0 10px; white-space: normal; }
+    .term .cat > div{ margin: 2px 0; }
+    .term .cat a{ text-decoration: underline; text-decoration-thickness: from-font; }
+    .term .tree{ white-space: pre; overflow: visible; padding-bottom: 2px; }
+    .term .tree a{ text-decoration: none; border-bottom: 1px dotted var(--border); }
+    .term .tree a:hover{ text-decoration: underline; }
+    @media (max-width: 640px){
+      #terminal-header .wrap{ padding: 10px 12px; }
+      .term{ font-size: 12.5px; line-height: 1.4; }
+      .term .cat{ white-space: normal; }
+      .term .tree{ white-space: pre; }
     }
-    .avatar {
-      width: 104px; height: 104px; border-radius: 12px; background: #111; border: 1px solid var(--border);
-      display: grid; place-items: center; color: var(--muted);
-      overflow: hidden;
-    }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .badges { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
-    .badge {
-      border: 1px solid var(--border);
-      padding: .25rem .5rem; border-radius: 999px; color: var(--muted); font-size: 12px;
-    }
+    /* projekty */
+    #projects li { opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
+    #projects li.appear { opacity: 1; transform: translateY(0); }
 
-    .cta { margin-top: .75rem; }
-    .btn {
-      display: inline-block; border: 1px solid var(--accent); color: #0a0a0a; background: var(--accent);
-      padding: .5rem .8rem; border-radius: 10px; font-weight: 700;
+    /* FUN FAKT: uprostřed, velký, kurzívou */
+    .fun-list { list-style: none; margin: 0; padding: 0; }
+    #fun-fakt { display: grid; place-items: center; text-align: center; }
+    .hero-quote {
+      margin: .25rem auto 0 auto;
+      max-width: 60ch;
+      font-style: italic;
+      font-weight: 600;
+      /* plynulé škálování velikosti */
+      font-size: clamp(22px, 3.5vw, 40px);
+      line-height: 1.25;
+      color: var(--fg);
     }
-    .btn:hover { filter: brightness(1.05); }
+    .hero-quote .muted {
+      display: block;
+      color: var(--muted);
+      font-size: clamp(12px, 1.6vw, 14px);
+      font-weight: 400;
+      margin-top: .25rem;
+    }
 
     /* formulář */
     form { display: grid; gap: .75rem; }
@@ -110,78 +118,19 @@
     @media (min-width: 600px) { .inline { grid-template-columns: 1fr 1fr; } }
 
     .hint { font-size: 12px; color: var(--muted); }
-
     .footer { margin: 2rem 0; text-align: center; color: var(--muted); font-size: 12px; }
 
     /* drobná animace pro aktivní uzly stromu */
     .blink { animation: blink 1.2s step-end infinite; }
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* malá lišta potvrzení odeslání */
+    /* toast */
     .toast {
       position: fixed; right: 1rem; bottom: 1rem; background: #0f172a; color: var(--fg);
       border: 1px solid var(--border); padding: .6rem .8rem; border-radius: 10px; opacity: 0; transform: translateY(6px);
       transition: .2s ease; pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
-
-    /* FAKAN: shuffle animation */
-    #projects li { opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
-    #projects li.appear { opacity: 1; transform: translateY(0); }
-
-    /* FAKAN: random fades for fun facts (only one shown now) */
-    .fun-list { list-style: none; margin: 0; padding: 0; }
-    .hero-quote {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--fg);
-      margin: 0;
-      padding: 0.5rem 0;
-    }
-    .hero-quote .muted { display: block; color: var(--muted); font-size: 13px; font-weight: 400; }
-
-    /* FAKAN: header rebuild (fixed, no internal scroll) */
-    header{
-      display:flex; align-items:center; justify-content:space-between;
-      background: color-mix(in srgb, var(--bg) 92%, transparent);
-      backdrop-filter:saturate(1.2) blur(6px);
-      -webkit-backdrop-filter:saturate(1.2) blur(6px);
-      border-bottom:1px solid var(--border);
-      overflow: visible; /* <-- key: zrušit vnitřní scroll */
-    }
-    #crumbs{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size:14px; opacity:.9; white-space:nowrap; }
-    #topnav ul{ display:flex; gap:14px; list-style:none; margin:0; padding:0; align-items:center; }
-    #topnav a{ text-decoration:none; font-size:14px; border-radius:8px; padding:4px 8px; }
-    #topnav a:hover{ text-decoration:underline; }
-    #topnav li::after{ content:"·"; opacity:.4; margin-left:14px; }
-    #topnav li:last-child::after{ content:""; margin:0; }
-    @media (max-width:640px){
-      #topnav ul{ gap:8px; }
-      #topnav a{ padding:4px 6px; font-size:13px; }
-      #crumbs{ font-size:13px; }
-    }
-
-    /* Terminal-like header styles adjusted to avoid inner scrollbars */
-    #terminal-header .wrap{ max-width: 980px; margin: 0 auto; padding: 12px 16px; }
-    .term{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 14px; line-height: 1.45; color: var(--fg); }
-    /* odstraněn overflow-x: auto zde, aby header nescrolloval sám */
-    .term .line{ display:flex; gap:8px; align-items:baseline; white-space: normal; overflow: visible; }
-    .term .prompt{ color: var(--muted); flex: 0 0 auto; }
-    .term .cmd{ color: var(--fg); text-decoration: none; border-bottom: 1px dotted var(--border); }
-    .term .cmd:hover{ text-decoration: underline; }
-    .term .cat{ margin: 8px 0 10px; white-space: normal; }
-    .term .cat > div{ margin: 2px 0; }
-    .term .cat a{ text-decoration: underline; text-decoration-thickness: from-font; }
-    .term .tree{ white-space: pre; /* ponecháno, ale bez internal scroll */ overflow: visible; padding-bottom: 2px; }
-    .term .tree a{ text-decoration: none; border-bottom: 1px dotted var(--border); }
-    .term .tree a:hover{ text-decoration: underline; }
-    @media (max-width: 640px){
-      #terminal-header .wrap{ padding: 10px 12px; }
-      .term{ font-size: 12.5px; line-height: 1.4; }
-      .term .cat{ white-space: normal; }
-      .term .tree{ white-space: pre; }
-    }
   </style>
  </head>
  <body>
@@ -211,37 +160,42 @@ Nabízím konzultace, vývoj prototypů, MVP a poptávám krátkodobé zakázky.
 2 directories, 4 files</pre>
    </div>
   </header>
+
   <div class="wrap">
    <main>
     <section id="projects">
      <h2>Vybrané projekty</h2>
      <ul>
-      <!-- seznam projektů (stejně jako dřív) -->
-      <li><strong>Pegasus Solar – SPA designer</strong> – <a href="https://www.pegasussolar.com/" rel="noopener" target="_blank">https://www.pegasussolar.com/</a> <span class="muted">· designer pro solární panely na střechy (SPA)</span></li>
-      <li><strong>Invity – crypto peněženky</strong> – <a href="https://invity.io/" rel="noopener" target="_blank">https://invity.io/</a> <span class="muted">· pomoc s bootstrapem nativních peněženek</span></li>
-      <li><strong>koronaceska.cz – PR hra Korona</strong> – <a href="https://koronaceska.cz/" rel="noopener" target="_blank">https://koronaceska.cz/</a> <span class="muted">· komunitní web/hra během COVID</span></li>
-      <li><strong>DeFi Puzzle – Berlin hackathon</strong> – <a href="https://github.com/topmonks/defi-puzzle" rel="noopener" target="_blank">https://github.com/topmonks/defi-puzzle</a> <span class="muted">· open-source mini-hra</span></li>
-      <li><strong>Hlídač Shopu – rozšíření</strong> – <a href="https://github.com/topmonks/hlidac-shopu" rel="noopener" target="_blank">https://github.com/topmonks/hlidac-shopu</a> <span class="muted">· monitoring cen / rozšíření</span></li>
-      <li><strong>3chan – sranda projekt</strong> – <a href="https://github.com/topmonks/3chan" rel="noopener" target="_blank">https://github.com/topmonks/3chan</a> <span class="muted">· lehký experiment</span></li>
+      <li><strong>Pegasus Solar – SPA designer</strong> – <a href="https://www.pegasussolar.com/" rel="noopener noreferrer" target="_blank">https://www.pegasussolar.com/</a> <span class="muted">· designer pro solární panely na střechy (SPA)</span></li>
+      <li><strong>Invity – crypto peněženky</strong> – <a href="https://invity.io/" rel="noopener noreferrer" target="_blank">https://invity.io/</a> <span class="muted">· pomoc s bootstrapem nativních peněženek</span></li>
+      <li><strong>koronaceska.cz – PR hra Korona</strong> – <a href="https://koronaceska.cz/" rel="noopener noreferrer" target="_blank">https://koronaceska.cz/</a> <span class="muted">· komunitní web/hra během COVID</span></li>
+      <li><strong>DeFi Puzzle – Berlin hackathon</strong> – <a href="https://github.com/topmonks/defi-puzzle" rel="noopener noreferrer" target="_blank">https://github.com/topmonks/defi-puzzle</a> <span class="muted">· open-source mini-hra</span></li>
+      <li><strong>Hlídač Shopu – rozšíření</strong> – <a href="https://github.com/topmonks/hlidac-shopu" rel="noopener noreferrer" target="_blank">https://github.com/topmonks/hlidac-shopu</a> <span class="muted">· monitoring cen / rozšíření</span></li>
+      <li><strong>3chan – sranda projekt</strong> – <a href="https://github.com/topmonks/3chan" rel="noopener noreferrer" target="_blank">https://github.com/topmonks/3chan</a> <span class="muted">· lehký experiment</span></li>
       <li><strong>Interní timesheet Slack bot</strong> <span class="muted">· vykazování času na projekty (interní)</span></li>
-      <li><strong>Asekopool – web services</strong> – <a href="https://www.asekopool.com/cs/web-services-cz/" rel="noopener" target="_blank">https://www.asekopool.com/cs/web-services-cz/</a> <span class="muted">· integrace / web služby</span></li>
-      <li><strong>Ingrid</strong> – <a href="https://www.ingridapp.io/" rel="noopener" target="_blank">https://www.ingridapp.io/</a> <span class="muted">· aplikace pro Shell</span></li>
-      <li><strong>PostCube</strong> – <a href="https://postcube.cz/" rel="noopener" target="_blank">https://postcube.cz/</a> <span class="muted">· logistika, doručovací boxy</span></li>
-      <li><strong>Tipli</strong> – <a href="https://www.tipli.cz/tipli-do-prohlizece" rel="noopener" target="_blank">https://www.tipli.cz/tipli-do-prohlizece</a> <span class="muted">· web extension pro cashback</span></li>
+      <li><strong>Asekopool – web services</strong> – <a href="https://www.asekopool.com/cs/web-services-cz/" rel="noopener noreferrer" target="_blank">https://www.asekopool.com/cs/web-services-cz/</a> <span class="muted">· integrace / web služby</span></li>
+      <li><strong>Ingrid</strong> – <a href="https://www.ingridapp.io/" rel="noopener noreferrer" target="_blank">https://www.ingridapp.io/</a> <span class="muted">· aplikace pro Shell</span></li>
+      <li><strong>PostCube</strong> – <a href="https://postcube.cz/" rel="noopener noreferrer" target="_blank">https://postcube.cz/</a> <span class="muted">· logistika, doručovací boxy</span></li>
+      <li><strong>Tipli</strong> – <a href="https://www.tipli.cz/tipli-do-prohlizece" rel="noopener noreferrer" target="_blank">https://www.tipli.cz/tipli-do-prohlizece</a> <span class="muted">· web extension pro cashback</span></li>
+      <!-- Přidáno: isymbio + hra pro nevidomé -->
+      <li><strong>isymbio.cz</strong> – <a href="https://isymbio.cz" rel="noopener noreferrer" target="_blank">https://isymbio.cz</a> <span class="muted">· spolupráce / web</span></li>
+      <li><strong>Prší slyším – online hra pro nevidomé</strong> – <a href="https://prsi-slysim--prsi-slysim.europe-west4.hosted.app/" rel="noopener noreferrer" target="_blank">spustit hru</a> <span class="muted">· přístupná webová hra</span></li>
      </ul>
     </section>
 
-    <section id="contact">
-     <p>
-      E-mail: <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> · Lichess: <a href="https://lichess.org/@/junkycoder" rel="noopener" target="_blank">@junkycoder</a> · GitHub: <a href="https://github.com/junkycoder" rel="noopener" target="_blank">github.com/junkycoder</a> · Telefon: <a href="tel:+420604690539">+420 604 690 539</a> (Message / FaceTime / Signal)
-     </p>
-     <h2>Kontakt</h2>
+    <section id="contact" aria-labelledby="contact-heading">
+     <h2 id="contact-heading">Kontakt</h2>
      <p class="hint">Preferuju stručné zadání a přímý přístup. Demo klidně v plain HTML.</p>
+     <ul style="list-style:none; padding:0; margin:.5rem 0 0 0;">
+      <li><strong>E-mail:</strong> <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a></li>
+      <li><strong>Telefon:</strong> <a href="tel:+420604690539">+420&nbsp;604&nbsp;690&nbsp;539</a> <span class="muted">(Message / FaceTime / Signal)</span></li>
+      <li><strong>Lichess:</strong> <a href="https://lichess.org/@/junkycoder" target="_blank" rel="noopener noreferrer">@junkycoder</a></li>
+      <li><strong>GitHub:</strong> <a href="https://github.com/junkycoder" target="_blank" rel="noopener noreferrer">github.com/junkycoder</a></li>
+     </ul>
     </section>
 
-    <section id="fun-fakt">
-     <h2>Fun fakt</h2>
-     <!-- místo seznamu zobrazíme jen jeden náhodný fun-fakt -->
+    <section id="fun-fakt" aria-labelledby="fun-heading">
+     <h2 id="fun-heading">Fun fakt</h2>
      <blockquote class="hero-quote" id="heroQuote">…</blockquote>
     </section>
 
@@ -301,7 +255,7 @@ Nabízím konzultace, vývoj prototypů, MVP a poptávám krátkodobé zakázky.
   <div class="toast" id="toast">Díky! Návrh byl připraven. Ozvu se.</div>
 
   <script>
-    /* náhodné řetězce (původní seznam od uživatele minus věc s 13letou) */
+    /* náhodný fun fakt – zobrazení jen jednoho, velkého uprostřed */
     (function(){
       const funFacts = [
         "Mám základní vzdělání.",
@@ -309,7 +263,7 @@ Nabízím konzultace, vývoj prototypů, MVP a poptávám krátkodobé zakázky.
         "První zaměstnání v oboru jsem získal pomocí SQL Injection a impload.php přes neošetřený upload.php",
         "První webové stránky jsem psal na papír.",
         "Prohrál jsem celou výplatu v automatech.",
-        // položka s odkazem na 13letou osobu byla z bezpečnostních důvodů vynechána
+        // problematická položka byla vynechána
         "O letních prázdninách na faře jsem políkl kamaráda hořícím lihem.",
         "Ve školce jsem se po asi hodině mluvení přiznal k něčemu, co jsem neudělal, aby ta kráva už sklapla a my si mohli zase hrát. A nesnášel jsem chodit po-o."
       ];
@@ -321,10 +275,8 @@ Nabízím konzultace, vývoj prototypů, MVP a poptávám krátkodobé zakázky.
 
       const el = document.getElementById('heroQuote');
       if(el){
-        // přidej drobnou vizuální nápovědu (muted subline)
         const text = pickOne(funFacts);
         el.textContent = text;
-        // optional: přidat malé "muted" info pod citací
         const muted = document.createElement('span');
         muted.className = 'muted';
         muted.textContent = '— fakan.cz';
@@ -334,7 +286,7 @@ Nabízím konzultace, vývoj prototypů, MVP a poptávám krátkodobé zakázky.
   </script>
 
   <script>
-    /* stávající shuffle projektů (ponecháno) */
+    /* shuffle projektů + jemné náběhy */
     (function(){
       function shuffle(list){
         for (let i = list.length - 1; i > 0; i--) {
