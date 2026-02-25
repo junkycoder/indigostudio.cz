@@ -41,7 +41,7 @@
       margin: 0; padding: 0;
       background: var(--bg);
       color: var(--fg);
-      font: 15px/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      font: 16px/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -60,7 +60,7 @@
     .term {
       margin: 0;
       font: inherit;
-      font-size: 13px;
+      font-size: 16px;
       line-height: 1.5;
       color: var(--muted);
       white-space: normal;
@@ -81,7 +81,7 @@
       margin: 0 auto 2rem;
       max-width: 46ch;
       color: var(--muted);
-      font-size: clamp(13px, 2vw, 15px);
+      font-size: clamp(16px, 2vw, 18px);
     }
     .btn-hero {
       display: inline-block;
@@ -113,8 +113,8 @@
     }
     .card:hover { border-color: var(--accent); transform: translateY(-2px); }
     .card-icon { font-size: 20px; margin-bottom: .4rem; }
-    .card h3 { margin: 0 0 .3rem; font-size: 13.5px; }
-    .card p  { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+    .card h3 { margin: 0 0 .3rem; font-size: 16px; }
+    .card p  { margin: 0; font-size: 16px; color: var(--muted); line-height: 1.5; }
 
     /* ── Form section ────────────────────────────── */
     .form-wrap {
@@ -125,14 +125,14 @@
       margin-bottom: 3rem;
     }
     .form-wrap h2 { margin: 0 0 .2rem; font-size: 17px; }
-    .form-wrap .sub { color: var(--muted); font-size: 13px; margin: 0 0 1.25rem; }
+    .form-wrap .sub { color: var(--muted); font-size: 16px; margin: 0 0 1.25rem; }
 
     form { display: grid; gap: .75rem; }
-    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: .2rem; }
+    label { display: block; font-size: 16px; color: var(--muted); margin-bottom: .2rem; }
     input, textarea {
       width: 100%; background: var(--input-bg); color: var(--fg);
       border: 1px solid var(--border); border-radius: 7px;
-      padding: .55rem .7rem; font: inherit; font-size: 14px;
+      padding: .55rem .7rem; font: inherit; font-size: 16px;
     }
     input:focus, textarea:focus { outline: 1.5px solid var(--accent); }
     textarea { min-height: 100px; resize: vertical; }
@@ -143,16 +143,16 @@
       border: 1px solid var(--accent);
       background: transparent; color: var(--accent);
       padding: .65rem 1.2rem; border-radius: 8px;
-      font: inherit; font-size: 14px;
+      font: inherit; font-size: 16px;
       cursor: pointer; transition: background .15s, color .15s;
     }
     .btn-submit:hover { background: var(--accent); color: #000; }
-    .hint { font-size: 11px; color: var(--muted); }
+    .hint { font-size: 16px; color: var(--muted); }
 
     /* ── Footer ──────────────────────────────────── */
     .footer {
       text-align: center; color: var(--muted);
-      font-size: 12px; padding-bottom: 2.5rem;
+      font-size: 16px; padding-bottom: 2.5rem;
     }
     .footer a { color: var(--muted); }
     .footer a:hover { color: var(--fg); }
@@ -165,7 +165,7 @@
       padding: .6rem 1rem; border-radius: 10px;
       opacity: 0; transform: translateY(6px);
       transition: .2s ease; pointer-events: none;
-      font-size: 13px; z-index: 100;
+      font-size: 16px; z-index: 100;
     }
     .toast.show { opacity: 1; transform: none; }
   </style>
