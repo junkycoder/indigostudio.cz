@@ -70,6 +70,7 @@
     padding: 20px 22px;
     position: relative;
     transition: border-color 0.2s;
+    scroll-margin-top: 24px;
   }
   .node:hover { border-color: #3a4260; }
 
@@ -103,6 +104,51 @@
     border-radius: 4px;
     margin-left: auto;
     flex-shrink: 0;
+  }
+
+  /* ── ANCHOR LINK ── */
+  .anchor-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-family: 'DM Mono', monospace;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s;
+    flex-shrink: 0;
+    padding: 1px 4px;
+    border-radius: 3px;
+    line-height: 1;
+  }
+  .node:hover .anchor-link,
+  .flow-section:hover .anchor-link {
+    opacity: 1;
+  }
+  .anchor-link:hover {
+    color: var(--text);
+    background: var(--border);
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   .pill-list {
@@ -181,6 +227,7 @@
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 12px;
+    scroll-margin-top: 24px;
   }
   .flow-title {
     font-family: 'Syne', sans-serif;
@@ -190,6 +237,9 @@
     letter-spacing: 0.12em;
     color: var(--muted);
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .flow-diagram {
     display: flex;
@@ -289,14 +339,54 @@
   }
 
   @media (max-width: 768px) {
+    body { padding: 24px 16px; }
+    h1 { font-size: 1.4rem; }
+
     .grid { grid-template-columns: 1fr; }
     .span2, .span3 { grid-column: span 1; }
     .highlight-row { grid-template-columns: 1fr; }
-    .flow-diagram { gap: 8px; }
+    .section-label { grid-column: span 1; }
+
+    /* Flow: vertical stacking */
+    .flow-section { padding: 18px 16px; }
+    .flow-diagram {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      row-gap: 0;
+    }
+    .flow-step {
+      flex-direction: row;
+      align-items: flex-start;
+      text-align: left;
+      min-width: unset;
+      width: 100%;
+      gap: 10px;
+      padding: 6px 0;
+    }
+    .flow-step .flow-box { white-space: normal; flex-shrink: 0; }
+    .flow-step .flow-label { margin-top: 2px; }
+    .flow-arrow {
+      display: block;
+      text-align: center;
+      padding: 0;
+      padding-left: 14px; /* align with box center */
+      font-size: 1rem;
+    }
+    /* rotate → to ↓ */
+    .flow-arrow { transform: rotate(90deg); transform-origin: center; }
+
+    /* Always show anchor links on touch devices */
+    .anchor-link { opacity: 0.5; }
+
+    .legend { gap: 12px; }
+    .legend > div:last-child { margin-left: 0 !important; }
   }
 </style>
 </head>
 <body>
+
+<div class="toast" id="toast">Odkaz zkopírován</div>
 
 <div class="canvas">
   <h1>HR Software Ecosystem</h1>
@@ -305,15 +395,16 @@
   <div class="grid">
 
     <!-- ── SECTION: CORE ATS ── -->
-    <div class="section-label">
+    <div class="section-label" id="section-ats">
       <span>Core ATS & CRM</span><hr>
     </div>
 
     <!-- ATALON -->
-    <div class="node theme-orange span2">
+    <div class="node theme-orange span2" id="atalon">
       <div class="node-header">
         <div class="node-icon">📋</div>
         <div class="node-title">Atalon (ATS)</div>
+        <a href="#atalon" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'atalon')">#</a>
         <span class="node-tag">Primary</span>
       </div>
       <ul class="pill-list">
@@ -336,10 +427,11 @@
     </div>
 
     <!-- JOB PORTALS -->
-    <div class="node theme-blue">
+    <div class="node theme-blue" id="job-portals">
       <div class="node-header">
         <div class="node-icon">🌐</div>
         <div class="node-title">Job Portals</div>
+        <a href="#job-portals" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'job-portals')">#</a>
         <span class="node-tag">External</span>
       </div>
       <ul class="pill-list">
@@ -356,15 +448,16 @@
     </div>
 
     <!-- ── SECTION: MICROSOFT STACK ── -->
-    <div class="section-label">
+    <div class="section-label" id="section-ms365">
       <span>Microsoft 365 Stack</span><hr>
     </div>
 
     <!-- SHAREPOINT -->
-    <div class="node theme-teal">
+    <div class="node theme-teal" id="sharepoint">
       <div class="node-header">
         <div class="node-icon">🗂</div>
         <div class="node-title">SharePoint</div>
+        <a href="#sharepoint" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'sharepoint')">#</a>
         <span class="node-tag">Documents</span>
       </div>
       <ul class="pill-list">
@@ -377,10 +470,11 @@
     </div>
 
     <!-- PLANNER -->
-    <div class="node theme-purple">
+    <div class="node theme-purple" id="planner">
       <div class="node-header">
         <div class="node-icon">📌</div>
         <div class="node-title">Planner (+ old Trello)</div>
+        <a href="#planner" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'planner')">#</a>
         <span class="node-tag">Tasks</span>
       </div>
       <ul class="pill-list">
@@ -396,10 +490,11 @@
     </div>
 
     <!-- OUTLOOK + TEAMS -->
-    <div class="node theme-blue">
+    <div class="node theme-blue" id="outlook-teams">
       <div class="node-header">
         <div class="node-icon">💬</div>
         <div class="node-title">Outlook + Teams</div>
+        <a href="#outlook-teams" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'outlook-teams')">#</a>
         <span class="node-tag">Comms</span>
       </div>
       <ul class="pill-list">
@@ -414,15 +509,16 @@
     </div>
 
     <!-- ── SECTION: REPORTING ── -->
-    <div class="section-label">
+    <div class="section-label" id="section-reporting">
       <span>Reporting & People Mgmt</span><hr>
     </div>
 
     <!-- PP REPORT -->
-    <div class="node theme-yellow">
+    <div class="node theme-yellow" id="pp-report">
       <div class="node-header">
         <div class="node-icon">📊</div>
         <div class="node-title">PP Report (manual)</div>
+        <a href="#pp-report" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'pp-report')">#</a>
         <span class="node-tag">KPIs</span>
       </div>
       <ul class="pill-list">
@@ -437,10 +533,11 @@
     </div>
 
     <!-- ACTIVITY TRACKING -->
-    <div class="node theme-red">
+    <div class="node theme-red" id="activity-tracking">
       <div class="node-header">
         <div class="node-icon">📞</div>
         <div class="node-title">Activity Tracking</div>
+        <a href="#activity-tracking" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'activity-tracking')">#</a>
         <span class="node-tag">Manual</span>
       </div>
       <ul class="pill-list">
@@ -455,10 +552,11 @@
     </div>
 
     <!-- CANDIDATE MAILINGS -->
-    <div class="node theme-green">
+    <div class="node theme-green" id="m-candidates">
       <div class="node-header">
         <div class="node-icon">✉️</div>
         <div class="node-title">M Candidates Mailing</div>
+        <a href="#m-candidates" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'm-candidates')">#</a>
         <span class="node-tag">Monthly</span>
       </div>
       <ul class="pill-list">
@@ -476,8 +574,11 @@
   </div><!-- /grid -->
 
   <!-- ── MANUAL WORKFLOW FLOW ── -->
-  <div class="flow-section">
-    <div class="flow-title">⚡ Key Manual Workflow — M Candidates Monthly Mailing</div>
+  <div class="flow-section" id="flow-mailing">
+    <div class="flow-title">
+      ⚡ Key Manual Workflow — M Candidates Monthly Mailing
+      <a href="#flow-mailing" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'flow-mailing')">#</a>
+    </div>
     <div class="flow-diagram">
       <div class="flow-step">
         <div class="flow-box" style="background:#1a1f2e;color:#f97316;border:1px solid #2e2010">Atalon ATS</div>
@@ -516,8 +617,11 @@
   </div>
 
   <!-- ── CANDIDATE INFLOW FLOW ── -->
-  <div class="flow-section" style="margin-top:16px">
-    <div class="flow-title">📥 Candidate Inflow Sources</div>
+  <div class="flow-section" id="flow-inflow" style="margin-top:16px">
+    <div class="flow-title">
+      📥 Candidate Inflow Sources
+      <a href="#flow-inflow" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'flow-inflow')">#</a>
+    </div>
     <div class="flow-diagram">
       <div class="flow-step">
         <div class="flow-box" style="background:#1a1f2e;color:#3b82f6;border:1px solid #0e1628">Teamio / Práce.cz</div>
@@ -562,5 +666,18 @@
   </div>
 
 </div>
+
+<script>
+  function copyAnchor(e, id) {
+    e.preventDefault();
+    const url = location.origin + location.pathname + '#' + id;
+    navigator.clipboard.writeText(url).then(() => {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+    history.replaceState(null, '', '#' + id);
+  }
+</script>
 </body>
 </html>
