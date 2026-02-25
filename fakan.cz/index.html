@@ -194,8 +194,8 @@
     <p class="sub">Pošlete nám url svého webu a co vás trápí – ozveme se.</p>
     <form id="reqForm">
      <div>
-      <label for="url">URL vašeho webu</label>
-      <input id="url" name="url" placeholder="https://vasefirma.cz" type="url"/>
+      <label for="url">URL vašeho webu (nepovinné)</label>
+      <input id="url" name="url" placeholder="vasefirma.cz" type="text"/>
      </div>
      <div>
       <label for="pozadavek">Co potřebujete / co vás trápí *</label>
@@ -229,6 +229,7 @@
       document.getElementById('reqForm').addEventListener('submit', function (e) {
         e.preventDefault();
         var url      = document.getElementById('url').value.trim();
+        if (url && !/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(url)) { url = 'https://' + url; }
         var req      = document.getElementById('pozadavek').value.trim();
         var jmeno    = document.getElementById('jmeno').value.trim();
         var kontakt  = document.getElementById('kontakt').value.trim();
