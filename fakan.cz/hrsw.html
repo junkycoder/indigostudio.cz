@@ -71,8 +71,10 @@
     position: relative;
     transition: border-color 0.2s;
     scroll-margin-top: 24px;
+    cursor: pointer;
   }
   .node:hover { border-color: #3a4260; }
+  .node:target { border-color: #4a5280; }
 
   .node-header {
     display: flex;
@@ -104,51 +106,6 @@
     border-radius: 4px;
     margin-left: auto;
     flex-shrink: 0;
-  }
-
-  /* ── ANCHOR LINK ── */
-  .anchor-link {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
-    opacity: 0;
-    transition: opacity 0.15s, color 0.15s;
-    flex-shrink: 0;
-    padding: 1px 4px;
-    border-radius: 3px;
-    line-height: 1;
-  }
-  .node:hover .anchor-link,
-  .flow-section:hover .anchor-link {
-    opacity: 1;
-  }
-  .anchor-link:hover {
-    color: var(--text);
-    background: var(--border);
-  }
-
-  /* ── TOAST ── */
-  .toast {
-    position: fixed;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%) translateY(12px);
-    background: var(--panel);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 9px 18px;
-    border-radius: 8px;
-    font-size: 0.72rem;
-    opacity: 0;
-    transition: opacity 0.2s, transform 0.2s;
-    pointer-events: none;
-    z-index: 999;
-    white-space: nowrap;
-  }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
   }
 
   .pill-list {
@@ -228,7 +185,12 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     scroll-margin-top: 24px;
+    cursor: pointer;
+    transition: border-color 0.2s;
   }
+  .flow-section:hover { border-color: #3a4260; }
+  .flow-section:target { border-color: #4a5280; }
+
   .flow-title {
     font-family: 'Syne', sans-serif;
     font-size: 0.8rem;
@@ -237,9 +199,6 @@
     letter-spacing: 0.12em;
     color: var(--muted);
     margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
   .flow-diagram {
     display: flex;
@@ -365,19 +324,14 @@
       padding: 6px 0;
     }
     .flow-step .flow-box { white-space: normal; flex-shrink: 0; }
-    .flow-step .flow-label { margin-top: 2px; }
     .flow-arrow {
       display: block;
       text-align: center;
       padding: 0;
-      padding-left: 14px; /* align with box center */
-      font-size: 1rem;
+      padding-left: 14px;
+      transform: rotate(90deg);
+      transform-origin: center;
     }
-    /* rotate → to ↓ */
-    .flow-arrow { transform: rotate(90deg); transform-origin: center; }
-
-    /* Always show anchor links on touch devices */
-    .anchor-link { opacity: 0.5; }
 
     .legend { gap: 12px; }
     .legend > div:last-child { margin-left: 0 !important; }
@@ -385,8 +339,6 @@
 </style>
 </head>
 <body>
-
-<div class="toast" id="toast">Odkaz zkopírován</div>
 
 <div class="canvas">
   <h1>HR Software Ecosystem</h1>
@@ -404,7 +356,6 @@
       <div class="node-header">
         <div class="node-icon">📋</div>
         <div class="node-title">Atalon (ATS)</div>
-        <a href="#atalon" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'atalon')">#</a>
         <span class="node-tag">Primary</span>
       </div>
       <ul class="pill-list">
@@ -431,7 +382,6 @@
       <div class="node-header">
         <div class="node-icon">🌐</div>
         <div class="node-title">Job Portals</div>
-        <a href="#job-portals" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'job-portals')">#</a>
         <span class="node-tag">External</span>
       </div>
       <ul class="pill-list">
@@ -457,7 +407,6 @@
       <div class="node-header">
         <div class="node-icon">🗂</div>
         <div class="node-title">SharePoint</div>
-        <a href="#sharepoint" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'sharepoint')">#</a>
         <span class="node-tag">Documents</span>
       </div>
       <ul class="pill-list">
@@ -474,7 +423,6 @@
       <div class="node-header">
         <div class="node-icon">📌</div>
         <div class="node-title">Planner (+ old Trello)</div>
-        <a href="#planner" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'planner')">#</a>
         <span class="node-tag">Tasks</span>
       </div>
       <ul class="pill-list">
@@ -494,7 +442,6 @@
       <div class="node-header">
         <div class="node-icon">💬</div>
         <div class="node-title">Outlook + Teams</div>
-        <a href="#outlook-teams" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'outlook-teams')">#</a>
         <span class="node-tag">Comms</span>
       </div>
       <ul class="pill-list">
@@ -518,7 +465,6 @@
       <div class="node-header">
         <div class="node-icon">📊</div>
         <div class="node-title">PP Report (manual)</div>
-        <a href="#pp-report" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'pp-report')">#</a>
         <span class="node-tag">KPIs</span>
       </div>
       <ul class="pill-list">
@@ -537,7 +483,6 @@
       <div class="node-header">
         <div class="node-icon">📞</div>
         <div class="node-title">Activity Tracking</div>
-        <a href="#activity-tracking" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'activity-tracking')">#</a>
         <span class="node-tag">Manual</span>
       </div>
       <ul class="pill-list">
@@ -556,7 +501,6 @@
       <div class="node-header">
         <div class="node-icon">✉️</div>
         <div class="node-title">M Candidates Mailing</div>
-        <a href="#m-candidates" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'm-candidates')">#</a>
         <span class="node-tag">Monthly</span>
       </div>
       <ul class="pill-list">
@@ -575,10 +519,7 @@
 
   <!-- ── MANUAL WORKFLOW FLOW ── -->
   <div class="flow-section" id="flow-mailing">
-    <div class="flow-title">
-      ⚡ Key Manual Workflow — M Candidates Monthly Mailing
-      <a href="#flow-mailing" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'flow-mailing')">#</a>
-    </div>
+    <div class="flow-title">⚡ Key Manual Workflow — M Candidates Monthly Mailing</div>
     <div class="flow-diagram">
       <div class="flow-step">
         <div class="flow-box" style="background:#1a1f2e;color:#f97316;border:1px solid #2e2010">Atalon ATS</div>
@@ -618,10 +559,7 @@
 
   <!-- ── CANDIDATE INFLOW FLOW ── -->
   <div class="flow-section" id="flow-inflow" style="margin-top:16px">
-    <div class="flow-title">
-      📥 Candidate Inflow Sources
-      <a href="#flow-inflow" class="anchor-link" title="Sdílet odkaz" onclick="copyAnchor(event, 'flow-inflow')">#</a>
-    </div>
+    <div class="flow-title">📥 Candidate Inflow Sources</div>
     <div class="flow-diagram">
       <div class="flow-step">
         <div class="flow-box" style="background:#1a1f2e;color:#3b82f6;border:1px solid #0e1628">Teamio / Práce.cz</div>
@@ -668,16 +606,11 @@
 </div>
 
 <script>
-  function copyAnchor(e, id) {
-    e.preventDefault();
-    const url = location.origin + location.pathname + '#' + id;
-    navigator.clipboard.writeText(url).then(() => {
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+  document.querySelectorAll('.node[id], .flow-section[id]').forEach(el => {
+    el.addEventListener('click', function () {
+      location.hash = el.id;
     });
-    history.replaceState(null, '', '#' + id);
-  }
+  });
 </script>
 </body>
 </html>
