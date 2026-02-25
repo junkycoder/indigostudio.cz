@@ -112,7 +112,7 @@
       transition: border-color .2s, transform .2s;
     }
     .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .card-icon { font-size: 20px; margin-bottom: .4rem; }
+    .card-icon { font-size: 32px; margin-bottom: .6rem; text-align: center; }
     .card h3 { margin: 0 0 .3rem; font-size: 16px; }
     .card p  { margin: 0; font-size: 16px; color: var(--muted); line-height: 1.5; }
 
@@ -138,6 +138,9 @@
     textarea { min-height: 100px; resize: vertical; }
     .row { display: grid; gap: .75rem; }
     @media (min-width: 540px) { .row { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 540px) {
+      .card { text-align: center; }
+    }
     .btn-submit {
       width: 100%;
       border: 1px solid var(--accent);
@@ -211,25 +214,15 @@
 
    <section class="form-wrap" id="poptavka">
     <h2>Poptávka zdarma</h2>
-    <p class="sub">Pošlete nám url svého webu a co vás trápí – ozveme se.</p>
+    <p class="sub">Pošlete url svého webu a co vás trápí – ozveme se.</p>
     <form id="reqForm">
      <div>
-      <label for="url">URL vašeho webu (nepovinné)</label>
+      <label for="url">URL vašeho webu</label>
       <input id="url" name="url" placeholder="vasefirma.cz" type="text"/>
      </div>
      <div>
-      <label for="pozadavek">Co potřebujete / co vás trápí *</label>
-      <textarea id="pozadavek" name="pozadavek" placeholder="Např. web nevypadá dobře na mobilu, nevím kde se mění texty, ztratil jsem přístup k doméně…" required></textarea>
-     </div>
-     <div class="row">
-      <div>
-       <label for="jmeno">Jméno / firma *</label>
-       <input id="jmeno" name="jmeno" placeholder="Jan Novák nebo Firma s.r.o." required/>
-      </div>
-      <div>
-       <label for="kontakt">E-mail nebo telefon *</label>
-       <input id="kontakt" name="kontakt" placeholder="jan@firma.cz nebo +420 …" required/>
-      </div>
+      <label for="pozadavek">Co potřebujete / co vás trápí</label>
+      <textarea id="pozadavek" name="pozadavek" placeholder="Např. web nevypadá dobře na mobilu, nevím kde se mění texty, ztratil jsem přístup k doméně…"></textarea>
      </div>
      <button class="btn-submit" type="submit">Odeslat poptávku →</button>
      <div class="hint">Bez backendu – tlačítko otevře e-mailového klienta s předvyplněnými daty.</div>
@@ -251,14 +244,11 @@
         var url      = document.getElementById('url').value.trim();
         if (url && !/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(url)) { url = 'https://' + url; }
         var req      = document.getElementById('pozadavek').value.trim();
-        var jmeno    = document.getElementById('jmeno').value.trim();
-        var kontakt  = document.getElementById('kontakt').value.trim();
 
         var subject = encodeURIComponent('Poptávka – modernizace webu' + (url ? ': ' + url : ''));
         var body    = encodeURIComponent(
           'Web: ' + (url || '–') + '\n\n' +
-          'Požadavek:\n' + req + '\n\n' +
-          'Kontakt:\n' + jmeno + '\n' + kontakt
+          'Požadavek:\n' + req
         );
 
         window.location.href = 'mailto:jsem@fakan.cz?subject=' + subject + '&body=' + body;
