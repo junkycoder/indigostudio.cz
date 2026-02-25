@@ -7,12 +7,27 @@
   <meta content="Modernizujeme zastaralé weby, zjednodušujeme správu obsahu a automatizujeme rutinní práci. Daniel Hromada, fakan.cz" name="description"/>
   <style>
     :root {
-      --accent: #22c55e;
-      --bg:     #0a0a0a;
-      --fg:     #e5e7eb;
-      --muted:  #9ca3af;
-      --border: #1f2937;
-      --card:   #0d1117;
+      --accent:    #22c55e;
+      --bg:        #0a0a0a;
+      --fg:        #e5e7eb;
+      --muted:     #9ca3af;
+      --border:    #1f2937;
+      --card:      #0d1117;
+      --input-bg:  #060606;
+      --toast-bg:  #0f172a;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --accent:    #16a34a;
+        --bg:        #f9fafb;
+        --fg:        #111827;
+        --muted:     #6b7280;
+        --border:    #d1d5db;
+        --card:      #ffffff;
+        --input-bg:  #f3f4f6;
+        --toast-bg:  #1f2937;
+      }
     }
 
     * { box-sizing: border-box; }
@@ -110,7 +125,7 @@
     form { display: grid; gap: .75rem; }
     label { display: block; font-size: 12px; color: var(--muted); margin-bottom: .2rem; }
     input, textarea {
-      width: 100%; background: #060606; color: var(--fg);
+      width: 100%; background: var(--input-bg); color: var(--fg);
       border: 1px solid var(--border); border-radius: 7px;
       padding: .55rem .7rem; font: inherit; font-size: 14px;
     }
@@ -140,7 +155,7 @@
     /* ── Toast ───────────────────────────────────── */
     .toast {
       position: fixed; right: 1rem; bottom: 1rem;
-      background: #0f172a; color: var(--fg);
+      background: var(--toast-bg); color: var(--fg);
       border: 1px solid var(--border);
       padding: .6rem 1rem; border-radius: 10px;
       opacity: 0; transform: translateY(6px);
