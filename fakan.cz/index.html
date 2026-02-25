@@ -3,308 +3,260 @@
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>fakan ~ osobní web</title>
-  <meta content="Osobní stránka Daniela – popis, reference a formulář pro pracovní nabídky." name="description"/>
+  <title>Fakan – Modernizace webů</title>
+  <meta content="Modernizujeme zastaralé weby, zjednodušujeme správu obsahu a zachraňujeme zapomenuté přístupy. Daniel Hromada, fakan.cz" name="description"/>
   <style>
-   :root {
+    :root {
       --accent: #22c55e;
-      --bg: #0a0a0a;
-      --fg: #e5e7eb;
-      --muted: #9ca3af;
+      --bg:     #0a0a0a;
+      --fg:     #e5e7eb;
+      --muted:  #9ca3af;
       --border: #1f2937;
-      --danger: #ef4444;
+      --card:   #0d1117;
     }
 
-    /* reset-ish */
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       background: var(--bg);
       color: var(--fg);
-      font: 16px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font: 15px/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
       -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      /* jen jeden scroll (tento) */
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
     }
 
-    a { color: var(--fg); text-decoration: none; }
-    a:hover { color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
-    .wrap {
-      max-width: 1024px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 1rem 1.25rem; }
 
-    /* HEADER: bez vnitřního scrollu */
-    header{
-      display:flex; align-items:center; justify-content:space-between;
+    /* ── Header ─────────────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
       background: color-mix(in srgb, var(--bg) 92%, transparent);
-      backdrop-filter:saturate(1.2) blur(6px);
-      -webkit-backdrop-filter:saturate(1.2) blur(6px);
-      border-bottom:1px solid var(--border);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .term {
+      margin: 0;
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+      white-space: normal;
       overflow: visible;
     }
+    .term .hi  { color: var(--fg); }
+    .term .acc { color: var(--accent); }
 
-    main { display: grid; gap: 2rem; padding-top: 1.25rem; }
-    @media (min-width: 900px) {
-      main { grid-template-columns: 1fr 1fr; }
+    /* ── Hero ────────────────────────────────────── */
+    .hero { padding: 3.5rem 0 2rem; text-align: center; }
+    .hero h1 {
+      margin: 0 0 .75rem;
+      font-size: clamp(26px, 5.5vw, 52px);
+      line-height: 1.15;
     }
-
-    section { border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
-    h1, h2, h3 { margin: 0 0 .5rem 0; }
-
-    /* Terminal-like header */
-    #terminal-header .wrap{ max-width: 980px; margin: 0 auto; padding: 12px 16px; }
-    .term{ font-size: 14px; line-height: 1.45; color: var(--fg); }
-    .term .line{ display:flex; gap:8px; align-items:baseline; white-space: normal; overflow: visible; }
-    .term .prompt{ color: var(--muted); flex: 0 0 auto; }
-    .term .cmd{ color: var(--fg); text-decoration: none; border-bottom: 1px dotted var(--border); }
-    .term .cmd:hover{ text-decoration: underline; }
-    .term .cat{ margin: 8px 0 10px; white-space: normal; }
-    .term .cat > div{ margin: 2px 0; }
-    .term .cat a{ text-decoration: underline; text-decoration-thickness: from-font; }
-    .term .tree{ white-space: pre; overflow: visible; padding-bottom: 2px; }
-    .term .tree a{ text-decoration: none; border-bottom: 1px dotted var(--border); }
-    .term .tree a:hover{ text-decoration: underline; }
-    @media (max-width: 640px){
-      #terminal-header .wrap{ padding: 10px 12px; }
-      .term{ font-size: 12.5px; line-height: 1.4; }
-      .term .cat{ white-space: normal; }
-      .term .tree{ white-space: pre; }
-    }
-
-    /* projekty */
-    #projects li { opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
-    #projects li.appear { opacity: 1; transform: translateY(0); }
-
-    /* FUN FAKT: uprostřed, velký, kurzívou */
-    .fun-list { list-style: none; margin: 0; padding: 0; }
-    #fun-fakt { display: grid; place-items: center; text-align: center; }
-    .hero-quote {
-      margin: .25rem auto 0 auto;
-      max-width: 60ch;
-      font-style: italic;
-      font-weight: 600;
-      /* plynulé škálování velikosti */
-      font-size: clamp(22px, 3.5vw, 40px);
-      line-height: 1.25;
-      color: var(--fg);
-    }
-    .hero-quote .muted {
-      display: block;
+    .hero h1 em { color: var(--accent); font-style: normal; }
+    .hero p {
+      margin: 0 auto 2rem;
+      max-width: 46ch;
       color: var(--muted);
-      font-size: clamp(12px, 1.6vw, 14px);
-      font-weight: 400;
-      margin-top: .25rem;
+      font-size: clamp(13px, 2vw, 15px);
     }
-
-    /* formulář */
-    form { display: grid; gap: .75rem; }
-    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: .25rem; }
-    input, select, textarea {
-      width: 100%; background: #0d0d0d; color: var(--fg);
-      border: 1px solid var(--border); border-radius: 8px; padding: .6rem .7rem;
+    .btn-hero {
+      display: inline-block;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: .6rem 1.4rem;
+      border-radius: 8px;
       font: inherit;
+      cursor: pointer;
+      background: transparent;
+      text-decoration: none;
+      transition: background .15s, color .15s;
     }
-    input:focus, select:focus, textarea:focus { outline: 1.5px solid var(--accent); }
-    textarea { min-height: 140px; resize: vertical; }
+    .btn-hero:hover { background: var(--accent); color: #000; text-decoration: none; }
 
-    .inline { display: grid; gap: .75rem; }
-    @media (min-width: 600px) { .inline { grid-template-columns: 1fr 1fr; } }
+    /* ── Cards ───────────────────────────────────── */
+    .cards {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(188px, 1fr));
+      margin: 0 0 3rem;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1rem;
+      background: var(--card);
+      transition: border-color .2s, transform .2s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card-icon { font-size: 20px; margin-bottom: .4rem; }
+    .card h3 { margin: 0 0 .3rem; font-size: 13.5px; }
+    .card p  { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
 
-    .hint { font-size: 12px; color: var(--muted); }
-    .footer { margin: 2rem 0; text-align: center; color: var(--muted); font-size: 12px; }
+    /* ── Form section ────────────────────────────── */
+    .form-wrap {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      background: var(--card);
+      margin-bottom: 3rem;
+    }
+    .form-wrap h2 { margin: 0 0 .2rem; font-size: 17px; }
+    .form-wrap .sub { color: var(--muted); font-size: 13px; margin: 0 0 1.25rem; }
 
-    /* drobná animace pro aktivní uzly stromu */
-    .blink { animation: blink 1.2s step-end infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
+    form { display: grid; gap: .75rem; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: .2rem; }
+    input, textarea {
+      width: 100%; background: #060606; color: var(--fg);
+      border: 1px solid var(--border); border-radius: 7px;
+      padding: .55rem .7rem; font: inherit; font-size: 14px;
+    }
+    input:focus, textarea:focus { outline: 1.5px solid var(--accent); }
+    textarea { min-height: 100px; resize: vertical; }
+    .row { display: grid; gap: .75rem; }
+    @media (min-width: 540px) { .row { grid-template-columns: 1fr 1fr; } }
+    .btn-submit {
+      width: 100%;
+      border: 1px solid var(--accent);
+      background: transparent; color: var(--accent);
+      padding: .65rem 1.2rem; border-radius: 8px;
+      font: inherit; font-size: 14px;
+      cursor: pointer; transition: background .15s, color .15s;
+    }
+    .btn-submit:hover { background: var(--accent); color: #000; }
+    .hint { font-size: 11px; color: var(--muted); }
 
-    /* toast */
+    /* ── Footer ──────────────────────────────────── */
+    .footer {
+      text-align: center; color: var(--muted);
+      font-size: 12px; padding-bottom: 2.5rem;
+    }
+    .footer a { color: var(--muted); }
+    .footer a:hover { color: var(--fg); }
+
+    /* ── Toast ───────────────────────────────────── */
     .toast {
-      position: fixed; right: 1rem; bottom: 1rem; background: #0f172a; color: var(--fg);
-      border: 1px solid var(--border); padding: .6rem .8rem; border-radius: 10px; opacity: 0; transform: translateY(6px);
+      position: fixed; right: 1rem; bottom: 1rem;
+      background: #0f172a; color: var(--fg);
+      border: 1px solid var(--border);
+      padding: .6rem 1rem; border-radius: 10px;
+      opacity: 0; transform: translateY(6px);
       transition: .2s ease; pointer-events: none;
+      font-size: 13px; z-index: 100;
     }
-    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.show { opacity: 1; transform: none; }
   </style>
  </head>
  <body>
-  <header id="terminal-header">
+
+  <header>
    <div class="wrap">
-    <pre class="term">➜  fakan.cz git:(slave) &cross; cat about.md
-Daniel Hromada, @junkycoder, jsem@fakan.cz
-Telefon: +420 604 690 539 (Message / FaceTime / Signal)
-
-Web, Extensions, iOS, Android, Integrations, server-less, ...
-
-Nabízím konzultace, vývoj prototypů, MVP a poptávám krátkodobé zakázky.
-➜  fakan.cz git:(slave) &cross; tree .
-.
-&boxvr;&boxh;&boxh; about.md
-&boxvr;&boxh;&boxh; contact.md
-&boxvr;&boxh;&boxh; fun-fact.md
-&boxvr;&boxh;&boxh; hire-me.md
-&boxur;&boxh;&boxh; projects
-    &boxvr;&boxh;&boxh; pegasussolar.com
-    &boxvr;&boxh;&boxh; koronaceska.cz
-    &boxvr;&boxh;&boxh; interní timesheet slack bot
-    &boxvr;&boxh;&boxh; github.com
-    &boxvr;&boxh;&boxh; asekopool.com
-    &boxur;&boxh;&boxh; ingridapp.io
-    &boxur;&boxh;&boxh; ...
-2 directories, 4 files</pre>
+    <pre class="term"><span class="acc">➜</span>  <span class="hi">fakan.cz</span>  Daniel Hromada · <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> · <a href="tel:+420604690539">+420 604 690 539</a> · <a href="https://github.com/junkycoder" rel="noopener noreferrer" target="_blank" style="color:var(--muted)">github/junkycoder</a></pre>
    </div>
   </header>
 
   <div class="wrap">
-   <main>
-    <section id="projects">
-     <h2>Vybrané projekty</h2>
-     <ul>
-      <li><strong>Pegasus Solar – SPA designer</strong> – <a href="https://www.pegasussolar.com/" rel="noopener noreferrer" target="_blank">https://www.pegasussolar.com/</a> <span class="muted">· designer pro solární panely na střechy (SPA)</span></li>
-      <li><strong>Invity – crypto peněženky</strong> – <a href="https://invity.io/" rel="noopener noreferrer" target="_blank">https://invity.io/</a> <span class="muted">· pomoc s bootstrapem nativních peněženek</span></li>
-      <li><strong>koronaceska.cz – PR hra Korona</strong> – <a href="https://koronaceska.cz/" rel="noopener noreferrer" target="_blank">https://koronaceska.cz/</a> <span class="muted">· komunitní web/hra během COVID</span></li>
-      <li><strong>DeFi Puzzle – Berlin hackathon</strong> – <a href="https://github.com/topmonks/defi-puzzle" rel="noopener noreferrer" target="_blank">https://github.com/topmonks/defi-puzzle</a> <span class="muted">· open-source mini-hra</span></li>
-      <li><strong>Hlídač Shopu – rozšíření</strong> – <a href="https://github.com/topmonks/hlidac-shopu" rel="noopener noreferrer" target="_blank">https://github.com/topmonks/hlidac-shopu</a> <span class="muted">· monitoring cen / rozšíření</span></li>
-      <li><strong>3chan – sranda projekt</strong> – <a href="https://github.com/topmonks/3chan" rel="noopener noreferrer" target="_blank">https://github.com/topmonks/3chan</a> <span class="muted">· lehký experiment</span></li>
-      <li><strong>Interní timesheet Slack bot</strong> <span class="muted">· vykazování času na projekty (interní)</span></li>
-      <li><strong>Asekopool – web services</strong> – <a href="https://www.asekopool.com/cs/web-services-cz/" rel="noopener noreferrer" target="_blank">https://www.asekopool.com/cs/web-services-cz/</a> <span class="muted">· integrace / web služby</span></li>
-      <li><strong>Ingrid</strong> – <a href="https://www.ingridapp.io/" rel="noopener noreferrer" target="_blank">https://www.ingridapp.io/</a> <span class="muted">· aplikace pro Shell</span></li>
-      <li><strong>PostCube</strong> – <a href="https://postcube.cz/" rel="noopener noreferrer" target="_blank">https://postcube.cz/</a> <span class="muted">· logistika, doručovací boxy</span></li>
-      <li><strong>Tipli</strong> – <a href="https://www.tipli.cz/tipli-do-prohlizece" rel="noopener noreferrer" target="_blank">https://www.tipli.cz/tipli-do-prohlizece</a> <span class="muted">· web extension pro cashback</span></li>
-      <!-- Přidáno: isymbio + hra pro nevidomé -->
-      <li><strong>isymbio.cz</strong> – <a href="https://isymbio.cz" rel="noopener noreferrer" target="_blank">https://isymbio.cz</a> <span class="muted">· spolupráce / web</span></li>
-      <li><strong>Prší slyším – online hra pro nevidomé</strong> – <a href="https://prsi-slysim--prsi-slysim.europe-west4.hosted.app/" rel="noopener noreferrer" target="_blank">spustit hru</a> <span class="muted">· přístupná webová hra</span></li>
-     </ul>
-    </section>
 
-    <section id="contact" aria-labelledby="contact-heading">
-     <h2 id="contact-heading">Kontakt</h2>
-     <p class="hint">Preferuju stručné zadání a přímý přístup. Demo klidně v plain HTML.</p>
-     <ul style="list-style:none; padding:0; margin:.5rem 0 0 0;">
-      <li><strong>E-mail:</strong> <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a></li>
-      <li><strong>Telefon:</strong> <a href="tel:+420604690539">+420&nbsp;604&nbsp;690&nbsp;539</a> <span class="muted">(Message / FaceTime / Signal)</span></li>
-      <li><strong>Lichess:</strong> <a href="https://lichess.org/@/junkycoder" target="_blank" rel="noopener noreferrer">@junkycoder</a></li>
-      <li><strong>GitHub:</strong> <a href="https://github.com/junkycoder" target="_blank" rel="noopener noreferrer">github.com/junkycoder</a></li>
-     </ul>
-    </section>
+   <section class="hero">
+    <h1>Váš web zastarává.<br><em>My to změníme.</em></h1>
+    <p>Modernizujeme weby, zjednodušujeme správu obsahu a zachraňujeme zapomenuté přístupy.</p>
+    <a class="btn-hero" href="#poptavka">Ukažte nám váš web &darr;</a>
+   </section>
 
-    <section id="fun-fakt" aria-labelledby="fun-heading">
-     <h2 id="fun-heading">Fun fakt</h2>
-     <blockquote class="hero-quote" id="heroQuote">…</blockquote>
-    </section>
+   <div class="cards">
+    <div class="card">
+     <div class="card-icon">⚡</div>
+     <h3>Moderní design</h3>
+     <p>Rychlý, mobilní a přístupný web. Nezastará ani za 5 let.</p>
+    </div>
+    <div class="card">
+     <div class="card-icon">🔧</div>
+     <h3>Méně starostí</h3>
+     <p>Obsah upravíte sami, bez volání programátora. Aktualizace na pár kliknutí.</p>
+    </div>
+    <div class="card">
+     <div class="card-icon">🔑</div>
+     <h3>Zapomenuté přístupy</h3>
+     <p>Ztratili jste heslo k webu, FTP nebo redakci? Pomůžeme to dohledat nebo obnovit.</p>
+    </div>
+    <div class="card">
+     <div class="card-icon">🌐</div>
+     <h3>Doména a hosting</h3>
+     <p>Propadá doména? Certifikát expiroval? Vyřešíme rychle a bez stresu.</p>
+    </div>
+   </div>
 
-    <section id="hire-me">
-     <h2>Nabídka práce / spolupráce</h2>
-     <form id="offerForm">
-      <div class="inline">
-       <div>
-        <label for="name">Jméno / Firma *</label>
-        <input id="name" name="name" placeholder="Vaše jméno nebo firma" required=""/>
-       </div>
-       <div>
-        <label for="email">E-mail *</label>
-        <input id="email" name="email" placeholder="vy@firma.cz" required="" type="email"/>
-       </div>
-      </div>
-      <div class="inline">
-       <div>
-        <label for="role">Pozice / Název projektu *</label>
-        <input id="role" name="role" placeholder="Např. iOS dev na Capacitor" required=""/>
-       </div>
-       <div>
-        <label for="bonus">Nástupní bonuz (no HR)</label>
-        <input id="bonus" inputmode="numeric" name="bonus" pattern="[0-9]*" placeholder="např. 50000"/>
-       </div>
-      </div>
-      <div class="inline">
-       <div>
-        <label for="rate">Rozpočet / Rate</label>
-        <input id="rate" name="rate" placeholder="Hodinovka nebo budget"/>
-       </div>
-       <div>
-        <label for="mode">Režim</label>
-        <select id="mode" name="mode">
-         <option>Remote</option>
-         <option>Hybrid</option>
-         <option disabled>On-site</option>
-        </select>
-       </div>
+   <section class="form-wrap" id="poptavka">
+    <h2>Poptávka zdarma</h2>
+    <p class="sub">Pošlete nám url svého webu a co vás trápí – ozveme se.</p>
+    <form id="reqForm">
+     <div>
+      <label for="url">URL vašeho webu</label>
+      <input id="url" name="url" placeholder="https://vasefirma.cz" type="url"/>
+     </div>
+     <div>
+      <label for="pozadavek">Co potřebujete / co vás trápí *</label>
+      <textarea id="pozadavek" name="pozadavek" placeholder="Např. web nevypadá dobře na mobilu, nevím kde se mění texty, ztratil jsem přístup k doméně…" required></textarea>
+     </div>
+     <div class="row">
+      <div>
+       <label for="jmeno">Jméno / firma *</label>
+       <input id="jmeno" name="jmeno" placeholder="Jan Novák nebo Firma s.r.o." required/>
       </div>
       <div>
-       <label for="message">Popis *</label>
-       <textarea id="message" name="message" placeholder="Stručně co, proč, kdy. Méně HR, více reality." required=""></textarea>
+       <label for="kontakt">E-mail nebo telefon *</label>
+       <input id="kontakt" name="kontakt" placeholder="jan@firma.cz nebo +420 …" required/>
       </div>
-      <div class="inline">
-       <button class="btn" type="submit">Odeslat nabídku</button>
-       <button class="btn" id="mailtoBtn" title="Připravit e-mail" type="button">Připravit e-mail</button>
-      </div>
-      <div class="hint">Bez backendu: odeslání jen lokálně (JSON) + možnost otevřít e-mail s předvyplněnými daty.</div>
-     </form>
-    </section>
-   </main>
+     </div>
+     <button class="btn-submit" type="submit">Odeslat poptávku →</button>
+     <div class="hint">Bez backendu – tlačítko otevře e-mailového klienta s předvyplněnými daty.</div>
+    </form>
+   </section>
 
-   <div class="footer">&copy; fakan · mono only · KISS</div>
-  </div>
+   <div class="footer">
+    &copy; fakan.cz &middot; <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> &middot; <a href="tel:+420604690539">+420&nbsp;604&nbsp;690&nbsp;539</a>
+   </div>
 
-  <div class="toast" id="toast">Díky! Návrh byl připraven. Ozvu se.</div>
+  </div><!-- .wrap -->
+
+  <div class="toast" id="toast">Otevírám e-mailového klienta…</div>
 
   <script>
-    /* náhodný fun fakt – zobrazení jen jednoho, velkého uprostřed */
-    (function(){
-      const funFacts = [
-        "Mám základní vzdělání.",
-        "Na střední střední jsem hacknul stránky školy a vyhlásil tak ředitelské volno.",
-        "První zaměstnání v oboru jsem získal pomocí SQL Injection a impload.php přes neošetřený upload.php",
-        "První webové stránky jsem psal na papír.",
-        "Prohrál jsem celou výplatu v automatech.",
-        // problematická položka byla vynechána
-        "O letních prázdninách na faře jsem políkl kamaráda hořícím lihem.",
-        "Ve školce jsem se po asi hodině mluvení přiznal k něčemu, co jsem neudělal, aby ta kráva už sklapla a my si mohli zase hrát. A nesnášel jsem chodit po-o."
-      ];
+    (function () {
+      document.getElementById('reqForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var url      = document.getElementById('url').value.trim();
+        var req      = document.getElementById('pozadavek').value.trim();
+        var jmeno    = document.getElementById('jmeno').value.trim();
+        var kontakt  = document.getElementById('kontakt').value.trim();
 
-      function pickOne(list){
-        if(!list || !list.length) return '';
-        return list[Math.floor(Math.random()*list.length)];
-      }
+        var subject = encodeURIComponent('Poptávka – modernizace webu' + (url ? ': ' + url : ''));
+        var body    = encodeURIComponent(
+          'Web: ' + (url || '–') + '\n\n' +
+          'Požadavek:\n' + req + '\n\n' +
+          'Kontakt:\n' + jmeno + '\n' + kontakt
+        );
 
-      const el = document.getElementById('heroQuote');
-      if(el){
-        const text = pickOne(funFacts);
-        el.textContent = text;
-        const muted = document.createElement('span');
-        muted.className = 'muted';
-        muted.textContent = '— fakan.cz';
-        el.appendChild(muted);
-      }
-    })();
-  </script>
+        window.location.href = 'mailto:jsem@fakan.cz?subject=' + subject + '&body=' + body;
 
-  <script>
-    /* shuffle projektů + jemné náběhy */
-    (function(){
-      function shuffle(list){
-        for (let i = list.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [list[i], list[j]] = [list[j], list[i]];
+        var t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(function () { t.classList.remove('show'); }, 3000);
+      });
+
+      /* Plynulý scroll k formuláři */
+      document.querySelector('.btn-hero').addEventListener('click', function (e) {
+        var target = document.getElementById('poptavka');
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-        return list;
-      }
-      const ul = document.querySelector('#projects ul');
-      if(!ul) return;
-      const items = Array.from(ul.children);
-      shuffle(items);
-      items.forEach((li, idx) => {
-        ul.appendChild(li);
-        setTimeout(() => li.classList.add('appear'), 60 * idx);
       });
     })();
   </script>
-  <!-- meh -->
-</body>
+
+ </body>
 </html>
