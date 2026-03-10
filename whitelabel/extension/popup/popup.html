@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';">
+  <title>WhiteApp</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <span class="popup-title" id="popup-title">WhiteApp</span>
+      <span class="popup-version" id="popup-version"></span>
+    </header>
+
+    <main class="popup-body">
+      <div class="status-row">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-text" id="status-text">Connecting...</span>
+      </div>
+
+      <div class="page-info" id="page-info" style="display:none">
+        <p class="label">Current page</p>
+        <p class="value" id="page-title"></p>
+        <p class="value muted" id="page-url"></p>
+      </div>
+    </main>
+
+    <footer class="popup-footer">
+      <button id="btn-action" class="btn btn-primary">Activate</button>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

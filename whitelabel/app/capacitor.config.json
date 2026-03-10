@@ -1,0 +1,14 @@
+{
+  "appId": "cz.fakan.whiteapp",
+  "appName": "WhiteApp",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#22c55e"
+    }
+  }
+}

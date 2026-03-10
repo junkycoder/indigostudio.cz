@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+  <title>WhiteApp</title>
+  <link rel="stylesheet" href="css/brand.css">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <h1 id="app-title">WhiteApp</h1>
+      <span id="app-version" class="version"></span>
+    </header>
+
+    <main class="app-main">
+      <section id="feature-camera" class="feature-card" style="display:none">
+        <h2>Camera</h2>
+        <button id="btn-camera" class="btn btn-primary">Take Photo</button>
+        <div id="camera-result" class="result-area"></div>
+      </section>
+
+      <section id="feature-location" class="feature-card" style="display:none">
+        <h2>Location</h2>
+        <button id="btn-location" class="btn btn-primary">Get Location</button>
+        <div id="location-result" class="result-area"></div>
+      </section>
+
+      <section id="feature-notifications" class="feature-card" style="display:none">
+        <h2>Notifications</h2>
+        <button id="btn-notify" class="btn btn-primary">Send Notification</button>
+      </section>
+
+      <section id="feature-storage" class="feature-card" style="display:none">
+        <h2>Storage</h2>
+        <input id="storage-key" class="input" type="text" placeholder="Key">
+        <input id="storage-value" class="input" type="text" placeholder="Value">
+        <button id="btn-save" class="btn btn-primary">Save</button>
+        <button id="btn-load" class="btn btn-secondary">Load</button>
+        <div id="storage-result" class="result-area"></div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span id="platform-info" class="muted"></span>
+    </footer>
+  </div>
+
+  <!-- brand-config.js must load before app.js -->
+  <script src="js/brand-config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

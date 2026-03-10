@@ -1,0 +1,38 @@
+{
+  "name": "AcmeApp",
+  "bundleId": "com.acme.app",
+  "version": "1.0.0",
+  "description": "Acme Corp mobile application",
+  "colors": {
+    "accent": "#ef4444",
+    "background": "#0d0d0d",
+    "surface": "#1a1a1a",
+    "border": "#2a2a2a",
+    "text": "#f0f0f0",
+    "textMuted": "#888888"
+  },
+  "capabilities": {
+    "camera": true,
+    "location": true,
+    "microphone": false,
+    "notifications": true,
+    "storage": true
+  },
+  "permissions": {
+    "android": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.CAMERA",
+      "android.permission.ACCESS_FINE_LOCATION",
+      "android.permission.ACCESS_COARSE_LOCATION"
+    ],
+    "ios": ["NSCameraUsageDescription", "NSLocationWhenInUseUsageDescription"]
+  },
+  "extension": {
+    "permissions": ["storage", "notifications", "tabs"],
+    "host_permissions": ["https://acme.com/*", "https://*.acme.com/*"],
+    "content_scripts_match": ["https://acme.com/*", "https://*.acme.com/*"],
+    "description": "Acme Corp browser extension",
+    "firefox_id": "acmeapp@acme.com"
+  }
+}
