@@ -1,6 +1,6 @@
 {
-  "appId": "cz.fakan.whiteapp",
-  "appName": "WhiteApp",
+  "appId": "com.acme.app",
+  "appName": "AcmeApp",
   "webDir": "www",
   "server": {
     "androidScheme": "https"
@@ -8,7 +8,7 @@
   "plugins": {
     "LocalNotifications": {
       "smallIcon": "ic_stat_icon_config_sample",
-      "iconColor": "#22c55e"
+      "iconColor": "#ef4444"
     }
   }
 }

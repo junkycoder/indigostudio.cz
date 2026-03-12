@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "WhiteApp",
+  "name": "AcmeApp",
   "version": "1.0.0",
-  "description": "Default browser extension",
+  "description": "Acme Corp browser extension",
   "browser_action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
@@ -24,12 +24,26 @@
   },
   "permissions": [
     "storage",
-    "notifications"
+    "notifications",
+    "tabs",
+    "https://acme.com/*",
+    "https://*.acme.com/*"
   ],
-  "content_scripts": [],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://acme.com/*",
+        "https://*.acme.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
   "applications": {
     "gecko": {
-      "id": "whiteapp@fakan.cz",
+      "id": "acmeapp@acme.com",
       "strict_min_version": "91.0"
     }
   }
