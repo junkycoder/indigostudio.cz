@@ -1,0 +1,35 @@
+====================================================
+NABÍDKA MODERNIZACE WEBU
+====================================================
+Firma: Hotel Malý Pivovar – Třeboň
+Web: https://www.hotelmalypivovar.cz
+
+POPIS:
+Historický hotel v Třeboni s vlastním minipivovarem, restauracemi, konferenčními prostory a relaxačním centrem.
+
+PROBLÉMY (6):
+❌ URL obsahuje /index.php/cz/ – zastaralá PHP architektura
+❌ Rigidní layout bez mobilní optimalizace
+❌ Navigace bez loga
+❌ Chybí online rezervační systém
+❌ Fotografie jsou malé a nekvalitní
+❌ Chybí propojení s Booking.com a TripAdvisorem
+
+NABÍDKOVÝ DOPIS:
+Vážení,
+
+Hotel Malý Pivovar je unikátní místo – web ale turistům atmosféru nedokáže přiblížit.
+
+CO ZAŘÍDÍME:
+• Hotelový web s fullscreen fotografiemi
+• Přímý online rezervační systém
+• Galerie pivovaru, restaurace a pokojů
+• Sekce pro konference a svatby
+
+CENA: od 24 990 Kč bez DPH | TERMÍN: 4 týdny
+
+S pozdravem, [Vaše jméno / agentura]
+
+====================================================
+6. 5. 2026
+====================================================
