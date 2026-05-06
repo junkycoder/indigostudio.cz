@@ -1,0 +1,14 @@
+{
+  "name": "fakan-cz",
+  "version": "0.0.1",
+  "private": true,
+  "description": "fakan.cz — pluginova platforma pro weby",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "format": "npx biome format --write ."
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

@@ -1,284 +1,468 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>Fakan – Modernizace webů</title>
-  <meta content="Modernizujeme zastaralé weby, zjednodušujeme správu obsahu a automatizujeme rutinní práci. Daniel Hromada, fakan.cz" name="description"/>
-  <style>
-    :root {
-      --accent:    #22c55e;
-      --bg:        #0a0a0a;
-      --fg:        #e5e7eb;
-      --muted:     #9ca3af;
-      --border:    #1f2937;
-      --card:      #0d1117;
-      --input-bg:  #060606;
-      --toast-bg:  #0f172a;
-    }
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>fakan.cz — tvůj web, bez výmluv</title>
+<meta name="description" content="Zadej URL a dostaneš zdarma analýzu svého webu — rychlost, SEO, přístupnost, bezpečnost. AI agenty s lidským garantem. Bez cookies. Bez frameworků.">
+<meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://fakan.cz/">
+<meta property="og:title" content="fakan.cz — tvůj web, bez výmluv">
+<meta property="og:description" content="Free analýza webu za pár sekund. Audit, redesign, hosting a správa. AI agenty s lidským garantem.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fakan.cz/">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:site_name" content="fakan.cz">
+<meta name="twitter:card" content="summary">
+<meta name="robots" content="index, follow">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "fakan.cz",
+  "url": "https://fakan.cz",
+  "description": "Pluginová platforma pro audit, návrh, realizaci, hosting, správu a růst webových stránek.",
+  "founder": {
+    "@type": "Person",
+    "name": "Daniel Hromada"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "jsem@fakan.cz",
+    "telephone": "+420604690539",
+    "contactType": "customer support"
+  }
+}
+</script>
+<style>
+:root {
+  --bg: #F9F6F0;
+  --fg: #0B1221;
+  --muted: #6B7280;
+  --line: #E2E8F0;
+  --line-strong: #CBD5E1;
+  --card: #FFFFFF;
+  --orange: #FF5722;
+  --orange-soft: rgba(255,87,34,0.08);
+  --green: #52A47C;
+  --shadow: 0 1px 2px rgba(11,18,33,0.04), 0 12px 24px rgba(11,18,33,0.06);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0B1221;
+    --fg: #F9F6F0;
+    --muted: #94A3B8;
+    --line: #1E293B;
+    --line-strong: #334155;
+    --card: #111A2E;
+    --orange: #FF6B3D;
+    --orange-soft: rgba(255,107,61,0.14);
+    --green: #67BD93;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 18px 30px rgba(0,0,0,0.45);
+  }
+}
 
-    @media (prefers-color-scheme: light) {
-      :root {
-        --accent:    #16a34a;
-        --bg:        #f9fafb;
-        --fg:        #111827;
-        --muted:     #6b7280;
-        --border:    #d1d5db;
-        --card:      #ffffff;
-        --input-bg:  #f3f4f6;
-        --toast-bg:  #1f2937;
-      }
-    }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-    * { box-sizing: border-box; }
-    html {
-      height: 100%;
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-    }
-    body { height: 100%; }
-    body {
-      margin: 0; padding: 0;
-      background: var(--bg);
-      color: var(--fg);
-      font: 16px/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
-      -webkit-font-smoothing: antialiased;
-    }
+body {
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
-    .wrap { max-width: 860px; margin: 0 auto; padding: 1rem 1.25rem; }
+a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-color: var(--orange); }
 
-    /* ── Header ─────────────────────────────────── */
-    header {
-      border-bottom: 1px solid var(--border);
-      background: color-mix(in srgb, var(--bg) 92%, transparent);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-    }
-    .term {
-      margin: 0;
-      font: inherit;
-      font-size: 16px;
-      line-height: 1.5;
-      color: var(--muted);
-      white-space: normal;
-      overflow: visible;
-    }
-    .term .hi  { color: var(--fg); }
-    .term .acc { color: var(--accent); }
+h1, h2, h3 { margin: 0 0 0.4em; font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
+h1 { font-size: clamp(34px, 5.5vw, 56px); letter-spacing: -0.025em; }
+h2 { font-size: clamp(26px, 3.4vw, 38px); letter-spacing: -0.02em; }
+h3 { font-size: clamp(19px, 2vw, 22px); }
+p { margin: 0 0 1em; }
 
-    /* ── Hero ────────────────────────────────────── */
-    .hero { padding: 3.5rem 0 2rem; text-align: center; }
+/* Skip link */
+.skip { position: absolute; left: -9999px; top: 0; }
+.skip:focus { left: 16px; top: 16px; background: var(--orange); color: #fff; padding: 8px 12px; border-radius: 6px; z-index: 100; }
 
-    /* ── Claim ───────────────────────────────────── */
-    .claim {
-      margin: 0 0 2rem;
-      font-size: clamp(22px, 4.5vw, 42px);
-      color: var(--accent);
-      line-height: 1.2;
-      text-align: center;
-    }
-    .hero h1 {
-      margin: 0 0 .75rem;
-      font-size: clamp(26px, 5.5vw, 52px);
-      line-height: 1.15;
-    }
-    .hero h1 em { color: var(--accent); font-style: normal; }
-    .hero p {
-      margin: 0 auto 2rem;
-      max-width: 46ch;
-      color: var(--muted);
-      font-size: clamp(16px, 2vw, 18px);
-    }
-    .btn-hero {
-      display: inline-block;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      padding: .6rem 1.4rem;
-      border-radius: 8px;
-      font: inherit;
-      cursor: pointer;
-      background: transparent;
-      text-decoration: none;
-      transition: background .15s, color .15s;
-    }
-    .btn-hero:hover { background: var(--accent); color: #000; text-decoration: none; }
+/* Header */
+header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+  backdrop-filter: saturate(140%) blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; gap: 16px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; text-decoration: none; color: var(--fg); letter-spacing: -0.02em; }
+.brand-mark { width: 28px; height: 28px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--muted); }
+.pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px var(--orange-soft); }
 
-    /* ── Cards ───────────────────────────────────── */
-    .cards {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(auto-fit, minmax(188px, 1fr));
-      margin: 0 0 3rem;
-    }
-    .card {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.1rem 1rem;
-      background: var(--card);
-      transition: border-color .2s, transform .2s;
-    }
-    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .card-icon { font-size: 32px; margin-bottom: .6rem; text-align: center; }
-    .card h3 { margin: 0 0 .3rem; font-size: 16px; }
-    .card p  { margin: 0; font-size: 16px; color: var(--muted); line-height: 1.5; }
+/* Eyebrow */
+.eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; font-weight: 600; color: var(--orange); margin-bottom: 14px; }
 
-    /* ── Form section ────────────────────────────── */
-    .form-wrap {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      background: var(--card);
-      margin-bottom: 3rem;
-    }
-    .form-wrap h2 { margin: 0 0 .2rem; font-size: 17px; }
-    .form-wrap .sub { color: var(--muted); font-size: 16px; margin: 0 0 1.25rem; }
+/* Hero */
+.hero { padding: clamp(70px, 9vw, 130px) 0 clamp(60px, 7vw, 100px); border-bottom: 1px solid var(--line); }
+.hero h1 { max-width: 16ch; }
+.hero-sub { font-size: clamp(18px, 1.8vw, 22px); color: var(--muted); max-width: 50ch; margin: 18px 0 32px; }
 
-    form { display: grid; gap: .75rem; }
-    label { display: block; font-size: 16px; color: var(--muted); margin-bottom: .2rem; }
-    input, textarea {
-      width: 100%; background: var(--input-bg); color: var(--fg);
-      border: 1px solid var(--border); border-radius: 7px;
-      padding: .55rem .7rem; font: inherit; font-size: 16px;
-    }
-    input:focus, textarea:focus { outline: 1.5px solid var(--accent); }
-    textarea { min-height: 100px; resize: vertical; }
-    .row { display: grid; gap: .75rem; }
-    @media (min-width: 540px) { .row { grid-template-columns: 1fr 1fr; } }
-    @media (min-width: 540px) {
-      .card { text-align: center; }
-    }
-    .btn-submit {
-      width: 100%;
-      border: 1px solid var(--accent);
-      background: transparent; color: var(--accent);
-      padding: .65rem 1.2rem; border-radius: 8px;
-      font: inherit; font-size: 16px;
-      cursor: pointer; transition: background .15s, color .15s;
-    }
-    .btn-submit:hover { background: var(--accent); color: #000; }
-    .hint { font-size: 16px; color: var(--muted); }
+/* URL form */
+.url-form { display: flex; gap: 12px; max-width: 540px; flex-wrap: wrap; }
+.url-input {
+  flex: 1 1 280px;
+  padding: 14px 18px;
+  font: inherit; font-size: 17px;
+  background: var(--card);
+  color: var(--fg);
+  border: 2px solid var(--line-strong);
+  border-radius: 999px;
+  outline: none;
+  min-height: 52px;
+}
+.url-input:focus { border-color: var(--orange); }
+.url-input::placeholder { color: var(--muted); }
+.btn-cta {
+  padding: 14px 24px;
+  background: var(--orange); color: #fff;
+  border: none; border-radius: 999px;
+  font: inherit; font-size: 16px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  min-height: 52px;
+  box-shadow: 0 8px 24px rgba(255,87,34,0.28);
+  transition: filter 0.15s;
+}
+.btn-cta:hover { filter: brightness(1.08); }
 
-    /* ── Footer ──────────────────────────────────── */
-    .footer {
-      text-align: center; color: var(--muted);
-      font-size: 16px; padding-bottom: 2.5rem;
-    }
-    .footer a { color: var(--muted); }
-    .footer a:hover { color: var(--fg); }
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line); }
+.stat strong { display: block; font-size: clamp(24px, 3vw, 34px); font-weight: 700; letter-spacing: -0.02em; }
+.stat span { color: var(--muted); font-size: 14px; }
+@media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
 
-    /* ── Toast ───────────────────────────────────── */
-    .toast {
-      position: fixed; right: 1rem; bottom: 1rem;
-      background: var(--toast-bg); color: var(--fg);
-      border: 1px solid var(--border);
-      padding: .6rem 1rem; border-radius: 10px;
-      opacity: 0; transform: translateY(6px);
-      transition: .2s ease; pointer-events: none;
-      font-size: 16px; z-index: 100;
-    }
-    .toast.show { opacity: 1; transform: none; }
-  </style>
- </head>
- <body>
+/* Sections */
+section { padding: clamp(60px, 8vw, 100px) 0; border-bottom: 1px solid var(--line); }
+.section-head { max-width: 660px; margin-bottom: 40px; }
+.section-head p { color: var(--muted); font-size: 18px; margin: 0; }
 
-  <header>
-   <div class="wrap">
-    <pre class="term"><span class="acc">➜</span>  <span class="hi">fakan.cz</span>  Daniel Hromada · <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> · <a href="tel:+420604690539">+420 604 690 539</a> · <a href="https://github.com/junkycoder" rel="noopener noreferrer" target="_blank" style="color:var(--muted)">github/junkycoder</a></pre>
-   </div>
-  </header>
+/* Grid */
+.grid { display: grid; gap: 20px; }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 960px) { .g4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .g4, .g3 { grid-template-columns: 1fr; } }
 
+/* Cards */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+.card h3 { margin-bottom: 8px; }
+.card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
+
+/* Steps */
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--orange-soft); color: var(--orange); font-weight: 700; font-size: 16px; margin-bottom: 12px; }
+
+/* Pricing tiers */
+.tier { padding: 28px 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.tier.featured { border: 2px solid var(--orange); position: relative; }
+.tier.featured::before { content: "Doporučeno"; position: absolute; top: -11px; left: 24px; background: var(--orange); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+.tier h3 { font-size: 20px; margin-bottom: 4px; }
+.tier .price { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 4px; }
+.tier .price span { font-size: 14px; color: var(--muted); font-weight: 400; }
+.tier ul { padding-left: 18px; margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+.tier li { margin-bottom: 6px; }
+
+/* CTA banner */
+.cta-banner {
+  background: var(--fg); color: var(--bg);
+  border-radius: 22px;
+  padding: clamp(36px, 5vw, 56px);
+  text-align: center;
+}
+.cta-banner h2 { color: var(--bg); }
+.cta-banner p { color: color-mix(in srgb, var(--bg) 70%, var(--fg)); }
+.cta-banner .url-form { margin: 0 auto; justify-content: center; }
+.cta-banner .url-input {
+  background: color-mix(in srgb, var(--fg) 90%, var(--bg));
+  border-color: color-mix(in srgb, var(--fg) 75%, var(--bg));
+  color: var(--bg);
+}
+.cta-banner .url-input::placeholder { color: color-mix(in srgb, var(--bg) 50%, var(--fg)); }
+.cta-banner .url-input:focus { border-color: var(--orange); }
+.cta-banner a { color: var(--orange); }
+
+/* Footer */
+footer { padding: 48px 0 64px; color: var(--muted); font-size: 14px; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--fg); }
+.footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px; padding-top: 24px; border-top: 1px solid var(--line); }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px 20px; box-shadow: var(--shadow); opacity: 0; transform: translateY(12px); transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 100; max-width: 360px; font-size: 15px; }
+.toast.show { opacity: 1; transform: none; pointer-events: auto; }
+.toast .ok { color: var(--green); font-weight: 600; }
+
+/* Focus visible */
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+input:focus-visible { outline: none; }
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  .btn-cta { width: 100%; text-align: center; }
+}
+
+@media print {
+  header, .btn-cta, .toast { display: none; }
+  body { background: #fff; color: #000; }
+  section { padding: 36px 0; page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<a href="#obsah" class="skip">Přeskočit na obsah</a>
+
+<header>
+  <div class="wrap header-inner">
+    <a class="brand" href="/" aria-label="fakan.cz — domů">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="2" y="2" width="28" height="28" rx="8" fill="currentColor"/>
+        <path d="M10 23 V9 h12 v3 h-9 v3 h7 v3 h-7 v5 z" fill="#FF5722"/>
+      </svg>
+      fakan.cz
+    </a>
+    <span class="pill">Fáze 0 &middot; build</span>
+  </div>
+</header>
+
+<main id="obsah">
+
+<!-- HERO -->
+<section class="hero">
   <div class="wrap">
+    <span class="eyebrow">Analýza webu zdarma</span>
+    <h1>Tvůj web. Bez&nbsp;výmluv.</h1>
+    <p class="hero-sub">Zadej URL a za pár sekund uvidíš, co s tvým webem. Rychlost, SEO, přístupnost, bezpečnost. Bez registrace. Bez cookies.</p>
 
-   <section class="hero">
-    <h1>Váš web zastarává.<br><em>My to změníme.</em></h1>
-    <p>Modernizujeme weby, zjednodušujeme správu obsahu a automatizujeme rutinní práci.</p>
-    <a class="btn-hero" href="#poptavka">Ukažte nám váš web &darr;</a>
-   </section>
-
-   <div class="cards">
-    <div class="card">
-     <div class="card-icon">⚡</div>
-     <h3>Moderní design</h3>
-     <p>Rychlý, mobilní a přístupný web. Nezastará ani za 5 let.</p>
-    </div>
-    <div class="card">
-     <div class="card-icon">🔧</div>
-     <h3>Méně starostí</h3>
-     <p>Obsah upravíte sami, bez volání programátora. Aktualizace na pár kliknutí.</p>
-    </div>
-    <div class="card">
-     <div class="card-icon">🤖</div>
-     <h3>Automatizace rutiny</h3>
-     <p>Kopírujete a vkládáte v práci pořád dokola? Zautomatizujeme to a ušetříme vám hodiny týdně.</p>
-    </div>
-    <div class="card">
-     <div class="card-icon">🌐</div>
-     <h3>Doména a hosting</h3>
-     <p>Propadá doména? Certifikát expiroval? Vyřešíme rychle a bez stresu.</p>
-    </div>
-   </div>
-
-   <p class="claim">Když web,<br> jedině od Fakana.</p>
-
-   <section class="form-wrap" id="poptavka">
-    <h2>Poptávka zdarma</h2>
-    <p class="sub">Pošlete adresu svého webu a co vás trápí – ozveme se.</p>
-    <form id="reqForm">
-     <div>
-      <label for="url">Adresa vašeho webu</label>
-      <input id="url" name="url" placeholder="vasefirma.cz" type="text"/>
-     </div>
-     <div>
-      <label for="pozadavek">Co potřebujete / co vás trápí</label>
-      <textarea id="pozadavek" name="pozadavek" placeholder="Např. web nevypadá dobře na mobilu, nevím kde se mění texty, ztratil jsem přístup k doméně…"></textarea>
-     </div>
-     <button class="btn-submit" type="submit">Odeslat poptávku →</button>
-     <div class="hint">Bez backendu – tlačítko otevře e-mailového klienta s předvyplněnými daty.</div>
+    <form class="url-form" id="analyzeForm">
+      <label for="urlInput" class="skip">URL tvého webu</label>
+      <input class="url-input" id="urlInput" name="url" type="text" placeholder="tvojedomena.cz" autocomplete="url" required>
+      <button class="btn-cta" type="submit">Analyzovat zdarma &rarr;</button>
     </form>
-   </section>
 
-   <div class="footer">
-    &copy; fakan.cz &middot; <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> &middot; <a href="tel:+420604690539">+420&nbsp;604&nbsp;690&nbsp;539</a>
-   </div>
+    <div class="stats" role="list">
+      <div class="stat" role="listitem">
+        <strong>&le; 5 s</strong>
+        <span>první data z analýzy</span>
+      </div>
+      <div class="stat" role="listitem">
+        <strong>0 cookies</strong>
+        <span>na výstupních webech</span>
+      </div>
+      <div class="stat" role="listitem">
+        <strong>od 99 Kč</strong>
+        <span>hosting měsíčně</span>
+      </div>
+      <div class="stat" role="listitem">
+        <strong>ZIP export</strong>
+        <span>tvůj web je tvůj, vždy</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-  </div><!-- .wrap -->
+<!-- CO DĚLÁME -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Co děláme</span>
+      <h2>Web jako služba, ne jako artefakt.</h2>
+      <p>Audit, redesign, hosting a průběžná správa. AI agenty s lidským garantem. Vanilla HTML/CSS/JS, žádné frameworky.</p>
+    </div>
 
-  <div class="toast" id="toast">Otevírám e-mailového klienta…</div>
+    <div class="grid g4">
+      <div class="card">
+        <h3>Free analýza</h3>
+        <p>Rychlost, SEO, přístupnost, bezpečnost, detekce cookies a trackerů. Do minuty, bez registrace.</p>
+      </div>
+      <div class="card">
+        <h3>AI redesign</h3>
+        <p>Návrh nové verze webu od AI týmu. Jeden free náhled, další varianty za mikroplatby od 49 Kč.</p>
+      </div>
+      <div class="card">
+        <h3>Hosting od 99 Kč</h3>
+        <p>Statické HTML na Cloudflare. Vlastní doména, SSL, CDN po celém světě. Bez cookies, bez banerů.</p>
+      </div>
+      <div class="card">
+        <h3>Správa a růst</h3>
+        <p>Editor pro úpravy obsahu, analytics bez trackerů, SEO monitoring, formuláře. Vše přes pluginy.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script>
-    (function () {
-      document.getElementById('reqForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        var url      = document.getElementById('url').value.trim();
-        if (url && !/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(url)) { url = 'https://' + url; }
-        var req      = document.getElementById('pozadavek').value.trim();
+<!-- JAK TO FUNGUJE -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Jak to funguje</span>
+      <h2>Tři kroky. Žádný Excel.</h2>
+    </div>
 
-        var subject = encodeURIComponent('Poptávka – modernizace webu' + (url ? ': ' + url : ''));
-        var body    = encodeURIComponent(
-          'Web: ' + (url || '–') + '\n\n' +
-          'Požadavek:\n' + req
-        );
+    <div class="grid g3">
+      <div class="card">
+        <div class="step-num">1</div>
+        <h3>Zadej URL</h3>
+        <p>Napiš adresu svého webu. Dostaneš výsledky za pár sekund — rychlost, SEO, bezpečnost, screenshot.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">2</div>
+        <h3>Uvidíš, co opravit</h3>
+        <p>Konkrétní čísla, ne adjektiva. „LCP 4,2 s místo 1,5 s." AI navrhne redesign a priority.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">3</div>
+        <h3>Rozhodneš se</h3>
+        <p>Chceš opravit sám? Stáhni report. Chceš, ať to řešíme? Klikni a jdeme na to.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        window.location.href = 'mailto:jsem@fakan.cz?subject=' + subject + '&body=' + body;
+<!-- STANDARDY -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Standardy</span>
+      <h2>Každý web od nás splňuje. Bez výjimky.</h2>
+    </div>
 
-        var t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(function () { t.classList.remove('show'); }, 3000);
-      });
+    <div class="grid g4">
+      <div class="card">
+        <h3>0 cookies</h3>
+        <p>Žádné cookie banery. Žádné popupy. Žádné „akceptujte vše".</p>
+      </div>
+      <div class="card">
+        <h3>Mobile-first</h3>
+        <p>375 &times; 812 jako základ. Touch targety &ge; 44 px. Žádný hover-only.</p>
+      </div>
+      <div class="card">
+        <h3>LCP &lt; 1,5 s</h3>
+        <p>Statické HTML bez hydration taxu. JS pod 30 kB gzip.</p>
+      </div>
+      <div class="card">
+        <h3>WCAG 2.2 AA</h3>
+        <p>Sémantický HTML, klávesnicová navigace, screen-reader ready.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-      /* Plynulý scroll k formuláři */
-      document.querySelector('.btn-hero').addEventListener('click', function (e) {
-        var target = document.getElementById('poptavka');
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    })();
-  </script>
+<!-- HOSTING -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Hosting</span>
+      <h2>Static-first na Cloudflare.</h2>
+      <p>Vlastní doména, SSL, CDN, backup. Export do ZIPu kdykoli — tvůj web je tvůj.</p>
+    </div>
 
- </body>
+    <div class="grid g3">
+      <div class="tier">
+        <h3>Lite</h3>
+        <div class="price">99 Kč<span> / měs</span></div>
+        <ul>
+          <li>100 MB úložiště</li>
+          <li>1 doména</li>
+          <li>Backup + export ZIP</li>
+        </ul>
+      </div>
+      <div class="tier featured">
+        <h3>Standard</h3>
+        <div class="price">249 Kč<span> / měs</span></div>
+        <ul>
+          <li>500 MB úložiště</li>
+          <li>Až 3 domény</li>
+          <li>Priority support</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <h3>Pro</h3>
+        <div class="price">590 Kč<span> / měs</span></div>
+        <ul>
+          <li>2 GB úložiště</li>
+          <li>Až 10 domén</li>
+          <li>Tým + RBAC</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="border-bottom: none;">
+  <div class="wrap">
+    <div class="cta-banner">
+      <h2>Zkus to. Zadej URL a uvidíš.</h2>
+      <p style="max-width: 50ch; margin: 0 auto 24px;">Analýza je zdarma. Bez registrace. Bez cookies. Výsledky za pár sekund.</p>
+      <form class="url-form" id="analyzeForm2">
+        <label for="urlInput2" class="skip">URL tvého webu</label>
+        <input class="url-input" id="urlInput2" name="url" type="text" placeholder="tvojedomena.cz" autocomplete="url" required>
+        <button class="btn-cta" type="submit">Analyzovat zdarma &rarr;</button>
+      </form>
+      <p style="margin-top: 16px; font-size: 14px;">Nebo napiš na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <span>&copy; 2026 fakan.cz &middot; Daniel Hromada</span>
+      <span>
+        <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> &middot;
+        <a href="tel:+420604690539">+420 604 690 539</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  function handleAnalyze(e) {
+    e.preventDefault();
+    var input = e.target.querySelector('input[name="url"]');
+    var url = input.value.trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+
+    var subject = encodeURIComponent('Free analýza webu: ' + url);
+    var body = encodeURIComponent(
+      'Ahoj,\n\nzajímá mě free analýza webu: ' + url + '\n\nDíky!'
+    );
+    window.location.href = 'mailto:jsem@fakan.cz?subject=' + subject + '&body=' + body;
+
+    var toast = document.getElementById('toast');
+    toast.innerHTML = '<span class="ok">\u2713</span> Otevírám e-mail s tvou adresou. Automatická analýza se připravuje.';
+    toast.classList.add('show');
+    setTimeout(function () { toast.classList.remove('show'); }, 4000);
+  }
+
+  document.getElementById('analyzeForm').addEventListener('submit', handleAnalyze);
+  document.getElementById('analyzeForm2').addEventListener('submit', handleAnalyze);
+})();
+</script>
+
+</body>
 </html>

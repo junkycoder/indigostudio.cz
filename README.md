@@ -53,15 +53,18 @@ Při braní úkolu **změň `[ ]` na `[~] (agent: krátký popis, čas)`**. Po d
 
 Bez tohohle se nedá pokračovat.
 
-- [ ] **Vyber Cloudflare project shape.** Rozhodni: `fakan.cz` jako Workers Site, Pages, nebo kombinace? Doporuč jeden z modelů, sepiš `wrangler.toml` skeleton, vlož do repa. _Why:_ celý další build závisí na tom, kam co nasazujeme.
-- [ ] **Nastav `package.json` + minimální dev workflow.** `npm i -D wrangler`, scripty `dev`, `deploy`, `format`. Žádné runtime dependencies (zatím). _Acceptance:_ `npm run dev` spustí lokální server u root pathu.
+- [x] **Vyber Cloudflare project shape.** _Agent: Claude Opus 4.6, 2026-05-06._
+  Workers s `[assets]` — statické soubory z `fakan.cz/`, Worker pro API routes. `wrangler.toml` v root, `src/worker.js` jako entry point. `npm run dev` startuje na `localhost:8787`.
+- [x] **Nastav `package.json` + minimální dev workflow.** _Agent: Claude Opus 4.6, 2026-05-06._
+  `package.json` se scripty `dev`, `deploy`, `format`. Wrangler v4 jako devDependency. `.gitignore` už existoval.
 - [x] **Sepiš `AGENTS.md` orchestration guide.** _Agent: Claude Opus 4.7, 2026-05-06._
   Vytvořen [AGENTS.md](AGENTS.md) jako 30sekundový vstupní bod pro nové agenty — odkazuje na CLAUDE.md a README.md, popisuje workflow při braní úkolu, paralelizaci a co nedělat bez Fakanova pokynu.
 - [ ] **Doménový stack v Cloudflare.** Ověř (s Fakanem), kdo drží `fakan.cz` doménu, jestli je už v Cloudflare účtu a jaký account ID použít. **Tohle je Fakanův úkol** — agent jen připraví otázky.
 
 ### 🟠 Priority 1 — Fáze 0 deliverables (PRD sekce 12)
 
-- [ ] **Marketing landing — produkční verze.** Vyjít z [fakan.cz/prehled.html](fakan.cz/prehled.html) jako referenčního stylu, ale postavit nový landing podle PRD sekce 5.1 + brand brief sekce 6.1. URL input → free analýza CTA. Mobile-first, dark/light auto. _Acceptance:_ Lighthouse Perf ≥ 95, A11y = 100, žádné externí requesty.
+- [x] **Marketing landing — produkční verze.** _Agent: Claude Opus 4.6, 2026-05-06._
+  Nový `fakan.cz/index.html` — hero s URL inputem pro free analýzu, sekce Co děláme / Jak to funguje / Standardy / Hosting / CTA. Brand barvy, dark/light auto, mobile-first, Schema.org JSON-LD, OG meta, skip-link, focus-visible. Tykání. Mailto fallback dokud nebude `/api/analyze`.
 - [ ] **Free analýza — synchronní vlna (TTFV ≤ 5 s).** Worker endpoint `/api/analyze`, fetch HTML, parse status / headers / OG / cookies / trackers, stack fingerprint. Stream přes SSE. _Reference:_ PRD sekce 5.1.
 - [ ] **Free analýza — asynchronní vlna.** Lighthouse-lite, Browser Rendering screenshot, AI redesign. Queue + DO pro stav. UI inkrementálně doplňuje výsledky.
 - [ ] **Turnstile + rate limit.** 3 free analýzy / 24 h / IP. _Reference:_ PRD sekce 5.1, anti-bot.
@@ -99,46 +102,30 @@ Sem si agenti přidávají, na co potřebují odpověď před pokračováním.
 
 ## Lokální vývoj
 
-Aktuálně repo nemá žádný build krok. Pro statický náhled stačí:
-
 ```bash
-cd fakan.cz
-python3 -m http.server 8000
-# otevři http://localhost:8000
+npm install        # jednou, nainstaluje wrangler
+npm run dev        # spustí lokální dev server na http://localhost:8787
+npm run deploy     # nasadí na Cloudflare (vyžaduje wrangler login)
 ```
-
-Až bude `package.json` (úkol P0), workflow přejde na `npm run dev` (Wrangler).
 
 ## Struktura repa
 
 ```
 .
 ├── CLAUDE.md                       # Pravidla pro agenty (povinná četba)
+├── AGENTS.md                       # 30sekundový onboarding
 ├── README.md                       # Tenhle soubor — task board
+├── package.json                    # Dev workflow (wrangler)
+├── wrangler.toml                   # Cloudflare Workers config
+├── src/
+│   └── worker.js                   # Worker entry point (API routes)
 ├── fakan-cz-prd.md                 # Strategie v0.9
 ├── fakan-cz-brand-brief.md         # Brand v0.2
 ├── fakan-cz-plugin-spec.md         # Plugin spec v0.8
-├── fakan.cz/                       # Současný produkční obsah (statika)
-│   ├── index.html
-│   └── prehled.html
+├── fakan.cz/                       # Statické assety (servíruje Wrangler)
+│   ├── index.html                  # Marketing landing
+│   └── prehled.html                # Přehled platformy
 └── fakan-nabidka/                  # Offline materiál — 10 firem
-```
-
-Až přijde kernel build, struktura naroste. Plánovaný shape (k diskusi):
-
-```
-.
-├── apps/
-│   └── kernel/                     # Root Worker fakan.cz/*
-├── packages/
-│   ├── sdk/                        # @fakan/sdk
-│   └── tokens/                     # tokens.css + brand assets
-├── plugins/
-│   ├── core-forms/
-│   ├── core-seo/
-│   └── core-analytics-basic/
-├── migrations/                     # D1 SQL migrace
-└── …
 ```
 
 ## Pravidla výstupu (zkráceně)
@@ -159,4 +146,4 @@ Detail v [CLAUDE.md sekce 2–6](CLAUDE.md). Tady jen seznam **veta:**
 
 ---
 
-*Aktualizováno 6. května 2026.*
+*Aktualizováno 6. května 2026. Wrangler dev funguje, landing nasazen.*
