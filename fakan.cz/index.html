@@ -204,11 +204,6 @@ footer a { color: var(--muted); text-decoration: none; }
 footer a:hover { color: var(--fg); }
 .footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px; padding-top: 24px; border-top: 1px solid var(--line); }
 
-/* Toast */
-.toast { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px 20px; box-shadow: var(--shadow); opacity: 0; transform: translateY(12px); transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 100; max-width: 360px; font-size: 15px; }
-.toast.show { opacity: 1; transform: none; pointer-events: auto; }
-.toast .ok { color: var(--green); font-weight: 600; }
-
 /* Focus visible */
 :focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 input:focus-visible { outline: none; }
@@ -219,7 +214,7 @@ input:focus-visible { outline: none; }
 }
 
 @media print {
-  header, .btn-cta, .toast { display: none; }
+  header, .btn-cta { display: none; }
   body { background: #fff; color: #000; }
   section { padding: 36px 0; page-break-inside: avoid; }
 }
@@ -436,27 +431,15 @@ input:focus-visible { outline: none; }
   </div>
 </footer>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
 <script>
 (function () {
   function handleAnalyze(e) {
     e.preventDefault();
     var input = e.target.querySelector('input[name="url"]');
     var url = input.value.trim();
-    if (!url) return;
+    if (!url) { input.focus(); return; }
     if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-
-    var subject = encodeURIComponent('Free analýza webu: ' + url);
-    var body = encodeURIComponent(
-      'Ahoj,\n\nzajímá mě free analýza webu: ' + url + '\n\nDíky!'
-    );
-    window.location.href = 'mailto:jsem@fakan.cz?subject=' + subject + '&body=' + body;
-
-    var toast = document.getElementById('toast');
-    toast.innerHTML = '<span class="ok">\u2713</span> Otevírám e-mail s tvou adresou. Automatická analýza se připravuje.';
-    toast.classList.add('show');
-    setTimeout(function () { toast.classList.remove('show'); }, 4000);
+    window.location.href = '/vysledek?url=' + encodeURIComponent(url);
   }
 
   document.getElementById('analyzeForm').addEventListener('submit', handleAnalyze);

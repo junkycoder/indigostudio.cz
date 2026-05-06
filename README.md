@@ -24,7 +24,8 @@ Static-first, vanilla HTML / CSS / JS / SVG, Cloudflare end-to-end. Bez cookie b
 | **PRD v0.9** | [fakan-cz-prd.md](fakan-cz-prd.md) | hotová strategie, **needit** |
 | **Brand brief v0.2** | [fakan-cz-brand-brief.md](fakan-cz-brand-brief.md) | hotový, **needit** |
 | **Plugin spec v0.8** | [fakan-cz-plugin-spec.md](fakan-cz-plugin-spec.md) | hotová specifikace, **needit** |
-| **Statický landing** | [fakan.cz/index.html](fakan.cz/index.html) | starší placeholder, čeká na nahrazení |
+| **Marketing landing** | [fakan.cz/index.html](fakan.cz/index.html) | produkce, formulář redirectuje na `/vysledek` |
+| **Free analýza — sync** | [src/analyze.js](src/analyze.js) + [fakan.cz/vysledek.html](fakan.cz/vysledek.html) | SSE stream, 8 panelů, bez Turnstile / rate-limit |
 | **Prezentace platformy** | [fakan.cz/prehled.html](fakan.cz/prehled.html) | čerstvá, lze používat jako referenci tónu |
 | **Offline nabídky 10 firem** | [fakan-nabidka/](fakan-nabidka/) | marketingový materiál, mimo deployment |
 | **Pravidla pro agenty** | [CLAUDE.md](CLAUDE.md) | povinná četba před prací |
@@ -65,7 +66,8 @@ Bez tohohle se nedá pokračovat.
 
 - [x] **Marketing landing — produkční verze.** _Agent: Claude Opus 4.6, 2026-05-06._
   Nový `fakan.cz/index.html` — hero s URL inputem pro free analýzu, sekce Co děláme / Jak to funguje / Standardy / Hosting / CTA. Brand barvy, dark/light auto, mobile-first, Schema.org JSON-LD, OG meta, skip-link, focus-visible. Tykání. Mailto fallback dokud nebude `/api/analyze`.
-- [ ] **Free analýza — synchronní vlna (TTFV ≤ 5 s).** Worker endpoint `/api/analyze`, fetch HTML, parse status / headers / OG / cookies / trackers, stack fingerprint. Stream přes SSE. _Reference:_ PRD sekce 5.1.
+- [x] **Free analýza — synchronní vlna (TTFV ≤ 5 s).** _Agent: Claude Opus 4.7, 2026-05-06._
+  Worker endpoint `/api/analyze` streamuje SSE s eventy `hello → stage → status → headers → cookies → meta → stack → trackers → banners → score → done`. Detektory v `src/detectors.js` pokrývají 22 stack signaturí (WP, Shopify, Wix, Webnode, Next, Astro…), 17 trackerů (GA4, GTM, Meta Pixel, Sklik, Smartsupp, Hotjar, HubSpot…) a 10 cookie banerů (Cookiebot, OneTrust, Iubenda…). 6 security headers se boduje. Klient `fakan.cz/vysledek.html` + `vysledek.js` zobrazuje 8 panelů + verdikty + OG preview. Landing formulář teď redirectuje na `/vysledek?url=…` místo mailto. SSRF ochrana proti localhostu/privátním IP, body limit 2 MB, fetch timeout 8 s. **Otevřené:** Turnstile a rate-limit zatím nezapojeno (samostatný úkol). Asynchronní vlna (Lighthouse, screenshot, AI redesign) také samostatný úkol.
 - [ ] **Free analýza — asynchronní vlna.** Lighthouse-lite, Browser Rendering screenshot, AI redesign. Queue + DO pro stav. UI inkrementálně doplňuje výsledky.
 - [ ] **Turnstile + rate limit.** 3 free analýzy / 24 h / IP. _Reference:_ PRD sekce 5.1, anti-bot.
 - [ ] **Magic link auth.** Cloudflare Email Routing → Worker → JWT v sessionStorage. _Reference:_ PRD sekce 7.
@@ -118,13 +120,17 @@ npm run deploy     # nasadí na Cloudflare (vyžaduje wrangler login)
 ├── package.json                    # Dev workflow (wrangler)
 ├── wrangler.toml                   # Cloudflare Workers config
 ├── src/
-│   └── worker.js                   # Worker entry point (API routes)
+│   ├── worker.js                   # Worker entry — router /api/*
+│   ├── analyze.js                  # Free analýza — synchronní vlna (SSE)
+│   └── detectors.js                # Stack / tracker / cookie banner pravidla
 ├── fakan-cz-prd.md                 # Strategie v0.9
 ├── fakan-cz-brand-brief.md         # Brand v0.2
 ├── fakan-cz-plugin-spec.md         # Plugin spec v0.8
 ├── fakan.cz/                       # Statické assety (servíruje Wrangler)
 │   ├── index.html                  # Marketing landing
-│   └── prehled.html                # Přehled platformy
+│   ├── prehled.html                # Přehled platformy
+│   ├── vysledek.html               # Stránka výsledků free analýzy
+│   └── vysledek.js                 # Klient — EventSource + rendering panelů
 └── fakan-nabidka/                  # Offline materiál — 10 firem
 ```
 
@@ -146,4 +152,4 @@ Detail v [CLAUDE.md sekce 2–6](CLAUDE.md). Tady jen seznam **veta:**
 
 ---
 
-*Aktualizováno 6. května 2026. Wrangler dev funguje, landing nasazen.*
+*Aktualizováno 6. května 2026. Wrangler dev funguje, landing + free analýza (sync vlna) nasazeny.*
