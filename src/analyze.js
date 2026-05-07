@@ -116,10 +116,20 @@ export function handleAnalyze(request) {
 
   const sse = makeSse();
   const startedAt = Date.now();
+  // Worker poznáme podle hostname příchozího requestu — abychom poznali self-fetch.
+  const workerHost = url.hostname;
 
-  // Spustíme analýzu, ale neblokujeme response.
-  runAnalysis(parsed, sse, startedAt).catch(async (err) => {
-    await sse.send('error', { message: err?.message || 'Něco se rozbilo.' });
+  // Spustíme analýzu, ale neblokujeme response. Tahle catch je poslední
+  // záchrana — jakákoli neošetřená výjimka uvnitř runAnalysis musí pořád
+  // vyprodukovat smysluplnou zprávu pro UI a něco do logu.
+  runAnalysis(parsed, sse, startedAt, workerHost).catch(async (err) => {
+    console.error('[analyze] unhandled', err);
+    try {
+      await sse.send('error', {
+        message: `Analýza spadla na něčem, co jsme neošetřili (${describeError(err)}). Napiš nám, opravíme to.`,
+        kind: err?.name || 'UnhandledError',
+      });
+    } catch { /* writer mohl být zavřený */ }
     await sse.close();
   });
 
@@ -134,13 +144,40 @@ export function handleAnalyze(request) {
   });
 }
 
-async function runAnalysis(target, sse, startedAt) {
+// Lidsky popíše error tak, aby byl k něčemu i bez `.message`.
+function describeError(err) {
+  if (err == null) return 'bez detailu';
+  if (typeof err === 'string') return err.slice(0, 200);
+  const name = err.name || err.constructor?.name || 'Error';
+  const msg = typeof err.message === 'string' ? err.message.trim() : '';
+  if (msg) return `${name}: ${truncate(msg, 200)}`;
+  if (typeof err.code === 'string') return `${name}: ${err.code}`;
+  return name;
+}
+
+function truncate(s, n) {
+  if (typeof s !== 'string') return s;
+  return s.length > n ? s.slice(0, n - 1) + '…' : s;
+}
+
+async function runAnalysis(target, sse, startedAt, workerHost) {
   await sse.send('hello', {
     target: target.toString(),
     host: target.hostname,
     startedAt,
   });
   await sse.send('stage', { id: 'fetching', label: 'Stahuju tvůj web…' });
+
+  // Self-fetch: Worker by stáhl sám sebe → na CF to často skončí
+  // subrequest loopem nebo prázdnou odpovědí. Radši to řekneme rovnou.
+  if (workerHost && hostsMatch(workerHost, target.hostname)) {
+    await sse.send('error', {
+      message: 'Tohle je náš vlastní web — Cloudflare Worker neumí čistě analyzovat sám sebe. Vyzkoušej to na jiné URL.',
+      kind: 'SelfFetchRefused',
+    });
+    await sse.close();
+    return;
+  }
 
   let response;
   let networkError = null;
@@ -163,9 +200,7 @@ async function runAnalysis(target, sse, startedAt) {
 
   if (networkError) {
     await sse.send('error', {
-      message: networkError?.name === 'TimeoutError'
-        ? `Web neodpovídá do ${FETCH_TIMEOUT_MS / 1000} s. Možná je dole, nebo tě blokuje firewall.`
-        : `Nepodařilo se stáhnout web: ${networkError.message || 'neznámá chyba'}.`,
+      message: explainNetworkError(networkError, target),
       kind: networkError?.name || 'NetworkError',
     });
     await sse.close();
@@ -173,9 +208,14 @@ async function runAnalysis(target, sse, startedAt) {
   }
 
   // Status & redirect.
-  const finalUrl = response.url;
+  const finalUrl = response.url || target.toString();
   const wasRedirected = finalUrl !== target.toString();
-  const isHttps = new URL(finalUrl).protocol === 'https:';
+  let isHttps = target.protocol === 'https:';
+  try {
+    isHttps = new URL(finalUrl).protocol === 'https:';
+  } catch {
+    /* ponecháme isHttps ze vstupní URL */
+  }
 
   await sse.send('status', {
     status: response.status,
@@ -217,14 +257,14 @@ async function runAnalysis(target, sse, startedAt) {
   const sizeBytes = body.byteLength;
   await sse.send('body', { sizeBytes, decoded: true });
 
-  // Meta + OG.
-  const meta = parseMeta(text);
+  // Od tohohle bodu už máme HTML v paměti — chyby v parserech řešíme
+  // izolovaně, ať jeden rozbitý regex nezabije celou analýzu.
+  const meta = safeRun('parseMeta', () => parseMeta(text), emptyMeta());
   await sse.send('meta', meta);
 
-  // Stack / trackery / banery.
-  const stack = detectFromText(STACK_PATTERNS, text);
-  const trackers = detectFromText(TRACKER_PATTERNS, text);
-  const banners = detectFromText(COOKIE_BANNER_PATTERNS, text);
+  const stack = safeRun('stack', () => detectFromText(STACK_PATTERNS, text), []);
+  const trackers = safeRun('trackers', () => detectFromText(TRACKER_PATTERNS, text), []);
+  const banners = safeRun('banners', () => detectFromText(COOKIE_BANNER_PATTERNS, text), []);
 
   // Server hint do stack listu (často jen z hlavičky).
   if (headerInfo.serverHint) {
@@ -245,6 +285,64 @@ async function runAnalysis(target, sse, startedAt) {
 
   await sse.send('done', { ok: true, totalMs: Date.now() - startedAt });
   await sse.close();
+}
+
+// Network error → lidsky čitelná zpráva. Cloudflare fetch občas hází
+// TypeError s chybovým řetězcem typu "Too many redirects.<chain>", který
+// klientovi je k ničemu — proto si chyby cílíme na konkrétní jména.
+function explainNetworkError(err, target) {
+  const name = err?.name || '';
+  const msgRaw = typeof err?.message === 'string' ? err.message : '';
+  const msg = msgRaw.split(/[.\n]/)[0].trim(); // jen první věta, zbytek je často redirect chain
+
+  if (name === 'TimeoutError' || name === 'AbortError') {
+    return `Web neodpovídá do ${FETCH_TIMEOUT_MS / 1000} s. Možná je dole, nebo tě blokuje firewall.`;
+  }
+  if (/too many redirects/i.test(msgRaw)) {
+    return 'Web se zacyklil v přesměrováních. Zkontroluj redirect pravidla.';
+  }
+  if (/certificate|ssl|tls/i.test(msgRaw)) {
+    return `HTTPS certifikát ${target.hostname} se nepodařilo ověřit. ${msg || 'TLS handshake selhal'}.`;
+  }
+  if (/dns|getaddrinfo|enotfound/i.test(msgRaw)) {
+    return `${target.hostname} nemá DNS záznam. Překlep, nebo doména neexistuje?`;
+  }
+  if (/refused|econnrefused/i.test(msgRaw)) {
+    return `${target.hostname} odmítl spojení. Server běží?`;
+  }
+  if (/reset|econnreset/i.test(msgRaw)) {
+    return `${target.hostname} resetoval spojení. Síťová klika?`;
+  }
+  if (msg) return `Nepodařilo se stáhnout web: ${truncate(msg, 160)}.`;
+  if (name) return `Nepodařilo se stáhnout web (${name}).`;
+  return 'Nepodařilo se stáhnout web. Detaily nejsou.';
+}
+
+// Hostname comparison s ignorováním www. a velkých písmen.
+function hostsMatch(a, b) {
+  if (!a || !b) return false;
+  const norm = (h) => h.toLowerCase().replace(/^www\./, '');
+  return norm(a) === norm(b);
+}
+
+// Spustí parser/detektor a při chybě vrátí fallback místo aby spadl celý stream.
+function safeRun(label, fn, fallback) {
+  try {
+    return fn();
+  } catch (err) {
+    console.error(`[analyze] ${label} threw`, err);
+    return fallback;
+  }
+}
+
+function emptyMeta() {
+  return {
+    lang: null, title: null, titleLength: 0, description: null, descriptionLength: 0,
+    viewport: null, robots: null, generator: null, themeColor: null, canonical: null, favicon: null,
+    og: { title: null, description: null, image: null, type: null, siteName: null, url: null, locale: null },
+    twitter: { card: null, title: null, image: null },
+    jsonLdCount: 0, h1Count: 0,
+  };
 }
 
 // Čte stream s tvrdým limitem v bajtech (zabrání DoS).
