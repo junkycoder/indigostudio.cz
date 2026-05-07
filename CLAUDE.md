@@ -116,11 +116,108 @@ fakan.cz/{host}/api/*        # Worker daného webu
 
 Detail v [fakan-cz-plugin-spec.md](fakan-cz-plugin-spec.md).
 
-## 5. Jak pracují agenti na tomhle repu
+## 5. Tým agentů — kdo dělá co
+
+Pro práci na **konkrétních zakázkách** (klientské weby, produktové iterace) máme tým specializovaných agentů. Definice jsou v [.claude/agents/](.claude/agents/) a Claude Code je načítá automaticky.
+
+| Agent | Co řeší |
+|---|---|
+| **owner** | Virtuální zákazník. Formuluje brief, schvaluje, mluví business. |
+| **product-manager** | Drží workflow fakan.cz, kapacitu týmu, standardy napříč projekty. |
+| **project-manager** | Drží konkrétní zakázku od briefu po předání. |
+| **senior-architect** | Cloudflare expert, navrhuje architekturu, dělá code review. |
+| **researcher** | Najde cokoliv komukoliv. Nedělá rozhodnutí. |
+| **junior-developer** | Implementuje atomické úkoly podle zadání. |
+| **tester** | Ověřuje acceptance criteria, hledá bugy. |
+| **marketer** | Positioning, copy, landing, SEO, launch plán, tracking. |
+| **legal-advisor** | GDPR, cookies, ToS/Privacy, smlouvy, risk check. |
+| **finance** | Token tracking (Claude/Workers AI/OpenAI), cost forecast a retro, unit economics. |
+
+**Kdy aktivovat agenta:** zavolej ho přes Task tool se `subagent_type: <name>` (např. `senior-architect`), kdykoliv úkol odpovídá jeho doméně. Detail v jeho definici.
+
+**Tvrdá pravidla rolí:**
+- **Každý mluví vlastní řečí** — owner business, architect technicky, právník česky bez paragrafů, markeťák jako prodavač, finanční jako účetní. Žádný cizí žargon, žádný korpo bullshit.
+- **junior-developer** nesahá na architekturu bez **senior-architect**.
+- **tester** nepíše kód, jen testuje.
+- **owner** nediskutuje implementaci, jen výsledek.
+- **researcher** nedělá rozhodnutí, jen podklady.
+- **legal-advisor** nikdy negarantuje „100 % v pořádku" — vážnější věci eskaluje na živého advokáta.
+- **finance** vždy ověřuje aktuální ceník (provideři mění ceny i víc než 1× ročně).
+- Žádná npm dependency bez schválení **senior-architect**.
+- Secrets nikdy v kódu — jen ve `wrangler.toml` / env.
+
+## 6. Iterace zakázky — jak běží projekt
+
+Když přijde nová klientská zakázka nebo produktová iterace fakan.cz:
+
+```
+Owner brief → Legal risk check → PM(product) fit & kapacita → Finance forecast
+   → PM(project) rozpad → Architect návrh → Researcher doplní mezery
+   → Junior implementuje → Tester ověří → Architect review
+   → Marketer připraví copy/launch → Legal projde Privacy/ToS/cookies
+   → PM(project) předá Ownerovi
+   → Schválení = fakturace | Vrácení = zpátky do plánu
+   → Finance retro (skutečný cost vs. forecast) → PM(product) retro & update standardů
+```
+
+### Fáze 1 — Brief
+1. **owner** zformuluje zadání (problém, cíl, rozpočet, termín, constraints)
+2. **legal-advisor** projde risk check (osobní údaje, regulace, šedé zóny)
+3. **product-manager** zkontroluje fit do workflow + kapacitu
+4. **finance** udělá cost forecast (AI tokeny, Cloudflare, třetí strany, breakeven)
+5. **project-manager** založí ticket a parsuje rozsah
+
+### Fáze 2 — Plán
+6. **senior-architect** navrhne technické řešení (Cloudflare-first)
+7. **researcher** doplní co chybí (API, regulace, knihovny, ceny)
+8. **legal-advisor** zkontroluje data flow / GDPR podklad pokud je relevantní
+9. **project-manager** rozpadne na junior-velikost úkolů (1–4 h kus) s acceptance criteria
+
+### Fáze 3 — Exekuce
+10. **junior-developer** vezme task, implementuje
+11. Když narazí — eskaluje na **senior-architect** nebo **researcher**
+12. **finance** průběžně sleduje cost (zejména AI usage), flagne když to roste rychleji než plán
+13. Done = kód + smoke test + krátká poznámka pro testera
+
+### Fáze 4 — Validace
+14. **tester** projde acceptance criteria + edge cases
+15. **senior-architect** dělá code review
+16. Bug → zpátky **junior-developer**
+17. Pass → další task
+
+### Fáze 5 — Pre-launch
+18. **marketer** dodá copy (landing, hero, CTA, onboarding emaily) + launch plán + tracking events
+19. **legal-advisor** projde Privacy Policy / Terms / cookie disclosures / označení reklamy
+20. **finance** finální cost projection pro produkci
+
+### Fáze 6 — Delivery
+21. **project-manager** prezentuje výsledek **owner**
+22. Owner schválí, nebo vrátí s konkrétním důvodem
+23. Vrácení → zpátky do Plánu s feedbackem
+24. Schválení → konec iterace
+
+### Fáze 7 — Retro
+25. **finance** dodá skutečný cost report (vs. forecast, top 3 spotřebiče, optimalizace)
+26. **product-manager** zaznamená co fungovalo / nefungovalo
+27. Update standardů, šablon, agent promptů, reusable kódu
+
+### Trigger iterace
+
+Pro start nové iterace stačí napsat:
+
+> **`Iteruj [název projektu]. Brief: [zadání]`**
+
+Nebo pokračování:
+
+> **`Pokračuj v iteraci [název projektu]`**
+
+Pokud chybí informace v briefu, **owner** se ptá zpátky uživatele (Fakana). Žádné domýšlení.
+
+## 7. Jak pracují agenti na tomhle repu
 
 **Toto je hlavní orchestrace pro Claude Code agenty. Před prací si přečti i [README.md](README.md).**
 
-### 5.1 Workflow agenta
+### 7.1 Workflow agenta
 
 1. **Začni v [README.md](README.md)** — sekce „Úkoly" je pravdivá tabule rozpracované práce.
 2. **Vyber si jednu z těchto cest:**
@@ -135,7 +232,7 @@ Detail v [fakan-cz-plugin-spec.md](fakan-cz-plugin-spec.md).
 6. **Po dokončení** zaškrtni úkol v README.md (`[x]`) a krátce shrň, co se udělalo (1–2 věty pod úkol).
 7. **Pokud narazíš na blokátor**, popiš ho v úkolu a označ ho `[!] (blokátor: …)` — další agent na to může navázat nebo eskalovat na Fakana.
 
-### 5.2 Kdy se neptat a kdy ANO
+### 7.2 Kdy se neptat a kdy ANO
 
 **Neptej se** (jeď autonomně):
 
@@ -152,33 +249,48 @@ Detail v [fakan-cz-plugin-spec.md](fakan-cz-plugin-spec.md).
 - Změna brandu (barvy, font, tón).
 - Něco, co by mohlo skončit takedownem (bezpečnostní aspekty, spam protection).
 
-### 5.3 Co psát do commitu
+### 7.3 Commitování — povinnost pro všechny role
 
-Český, krátký, věcný:
+**Root pravidlo (platí pro všechny agenty bez výjimky):** sdílej svou práci pomocí gitu — commituj své výsledky ostatním. Co není v gitu, ostatní agenti neuvidí a iterace se rozpadne.
+
+Konkrétně:
+
+- **Po každém ucelením kroku** stage + commit (`git add <soubor> && git commit -m "..."`).
+- **Jeden commit = jedna změna.** Nikdy nemíchej dvě nesouvisející věci.
+- **Stage explicitně po souborech** — žádné `git add .` ani `-A`, ať tam neuteče něco z `.env`.
+- **Žádné `Co-Authored-By: Claude`**, ledaže si o to Fakan výslovně řekne.
+- **Když nemáš Bash/git tool** (např. researcher), předej výstup roli, která ho má (typicky `project-manager` nebo `junior-developer`), a navrhni commit message.
+
+Per-role kam co commitovat je v sekci „Git" konkrétní agent definice v [.claude/agents/](.claude/agents/).
+
+Český, krátký, věcný formát:
 
 ```
 feat(landing): doplněn hero CTA a snippet poptávky
 fix(velin): editor neuložil draft po reloadu — chybělo flush
-docs: přepsán README.md s task boardem
+docs(arch): ADR-007 volba D1 vs. KV pro session storage
+docs(legal): risk check projekt X
+docs(finance): forecast projekt X
+docs(retro): iterace Y — 40 % přestřel kvůli necachovaným promptům
 chore: drobnosti v .gitignore
 ```
 
-Žádné `Co-Authored-By: Claude` nepřidávej, ledaže si o to Fakan výslovně řekne.
+Conventional prefixy v ekosystému týmu: `feat`, `fix`, `refactor`, `docs`, `chore`, `test` + scope v závorce (modul, role, projekt).
 
-### 5.4 Soubory, kterých se NEDOTÝKEJ bez explicitního pokynu
+### 7.4 Soubory, kterých se NEDOTÝKEJ bez explicitního pokynu
 
 - `fakan-cz-prd.md`, `fakan-cz-brand-brief.md`, `fakan-cz-plugin-spec.md` — to jsou Fakanovy strategické dokumenty. Můžeš je číst, citovat, odkazovat. **Nepřepisuj je.**
 - `fakan-nabidka/` — offline marketingový materiál pro reálné firmy. Mimo scope nasazení.
 - `fakan.cz/index.html`, `fakan.cz/prehled.html` — současný produkční obsah. **Pokud chceš měnit, projdi to nejdřív v README úkolu** a potvrď přístup s Fakanem.
 
-### 5.5 Spolupráce mezi agenty
+### 7.5 Spolupráce mezi agenty
 
 - Když dva agenti pracují paralelně na samostatných úkolech — ideální stav, oba si vyberou jiný řádek z README.
 - Když si všimneš, že jiný agent dělá něco podobného nebo souvisejícího, **dej to do popisu úkolu** (napiš, co děláš, ať druhý ví).
 - Pokud odhalíš problém v cizím rozpracovaném úkolu, **nepřepisuj ho.** Založ vlastní úkol „Review & navázání na X".
 - Pokud najdeš stejný problém řešený dvakrát, **zastav se a flagni to v README.**
 
-## 6. Jak ověřit hotovou práci
+## 8. Jak ověřit hotovou práci
 
 Než označíš úkol jako hotový:
 
@@ -191,14 +303,14 @@ Než označíš úkol jako hotový:
 
 Pokud něco z toho nejde ověřit (např. změna se neprojeví bez Workeru), **napiš to explicitně do popisu úkolu.** „Změna ověřená jen statickým renderem, runtime test čeká na implementaci kernel routeru."
 
-## 7. Aktuální datum a kontext
+## 9. Aktuální datum a kontext
 
-- **Dnešní datum:** `2026-05-06` (6. května 2026)
+- **Dnešní datum:** `2026-05-07` (7. května 2026)
 - **Vlastník:** Daniel Hromada (Fakan), [jsem@fakan.cz](mailto:jsem@fakan.cz), +420 604 690 539
 - **GitHub:** [github.com/junkycoder](https://github.com/junkycoder)
 - **Stack reference:** sekce 9 PRD, ASCII diagram
 
-## 8. Když narazíš na něco, co tu není
+## 10. Když narazíš na něco, co tu není
 
 1. Hledej v PRD ([fakan-cz-prd.md](fakan-cz-prd.md)) — má 442 řádků a pokrývá většinu otázek.
 2. Plugin-related věci jsou v [fakan-cz-plugin-spec.md](fakan-cz-plugin-spec.md).

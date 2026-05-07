@@ -6,7 +6,19 @@ Onboarding pro AI agenty (Claude Code, Codex, Cursor, Aider, …) přiřazené k
 
 ---
 
-## TL;DR
+## Dvě úrovně práce
+
+Na repu fakan.cz pracujeme ve dvou paralelních režimech. Vyber si podle toho, co děláš:
+
+### A) Repo task board (denní vývoj platformy)
+Jdeš na úkol z [README.md](README.md) → Task board. Sem patří scaffolding, fixy, refaktor, dokumentace, brand, infrastruktura. Workflow popsaný níže.
+
+### B) Iterace zakázky (klientský projekt nebo produktová iterace)
+Spustí se triggerem **`Iteruj [název]. Brief: [zadání]`** od Fakana. Běží přes specializované role z [.claude/agents/](.claude/agents/) podle 7-fázového workflow v [CLAUDE.md sekce 6](CLAUDE.md). Detail rolí níže.
+
+---
+
+## A) Task board workflow — TL;DR
 
 1. **Přečti [CLAUDE.md](CLAUDE.md)** (pravidla, brand, technologické hranice).
 2. **Otevři [README.md](README.md)** sekci **Task board**.
@@ -17,9 +29,7 @@ Onboarding pro AI agenty (Claude Code, Codex, Cursor, Aider, …) přiřazené k
 5. **Pracuj v malých commitech**, dodržuj pravidla z CLAUDE.md.
 6. **Po dokončení** zaškrtni úkol (`[x]`) a napiš 1–2 věty o výsledku pod něj.
 
----
-
-## Co znamená „odpovídá tvé specializaci"
+### Co znamená „odpovídá tvé specializaci"
 
 | Profil agenta | Vhodné úkoly |
 |---------------|--------------|
@@ -31,6 +41,35 @@ Onboarding pro AI agenty (Claude Code, Codex, Cursor, Aider, …) přiřazené k
 | **Generalista** | Cokoli z task boardu, stačí dodržet checklist hotové práce |
 
 Pokud nejsi specialista na žádnou z těch oblastí, vezmi něco z **Priority 2 — kvalita a hygiena** nebo **Priority 3 — nice to have**.
+
+---
+
+## B) Tým rolí pro iterace zakázek
+
+Definice jsou v [.claude/agents/](.claude/agents/) — Claude Code je načítá automaticky a aktivuješ je přes Task tool se `subagent_type: <name>`.
+
+| Role | Soubor | Kdy aktivovat |
+|---|---|---|
+| **owner** | [.claude/agents/owner.md](.claude/agents/owner.md) | Brief, schvalování, předání |
+| **product-manager** | [.claude/agents/product-manager.md](.claude/agents/product-manager.md) | Fit check, kapacita, retro, standardy |
+| **project-manager** | [.claude/agents/project-manager.md](.claude/agents/project-manager.md) | Rozpad zakázky, koordinace, delivery |
+| **senior-architect** | [.claude/agents/senior-architect.md](.claude/agents/senior-architect.md) | Návrh, code review, mentor pro juniora |
+| **researcher** | [.claude/agents/researcher.md](.claude/agents/researcher.md) | Info, API specs, regulace, ceny |
+| **junior-developer** | [.claude/agents/junior-developer.md](.claude/agents/junior-developer.md) | Atomické úkoly s acceptance criteria |
+| **tester** | [.claude/agents/tester.md](.claude/agents/tester.md) | Acceptance check, edge cases, bug reporty |
+| **marketer** | [.claude/agents/marketer.md](.claude/agents/marketer.md) | Positioning, copy, landing, launch plán |
+| **legal-advisor** | [.claude/agents/legal-advisor.md](.claude/agents/legal-advisor.md) | GDPR, cookies, ToS/Privacy, risk check |
+| **finance** | [.claude/agents/finance.md](.claude/agents/finance.md) | Cost forecast, token tracking, retro |
+
+**Trigger iterace:** `Iteruj [název projektu]. Brief: [zadání]` nebo `Pokračuj v iteraci [název]`. Plný flow v [CLAUDE.md sekce 6](CLAUDE.md).
+
+**Tvrdé hranice rolí:**
+- junior-developer nesahá na architekturu bez senior-architect
+- tester nepíše kód, jen testuje
+- owner nediskutuje implementaci, jen výsledek
+- researcher nedělá rozhodnutí, jen podklady
+- legal-advisor negarantuje „100 % v pořádku" — vážnější věci eskaluje na živého advokáta
+- finance vždy ověřuje aktuální ceník (Anthropic, Cloudflare, Resend mění ceny)
 
 ## Když si bereš úkol
 
@@ -124,7 +163,8 @@ To stačí. Žádné dlouhé zápisy.
 - **Specifikace** → [fakan-cz-prd.md](fakan-cz-prd.md) (sekce v obsahu).
 - **Brand** → [fakan-cz-brand-brief.md](fakan-cz-brand-brief.md).
 - **Plugin systém** → [fakan-cz-plugin-spec.md](fakan-cz-plugin-spec.md).
-- **Pravidla pro agenty** → [CLAUDE.md](CLAUDE.md).
+- **Pravidla pro agenty + iterace** → [CLAUDE.md](CLAUDE.md).
+- **Definice rolí** → [.claude/agents/](.claude/agents/).
 - **Status úkolů** → [README.md](README.md) task board.
 - **Pokud to fakt nikde není** → přidej do **Otevřené otázky pro Fakana** v README a vezmi jiný úkol.
 
