@@ -2,5 +2,18 @@ name = "fakan-cz"
 main = "src/worker.js"
 compatibility_date = "2025-05-01"
 
+# Custom domain — přidáno přes dashboard při migraci z Pages → Workers (2026-05-07).
+# Zafixováno v repu, aby ho lokální `wrangler deploy` neodhlásil. wrangler.toml = source of truth.
+[[routes]]
+pattern = "fakan.cz"
+zone_name = "fakan.cz"
+custom_domain = true
+
+# Smart Placement — Cloudflare auto-optimalizuje, kde se Worker spouští (blíž k DB / origin).
+# Defaultně off; zapnuto v dashboardu při migraci, držíme to v repu.
+[placement]
+mode = "smart"
+
 [assets]
 directory = "fakan.cz"
+run_worker_first = ["/api/*"]
