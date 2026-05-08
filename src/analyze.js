@@ -361,13 +361,13 @@ async function runAnalysis(target, sse, startedAt, workerHost, summary = { score
     host: target.hostname,
     startedAt,
   });
-  await sse.send('stage', { id: 'fetching', label: 'Stahuju tvůj web…' });
+  await sse.send('stage', { id: 'fetching', label: 'Stahujeme váš web…' });
 
   // Self-fetch: Worker by stáhl sám sebe → na CF to často skončí
   // subrequest loopem nebo prázdnou odpovědí. Radši to řekneme rovnou.
   if (workerHost && hostsMatch(workerHost, target.hostname)) {
     await sse.send('error', {
-      message: 'Tohle je náš vlastní web — Cloudflare Worker neumí čistě analyzovat sám sebe. Vyzkoušej to na jiné URL.',
+      message: 'Tohle je náš vlastní web — Cloudflare Worker neumí čistě analyzovat sám sebe. Vyzkoušejte to na jiné URL.',
       kind: 'SelfFetchRefused',
     });
     await sse.close();
@@ -437,7 +437,7 @@ async function runAnalysis(target, sse, startedAt, workerHost, summary = { score
     return;
   }
 
-  await sse.send('stage', { id: 'parsing', label: 'Koukám, co Google a sociální sítě uvidí…' });
+  await sse.send('stage', { id: 'parsing', label: 'Koukáme, co Google a sociální sítě uvidí…' });
 
   let body;
   try {
@@ -497,7 +497,7 @@ function explainNetworkError(err, target) {
   const msg = msgRaw.split(/[.\n]/)[0].trim(); // jen první věta, zbytek je často redirect chain
 
   if (name === 'TimeoutError' || name === 'AbortError') {
-    return `Web neodpovídá do ${FETCH_TIMEOUT_MS / 1000} s. Možná je dole, nebo tě blokuje firewall.`;
+    return `Web neodpovídá do ${FETCH_TIMEOUT_MS / 1000} s. Možná je dole, nebo nás blokuje firewall.`;
   }
   if (/too many redirects/i.test(msgRaw)) {
     return 'Web se zacyklil v přesměrováních. Zkontroluj redirect pravidla.';
@@ -798,7 +798,7 @@ export function buildScore({ headerInfo, trackers, banners, meta, isHttps, statu
   }
 
   if (!meta.description) {
-    verdicts.push({ kind: 'warn', text: 'Chybí meta description. Google si tě vymyslí sám.' });
+    verdicts.push({ kind: 'warn', text: 'Chybí meta description. Google si vás vymyslí sám.' });
   } else if (meta.descriptionLength < 60 || meta.descriptionLength > 200) {
     verdicts.push({ kind: 'info', text: `Meta description má ${meta.descriptionLength} znaků (ideál 80–160).` });
   }
