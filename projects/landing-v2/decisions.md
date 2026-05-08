@@ -43,8 +43,8 @@ Formát: **`[YYYY-MM-DD] [doména] konflikt: A vs. B → vyhrál: X. Důvod: Y.`
   - **IČO:** 14389096
   - **Sídlo:** Chudenická 1059/30, Hostivař, 102 00 Praha
   - **BÚ:** 2802169026/2010 Fio (volitelný údaj, ne povinný v patičce, pro fakturaci OK)
-  - **OR spisová značka:** TBD — protože je to s.r.o., § 435 NOZ vyžaduje navíc údaj o zápisu v OR včetně oddílu a vložky. Orchestrátor dohledá v ARES paralelně se spuštěním Fáze 3, doplní do tohoto záznamu.
-  Aplikace: marketer v TASK-15 použije patičku ve formátu „Indigo Studio s.r.o., Chudenická 1059/30, 102 00 Praha, IČO: 14389096, zapsáno v Obchodním rejstříku vedeném [Městský soud v Praze], oddíl C, vložka [XXXX]." Až bude OR spisovka dohledaná, marketer doplní.
+  - **OR spisová značka:** **MSPH, oddíl C, vložka 364981** (dohledáno 2026-05-08 z ARES VR endpointu `/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-vr/14389096`). Aktuální zápis platný od 2025-06-25 (po přesunu sídla z Plzně zpět do Prahy). Historie: 2022–2024 MSPH C 364981, 2024–2025 KSPL C 44995, od 2025-06-25 znovu MSPH C 364981.
+  Aplikace: marketer v TASK-15 použije patičku ve formátu „**Indigo Studio s.r.o., Chudenická 1059/30, 102 00 Praha, IČO: 14389096, zapsáno v Obchodním rejstříku vedeném Městským soudem v Praze, oddíl C, vložka 364981.**" TODO uzavřeno.
 
 ---
 
