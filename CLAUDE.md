@@ -205,13 +205,21 @@ Owner brief → Legal risk check → PM(product) fit & kapacita → Finance fore
 
 Pro start nové iterace stačí napsat:
 
-> **`Iteruj [název projektu]. Brief: [zadání]`**
+> **`/iterace <slug-projektu>`** (a v dalším promptu předat brief)
+>
+> nebo přímo: **`Iteruj [název projektu]. Brief: [zadání]`**
 
 Nebo pokračování:
 
 > **`Pokračuj v iteraci [název projektu]`**
 
+`/iterace` je slash command (viz [.claude/commands/iterace.md](.claude/commands/iterace.md)), který spustí orchestraci celého kolečka — sériová choreografie tam, kde to musí být sériově, paralelní tam, kde nezávisí. Drží 7-fázový workflow a 3 gates (schválení rozsahu / design+rozpad konzistence / pre-launch zelené světlo). Při auto-režimu používá tie-breaker pravidla ze sekce 7.6.
+
 Pokud chybí informace v briefu, **owner** se ptá zpátky uživatele (Fakana). Žádné domýšlení.
+
+### Kam se iterace zapisuje
+
+Každá iterace má vlastní adresář `projects/<slug>/`, který je kostra zkopírovaná z [`projects/_template/`](projects/_template/). Sdílená dokumentace napříč projekty patří do [`docs/`](docs/) (architecture, adr, testing, research). Per-role kam co commitovat je v sekci „Git" konkrétního agenta v [.claude/agents/](.claude/agents/).
 
 ## 7. Jak pracují agenti na tomhle repu
 
