@@ -4,7 +4,7 @@
 (() => {
   const params = new URLSearchParams(location.search);
   const target = (params.get('url') || '').trim();
-  const email = (params.get('em') || '').trim();
+  const email = (params.get('email') || '').trim();
   const consent = params.get('c') === '1';
   const version = (params.get('v') || '').trim();
   const source = (params.get('s') || 'unknown').trim();
@@ -31,7 +31,7 @@
   // přihodíme je tam — server (TASK-12) si je vytáhne a založí lead capture.
   const apiQs = new URLSearchParams({ url: target });
   if (email && consent && version) {
-    apiQs.set('em', email);
+    apiQs.set('email', email);
     apiQs.set('c', '1');
     apiQs.set('v', version);
     apiQs.set('s', source);
