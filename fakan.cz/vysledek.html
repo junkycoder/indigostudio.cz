@@ -4,11 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Analýza webu — fakan.cz</title>
-<meta name="description" content="Výsledky free analýzy webu — rychlost, SEO, přístupnost, bezpečnost, cookies a trackery. Bez registrace, bez cookies.">
+<meta name="description" content="Bezplatná analýza webu — rychlost, SEO, bezpečnost, cookies a trackery. Bez registrace, bez cookies.">
 <meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://fakan.cz/vysledek">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Analýza webu — fakan.cz">
+<meta property="og:description" content="Bezplatná analýza webu. Rychlost, SEO, bezpečnost, cookies, trackery — výsledek za pár sekund.">
+<meta property="og:url" content="https://fakan.cz/vysledek">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Analýza webu — fakan.cz">
+<meta name="twitter:description" content="Bezplatná analýza webu. Rychlost, SEO, bezpečnost, cookies, trackery — výsledek za pár sekund.">
+
 <style>
 :root {
   --bg: #F9F6F0;
@@ -42,14 +52,18 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
   font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
   background: var(--bg); color: var(--fg);
-  font-size: 17px; line-height: 1.6;
+  font-size: 18px; line-height: 1.6;
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
+@media (min-width: 720px) {
+  body { font-size: 19px; }
+}
 .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
-a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { text-decoration-color: var(--orange); }
 code, .mono { font-family: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace; }
 
@@ -66,21 +80,35 @@ header {
 .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; gap: 16px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; text-decoration: none; color: var(--fg); letter-spacing: -0.02em; }
 .brand-mark { width: 28px; height: 28px; }
+.header-back { font-size: 15px; color: var(--muted); text-decoration: none; padding: 12px 14px; border-radius: 999px; min-height: 44px; display: inline-flex; align-items: center; }
+.header-back:hover { color: var(--fg); }
 
 main { padding: 32px 0 80px; }
-.eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; font-weight: 600; color: var(--orange); margin-bottom: 12px; }
-h1 { font-size: clamp(28px, 4.2vw, 40px); margin: 0 0 8px; letter-spacing: -0.02em; line-height: 1.15; }
+.eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 0.14em; font-size: 13px; font-weight: 600; color: var(--orange); margin-bottom: 12px; }
+h1 { font-size: clamp(30px, 4.6vw, 44px); margin: 0 0 12px; letter-spacing: -0.02em; line-height: 1.18; font-weight: 650; }
 h2 { font-size: clamp(20px, 2.4vw, 24px); margin: 0 0 12px; letter-spacing: -0.01em; }
-.target-line { color: var(--muted); font-size: 16px; margin: 0 0 8px; word-break: break-all; }
+.target-line { color: var(--muted); font-size: 17px; margin: 0 0 8px; word-break: break-all; }
 .target-line strong { color: var(--fg); font-weight: 600; }
+
+/* Email-required gate */
+.gate {
+  margin: 32px 0;
+  padding: clamp(20px, 3vw, 28px);
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+}
+.gate h2 { margin: 0 0 8px; font-size: clamp(20px, 2.6vw, 26px); }
+.gate p { margin: 0 0 16px; color: var(--muted); }
+.gate .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
 
 /* Stage / progress */
 .stage {
   margin: 16px 0 28px;
   display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px; background: var(--orange-soft); color: var(--fg);
+  padding: 14px 18px; background: var(--orange-soft); color: var(--fg);
   border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--orange) 30%, transparent);
-  font-size: 15px;
+  font-size: 16px;
 }
 .stage[data-state="done"] { background: color-mix(in srgb, var(--green) 14%, transparent); border-color: color-mix(in srgb, var(--green) 30%, transparent); }
 .stage[data-state="error"] { background: color-mix(in srgb, var(--burgundy) 14%, transparent); border-color: color-mix(in srgb, var(--burgundy) 30%, transparent); }
@@ -90,13 +118,25 @@ h2 { font-size: clamp(20px, 2.4vw, 24px); margin: 0 0 12px; letter-spacing: -0.0
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 @media (prefers-reduced-motion: reduce) { .stage .dot { animation: none; } }
 
+/* Mail toast — info banner po done s emailem */
+.mail-toast {
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--green) 35%, transparent);
+  border-radius: var(--radius);
+  font-size: 16px;
+  color: var(--fg);
+}
+.mail-toast strong { font-weight: 600; word-break: break-all; }
+
 /* Verdicts */
 .verdicts { display: flex; flex-direction: column; gap: 8px; margin: 0 0 28px; }
 .verdict {
   display: flex; gap: 10px; align-items: flex-start;
-  padding: 12px 14px; border-radius: var(--radius-sm);
+  padding: 14px 16px; border-radius: var(--radius-sm);
   background: var(--card); border: 1px solid var(--line);
-  font-size: 15px;
+  font-size: 16px;
 }
 .verdict::before { content: ""; width: 6px; align-self: stretch; border-radius: 999px; flex-shrink: 0; }
 .verdict[data-kind="ok"]::before { background: var(--green); }
@@ -112,14 +152,18 @@ h2 { font-size: clamp(20px, 2.4vw, 24px); margin: 0 0 12px; letter-spacing: -0.0
   padding: 22px 24px;
 }
 .card[data-state="pending"] { opacity: 0.55; }
-.card[data-state="pending"] .card-body::before { content: "Čekám…"; color: var(--muted); font-size: 14px; }
+.card[data-state="pending"] .card-body::before { content: "Čekáme…"; color: var(--muted); font-size: 14px; }
 .card[data-state="empty"] .card-body { color: var(--muted); font-size: 14px; }
-.card-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 14px; gap: 12px; }
-.card-head h2 { margin: 0; font-size: 18px; letter-spacing: -0.01em; }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 8px; gap: 12px; flex-wrap: wrap; }
+.card-head h2 { margin: 0; font-size: 19px; letter-spacing: -0.01em; }
 .card-head .badge { font-size: 12px; color: var(--muted); padding: 2px 8px; border: 1px solid var(--line-strong); border-radius: 999px; white-space: nowrap; }
 .card-head .badge[data-tone="good"] { color: var(--green); border-color: color-mix(in srgb, var(--green) 50%, transparent); }
 .card-head .badge[data-tone="bad"] { color: var(--burgundy); border-color: color-mix(in srgb, var(--burgundy) 50%, transparent); }
 .card-head .badge[data-tone="warn"] { color: var(--orange); border-color: color-mix(in srgb, var(--orange) 50%, transparent); }
+
+.card-explainer {
+  color: var(--muted); font-size: 15px; margin: 0 0 14px; line-height: 1.5;
+}
 
 .kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: 14px; }
 .kv dt { color: var(--muted); }
@@ -161,34 +205,40 @@ h2 { font-size: clamp(20px, 2.4vw, 24px); margin: 0 0 12px; letter-spacing: -0.0
 
 /* CTA banner */
 .cta-next {
-  margin-top: 28px;
+  margin-top: 32px;
   background: var(--fg); color: var(--bg);
   border-radius: 22px;
   padding: clamp(28px, 4vw, 44px);
 }
 .cta-next h2 { color: var(--bg); margin: 0 0 8px; font-size: clamp(22px, 2.8vw, 28px); }
-.cta-next p { color: color-mix(in srgb, var(--bg) 70%, var(--fg)); margin: 0 0 16px; max-width: 56ch; }
+.cta-next p { color: color-mix(in srgb, var(--bg) 70%, var(--fg)); margin: 0 0 20px; max-width: 56ch; }
 .cta-next .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
-  padding: 12px 20px; border-radius: 999px; font: inherit; font-weight: 600; font-size: 15px;
-  border: none; cursor: pointer; text-decoration: none; min-height: 48px;
+  padding: 14px 22px; border-radius: 999px; font: inherit; font-weight: 600; font-size: 17px;
+  border: none; cursor: pointer; text-decoration: none; min-height: 56px;
+  transition: filter 0.15s;
 }
-.btn-primary { background: var(--orange); color: #fff; }
+.btn-primary { background: var(--orange); color: #fff; box-shadow: 0 8px 24px rgba(255,87,34,0.28); }
 .btn-secondary { background: transparent; color: var(--bg); border: 1px solid color-mix(in srgb, var(--bg) 40%, transparent); }
 .btn:hover { filter: brightness(1.08); }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
 
-footer { padding: 32px 0; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+.btn-on-bg-primary { background: var(--orange); color: #fff; box-shadow: 0 8px 24px rgba(255,87,34,0.28); }
+.btn-on-bg-secondary { background: transparent; color: var(--fg); border: 1px solid var(--line-strong); }
+
+footer { padding: 32px 0; color: var(--muted); font-size: 15px; border-top: 1px solid var(--line); }
 footer a { color: var(--muted); text-decoration: none; }
 footer a:hover { color: var(--fg); }
 .footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 
-:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
 
 @media (max-width: 600px) {
   main { padding: 20px 0 64px; }
   .card { padding: 18px 18px; }
   .cta-next .btn { width: 100%; }
+  .gate .btn { width: 100%; }
 }
 </style>
 </head>
@@ -205,20 +255,22 @@ footer a:hover { color: var(--fg); }
       </svg>
       fakan.cz
     </a>
-    <a href="/" style="font-size: 14px; color: var(--muted); text-decoration: none;">&larr; Zpět na úvod</a>
+    <a class="header-back" href="/">&larr; Zpět na úvod</a>
   </div>
 </header>
 
 <main id="vysledky">
   <div class="wrap">
-    <span class="eyebrow">Free analýza</span>
-    <h1 id="title">Analyzuju tvůj web…</h1>
+    <span class="eyebrow">Bezplatná analýza</span>
+    <h1 id="title">Analyzujeme váš web…</h1>
     <p class="target-line">Cíl: <strong id="targetUrl">—</strong></p>
 
     <div class="stage" id="stage" role="status" aria-live="polite" data-state="loading">
       <span class="dot" aria-hidden="true"></span>
-      <span id="stageLabel">Otevírám tvůj web…</span>
+      <span id="stageLabel">Otevíráme váš web…</span>
     </div>
+
+    <div class="mail-toast" id="mailToast" hidden role="status" aria-live="polite"></div>
 
     <div class="verdicts" id="verdicts" hidden></div>
 
@@ -229,6 +281,7 @@ footer a:hover { color: var(--fg); }
           <h2 id="card-status-h">Status &amp; přesměrování</h2>
           <span class="badge" id="status-badge"></span>
         </div>
+        <p class="card-explainer">Když někdo zadá vaši adresu, dostane se opravdu na váš web? A jak rychle?</p>
         <div class="card-body"></div>
       </section>
 
@@ -237,6 +290,7 @@ footer a:hover { color: var(--fg); }
           <h2 id="card-security-h">Bezpečnostní hlavičky</h2>
           <div class="gauge" id="security-gauge" style="--p: 0;" aria-label="Skóre"><span id="security-score">—</span></div>
         </div>
+        <p class="card-explainer">Drobnosti, které brání útočníkům šidit vaše návštěvníky. Měly by být zapnuté.</p>
         <div class="card-body"></div>
       </section>
 
@@ -245,6 +299,7 @@ footer a:hover { color: var(--fg); }
           <h2 id="card-cookies-h">Cookies</h2>
           <span class="badge" id="cookies-badge"></span>
         </div>
+        <p class="card-explainer">Jaká „okénka“ váš web ukládá do prohlížeče návštěvníka. Čím méně, tím méně musíte řešit GDPR.</p>
         <div class="card-body"></div>
       </section>
 
@@ -253,6 +308,7 @@ footer a:hover { color: var(--fg); }
           <h2 id="card-trackers-h">Trackery</h2>
           <span class="badge" id="trackers-badge"></span>
         </div>
+        <p class="card-explainer">Kdo všechno vás špehuje přes váš web — Google, Meta, Sklik a další. Některé tam mít musíte, většinou ne.</p>
         <div class="card-body"></div>
       </section>
 
@@ -261,6 +317,7 @@ footer a:hover { color: var(--fg); }
           <h2 id="card-stack-h">Stack &amp; technologie</h2>
           <span class="badge" id="stack-badge"></span>
         </div>
+        <p class="card-explainer">Z čeho je váš web postavený. Kdyby ho měl někdo opravovat, tady to uvidí.</p>
         <div class="card-body"></div>
       </section>
 
@@ -269,6 +326,7 @@ footer a:hover { color: var(--fg); }
           <h2 id="card-banners-h">Cookie banner</h2>
           <span class="badge" id="banners-badge"></span>
         </div>
+        <p class="card-explainer">To otravné okénko „akceptujte vše“. Když ho nepotřebujete, jste ve výhodě — návštěvník hned vidí web, ne reklamu na souhlas.</p>
         <div class="card-body"></div>
       </section>
 
@@ -277,6 +335,7 @@ footer a:hover { color: var(--fg); }
           <h2 id="card-meta-h">SEO základy</h2>
           <span class="badge" id="meta-badge"></span>
         </div>
+        <p class="card-explainer">Co o vás Google ví. Titulek stránky, popis, struktura nadpisů. Bez toho vás Google nenajde.</p>
         <div class="card-body"></div>
       </section>
 
@@ -285,16 +344,17 @@ footer a:hover { color: var(--fg); }
           <h2 id="card-og-h">Sdílení na sítích (OG)</h2>
           <span class="badge" id="og-badge"></span>
         </div>
+        <p class="card-explainer">Když někdo váš odkaz pošle na Facebook nebo do Mailu, jaký náhled to ukáže. Bez náhledu se odkaz špatně klikne.</p>
         <div class="card-body"></div>
       </section>
 
     </div>
 
     <div class="cta-next" id="ctaNext" hidden>
-      <h2>Tohle byl rychlý sken. Hluboká analýza je další krok.</h2>
-      <p>Lighthouse skóre, screenshot, AI redesign a hloubková SEO analýza — to už je placená vlna. Připravujeme. Zatím se nám můžeš ozvat, pokud chceš pomoct s tím, co jsi tady viděl.</p>
+      <h2>Chcete to opravit? Pošleme vám nezávaznou nabídku.</h2>
+      <p>Projdeme detail, řekneme, co dává smysl jako první. Žádné háčky, žádný automatický odběr — prostě obyčejný e-mail.</p>
       <div class="btn-row">
-        <a class="btn btn-primary" id="ctaMail" href="#">Napsat o tomhle webu</a>
+        <a class="btn btn-primary" id="ctaMail" href="#">Pošlete mi nabídku</a>
         <a class="btn btn-secondary" href="/">Analyzovat jiný web</a>
       </div>
     </div>

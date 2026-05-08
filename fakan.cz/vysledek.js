@@ -4,6 +4,10 @@
 (() => {
   const params = new URLSearchParams(location.search);
   const target = (params.get('url') || '').trim();
+  const email = (params.get('em') || '').trim();
+  const consent = params.get('c') === '1';
+  const version = (params.get('v') || '').trim();
+  const source = (params.get('s') || 'unknown').trim();
 
   const $ = (id) => document.getElementById(id);
   const stage = $('stage');
@@ -13,16 +17,27 @@
   const targetUrlEl = $('targetUrl');
   const ctaNext = $('ctaNext');
   const ctaMail = $('ctaMail');
+  const mailToast = $('mailToast');
 
   if (!target) {
-    showError('Chybí URL. Vyplň formulář na úvodní stránce.');
+    showError('Chybí URL. Vyplňte formulář na úvodní stránce.');
     return;
   }
 
   targetUrlEl.textContent = target;
   document.title = `Analýza ${target} — fakan.cz`;
 
-  const es = new EventSource('/api/analyze?url=' + encodeURIComponent(target));
+  // Sestavíme query pro /api/analyze. Pokud máme email + consent + verzi,
+  // přihodíme je tam — server (TASK-12) si je vytáhne a založí lead capture.
+  const apiQs = new URLSearchParams({ url: target });
+  if (email && consent && version) {
+    apiQs.set('em', email);
+    apiQs.set('c', '1');
+    apiQs.set('v', version);
+    apiQs.set('s', source);
+  }
+
+  const es = new EventSource('/api/analyze?' + apiQs.toString());
   let analysisStarted = Date.now();
   let finalHost = target;
 
@@ -46,17 +61,18 @@
       es.close();
       const ms = data?.totalMs || (Date.now() - analysisStarted);
       setStage(`Hotovo za ${formatMs(ms)}.`, 'done');
-      titleEl.textContent = 'Tvůj web pod drobnohledem';
+      titleEl.textContent = 'Hotovo. Tady je rychlý souhrn.';
       // Vyčisti případně pending karty.
       document.querySelectorAll('.card[data-state="pending"]').forEach((card) => {
         card.dataset.state = 'empty';
         card.querySelector('.card-body').textContent = 'Žádná data.';
       });
+      showMailToast();
       showCta();
     },
     error: (data) => {
       es.close();
-      showError(data?.message || 'Něco se rozbilo.');
+      showError(data?.message || 'Něco se nepovedlo.');
     },
   };
 
@@ -70,7 +86,7 @@
 
   es.onerror = () => {
     if (es.readyState === EventSource.CLOSED) {
-      // Spojení skončilo bez done → ber jako chybu, pokud ještě nezahlášeno.
+      // Spojení skončilo bez done → bereme jako chybu, pokud ještě nezahlášeno.
       if (stage.dataset.state === 'loading') {
         showError('Spojení se serverem se přerušilo.');
       }
@@ -184,7 +200,7 @@
     if (!data.length) {
       const p = document.createElement('p');
       p.style.cssText = 'margin: 0; color: var(--green); font-size: 14px;';
-      p.textContent = 'Žádné známé trackery. Slušná práce.';
+      p.textContent = 'Žádné známé trackery. Hezky čisté.';
       body.appendChild(p);
     } else {
       const ul = document.createElement('ul');
@@ -213,7 +229,7 @@
     if (!data.length) {
       const p = document.createElement('p');
       p.style.cssText = 'margin: 0; color: var(--muted); font-size: 14px;';
-      p.textContent = 'Stack se nepodařilo identifikovat. Buď je to čistá statika (dobré), nebo je obfuskovaný.';
+      p.textContent = 'Stack se nepodařilo identifikovat. Buď je to čistá statika (to je dobře), nebo je schovaný.';
       body.appendChild(p);
     } else {
       const ul = document.createElement('ul');
@@ -240,7 +256,7 @@
       badge.dataset.tone = 'good';
       const p = document.createElement('p');
       p.style.cssText = 'margin: 0; color: var(--green); font-size: 14px;';
-      p.textContent = 'Žádný známý cookie banner. Pokud nejsou cookies, ani nemá co řešit.';
+      p.textContent = 'Žádný známý cookie banner. Pokud nejsou cookies, není ani co řešit.';
       body.appendChild(p);
     } else {
       badge.textContent = `${data.length}`;
@@ -320,7 +336,7 @@
     if (!hasAny) {
       const p = document.createElement('p');
       p.style.cssText = 'margin: 0; color: var(--muted); font-size: 14px;';
-      p.textContent = 'Žádné Open Graph tagy. Sdílení na Facebooku, LinkedInu nebo Slacku vypadá smutně.';
+      p.textContent = 'Žádné Open Graph tagy. Sdílený odkaz na Facebooku, LinkedInu nebo v Mailu vypadá smutně.';
       body.appendChild(p);
     } else {
       const wrap = document.createElement('div');
@@ -360,7 +376,7 @@
 
   function showError(message) {
     setStage(message, 'error');
-    titleEl.textContent = 'Analýza neproběhla';
+    titleEl.textContent = 'Nešlo to projet. Podívali jsme se, kde to drhne.';
     document.querySelectorAll('.card[data-state="pending"]').forEach((card) => {
       card.dataset.state = 'empty';
       card.querySelector('.card-body').textContent = '—';
@@ -368,15 +384,26 @@
     showCta();
   }
 
+  function showMailToast() {
+    if (!email || !consent) return;
+    if (!mailToast) return;
+    mailToast.innerHTML = `Výsledky vám pošleme i na <strong></strong> během pár minut.`;
+    mailToast.querySelector('strong').textContent = email;
+    mailToast.hidden = false;
+  }
+
   function showCta() {
     ctaNext.hidden = false;
-    if (target) {
-      const subject = encodeURIComponent('Konzultace k webu: ' + target);
-      const body = encodeURIComponent('Ahoj,\n\nudělal jsem si free analýzu webu ' + target + ' a rád bych to s vámi probral.\n\nDíky!');
-      ctaMail.href = 'mailto:jsem@fakan.cz?subject=' + subject + '&body=' + body;
-    } else {
-      ctaMail.href = 'mailto:jsem@fakan.cz';
-    }
+    let hostname = finalHost || target;
+    try { hostname = new URL(target).host || hostname; } catch { /* keep */ }
+    const subject = encodeURIComponent('Nabídka pro ' + hostname);
+    const body = encodeURIComponent(
+      'Dobrý den,\n\n' +
+      'na fakan.cz jsem si nechal/a udělat bezplatnou analýzu webu ' + target + '.\n' +
+      'Rád/a bych nezávaznou nabídku, jak to opravit.\n\n' +
+      'Děkuji.'
+    );
+    ctaMail.href = 'mailto:jsem@fakan.cz?subject=' + subject + '&body=' + body;
   }
 
   function setStage(label, state) {
