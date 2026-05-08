@@ -3,24 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>fakan.cz — tvůj web, bez výmluv</title>
-<meta name="description" content="Zadej URL a dostaneš zdarma analýzu svého webu — rychlost, SEO, přístupnost, bezpečnost. AI agenty s lidským garantem. Bez cookies. Bez frameworků.">
+<title>fakan.cz — váš web, bez starostí</title>
+<meta name="description" content="Zadejte adresu svého webu a za pár sekund uvidíte, co s ním. Bezplatná analýza, bez registrace, bez háčků. Hosting od 99 Kč měsíčně.">
 <meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://fakan.cz/">
-<meta property="og:title" content="fakan.cz — tvůj web, bez výmluv">
-<meta property="og:description" content="Free analýza webu za pár sekund. Audit, redesign, hosting a správa. AI agenty s lidským garantem.">
+<meta property="og:title" content="fakan.cz — váš web, bez starostí">
+<meta property="og:description" content="Zadejte adresu svého webu a za pár sekund uvidíte, co s ním. Bezplatná analýza, bez registrace, bez háčků.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fakan.cz/">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:site_name" content="fakan.cz">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fakan.cz — váš web, bez starostí">
+<meta name="twitter:description" content="Zadejte adresu svého webu a za pár sekund uvidíte, co s ním. Bezplatná analýza, bez registrace, bez háčků.">
 <meta name="robots" content="index, follow">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "fakan.cz",
+  "legalName": "Indigo Studio s.r.o.",
   "url": "https://fakan.cz",
   "description": "Pluginová platforma pro audit, návrh, realizaci, hosting, správu a růst webových stránek.",
   "founder": {
@@ -31,7 +34,9 @@
     "@type": "ContactPoint",
     "email": "jsem@fakan.cz",
     "telephone": "+420604690539",
-    "contactType": "customer support"
+    "contactType": "customer support",
+    "areaServed": "CZ",
+    "availableLanguage": ["cs"]
   }
 }
 </script>
@@ -39,7 +44,7 @@
 :root {
   --bg: #F9F6F0;
   --fg: #0B1221;
-  --muted: #6B7280;
+  --muted: #52606F;
   --line: #E2E8F0;
   --line-strong: #CBD5E1;
   --card: #FFFFFF;
@@ -54,7 +59,7 @@
   :root {
     --bg: #0B1221;
     --fg: #F9F6F0;
-    --muted: #94A3B8;
+    --muted: #B6C0CC;
     --line: #1E293B;
     --line-strong: #334155;
     --card: #111A2E;
@@ -77,6 +82,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+@media (min-width: 720px) {
+  body { font-size: 18px; }
 }
 
 .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
@@ -109,45 +117,78 @@ header {
 .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px var(--orange-soft); }
 
 /* Eyebrow */
-.eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; font-weight: 600; color: var(--orange); margin-bottom: 14px; }
+.eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; font-weight: 600; color: var(--orange); margin-bottom: 14px; }
 
 /* Hero */
 .hero { padding: clamp(70px, 9vw, 130px) 0 clamp(60px, 7vw, 100px); border-bottom: 1px solid var(--line); }
 .hero h1 { max-width: 16ch; }
 .hero-sub { font-size: clamp(18px, 1.8vw, 22px); color: var(--muted); max-width: 50ch; margin: 18px 0 32px; }
 
-/* URL form */
-.url-form { display: flex; gap: 12px; max-width: 540px; flex-wrap: wrap; }
-.url-input {
-  flex: 1 1 280px;
+/* Lead capture form */
+.url-form { display: grid; gap: 14px; max-width: 540px; }
+.form-row { display: flex; flex-direction: column; gap: 6px; }
+.form-row label { font-size: 14px; font-weight: 600; color: var(--fg); }
+.url-input, .email-input {
+  width: 100%;
   padding: 14px 18px;
-  font: inherit; font-size: 17px;
+  font: inherit; font-size: 18px;
   background: var(--card);
   color: var(--fg);
   border: 2px solid var(--line-strong);
-  border-radius: 999px;
+  border-radius: 14px;
   outline: none;
-  min-height: 52px;
+  min-height: 56px;
 }
-.url-input:focus { border-color: var(--orange); }
-.url-input::placeholder { color: var(--muted); }
+.url-input:focus, .email-input:focus { border-color: var(--orange); }
+.url-input::placeholder, .email-input::placeholder { color: var(--muted); }
+.form-hint { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.5; }
+.form-consent {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.form-consent input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  accent-color: var(--orange);
+}
+.form-consent label { cursor: pointer; }
+.form-consent a { color: var(--fg); }
 .btn-cta {
-  padding: 14px 24px;
+  padding: 16px 24px;
   background: var(--orange); color: #fff;
   border: none; border-radius: 999px;
-  font: inherit; font-size: 16px; font-weight: 600;
+  font: inherit; font-size: 17px; font-weight: 600;
   cursor: pointer; white-space: nowrap;
-  min-height: 52px;
+  min-height: 56px;
   box-shadow: 0 8px 24px rgba(255,87,34,0.28);
   transition: filter 0.15s;
 }
 .btn-cta:hover { filter: brightness(1.08); }
+@media (prefers-reduced-motion: reduce) {
+  .btn-cta { transition: none; }
+  html { scroll-behavior: auto; }
+}
 
-/* Stats */
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line); }
+/* Honeypot — skryté pole pro chytání botů */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Stats — 3 karty */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line); }
 .stat strong { display: block; font-size: clamp(24px, 3vw, 34px); font-weight: 700; letter-spacing: -0.02em; }
-.stat span { color: var(--muted); font-size: 14px; }
-@media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+.stat span { color: var(--muted); font-size: 15px; }
+@media (max-width: 720px) { .stats { grid-template-columns: 1fr; gap: 20px; } }
 
 /* Sections */
 section { padding: clamp(60px, 8vw, 100px) 0; border-bottom: 1px solid var(--line); }
@@ -164,7 +205,7 @@ section { padding: clamp(60px, 8vw, 100px) 0; border-bottom: 1px solid var(--lin
 /* Cards */
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
 .card h3 { margin-bottom: 8px; }
-.card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
+.card p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
 
 /* Steps */
 .step-num { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--orange-soft); color: var(--orange); font-weight: 700; font-size: 16px; margin-bottom: 12px; }
@@ -174,9 +215,10 @@ section { padding: clamp(60px, 8vw, 100px) 0; border-bottom: 1px solid var(--lin
 .tier.featured { border: 2px solid var(--orange); position: relative; }
 .tier.featured::before { content: "Doporučeno"; position: absolute; top: -11px; left: 24px; background: var(--orange); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
 .tier h3 { font-size: 20px; margin-bottom: 4px; }
+.tier .tier-sub { font-size: 14px; color: var(--muted); margin: 0 0 8px; }
 .tier .price { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 4px; }
 .tier .price span { font-size: 14px; color: var(--muted); font-weight: 400; }
-.tier ul { padding-left: 18px; margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+.tier ul { padding-left: 18px; margin: 14px 0 0; color: var(--muted); font-size: 15px; }
 .tier li { margin-bottom: 6px; }
 
 /* CTA banner */
@@ -184,28 +226,37 @@ section { padding: clamp(60px, 8vw, 100px) 0; border-bottom: 1px solid var(--lin
   background: var(--fg); color: var(--bg);
   border-radius: 22px;
   padding: clamp(36px, 5vw, 56px);
-  text-align: center;
 }
-.cta-banner h2 { color: var(--bg); }
-.cta-banner p { color: color-mix(in srgb, var(--bg) 70%, var(--fg)); }
-.cta-banner .url-form { margin: 0 auto; justify-content: center; }
-.cta-banner .url-input {
+.cta-banner h2 { color: var(--bg); text-align: center; }
+.cta-banner > p { color: color-mix(in srgb, var(--bg) 70%, var(--fg)); text-align: center; max-width: 50ch; margin: 0 auto 28px; }
+.cta-banner .url-form { margin: 0 auto; max-width: 540px; }
+.cta-banner .form-row label { color: var(--bg); }
+.cta-banner .url-input,
+.cta-banner .email-input {
   background: color-mix(in srgb, var(--fg) 90%, var(--bg));
   border-color: color-mix(in srgb, var(--fg) 75%, var(--bg));
   color: var(--bg);
 }
-.cta-banner .url-input::placeholder { color: color-mix(in srgb, var(--bg) 50%, var(--fg)); }
-.cta-banner .url-input:focus { border-color: var(--orange); }
-.cta-banner a { color: var(--orange); }
+.cta-banner .url-input::placeholder,
+.cta-banner .email-input::placeholder { color: color-mix(in srgb, var(--bg) 50%, var(--fg)); }
+.cta-banner .url-input:focus,
+.cta-banner .email-input:focus { border-color: var(--orange); }
+.cta-banner .form-consent { color: color-mix(in srgb, var(--bg) 70%, var(--fg)); }
+.cta-banner .form-consent a { color: var(--orange); }
+.cta-banner .form-hint { color: color-mix(in srgb, var(--bg) 60%, var(--fg)); }
+.cta-banner .btn-cta { width: 100%; }
+.cta-banner .cta-foot { text-align: center; margin-top: 20px; font-size: 15px; }
+.cta-banner .cta-foot a { color: var(--orange); }
 
 /* Footer */
-footer { padding: 48px 0 64px; color: var(--muted); font-size: 14px; }
+footer { padding: 48px 0 64px; color: var(--muted); font-size: 15px; }
 footer a { color: var(--muted); text-decoration: none; }
 footer a:hover { color: var(--fg); }
-.footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px; padding-top: 24px; border-top: 1px solid var(--line); }
+.footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-top: 24px; border-top: 1px solid var(--line); }
+.footer-links { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
 
-/* Focus visible */
-:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+/* Focus visible — silnější pro 40+ */
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 4px; }
 input:focus-visible { outline: none; }
 
 /* Mobile tweaks */
@@ -242,32 +293,72 @@ input:focus-visible { outline: none; }
 <!-- HERO -->
 <section class="hero">
   <div class="wrap">
-    <span class="eyebrow">Analýza webu zdarma</span>
-    <h1>Tvůj web. Bez&nbsp;výmluv.</h1>
-    <p class="hero-sub">Zadej URL a za pár sekund uvidíš, co s tvým webem. Rychlost, SEO, přístupnost, bezpečnost. Bez registrace. Bez cookies.</p>
+    <span class="eyebrow">Bezplatná analýza webu</span>
+    <h1>Váš web. Bez&nbsp;starostí.</h1>
+    <p class="hero-sub">Zadejte adresu svého webu. Za pár sekund uvidíte, co s ním. Zdarma, bez registrace, bez háčků.</p>
 
-    <form class="url-form" id="analyzeForm">
-      <label for="urlInput" class="skip">URL tvého webu</label>
-      <input class="url-input" id="urlInput" name="url" type="text" placeholder="tvojedomena.cz" autocomplete="url" required>
+    <form class="url-form" id="analyzeForm" action="/vysledek" method="get" novalidate>
+      <div class="form-row">
+        <label for="urlInput">Adresa vašeho webu</label>
+        <input
+          class="url-input"
+          id="urlInput"
+          name="url"
+          type="text"
+          placeholder="vasedomena.cz"
+          autocomplete="url"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="url"
+          required>
+        <p class="form-hint">URL bez přihlašovacích tokenů, prosím.</p>
+      </div>
+      <div class="form-row">
+        <label for="emailInput">Váš e-mail</label>
+        <input
+          class="email-input"
+          id="emailInput"
+          name="em"
+          type="email"
+          placeholder="vy@vasedomena.cz"
+          autocomplete="email"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="email"
+          required>
+        <p class="form-hint">Pošleme vám výsledky a nezávazně se ozveme. Nikam jinam to nedáme.</p>
+      </div>
+      <div class="form-consent">
+        <input type="checkbox" id="consentChk" name="c" value="1" required>
+        <label for="consentChk">
+          Souhlasím, aby společnost <strong>Indigo Studio s.r.o.</strong> (IČO 14389096) zpracovala mou e-mailovou adresu pro účely zaslání výsledků analýzy a nezávazného návrhu řešení. Souhlas mohu kdykoliv odvolat kliknutím na „Odhlásit" v patičce e-mailu. Více v <a href="/ochrana-udaju">zásadách ochrany osobních údajů</a>.
+        </label>
+      </div>
+      <input type="hidden" name="v" value="v1-2026-05-08">
+      <input type="hidden" name="s" value="landing-hero">
+      <!-- honeypot — boti vyplní, server zahodí -->
+      <div class="honeypot" aria-hidden="true">
+        <label for="company">Pokud čtete tohle, nechte prázdné</label>
+        <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
+      </div>
       <button class="btn-cta" type="submit">Analyzovat zdarma &rarr;</button>
+      <p class="form-hint">Trvá to chvilku. Žádný účet zakládat nemusíte.</p>
     </form>
 
     <div class="stats" role="list">
       <div class="stat" role="listitem">
-        <strong>&le; 5 s</strong>
-        <span>první data z analýzy</span>
+        <strong>Do minuty</strong>
+        <span>Než si dáte kafe, uvidíte výsledky.</span>
       </div>
       <div class="stat" role="listitem">
-        <strong>0 cookies</strong>
-        <span>na výstupních webech</span>
+        <strong>Zdarma</strong>
+        <span>Žádná registrace. Žádné háčky.</span>
       </div>
       <div class="stat" role="listitem">
         <strong>od 99 Kč</strong>
-        <span>hosting měsíčně</span>
-      </div>
-      <div class="stat" role="listitem">
-        <strong>ZIP export</strong>
-        <span>tvůj web je tvůj, vždy</span>
+        <span>Hosting měsíčně, kdyby vám u nás zůstal.</span>
       </div>
     </div>
   </div>
@@ -278,26 +369,26 @@ input:focus-visible { outline: none; }
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Co děláme</span>
-      <h2>Web jako služba, ne jako artefakt.</h2>
-      <p>Audit, redesign, hosting a průběžná správa. AI agenty s lidským garantem. Vanilla HTML/CSS/JS, žádné frameworky.</p>
+      <h2>Web, o který se nemusíte starat.</h2>
+      <p>Postaráme se o všechno od první obhlídky až po denní provoz. Vy nám řeknete, co potřebujete. My to uděláme.</p>
     </div>
 
     <div class="grid g4">
       <div class="card">
-        <h3>Free analýza</h3>
-        <p>Rychlost, SEO, přístupnost, bezpečnost, detekce cookies a trackerů. Do minuty, bez registrace.</p>
+        <h3>Najdeme, co je špatně</h3>
+        <p>Zdarma vám projedeme web a ukážeme, co stojí za opravu. Bez registrace.</p>
       </div>
       <div class="card">
-        <h3>AI redesign</h3>
-        <p>Návrh nové verze webu od AI týmu. Jeden free náhled, další varianty za mikroplatby od 49 Kč.</p>
+        <h3>Navrhneme, jak to vyřešit</h3>
+        <p>Nový vzhled, opravu starého, nebo úplně nový web — vy si vyberete, co dává smysl.</p>
       </div>
       <div class="card">
-        <h3>Hosting od 99 Kč</h3>
-        <p>Statické HTML na Cloudflare. Vlastní doména, SSL, CDN po celém světě. Bez cookies, bez banerů.</p>
+        <h3>Postavíme nebo opravíme</h3>
+        <p>Pevná cena, jasný termín. Když řekneme do tří týdnů, znamená to do tří týdnů.</p>
       </div>
       <div class="card">
-        <h3>Správa a růst</h3>
-        <p>Editor pro úpravy obsahu, analytics bez trackerů, SEO monitoring, formuláře. Vše přes pluginy.</p>
+        <h3>Postaráme se dál</h3>
+        <p>Hosting od 99 Kč měsíčně. Aktualizace, zálohy, opravy — bez vašich starostí.</p>
       </div>
     </div>
   </div>
@@ -308,24 +399,24 @@ input:focus-visible { outline: none; }
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Jak to funguje</span>
-      <h2>Tři kroky. Žádný Excel.</h2>
+      <h2>Tři kroky. Žádné papíry.</h2>
     </div>
 
     <div class="grid g3">
       <div class="card">
         <div class="step-num">1</div>
-        <h3>Zadej URL</h3>
-        <p>Napiš adresu svého webu. Dostaneš výsledky za pár sekund — rychlost, SEO, bezpečnost, screenshot.</p>
+        <h3>Zadejte adresu webu</h3>
+        <p>Stačí napsat doménu (třeba <code>vasedomena.cz</code>). My to projedeme.</p>
       </div>
       <div class="card">
         <div class="step-num">2</div>
-        <h3>Uvidíš, co opravit</h3>
-        <p>Konkrétní čísla, ne adjektiva. „LCP 4,2 s místo 1,5 s." AI navrhne redesign a priority.</p>
+        <h3>Uvidíte, co je špatně a co dobře</h3>
+        <p>Konkrétně. „Vaše stránka je pomalá — návštěvníkům naběhne za 4 vteřiny místo jedné."</p>
       </div>
       <div class="card">
         <div class="step-num">3</div>
-        <h3>Rozhodneš se</h3>
-        <p>Chceš opravit sám? Stáhni report. Chceš, ať to řešíme? Klikni a jdeme na to.</p>
+        <h3>Rozhodnete se</h3>
+        <p>Chcete to opravit sami? Stáhnete si přehled. Chcete, abychom to vyřešili? Napíšete a my se ozveme.</p>
       </div>
     </div>
   </div>
@@ -335,26 +426,27 @@ input:focus-visible { outline: none; }
 <section>
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">Standardy</span>
-      <h2>Každý web od nás splňuje. Bez výjimky.</h2>
+      <span class="eyebrow">Co u nás dostanete vždycky</span>
+      <h2>Pravidla, ze kterých neslevíme.</h2>
+      <p>Tohle je seznam věcí, které u jiných musíte hlídat. U nás to je samozřejmost.</p>
     </div>
 
     <div class="grid g4">
       <div class="card">
-        <h3>0 cookies</h3>
-        <p>Žádné cookie banery. Žádné popupy. Žádné „akceptujte vše".</p>
+        <h3>Žádné okénko se souhlasem</h3>
+        <p>Žádné „akceptujte cookies", žádné popupy. Návštěvník přijde a hned vidí váš web.</p>
       </div>
       <div class="card">
-        <h3>Mobile-first</h3>
-        <p>375 &times; 812 jako základ. Touch targety &ge; 44 px. Žádný hover-only.</p>
+        <h3>Funguje to na mobilu</h3>
+        <p>7 z 10 lidí přijde z telefonu. Děláme weby tak, aby tam fungovaly stejně dobře jako na velkém monitoru.</p>
       </div>
       <div class="card">
-        <h3>LCP &lt; 1,5 s</h3>
-        <p>Statické HTML bez hydration taxu. JS pod 30 kB gzip.</p>
+        <h3>Naskočí to dřív, než to čekají</h3>
+        <p>Návštěvník nesnáší, když web visí. U nás stránka naběhne pod sekundu na běžném mobilu.</p>
       </div>
       <div class="card">
-        <h3>WCAG 2.2 AA</h3>
-        <p>Sémantický HTML, klávesnicová navigace, screen-reader ready.</p>
+        <h3>Čte to i screen reader</h3>
+        <p>Web musí umět přečíst slabozrakému člověku počítač. To není přepych, to je zákon (i pro malé firmy v EU od roku 2025).</p>
       </div>
     </div>
   </div>
@@ -365,36 +457,39 @@ input:focus-visible { outline: none; }
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Hosting</span>
-      <h2>Static-first na Cloudflare.</h2>
-      <p>Vlastní doména, SSL, CDN, backup. Export do ZIPu kdykoli — tvůj web je tvůj.</p>
+      <h2>Když vám web bude hotový, postaráme se i o jeho provoz.</h2>
+      <p>Vlastní doména, šifrované spojení, denní záloha. Když budete chtít odejít, dostanete celý web v ZIPu — bez doplatků, bez výmluv.</p>
     </div>
 
     <div class="grid g3">
       <div class="tier featured">
         <h3>Lite</h3>
+        <p class="tier-sub">Pro vizitky a malé weby</p>
         <div class="price">99 Kč<span> / měs</span></div>
         <ul>
-          <li>100 MB úložiště</li>
+          <li>100 MB prostoru</li>
           <li>1 doména</li>
-          <li>Backup + export ZIP</li>
+          <li>Záloha + ZIP zdarma</li>
         </ul>
       </div>
       <div class="tier">
         <h3>Standard</h3>
+        <p class="tier-sub">Pro klasickou firmu nebo restauraci</p>
         <div class="price">249 Kč<span> / měs</span></div>
         <ul>
-          <li>500 MB úložiště</li>
+          <li>500 MB prostoru</li>
           <li>Až 3 domény</li>
-          <li>Priority support</li>
+          <li>Přednostní podpora</li>
         </ul>
       </div>
       <div class="tier">
         <h3>Pro</h3>
+        <p class="tier-sub">Pro větší web nebo malý e-shop</p>
         <div class="price">590 Kč<span> / měs</span></div>
         <ul>
-          <li>2 GB úložiště</li>
+          <li>2 GB prostoru</li>
           <li>Až 10 domén</li>
-          <li>Tým + RBAC</li>
+          <li>Tým s rozdělením práv</li>
         </ul>
       </div>
     </div>
@@ -405,14 +500,54 @@ input:focus-visible { outline: none; }
 <section style="border-bottom: none;">
   <div class="wrap">
     <div class="cta-banner">
-      <h2>Zkus to. Zadej URL a uvidíš.</h2>
-      <p style="max-width: 50ch; margin: 0 auto 24px;">Analýza je zdarma. Bez registrace. Bez cookies. Výsledky za pár sekund.</p>
-      <form class="url-form" id="analyzeForm2">
-        <label for="urlInput2" class="skip">URL tvého webu</label>
-        <input class="url-input" id="urlInput2" name="url" type="text" placeholder="tvojedomena.cz" autocomplete="url" required>
+      <h2>Zkuste to. Nebudete nic muset.</h2>
+      <p>Analýza je zdarma. Bez registrace. Výsledky uvidíte za pár sekund a dostanete je i e-mailem.</p>
+      <form class="url-form" id="analyzeForm2" action="/vysledek" method="get" novalidate>
+        <div class="form-row">
+          <label for="urlInput2">Adresa vašeho webu</label>
+          <input
+            class="url-input"
+            id="urlInput2"
+            name="url"
+            type="text"
+            placeholder="vasedomena.cz"
+            autocomplete="url"
+            autocapitalize="none"
+            autocorrect="off"
+            spellcheck="false"
+            inputmode="url"
+            required>
+        </div>
+        <div class="form-row">
+          <label for="emailInput2">Váš e-mail</label>
+          <input
+            class="email-input"
+            id="emailInput2"
+            name="em"
+            type="email"
+            placeholder="vy@vasedomena.cz"
+            autocomplete="email"
+            autocapitalize="none"
+            autocorrect="off"
+            spellcheck="false"
+            inputmode="email"
+            required>
+        </div>
+        <div class="form-consent">
+          <input type="checkbox" id="consentChk2" name="c" value="1" required>
+          <label for="consentChk2">
+            Souhlasím, aby společnost <strong>Indigo Studio s.r.o.</strong> (IČO 14389096) zpracovala mou e-mailovou adresu pro účely zaslání výsledků analýzy a nezávazného návrhu řešení. Souhlas mohu kdykoliv odvolat kliknutím na „Odhlásit" v patičce e-mailu. Více v <a href="/ochrana-udaju">zásadách ochrany osobních údajů</a>.
+          </label>
+        </div>
+        <input type="hidden" name="v" value="v1-2026-05-08">
+        <input type="hidden" name="s" value="landing-cta">
+        <div class="honeypot" aria-hidden="true">
+          <label for="company2">Pokud čtete tohle, nechte prázdné</label>
+          <input type="text" id="company2" name="company" tabindex="-1" autocomplete="off">
+        </div>
         <button class="btn-cta" type="submit">Analyzovat zdarma &rarr;</button>
       </form>
-      <p style="margin-top: 16px; font-size: 14px;">Nebo napiš na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a></p>
+      <p class="cta-foot">Nebo napište přímo: <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a></p>
     </div>
   </div>
 </section>
@@ -422,30 +557,17 @@ input:focus-visible { outline: none; }
 <footer>
   <div class="wrap">
     <div class="footer-inner">
-      <span>&copy; 2026 fakan.cz &middot; Daniel Hromada</span>
-      <span>
-        <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> &middot;
+      <span>&copy; 2026 fakan.cz &middot; provozuje Indigo Studio s.r.o.</span>
+      <span class="footer-links">
+        <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>
+        <span aria-hidden="true">&middot;</span>
         <a href="tel:+420604690539">+420 604 690 539</a>
+        <span aria-hidden="true">&middot;</span>
+        <a href="/ochrana-udaju">Zásady ochrany osobních údajů</a>
       </span>
     </div>
   </div>
 </footer>
-
-<script>
-(function () {
-  function handleAnalyze(e) {
-    e.preventDefault();
-    var input = e.target.querySelector('input[name="url"]');
-    var url = input.value.trim();
-    if (!url) { input.focus(); return; }
-    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-    window.location.href = '/vysledek?url=' + encodeURIComponent(url);
-  }
-
-  document.getElementById('analyzeForm').addEventListener('submit', handleAnalyze);
-  document.getElementById('analyzeForm2').addEventListener('submit', handleAnalyze);
-})();
-</script>
 
 </body>
 </html>
