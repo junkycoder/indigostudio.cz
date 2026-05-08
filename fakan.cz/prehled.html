@@ -3,17 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>fakan.cz — pluginová platforma pro weby, které se starají samy</title>
-<meta name="description" content="Audit, návrh, realizace, hosting, správa a růst webových stránek na jednom místě. Bez cookie banerů. Bez frameworků. AI agenty s lidským garantem. Provozováno na Cloudflare.">
-<meta name="theme-color" content="#0B1221">
-<meta property="og:title" content="fakan.cz — weby, které se starají samy">
-<meta property="og:description" content="Pluginová platforma pro audit, návrh, realizaci, hosting, správu a růst webů. Bez kravin. Hned. Konkrétně. Lidsky. Trvanlivě.">
+<title>fakan.cz — přehled platformy</title>
+<meta name="description" content="Audit, návrh, realizace, hosting, správa a růst webových stránek na jednom místě. Žádná okénka se souhlasem. Žádné technologie, co za dva roky skončí. AI tým s lidským garantem. Provoz na Cloudflare.">
+<meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://fakan.cz/prehled">
+<meta property="og:title" content="fakan.cz — přehled platformy">
+<meta property="og:description" content="Pluginová platforma pro audit, návrh, realizaci, hosting, správu a růst webových stránek. Bez kravin. Hned. Konkrétně. Lidsky. Trvanlivě.">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:site_name" content="fakan.cz">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fakan.cz — přehled platformy">
+<meta name="twitter:description" content="Pluginová platforma pro audit, návrh, realizaci, hosting, správu a růst webových stránek.">
+<meta name="robots" content="index, follow">
 <style>
 :root {
   --bg: #F9F6F0;
   --fg: #0B1221;
-  --muted: #6B7280;
+  --muted: #52606F;
   --line: #E2E8F0;
   --line-strong: #CBD5E1;
   --card: #FFFFFF;
@@ -32,7 +40,7 @@
   :root {
     --bg: #0B1221;
     --fg: #F9F6F0;
-    --muted: #94A3B8;
+    --muted: #B6C0CC;
     --line: #1E293B;
     --line-strong: #334155;
     --card: #111A2E;
@@ -46,7 +54,7 @@
   }
 }
 
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
@@ -58,6 +66,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+@media (min-width: 720px) {
+  body { font-size: 18px; }
 }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
@@ -388,6 +399,15 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
 /* Skip link a11y */
 .skip { position: absolute; left: -9999px; top: 0; }
 .skip:focus { left: 16px; top: 16px; background: var(--orange); color: #fff; padding: 8px 12px; border-radius: 6px; z-index: 100; }
+
+/* Focus visible — silnější pro 40+ */
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-cta { transition: none; }
+  .platform-svg .layer { transition: none; }
+}
 </style>
 </head>
 <body>
@@ -398,7 +418,7 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
   <div class="wrap topbar-inner">
     <a class="brand" href="#nahore" aria-label="fakan.cz domů">
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-        <rect x="2" y="2" width="28" height="28" rx="8" fill="#0B1221"/>
+        <rect x="2" y="2" width="28" height="28" rx="8" fill="currentColor"/>
         <path d="M10 23 V9 h12 v3 h-9 v3 h7 v3 h-7 v5 z" fill="#FF5722"/>
       </svg>
       fakan.cz
@@ -421,11 +441,11 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
 <section class="hero" id="nahore">
   <div class="wrap">
     <span class="eyebrow">Pluginová platforma · ČR · 2026</span>
-    <h1>Tvůj web. Bez výmluv.</h1>
-    <p class="hero-sub">Jedno místo, kde web vznikne, hostuje se, opravuje, roste a hlídá se sám. AI agenty s lidským garantem. Žádné cookie banery. Žádné frameworky, co za dva roky skončí.</p>
+    <h1>Váš web. Bez&nbsp;starostí.</h1>
+    <p class="hero-sub">Jedno místo, kde web vznikne, hostuje se, opravuje se a roste. Stará se o něj tým s lidským garantem. Žádná okénka se souhlasem. Žádné technologie, co za dva roky skončí.</p>
     <div class="hero-cta-row">
       <a class="hero-cta" href="#co-stavime">Co je fakan.cz →</a>
-      <a class="hero-cta-ghost" href="#cesty">Vidět zákaznické cesty</a>
+      <a class="hero-cta-ghost" href="#cesty">Vidět cesty pro zákazníky</a>
     </div>
 
     <div class="hero-stats" role="list">
@@ -435,15 +455,15 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
       </div>
       <div class="hero-stat" role="listitem">
         <strong>≤ 60 s</strong>
-        <span>od kliku po první výsledek (TTFV)</span>
+        <span>od prvního kliku po výsledek</span>
       </div>
       <div class="hero-stat" role="listitem">
         <strong>~30 s</strong>
-        <span>od editu po publish na produkci</span>
+        <span>od úpravy po publikaci</span>
       </div>
       <div class="hero-stat" role="listitem">
-        <strong>0 cookies</strong>
-        <span>na výstupních webech, defaultně</span>
+        <strong>0 sledování</strong>
+        <span>žádné cookies, žádní špioni</span>
       </div>
     </div>
   </div>
@@ -455,24 +475,24 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
     <div class="section-head">
       <span class="eyebrow">Co stavíme</span>
       <h2>Web jako služba, ne jako artefakt.</h2>
-      <p>Konkurence prodává weby jako produkt. Wix, Webnode, agentury, freelanceři — všichni „vám něco vyrobí“. My prodáváme klid. Zákazník jednou zaplatí, jednou se vrátí, když chce něco upravit, jinak se mu to stará a roste samo.</p>
+      <p>Konkurence prodává weby jako produkt. Wix, Webnode, agentury, freelanceři — všichni vám něco vyrobí a zmizí. My prodáváme klid. Jednou zaplatíte, jednou se vrátíte, když chcete něco upravit. Jinak se to stará a roste samo.</p>
     </div>
 
     <div class="split">
       <div>
-        <p>fakan.cz je <strong>pluginová platforma</strong> s vrstevnatým ekosystémem. Minimální kernel (auth, hosting, plugin registry, manifest, billing, marketplace, velín, notifikace, editor shell) a všechno ostatní jsou pluginy: formuláře, SEO, analytics, fulltext, komentáře, GEO, PPC, AI klíče, AI Údržbář.</p>
-        <p>Tři vstupní cesty (mám web / chci nový / migruji od jiných), <strong>realizace AI agenty</strong> na pevně dané standardy, <strong>velín</strong> jako řídicí centrum, <strong>notifikační hub</strong> napříč ekosystémem. Statický výstup hostovaný na Cloudflare bez frameworku.</p>
-        <p>Mobile přes PWA (fáze 5) → Capacitor full apka (fáze 6). Marketplace pro vývojáře a partnery (fáze 6+) s revenue sharem. <strong>Export webu do ZIPu od Hobby tieru</strong> — anti lock-in argument proti Webnode/Wix/WordPress.com.</p>
+        <p>fakan.cz je <strong>platforma s pluginy</strong> — minimální základ (přihlášení, hosting, fakturace, editor) a všechno ostatní si přidáte podle potřeby: formuláře, SEO, analytika, fulltext, komentáře, mapy, reklama, AI údržba.</p>
+        <p>Tři vstupy (mám web / chci nový / přecházím od jiných), realizaci dělá <strong>AI tým s lidským garantem</strong>, <strong>velín</strong> je vaše řídicí místo, <strong>notifikace</strong> napříč ekosystémem. Statický výstup hostovaný na Cloudflare.</p>
+        <p>Mobilní aplikace přijde ve fázi 5 a 6. Pro vývojáře je marketplace s podílem z prodejů (fáze 6+). <strong>Stáhnete si svůj web do ZIPu, kdykoliv</strong> — žádné svazování, žádný „premium export“.</p>
       </div>
       <div class="card card-pad-lg">
         <h4 style="margin-bottom: 16px;">Šest věcí, které děláme jinak</h4>
         <ul style="padding-left: 20px; margin: 0; color: var(--muted); line-height: 1.8;">
           <li><strong style="color: var(--fg);">Vanilla HTML/CSS/JS/SVG.</strong> Žádný React, Vue, Next. Žádné node_modules.</li>
-          <li><strong style="color: var(--fg);">Static-first.</strong> Dynamika výhradně přes Workers + D1/KV/R2/DO.</li>
-          <li><strong style="color: var(--fg);">Nula cookies, nula banerů.</strong> A nedáme se přemluvit.</li>
-          <li><strong style="color: var(--fg);">Cookieless analytics</strong> bez tracking pixelů a fingerprintingu.</li>
-          <li><strong style="color: var(--fg);">AI transparence</strong> — explicitně píšeme, že realizaci dělá AI tým s lidským garantem.</li>
-          <li><strong style="color: var(--fg);">Export ZIP zdarma</strong> na všech tarifech. Tvůj web je tvůj. Vždycky.</li>
+          <li><strong style="color: var(--fg);">Static-first.</strong> Web je předem vyrobený soubor, ne aplikace, která se každou návštěvou skládá od nuly.</li>
+          <li><strong style="color: var(--fg);">Žádná okénka se souhlasem.</strong> A nedáme se přemluvit.</li>
+          <li><strong style="color: var(--fg);">Měření bez špehování.</strong> Víme, kolik lidí přišlo, neumíme říct kdo. To je rozdíl proti Google Analytics.</li>
+          <li><strong style="color: var(--fg);">AI s lidským garantem.</strong> Říkáme nahlas, že realizaci dělá AI tým. Garant má jméno a podpis.</li>
+          <li><strong style="color: var(--fg);">Stáhnete si svůj web do ZIPu, zdarma, kdykoliv.</strong> Na všech tarifech.</li>
         </ul>
       </div>
     </div>
@@ -485,7 +505,7 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
     <div class="section-head">
       <span class="eyebrow">Pozice na trhu</span>
       <h2>Mezi samoobsluhou, agenturou a freelancerem.</h2>
-      <p>Kombinace AI rychlosti, statické bezpečnosti a české lidské tváře. Web jako mikrovlnka — nestaráš se o ní každý den, ale když ji potřebuješ, funguje.</p>
+      <p>Kombinace AI rychlosti, statické bezpečnosti a české lidské tváře. Web jako mikrovlnka — nestaráte se o ni každý den, ale když ji potřebujete, funguje.</p>
     </div>
 
     <div class="compare">
@@ -503,7 +523,7 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
         <strong>Drahé a pomalé</strong>
         <ul>
           <li>Excel projekty, „synergie“</li>
-          <li>Jednou zaplatíš, pak nic</li>
+          <li>Jednou zaplatíte, pak nic</li>
           <li>Cena 80 000 Kč+ za audit</li>
         </ul>
       </div>
@@ -540,23 +560,23 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
     <div class="values">
       <div class="value">
         <h3>Bez kravin</h3>
-        <p>Žádné cookie banery. Žádné popupy. Žádné „akceptujte vše“. Žádné „synergie“ a „omnichannel“.</p>
+        <p>Žádná okénka se souhlasem. Žádné popupy. Žádné „akceptujte vše“. Žádné „synergie“ a „omnichannel“.</p>
       </div>
       <div class="value">
         <h3>Hned</h3>
-        <p>TTFV pod minutu. Free analýza okamžitě. Edit publikuje za 30 sekund. Žádné „dorazí v Q3“.</p>
+        <p>První výsledek do minuty. Bezplatná analýza okamžitě. Úprava webu naživo za 30 sekund. Žádné „dorazí v Q3“.</p>
       </div>
       <div class="value">
         <h3>Konkrétně</h3>
-        <p>Místo „rychlejší“ → LCP 0,9 s místo 3,2 s. Místo „lepší SEO“ → 17 nových klíčových slov. Čísla, ne adjektiva.</p>
+        <p>Místo „rychlejší“ → naběhne za 0,9 s místo 3,2 s. Místo „lepší SEO“ → 17 nových klíčových slov. Čísla, ne přídavná jména.</p>
       </div>
       <div class="value">
         <h3>Lidsky</h3>
-        <p>Tykáme. Krátké věty. Nešlo to → řekneme to. AI to dělá → řekneme to. Garant má jméno.</p>
+        <p>Vykáme. Krátké věty. Nešlo to → řekneme to. AI to dělá → řekneme to. Garant má jméno.</p>
       </div>
       <div class="value">
         <h3>Trvanlivě</h3>
-        <p>Statika. Žádný framework, který za dva roky skončí. Web zákazníka přežije naši smrt — má export, doménu, otevřený formát.</p>
+        <p>Statika. Žádný módní framework, který za dva roky umře. Váš web přežije i nás — máte export, doménu, otevřený formát.</p>
       </div>
     </div>
   </div>
@@ -566,51 +586,51 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
 <section id="standardy">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">Standardy výstupu</span>
+      <span class="eyebrow">Standardy</span>
       <h2>Každý web od nás splňuje, bez výjimky.</h2>
-      <p>Nekompromisní. Zákazník nemůže říct „chci cookie banner“ a my ho uděláme. Pokud trvá, je to custom produkt mimo „fakan.cz Standard“. Pluginy musí standardy splňovat, kernel je vynucuje při review.</p>
+      <p>Nekompromisně. Zákazník nemůže říct „chci okénko se souhlasem“ a my mu ho uděláme. Když na něm trvá, je to jiný produkt mimo standard fakan.cz. Pluginy musí pravidla splnit, kernel je vynucuje při schvalování.</p>
     </div>
 
     <div class="std">
       <div class="std-item">
         <span class="label">Soukromí</span>
         <strong>Bez cookies, bez banerů</strong>
-        <p>Auth přes signed JWT v sessionStorage. Cookieless analytics: CF Web Analytics + edge counter. GDPR-friendly defaultně.</p>
+        <p>Přihlášení přes podepsaný JWT v sessionStorage. Měření bez cookies: CF Web Analytics + edge counter. GDPR-friendly defaultně.</p>
       </div>
       <div class="std-item">
         <span class="label">Žádné CDN, žádné fonty zvenku</span>
-        <strong>Vše self-host</strong>
-        <p>Bez third-party trackerů, fontů a CDN. Žádný Google Fonts call. Žádný Cloudflare CDN cookie. Vše na našem hostingu.</p>
+        <strong>Vše u nás</strong>
+        <p>Bez třetích stran, fontů a CDN. Žádný Google Fonts call. Žádný Cloudflare CDN cookie. Vše na našem hostingu.</p>
       </div>
       <div class="std-item">
         <span class="label">Mobile-first</span>
         <strong>375 × 812 výchozí</strong>
-        <p>Touch targety ≥ 44 × 44 px. Žádný hover-only. Žádný horizontální scroll. Klávesnicová navigace povinná.</p>
+        <p>Plochy pro prst ≥ 44 × 44 px. Žádný hover-only. Žádný horizontální scroll. Klávesnicová navigace povinná.</p>
       </div>
       <div class="std-item">
         <span class="label">Auto theming</span>
-        <strong>Dark / light bez switcheru</strong>
-        <p>Přes <code>prefers-color-scheme</code>. Žádný switcher v UI defaultně — respektujeme nastavení systému.</p>
+        <strong>Tmavý / světlý bez přepínače</strong>
+        <p>Přes <code>prefers-color-scheme</code>. Žádný přepínač v UI defaultně — respektujeme nastavení systému.</p>
       </div>
       <div class="std-item">
         <span class="label">Přístupnost</span>
         <strong>WCAG 2.2 AA minimum</strong>
-        <p>Sémantický HTML, plná klávesnicová navigace, viditelný focus, screen-reader testing před vydáním.</p>
+        <p>Sémantický HTML, plná klávesnicová navigace, viditelný focus, test screen-readeru před vydáním.</p>
       </div>
       <div class="std-item">
         <span class="label">Strukturovaná data</span>
         <strong>Schema.org JSON-LD</strong>
-        <p>Sitemap, robots, canonical, Open Graph + Twitter Card per stránka. Hned od Day 1.</p>
+        <p>Sitemap, robots, canonical, Open Graph + Twitter Card per stránka. Hned od prvního dne.</p>
       </div>
       <div class="std-item">
         <span class="label">Rychlost</span>
-        <strong>LCP &lt; 1,5 s · CLS &lt; 0,05</strong>
-        <p>INP &lt; 200 ms. JS &lt; 30 kB gzip per stránka. Statické HTML, žádný hydration tax.</p>
+        <strong>Naskočí do 1,5 sekundy</strong>
+        <p>LCP &lt; 1,5 s · CLS &lt; 0,05 · INP &lt; 200 ms. JS &lt; 30 kB gzip per stránka. Statické HTML, žádná aplikační vrstva navíc.</p>
       </div>
       <div class="std-item">
-        <span class="label">Legalita</span>
+        <span class="label">Zákonné</span>
         <strong>GDPR-friendly defaultně</strong>
-        <p>Nesbíráme nic, k čemu bychom potřebovali souhlas. E-mail v kontaktech jen s validací magic link.</p>
+        <p>Nesbíráme nic, k čemu bychom potřebovali souhlas. E-mail v kontaktech jen s ověřením přes přihlašovací odkaz.</p>
       </div>
     </div>
   </div>
@@ -1223,7 +1243,7 @@ footer .meta { padding-top: 24px; border-top: 1px solid var(--line); display: fl
       <div>
         <a class="brand" href="#nahore" style="margin-bottom: 12px;">
           <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-            <rect x="2" y="2" width="28" height="28" rx="8" fill="#0B1221"/>
+            <rect x="2" y="2" width="28" height="28" rx="8" fill="currentColor"/>
             <path d="M10 23 V9 h12 v3 h-9 v3 h7 v3 h-7 v5 z" fill="#FF5722"/>
           </svg>
           fakan.cz
