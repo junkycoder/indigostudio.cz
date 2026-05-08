@@ -290,6 +290,39 @@ Conventional prefixy v ekosystému týmu: `feat`, `fix`, `refactor`, `docs`, `ch
 - Pokud odhalíš problém v cizím rozpracovaném úkolu, **nepřepisuj ho.** Založ vlastní úkol „Review & navázání na X".
 - Pokud najdeš stejný problém řešený dvakrát, **zastav se a flagni to v README.**
 
+### 7.6 Tie-breaker pravidla pro auto-režim
+
+Když iterace běží v automatickém režimu (např. přes `/iterace`, scheduled task, nebo headless orchestrátor), neexistuje živý Fakan, který by rozhodl konflikty mezi rolemi. Bez deterministického pravidla se cyklus zacyklí nebo junior začne improvizovat. **Tahle sekce platí jen pro auto-režim — když řídí iteraci živý Fakan, rozhoduje on.**
+
+#### Doménová autorita
+
+Každá doména má **jednu hlavní roli**, jejíž rozhodnutí má v rámci té domény přednost před ostatními:
+
+| Doména | Autorita | Příklady konfliktů |
+|---|---|---|
+| **Tech & architektura** (stack, schéma D1, API surface, deployment) | `senior-architect` | PM navrhne tabulku `contacts`, architect `leads` → vyhrává `leads` |
+| **Scope & rozsah dodávky** (co je in/out, co je MVP) | `owner` (v auto-režimu jeho proxy = brief) | Marketer chce přidat tracking, brief o tom mlčí → ven, scope creep |
+| **Compliance & legal** (GDPR, cookies, regulace) | `legal-advisor` | Architect chce ukládat plnou IP, legal říká hash → vyhrává hash |
+| **Cost & budget** (rozpočet, cena per-akce, breakpointy) | `finance` | Architect navrhne službu, kterou finance nezvládne → finance má veto, eskalace na ownera |
+| **Tón & copy** (texty, brand, jazyk) | `marketer` | Junior napíše „Děkujeme za zájem", marketer „Máme to. Díky." → vyhrává marketer |
+| **Workflow & koordinace** (pořadí tasků, kdo co dělá) | `project-manager` | Architect a tester se hádají kdo první → vyhrává PM |
+| **Standardy napříč projekty** (reuse, šablony, retro learnings) | `product-manager` | PM zakázky chce vlastní pattern, product-manager řekne „už to máme" → vyhrává product-manager |
+| **Fakta & rešerše** (ceny, API, regulace) | `researcher` | Finance odhaduje, researcher dohledal → vyhrává researcher (čerstvější data) |
+
+#### Pravidla soubojů
+
+1. **Každý konflikt má vítěze.** Když dvě role tvrdí opak, vyhrává ta s autoritou v dané doméně. Druhá role se podřídí, **nehádá se podruhé**.
+2. **Cross-doménový konflikt** (např. tech vs. legal) — vždy vyhrává **legal a finance** nad tech a scope. Nelegální nebo nezaplatitelné řešení neexistuje, i kdyby bylo technicky čisté.
+3. **Konflikt s briefem ownera** — vždy vyhrává brief, ledaže legal/finance řeknou „takhle ne". Pak se vrací zpět na ownera (eskalace, ne tichý přepis).
+4. **Když není jasné, kdo má autoritu** — eskaluje to `project-manager` → `product-manager` → otevřená otázka pro Fakana (zápis do README sekce „Otevřené otázky pro Fakana").
+5. **Tie-breaker rozhodnutí se zapisuje** do `projects/<název>/decisions.md` s formátem: `[datum] [doména] konflikt: A vs. B → vyhrál: X. Důvod: Y.` Aby retro vidělo, kde to drhlo.
+
+#### Co tie-breaker NEROBÍ
+
+- Nenahrazuje rozhovor mezi rolemi — agenti se mají nejdřív pokusit dohodnout. Tie-breaker je až poslední krok.
+- Nemění brand/tech mantinely (sekce 2 a 3) — ty jsou nadřazené všemu, žádná role je nepřepíše.
+- Nepouští do produkce nic, na čem leží `[!] (blokátor: …)` z legal nebo bezpečnostního důvodu.
+
 ## 8. Jak ověřit hotovou práci
 
 Než označíš úkol jako hotový:
