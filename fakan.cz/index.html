@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>fakan.cz — váš web, bez starostí</title>
-<meta name="description" content="Zadejte adresu svého webu a za pár sekund uvidíte, co s ním. Bezplatná analýza, bez registrace, bez háčků. Hosting od 99 Kč měsíčně.">
+<meta name="description" content="Když web, jedině od Fakana. Auditujeme, navrhujeme, hostujeme weby pro malé firmy v Česku. Bez cookies, bez výmluv, bez vázanosti.">
 <meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://fakan.cz/">
 <meta property="og:title" content="fakan.cz — váš web, bez starostí">
-<meta property="og:description" content="Zadejte adresu svého webu a za pár sekund uvidíte, co s ním. Bezplatná analýza, bez registrace, bez háčků.">
+<meta property="og:description" content="Když web, jedině od Fakana. Audit, návrh, hosting pro malé firmy v Česku. Bez cookies, bez výmluv.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fakan.cz/">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:site_name" content="fakan.cz">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fakan.cz — váš web, bez starostí">
-<meta name="twitter:description" content="Zadejte adresu svého webu a za pár sekund uvidíte, co s ním. Bezplatná analýza, bez registrace, bez háčků.">
+<meta name="twitter:description" content="Když web, jedině od Fakana. Audit, návrh, hosting pro malé firmy v Česku. Bez cookies, bez výmluv.">
 <meta name="robots" content="index, follow">
 <script type="application/ld+json">
 {
@@ -25,6 +25,7 @@
   "name": "fakan.cz",
   "legalName": "Indigo Studio s.r.o.",
   "url": "https://fakan.cz",
+  "slogan": "Když web, jedině od Fakana.",
   "description": "Pluginová platforma pro audit, návrh, realizaci, hosting, správu a růst webových stránek.",
   "founder": {
     "@type": "Person",
@@ -118,6 +119,9 @@ header {
 
 /* Eyebrow */
 .eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; font-weight: 600; color: var(--orange); margin-bottom: 14px; }
+
+/* Brand claim — sentence case s tečkou, sedí nad eyebrow / H1 v hero */
+.brand-claim { display: block; letter-spacing: 0.08em; font-size: 14px; font-weight: 600; color: var(--orange); margin: 0 0 10px; }
 
 /* Hero */
 .hero { padding: clamp(70px, 9vw, 130px) 0 clamp(60px, 7vw, 100px); border-bottom: 1px solid var(--line); }
@@ -296,6 +300,7 @@ input:focus-visible { outline: none; }
 <!-- HERO -->
 <section class="hero">
   <div class="wrap">
+    <p class="brand-claim">Když web, jedině od Fakana.</p>
     <span class="eyebrow">Bezplatná analýza webu</span>
     <h1>Váš web. Bez&nbsp;starostí.</h1>
     <p class="hero-sub">Zadejte adresu svého webu. Za pár sekund uvidíte, co s ním. Zdarma, bez registrace, bez háčků.</p>
