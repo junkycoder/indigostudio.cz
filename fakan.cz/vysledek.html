@@ -241,6 +241,9 @@ footer a:hover { color: var(--fg); }
   .gate .btn { width: 100%; }
 }
 </style>
+<!-- Cloudflare Web Analytics — cookieless, server-side aggregation -->
+<!-- Před produkčním deployem nahradit TBD-CF-WEB-ANALYTICS-TOKEN reálným tokenem z CF dashboardu. Viz projects/landing-v2/decisions.md. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "TBD-CF-WEB-ANALYTICS-TOKEN"}'></script>
 </head>
 <body>
 
