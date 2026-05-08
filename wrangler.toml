@@ -2,6 +2,10 @@ name = "fakan-cz"
 main = "src/worker.js"
 compatibility_date = "2025-05-01"
 
+# ⚠️ Před prvním produkčním deployem spustit `wrangler secret put CONSENT_SALT`
+# (32+ bytes random string). Bez secretu IP hash nefunguje a lead capture vrátí
+# `salt_missing`. Žádný `[vars] CONSENT_SALT = ""` — prázdný var by přepsal secret.
+
 # Custom domain — přidáno přes dashboard při migraci z Pages → Workers (2026-05-07).
 # Zafixováno v repu, aby ho lokální `wrangler deploy` neodhlásil. wrangler.toml = source of truth.
 [[routes]]
@@ -37,7 +41,5 @@ id = "TBD-replace-after-wrangler-kv-namespace-create"  # nahradit po `wrangler k
 [[send_email]]
 name = "EMAIL"
 
-# CONSENT_SALT řešit přes `wrangler secret put CONSENT_SALT` před prvním deployem;
-# tady jen placeholder, ať se nezapomene. Salt se používá pro sha256(ip + salt) hash v leads tabulce.
-[vars]
-CONSENT_SALT = ""
+# CONSENT_SALT — viz komentář na vrcholu souboru. Řízeno přes `wrangler secret put`,
+# nikoliv přes `[vars]` (prázdný var by secret přepsal a lead capture by selhal).
