@@ -277,4 +277,155 @@ Pokud Fakan akceptuje YELLOW se sledováním KV writes po 1. týdnu produkce, **
 
 ## Retro (Fáze 6)
 
-<!-- Skutečnost vs. forecast. Top 3 spotřebiče. Optimalizace pro příště. -->
+---
+
+## Retro 2026-05-08
+
+**Autor:** finance
+**Vstupy:** delivery report (44 commitů, ~56 agent-h), decisions.md (Fáze 4 — přestřel 19 % akceptován), approvals.md (owner OK), tester report T24 (FAIL → fix kruh), architect review (APPROVED WITH FIXES, 1 BLOCK + 4 FIX → fix kruh).
+
+### 1. Skutečný cost vs. forecast
+
+| Položka | Forecast | Skutečnost | Diff |
+|---|---|---|---|
+| Runtime cost / měsíc | $0–5 | $0 (pre-launch, traffic = 0) | **0** |
+| AI tokeny (API volání) | 0 (Gate 1 zakázal) | 0 | **0** |
+| Externí náklady (provideři, licence, fonty) | $0 | $0 | **0** |
+| Agent-h celkem | 36–47 h | **~56 h** | **+19 % přestřel** |
+| Commitů iterace | n/a | 44 | n/a |
+| Cash-out Fakana | 0 Kč | 0 Kč | **0 Kč** |
+
+**Bottom line:** Iterace ekonomicky **zelená**. Žádný cent peněz neuteklo, runtime $0/měs do 10× predikovaného traffic, breakeven proti rozpočtu „5000 Kč" (interpretace B z Gate 1) je 100% dosažený se 100% rezervou. Drift je výhradně v agent-čase, který Fakan v Gate 1 explicitně delegoval na tým.
+
+### 2. Top 3 spotřebitelé času (ne peněz)
+
+#### 1. Opravný kruh po code review + acceptance test (~3–4 h navíc)
+
+**Co:** 6 fix commitů po architect review (APPROVED WITH FIXES) a tester acceptance (FAIL):
+- `5811365` — kontraktní bug `em` vs. `email` napříč FE/BE/testy (BLOCKER z testera, fixoval architect call)
+- `03cada7` — prázdný `CONSENT_SALT` v `[vars]` smazán (BLOCK z architect review, security incident in waiting)
+- `bb5dea3` — `lead-capture` rate limit připojen v `captureLeadAndMail` (FIX z architect review, anti-abuse vrstva chyběla)
+- `4a20ce4` — idempotence catch zúžen na `leads_idem` (FIX z architect review, cross-table false positive)
+- `7c99240` — `prehled.html` dokončit vykání mimo hero (MAJOR z testera, AC drift TASK-18)
+- `a39d8d9` — SSE stage labely vykání v `analyze.js` (minor z testera, hláška během analýzy)
+
+**Spotřeba:** 6 fixů × průměrně 30 min juniora = **3 h**, plus rework testů + re-run = ~30 min. Celkem **~3,5 h ze ~56 h iterace = 6 % celkového času** strávilo opravováním už hotové práce. To je rework, ne nová hodnota.
+
+**Příčina koncentrovaná do jednoho:** **kontraktní bug `em` vs. `email`** — junior implementoval `em=` ve frontendu (per design.md § 3.1), ale `parseLeadParams` v `analyze.js` četl `email=` (zřejmě protože si junior četl test fixture, ne design). Tester to zachytil, ale teprve **po** dokončení implementace. Architect review bug nezachytil, protože reviewoval kód proti sobě (FE i BE psal stejný junior, oba byly „konzistentní v rámci kódu", jen jiné než design).
+
+#### 2. Tester acceptance — přestřel 8,5 h vs. forecast 3–4 h (~+5 h)
+
+**Co:** Tester poctivě prošel 11 sekcí (8 unit testů + lead capture happy path + edge cases + opt-out flow + frontend smoke + HTML strukturní validátor + wrangler dry-run + SQL migrace + 4 mail šablony render + brand check + CLAUDE.md mantinely). Na výstupu 65+ PASS, 2 FAIL, 5 FLAGS. Dohromady **8,5 h** podle reálné spotřeby z delivery reportu.
+
+**Forecast byl 3–4 h** (forecast Fáze 1, sekce 4) — to je **2× přestřel**, řádově horší než celkových 19 % iterace. Důvod: forecast počítal s spot-checkem kritických cest, realita byla plná acceptance celé iterace včetně mail render, idempotence reprodukce, security audit honeypot, vykání regex sken všech 5 stránek + 4 mail šablon.
+
+**Hodnota přestřelu:** **vysoká.** Tester sám zachytil 1 BLOCKER (Bug #1 `em`/`email`) + 1 MAJOR (`prehled.html` tykání) + 5 FLAGS. Bez něj by lead capture v produkci nikdy nenaběhla — Fakan by zjistil sám až po prvním reálném leadu, který se neobjevil v D1.
+
+#### 3. Konzistenční gate v PM rozpadu — 3 tie-breakery (~1 h navíc)
+
+**Co:** Při rozpadu na tasky (commit `39aaed4`) PM odhalil 3 nekonzistence napříč dokumenty:
+- URL slug Privacy Policy: `/zasady-ochrany-osobnich-udaju.html` (design + decisions auto) vs. `/ochrana-udaju` (risk-check § 4.2 + fit-check § 4.4) → vyhrál `/ochrana-udaju`
+- Opt-out query parametr `?token=` (brief) vs. `?t=` (design + risk-check + README) → vyhrál `?t=`
+- MailChannels reference v risk-check § 5.3 vs. Email Workers v Gate 1 + ADR-001 → vyhrál Email Workers
+
+**Spotřeba:** ~1 h PM práce navíc + dohledávání v dokumentech. **Hodnota: vysoká.** Bez gatu by junior implementoval podle jednoho zdroje a ignoroval druhý → 3 chyby v produkci → další opravný kruh za další ~3 h. **ROI ~3:1**, gate se vyplatil.
+
+### 3. Optimalizace pro příští iterace
+
+#### A. Explicitní API kontrakt v rozpadu (PM tasks.md)
+
+**Problém:** Bug `em` vs. `email` vznikl tím, že copy.md, design.md a tasks.md neformalizovaly query string kontrakt jako jediný zdroj pravdy. Junior si při implementaci sáhl do nejbližšího referenčního bodu (test fixture), který byl jiný než design.
+
+**Řešení:** PM v rozpadu dodá samostatnou sekci **„API kontrakt"** v `tasks.md` se všemi parametry napříč FE/BE — query stringy, response formáty, query klíče přesně jak je vidí prohlížeč. Při review se kontroluje proti této sekci, ne proti kódu sobě.
+
+**Cena:** ~30 min při rozpadu. **Návratnost:** ušetří ~3 h opravného kruhu = **ROI 6:1**.
+
+#### B. Tester cap 4 h pro malé iterace + opravný kruh budget
+
+**Problém:** Tester přestřelil 5 h (8,5 h vs. 3,5 h forecast) — pro malou iteraci to je hodně.
+
+**Řešení dvojí:**
+1. **Cap testera na 4 h pro acceptance** v capacity plánu, plus rezervovat **1–2 h opravný kruh budget** explicitně. Plné acceptance jen pro produkční launch features.
+2. **Pro opakované iterace stejného typu** (lead capture v2, lead capture v3) **spot-check sample** stačí, full acceptance jen poprvé.
+
+Forecast bude přesnější: **prv í iterace nového typu = 6 h tester (4 h acceptance + 2 h opravný kruh), druhá iterace = 2 h spot-check.**
+
+#### C. Buffer +20 % v capacity plánu pro první iterace
+
+**Problém:** Drift 19 % (36–47 h forecast → 56 h skutečnost) je typický pro první iteraci nového typu. Buffer chyběl.
+
+**Řešení:** Pro první iteraci nového typu (lead capture compliance, BYO klíč flow, billing flow, …) PM přičte **+20 % rezervu** do capacity plánu. Druhá iterace stejného typu má naopak rezervu díky reuse a learnings.
+
+**Praktický dopad:** kdybychom měli buffer od Fáze 1, forecast by byl 43–56 h místo 36–47 h, drift by byl **0 %**, ne 19 %.
+
+#### D. Side-effect tooling jako samostatný task, ne improvizace
+
+**Problém:** `scripts/audit-url.sh` (Lighthouse helper) si junior vytvořil jako vedlejší produkt T16 smoke testu, neaktivně zacommitoval. Owner v approval řekl „commitněte ho s krátkým README, ať to ostatní vidí", ale strukturálně to do iterace nepatřilo.
+
+**Řešení:** PM v rozpadu explicitně říct **„pokud potřebuješ tooling, navrhni samostatný task s odhadem, nedělej side-effect z jiného tasku".** Buď to bude task s hodinou rozpočtu, nebo to nebude — žádné stealth deliverables.
+
+**Cena:** drobná disciplína. **Hodnota:** čistý audit time spent + lepší reuse (samostatný task má vlastní AC a dokumentaci, side-effect má v hlavě jen junior).
+
+### 4. Reuse / promotion do standardů (kandidáti pro PM produkt retro)
+
+Top 3 reuse z fit-checku, které doporučuju **promotovat do `templates/`** v rámci PM produkt retra:
+
+#### 1. Šablona lead capture (D1 schema + Email Workers + soft DOI + opt-out token) → `templates/lead-capture/`
+
+**Co reusovat:**
+- `migrations/0001_leads.sql` — 17 sloupců, 3 indexy, idempotence per-day, UNIQUE token
+- `src/lib/lead.js` + `src/lib/hash.js` + `src/lib/url-strip.js` — capturing logika
+- `src/lib/mail.js` + `src/lib/mime.js` — Email Workers wrapper bez `mimetext` dep
+- `src/optout.js` — opt-out flow s neutrálním response (security-correct)
+- `src/lib/ratelimit.js` — KV-backed throttling
+
+**Hodnota:** příští iterace vyžadující lead capture / kontaktní formulář / objednávkový formulář ušetří **~10–14 h** (junior + architect design).
+
+#### 2. Brand-token komponenta 40+ (typografie, kontrast, animace) → tokens.css v Priority 2 README
+
+**Co reusovat:**
+- Body font ≥ 18 px (mobil 17), CTA ≥ 56 px, kontrast WCAG 2.2 AA — z hero `index.html`, `vysledek.html`, `prehled.html`
+- Brand barvy z PRD sekce 5.2 + 40+ adjustace (větší typografie, vyšší line-height)
+- Sentence case v UI titulech, vykání default
+
+**Hodnota:** příští klientský web pro 40+ cílovku ušetří **~3–5 h** redesignu.
+
+#### 3. Mailové šablony (multipart, opt-out, bez trackeru, CZ patička) → `templates/email/`
+
+**Co reusovat:**
+- `src/email/_layout.js` — společný HTML/text layout s patičkou Indigo Studio s.r.o. (parametrizace názvu firmy + IČO + OR pro budoucí zákazníky fakan.cz)
+- `src/email/lead-followup.js` + `optout-confirmation.js` + `soft-doi.js` + `magic-link-auth.js` (DRAFT v0)
+- Pravidlo: **0 `<img>` v šablonách** (žádný tracking pixel), plain-text twin povinný, `List-Unsubscribe` + `List-Unsubscribe-Post: One-Click` (RFC 8058)
+- Patička per § 435 NOZ — identifikace firmy parametrizovaná
+
+**Hodnota:** příští iterace s mailingem ušetří **~5–7 h** marketer + legal compliance kontroly.
+
+### 5. AI tokeny — proč zůstaly na nule
+
+Fakan v Gate 1 explicitně zakázal AI API volání v iteraci („API volání ne"). Marketer napsal copy ručně přes běžný Claude Code workflow agent-mode, který se jako AI tokeny **neúčtuje zvlášť** — Fakan platí předplatné Claude Code, ne per-token spotřebu agentů. Ve výsledku:
+
+- **Anthropic API faktura za iteraci:** 0 USD / 0 Kč
+- **Cloudflare Workers AI faktura:** 0 USD (žádné runtime AI volání, decisions.md zakázalo)
+- **OpenAI:** nepoužito (mantinel sekce 2 CLAUDE.md, default Claude)
+
+Toto je **opakovatelný vzorec** pro bootstrap fázi — copy řeší marketer ručně, runtime AI počká na Fáze 6+ (BYO klíč, AI redesign). Žádná blokace, žádný náklad.
+
+### 6. KV writes monitoring (z final pre-launch projekce, sekce 6)
+
+**Připomínka pro D+7 retro (první týdenní retro po launch):** Cloudflare dashboard, KV namespace `RATELIMIT`, denní writes count. Free tier 1 000 writes/den — při 1k visit/den a 1 rate-limit increment per visit jsme na hraně. Pokud reálná data ukáží, že jsme stabilně pod 500/den, **YELLOW se autoupgraduje na GREEN**. Pokud nad 1 000/den, cena překročení je $0,15/měs (zanedbatelné), ale signál škálování.
+
+### 7. Verdikt iterace landing-v2
+
+**Finanční verdikt: GREEN.**
+
+- Runtime $0/měs (do 10× predikovaného traffic žádný breakpoint v dohledu)
+- Žádný externí přečerpaný náklad, žádné AI tokeny, žádný cash-out Fakana
+- Agent-h přestřel 19 % je **akceptovatelný drift pro první iteraci nového typu**, Fakan v Gate 1 delegoval rozpočet na tým agentů a v approvals přestřel explicitně schválil
+- Druhá iterace stejného typu (lead capture v2 / další klient) by měla **sedět nebo podsouvat forecast** díky šablonám z reuse sekce 4
+
+**Doporučení pro příští iteraci (3 bullety):**
+1. Capacity plán s **bufferem +20 %** pro první iterace nového typu
+2. Pre-rozpadu sekce **„API kontrakt"** v `tasks.md` jako jediný zdroj pravdy pro FE/BE query string + response format
+3. **Tester cap 4 h** + 1–2 h opravný kruh budget explicitně v capacity plánu (full acceptance jen pro produkční launch features)
+
+**Pro PM produkt retro (paralelně):** top reuse kandidát = šablona lead capture (`templates/lead-capture/`), úspora pro příští iteraci stejného typu ~10–14 h juniora.
