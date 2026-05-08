@@ -170,6 +170,111 @@ I s těmito pojistkami se vejdeme **pod 1 USD = pod 25 Kč** za AI použití př
 
 <!-- Aktualizovaný forecast s reálnými čísly z exekuce. -->
 
+---
+
+## Final pre-launch projekce 2026-05-08
+
+Kontext: po Gate 1, po implementaci, po architect code review (APPROVED WITH FIXES) a po opravách (5× fix commit). Vstupy: `decisions.md` (legacy `send_email` binding, AI API zakázáno), `design.md`, research `2026-05-08-email-workers-dns-cz-patrny.md`, code review `2026-05-08-architect-review-landing-v2.md`.
+
+### 1. Runtime náklady — produkce
+
+Předpoklad traffic pro launch: **~1 000 visitů/den, ~50 leadů/den, ~50 mailů/den** (analýza, follow-up). Lookups na opt-out řádově desítky/den.
+
+| Položka | Free tier | Reálné využití (předpoklad) | Cena/měsíc |
+|---|---|---|---|
+| Cloudflare Workers requests | 100 000/den | ~1k visit/den × 5 reqs = **5 000/den** | **$0** |
+| Cloudflare Workers CPU | 10 ms/req free, 50 ms strop | <10 ms avg (deterministické detektory + 1 D1 insert) | **$0** |
+| Cloudflare D1 reads | 5M/den | ~100/den (opt-out lookup, idempotence check) | **$0** |
+| Cloudflare D1 writes | 100 000/den | ~50/den (lead inserts) + drobně updates | **$0** |
+| Cloudflare D1 storage | 5 GB | <1 MB (řádově tisíce řádků leads) | **$0** |
+| Cloudflare KV reads | 100 000/den | ~5 000/den (rate limit checks `lead:ip:*`) | **$0** |
+| Cloudflare KV writes | 1 000/den | **~500–1 000/den** (rate limit increments) | **$0–nízké** ⚠ |
+| Cloudflare Email Workers (legacy `send_email`) | unlimited (dynamicky upravované) | ~50 mailů/den | **$0** |
+| Cloudflare R2 storage | 10 GB | 0 (nepoužíváme) | **$0** |
+| Doména `fakan.cz` | — | Fakan už platí externě | **mimo iteraci** |
+| AI API volání (Claude / Workers AI) | — | **0** (decisions.md zakázalo) | **$0** |
+| **CELKEM runtime** | | | **~$0/měsíc** |
+
+**TL;DR:** Produkce stojí **0 USD/měsíc** při očekávaném traffic. Žádný breakpoint v dohledu pro bootstrap fázi.
+
+### 2. Breakpointy — kdy se to mění
+
+Kdy zaplatíme první korunu, seřazeno podle pravděpodobnosti:
+
+1. **KV writes 1 000/den (rate limit)** — **první ohrožený limit**. Při 1k visit/den a každý spustí 1 rate-limit increment, jsme na hraně. Pokud spam bot zahltí formulář, přeskočíme limit za hodinu. **Cena nad limit:** $0,50/M writes, takže i 10× nad limit = $0,15/měs (zanedbatelné). Ale je to první signál, že něco škálujeme.
+2. **Workers requests 100k/den** — viral hit (~30 000 unikátních visitorů/den) by tohle protrhl. Cena: $0,30/M nad free tier + $5/měs Workers Paid base. V bootstrap fázi nereálné, ale po launchi sleduj.
+3. **Email Workers daily limit** — Cloudflare ho v docs neuvádí, dynamicky upravuje per-account. Bootstrap fáze (~50 mailů/den) je hluboko pod prahem. Pokud někdy přijde „daily limit exceeded", **Limit Increase Request** je free.
+4. **D1 writes 100k/den** — neaktuální risk. Při ~50 leadech/den máme rezervu **2000×**. Spam attack 100k leadů/den by to teoreticky protrhl, ale rate limit dříve.
+5. **D1 storage 5 GB** — při ~50 leadech/den × ~1 KB/řádek = ~18 MB/rok. Na 5 GB cíl trvá **270 let**. Ne.
+
+### 3. Migrace na Email Service Email Sending — kdy zvážit
+
+- **Současný stav:** legacy `send_email` binding, free, žádné placené plány. Pro 100–500 mailů/měsíc to pohodlně stačí.
+- **Breakpoint na migraci:** **při >3 000 mailů/měsíc** (~100/den) zvážit přechod na novou Email Service Email Sending. Nutné: Workers Paid plán **$5/měsíc**, pak 3 000 free + $0,35/1 000 dalších.
+- **Ekonomika:** pro 5 000 mailů/měsíc by stálo $5 + $0,70 = $5,70/měs. Pro bootstrap fázi (zatím ~1 500/měs) **legacy zůstává vítěz**.
+- **Důvod migrace dřív** by byl: 1) potřeba broadcastu (newsletter, ne MVP), 2) hard limit na legacy bindingu, 3) potřeba doručitelnosti SLA. Nic z toho teď.
+
+### 4. Skutečný cost iterace landing-v2 (agent-čas)
+
+Iterace měla **37 commitů** v rozpadu:
+- **17× feat(landing-v2)** — implementační tasky (TASK-01 až TASK-20)
+- **13× docs** — brief, risk-check, forecast, fit-check, design, ADR-001, copy, rozpad, post-research, OR spisovka, code review, acceptance test
+- **6× fix(landing-v2)** — opravy po code review a acceptance testu (em/email mismatch, prázdný CONSENT_SALT, rate limit chybějící, idempotence catch, prehled vykání, SSE labely)
+- **1× chore** — scaffold
+
+Hrubý odhad agent-času (vážený podle rolí):
+
+| Role | Co dělala | Odhad |
+|---|---|---|
+| **owner** | brief + Gate 1 odpovědi + delivery approval + dodal IČO/sídlo | ~3 h |
+| **legal-advisor** | risk check + Privacy Policy + consent text + pre-launch check | ~5 h |
+| **finance** | tenhle forecast + průběžně + final projekce + retro | ~3 h |
+| **product-manager** | fit check, kapacita | ~1 h |
+| **project-manager** | rozpad + konzistenční gate + tie-breakery + delivery | ~5 h |
+| **senior-architect** | design doc + ADR-001 + post-research rozhodnutí + code review s fixy | ~7 h |
+| **researcher** | Email Workers + DNS fakan.cz + CZ patička + ARES VR | ~3 h |
+| **junior-developer** | TASK-01..TASK-20 implementace + 6 oprav + 5 dodatečných souborů | **~18 h** |
+| **tester** | T24 acceptance + edge cases + 1 blocker reportován | ~4 h |
+| **marketer** | tagline „Tvůj web. Tvoje pravidla." + copy 3 stránek + 4 mail šablony + Privacy Policy + consent | ~7 h |
+| **CELKEM hrubě** | | **~56 h** |
+
+Forecast Fáze 1 byl **36–47 h**, **realita ~56 h** = **~19 % přestřel** (typický range pro první iteraci nového typu).
+
+**Důvody přestřelu:**
+- 5 fix commitů po code review + acceptance test = ~3–4 h navíc nečekaného opraváctví
+- Konzistenční gate odhalil 3 tie-breakery (URL slug PP, opt-out token name `t`, MailChannels reference v risk-check) = ~1 h navíc
+- Research o Email Workers měl flag „dvě Cloudflare služby, snadno se zamění" = post-research rozhodnutí navíc
+
+**AI tokeny:** **0** v rámci API volání (decisions.md zakázalo). Tokeny v běžném Claude Code workflow neměříme.
+
+### 5. Retro vstup — top 3 spotřebitelé času (ne peněz)
+
+Pro PM produktu retro:
+
+1. **Junior-developer (~18 h)** — drtivá většina implementačního času. Distribuce: ~12 h prvních feat commitů + ~3–4 h fix kolo + ~2 h scaffolding helpers (mime, hash, url-strip).
+2. **Architect (~7 h) + Marketer (~7 h)** — design doc s kompletní D1/Email Workers architekturou + ADR-001 + code review byl těžkotonážní. Marketer redesignoval kompletní copy 3 stránek + 4 mail šablon + Privacy Policy.
+3. **PM + Legal (~5 h každý)** — rozpad 20+ tasků, konzistenční gate s 3 tie-breakery, risk-check s GDPR articulátem.
+
+**Tip pro další iterace:**
+- **Konzistenční gate je drahý** (~1 h navíc), ale ušetřil 3 chyby v implementaci (špatný URL slug, špatný query param). Stojí to za to.
+- **Code review po implementaci stál ~3–4 h fix kruh.** Příště zvážit lehčí mid-implementation review po 50% commitů, ne až na konci.
+- **Research s flagem „dvě verze služby"** = vždy explicitně rozhodnout v decisions.md. Tohle se povedlo až post-research, mohlo se rozhodnout dříve a ušetřit kontextové přepínání.
+
+### 6. Finance verdikt pro Gate 3
+
+**🟡 YELLOW.**
+
+Důvod: **runtime ekonomicky bezpečný (~$0/měs do desetinásobku predikovaného traffic)**, ale jeden konkrétní risk k watchování:
+
+- **KV writes 1 000/den limit** je první breakpoint, který skutečně může spadnout. Při 1k visit/den jsme na hraně, spam attack to protrhne za hodinu. Cena překročení je řádově $0,15/měs (zanedbatelné), ale **monitorovat se to musí** — Cloudflare dashboard, KV namespace `RATELIMIT`, denní writes count.
+
+Pokud Fakan akceptuje YELLOW se sledováním KV writes po 1. týdnu produkce, **GREEN se autoupgraduje** jakmile bude reálná data. Zatím není důvod blokovat Gate 3 — žádný kritický náklad ani externí riziko.
+
+**Co sleduji po launchi (první 2 týdny):**
+1. KV writes per den v Cloudflare dashboardu
+2. Email Workers `mail_attempts > 1` v D1 (signal o problémech s deliverability)
+3. Lead/visit conversion rate (sanity check forecastu — pokud >10× nad odhad, breakpointy se posouvají)
+
 ## Retro (Fáze 6)
 
 <!-- Skutečnost vs. forecast. Top 3 spotřebiče. Optimalizace pro příště. -->
