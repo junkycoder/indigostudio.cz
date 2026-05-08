@@ -139,47 +139,17 @@ Schválím já. Když mi něco nesedí, vracím s konkrétním důvodem.
 
 ---
 
-## Otevřené otázky pro Fakana
+## Otevřené otázky pro Fakana — VYŘEŠENO 2026-05-08
 
-Tyhle musím ujasnit já (Fakan = živý člověk), jinak se nepohne dál. Pořadí podle blokátoru.
+Detail zápisu rozhodnutí v [`decisions.md`](decisions.md).
 
-1. **Rozpočet „5000 tokenů" — co to je?**
-   - AI tokeny? (Pak je to prakticky 0 a dělat se to bude bez AI volání.)
-   - 5 000 Kč?
-   - 5 hodin práce?
-   - 5 mil. AI tokenů?
-   - Bez tohohle nemůže finance udělat forecast a PM nemůže rozhodnout scope.
-   - **Blokuje:** finance forecast, PM kapacitní plán.
-
-2. **Tagline „Tvůj web. Bez výmluv."**
-   - Měnit na „Váš web. Bez výmluv." (konzistence s vykáním, ale ztratíme charakter)?
-   - Nebo nechat jako jediný tykací prvek (kotva, je v PRD i brand briefu)?
-   - **Blokuje:** finální copy hero a OG meta na všech třech stránkách. Mailové podpisy.
-
-3. **Brand brief & CLAUDE.md update — proces?**
-   - Má agent připravit PR s diffem a počkat na review?
-   - Nebo to chceš editovat sám až po skončení iterace?
-   - **Blokuje:** uzavření iterace (DoD bod 6).
-
-4. **Outbound mail — MailChannels nebo Cloudflare Email Workers?**
-   - MailChannels: zdarma, dokumentovaná cesta z Workerů, rychlejší rozjezd.
-   - Email Workers (Email Routing outbound): víc Cloudflare-native, ale komplikovanější setup.
-   - **Blokuje:** lead capture implementaci (architect potřebuje vědět, než navrhne).
-
-5. **Znění souhlasu — schválit nebo přepsat.**
-   - Návrh z README: „Souhlasím se zasláním výsledků analýzy a nezávazné nabídky e-mailem. Souhlas mohu kdykoliv odvolat odkazem v patičce e-mailu."
-   - Legal-advisor by měl projít. Pokud souhlasíš s tímhle zněním, OK. Pokud chceš jiné, dej.
-   - **Blokuje:** finální podobu formuláře a Privacy Policy.
-
-6. **Scope mailových textů — co ještě?**
-   - Lead followup je in scope, jasné.
-   - **Magic link auth e-maily** — auth ještě není implementovaný, mailové šablony tedy spekulativně. **Předpoklad: out of scope této iterace, počkají na implementaci magic link auth.** Potvrď, ať to nemerguju omylem.
-   - **Double opt-in mail** — potřebujeme? Nebo single opt-in se souhlasem v formuláři stačí? (Legal řekne, ale tvoje obchodní preference taky hraje.)
-   - **Blokuje:** scope marketera a finance forecast (víc šablon = víc práce).
-
-7. **Slovo „cookies" v hero stats** — můžu ho úplně vyhodit, nebo ho někde chceš nechat jako rozlišovací znak proti konkurenci?
-   - Cílovka 40+ to slovo nemá ráda (bombarduje ji každý web). Doporučuju vyhodit z hero stats, nechat v sekci „Standardy" jako jeden z bodů „bez cookie banerů — ne potřebujete řešit souhlas".
-   - **Blokuje:** finální copy hero stats karet.
+1. **Rozpočet „5000 tokenů"** → **Fakan: rozpočet řeší tým agentů.** Finance drží runtime ≈ 0 USD/měs + agent-čas 36–47 h. AI tokeny = 0 (volání zakázáno).
+2. **Tagline** → **kompletní redesign copy.** Žádné lpění na „Tvůj web. Bez výmluv." Marketer navrhne nový.
+3. **Brand brief / CLAUDE.md update** → **PR s diffem, Fakan review.** Default workflow.
+4. **Outbound mail** → **Cloudflare Email Workers.** (Legal preferuje, Fakan potvrdil.)
+5. **Znění souhlasu** → legal+marketer dodají ve Fázi 4, owner schválí v delivery.
+6. **Scope mailů** → **lead followup + magic-link auth + opt-out potvrzovací + soft DOI = všechno in scope.**
+7. **Slovo „cookies" v hero stats** → marketer rozhodne (vyhodit / přeformulovat).
 
 ---
 
