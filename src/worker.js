@@ -12,7 +12,7 @@ export default {
           headers: { 'content-type': 'application/json; charset=utf-8', allow: 'GET' },
         });
       }
-      return handleAnalyze(request);
+      return handleAnalyze(request, env, ctx);
     }
 
     if (url.pathname.startsWith('/api/')) {

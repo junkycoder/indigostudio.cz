@@ -7,6 +7,9 @@
 //  3. Po response headers → emit status, headers, cookies (parallelizable).
 //  4. Streamuj body do HTMLRewriter → emit meta, og, stack, trackers, banners.
 //  5. emit done (nebo error kdykoli).
+//  6. (TASK-12) Po `done`: piggyback lead capture přes ctx.waitUntil — pokud
+//     uživatel poslal `email` + `c=1` + `v` v query, zapíšeme lead do D1
+//     a pošleme follow-up mail. Server-side gate, žádný blocking SSE flow.
 
 import {
   STACK_PATTERNS,
@@ -15,6 +18,8 @@ import {
   SECURITY_HEADERS,
   detectFromText,
 } from './detectors.js';
+import { captureLead } from './lib/lead.js';
+import { sendMail } from './lib/mail.js';
 
 const FETCH_TIMEOUT_MS = 8000;
 const MAX_BODY_BYTES = 2_000_000; // 2 MB strop, ať nestáhneme něco šíleného
@@ -99,9 +104,71 @@ function makeSse() {
   return { readable, send, close };
 }
 
+// Honeypot fields — formulář na landingu má skryté inputy `website` a `company`,
+// které lidský uživatel nikdy nevyplní. Pokud do query přijdou neprázdné, je to bot.
+// Vrátíme tichou 200 odpověď s prázdným SSE streamem — žádná analýza, žádný lead.
+function isHoneypotTriggered(searchParams) {
+  const website = searchParams.get('website');
+  const company = searchParams.get('company');
+  return (
+    (typeof website === 'string' && website.trim().length > 0) ||
+    (typeof company === 'string' && company.trim().length > 0)
+  );
+}
+
+/**
+ * Z query stringu vytáhne parametry pro lead capture.
+ * Server-side gate: bez `email`, `c=1` nebo `v` se lead NEKAPTURUJE.
+ * Source default `'manual'` (legacy klienti bez `s`).
+ *
+ * @param {URLSearchParams} sp
+ * @returns {{ enabled: boolean, email: string|null, consentVersion: string|null, source: string, reason?: string }}
+ */
+export function parseLeadParams(sp) {
+  const email = sp.get('email');
+  const consent = sp.get('c');
+  const version = sp.get('v');
+  const source = sp.get('s') || 'manual';
+
+  if (!email || typeof email !== 'string' || email.trim().length === 0) {
+    return { enabled: false, email: null, consentVersion: null, source, reason: 'missing_email' };
+  }
+  if (consent !== '1') {
+    return { enabled: false, email: email.trim(), consentVersion: null, source, reason: 'missing_consent' };
+  }
+  if (!version || typeof version !== 'string' || version.trim().length === 0) {
+    return { enabled: false, email: email.trim(), consentVersion: null, source, reason: 'missing_version' };
+  }
+  return {
+    enabled: true,
+    email: email.trim(),
+    consentVersion: version.trim(),
+    source,
+  };
+}
+
 // Hlavní vstup do Worker handleru.
-export function handleAnalyze(request) {
+// `env` a `ctx` jsou volitelné — bez nich (např. v unit testech bez D1) se
+// piggyback lead capture vynechá, ale analýza poběží normálně.
+export function handleAnalyze(request, env, ctx) {
   const url = new URL(request.url);
+
+  // Honeypot — silent 200, prázdný SSE stream. Boti dostanou „prošlo".
+  if (isHoneypotTriggered(url.searchParams)) {
+    const sse = makeSse();
+    // Schedule immediate close — Worker runtime se postará o flush.
+    sse.close();
+    return new Response(sse.readable, {
+      status: 200,
+      headers: {
+        'content-type': 'text/event-stream; charset=utf-8',
+        'cache-control': 'no-cache, no-transform',
+        'x-accel-buffering': 'no',
+        connection: 'keep-alive',
+      },
+    });
+  }
+
   const target = url.searchParams.get('url');
 
   let parsed;
@@ -119,10 +186,20 @@ export function handleAnalyze(request) {
   // Worker poznáme podle hostname příchozího requestu — abychom poznali self-fetch.
   const workerHost = url.hostname;
 
+  // Lead capture parametry — pokud chybí, lead se nekapturuje, ale analýza běží.
+  const leadParams = parseLeadParams(url.searchParams);
+  if (!leadParams.enabled) {
+    console.log(`[analyze] lead capture skipped: ${leadParams.reason}`);
+  }
+
+  // `lastScore` slouží jako uzávěr pro post-`done` lead capture — runAnalysis
+  // ho naplní těsně před emitováním `done` eventu.
+  const summary = { score: null, verdicts: [] };
+
   // Spustíme analýzu, ale neblokujeme response. Tahle catch je poslední
   // záchrana — jakákoli neošetřená výjimka uvnitř runAnalysis musí pořád
   // vyprodukovat smysluplnou zprávu pro UI a něco do logu.
-  runAnalysis(parsed, sse, startedAt, workerHost).catch(async (err) => {
+  const analysisPromise = runAnalysis(parsed, sse, startedAt, workerHost, summary).catch(async (err) => {
     console.error('[analyze] unhandled', err);
     try {
       await sse.send('error', {
@@ -133,6 +210,17 @@ export function handleAnalyze(request) {
     await sse.close();
   });
 
+  // Lead capture piggyback — fire-and-forget po skončení analýzy.
+  // Per design § 3.1: kapturujeme i při SSE `error` (HTML jsme aspoň částečně
+  // získali, summary.score zůstává null → mail šablona to handluje placeholderem).
+  if (leadParams.enabled && env && ctx && typeof ctx.waitUntil === 'function') {
+    ctx.waitUntil(
+      analysisPromise.then(() =>
+        captureLeadAndMail({ env, request, url: parsed.toString(), leadParams, summary })
+      )
+    );
+  }
+
   return new Response(sse.readable, {
     status: 200,
     headers: {
@@ -142,6 +230,100 @@ export function handleAnalyze(request) {
       connection: 'keep-alive',
     },
   });
+}
+
+/**
+ * Lead capture + follow-up mail + D1 status update.
+ * Volá se z `ctx.waitUntil` po doběhu SSE — žádný blocking, žádné throw.
+ * Per architect autorita (T07 flag): DB update statusu je tady, ne v mail.js.
+ *
+ * @param {{ env: any, request: Request, url: string, leadParams: ReturnType<typeof parseLeadParams>, summary: { score: number|null, verdicts: any[] } }} args
+ */
+async function captureLeadAndMail({ env, request, url, leadParams, summary }) {
+  let lead;
+  try {
+    const result = await captureLead({
+      env,
+      request,
+      url,
+      email: leadParams.email,
+      source: leadParams.source,
+      consentVersion: leadParams.consentVersion,
+    });
+    if (!result.ok) {
+      console.error('[analyze] lead capture failed:', result.error);
+      return;
+    }
+    lead = result.lead;
+  } catch (err) {
+    console.error('[analyze] lead capture threw:', err);
+    return;
+  }
+
+  // Duplicita ten samý den — nic neposíláme (idempotence per design § 2.3).
+  if (lead.duplicate) return;
+
+  // Mail vars — score + top 3 issues z aktuální analýzy.
+  // Když analýza spadla na detektoru / fetchi, summary.score je null a verdicts
+  // prázdné. Šablona `lead-followup` to handluje (top3issues fallbackuje na '—').
+  const top3issues = getTop3Issues(summary.verdicts);
+
+  let mail;
+  try {
+    mail = await sendMail({
+      env,
+      template: 'lead-followup',
+      to: lead.email,
+      vars: {
+        url: lead.url,
+        score: summary.score == null ? 0 : summary.score,
+        top3issues,
+        unsubscribe_url: 'https://fakan.cz/odhlasit?t=' + lead.unsubscribe_token,
+      },
+    });
+  } catch (err) {
+    console.error('[analyze] sendMail threw:', err);
+    return;
+  }
+
+  // Update statusu leadu v D1 — separation of concerns: mail.js neví o DB.
+  const nowIso = new Date().toISOString();
+  try {
+    if (mail.ok) {
+      await env.DB.prepare(
+        'UPDATE leads SET status = ?, mail_sent_at = ?, last_contact_at = ? WHERE id = ?'
+      )
+        .bind('mailed', nowIso, nowIso, lead.id)
+        .run();
+    } else {
+      const errMsg = (mail.error || 'unknown').slice(0, 500);
+      await env.DB.prepare(
+        'UPDATE leads SET status = ?, mail_last_error = ?, last_contact_at = ? WHERE id = ?'
+      )
+        .bind('bounced', errMsg, nowIso, lead.id)
+        .run();
+    }
+  } catch (err) {
+    console.error('[analyze] lead status update failed:', err);
+  }
+}
+
+/**
+ * Vybere 3 nejhorší verdikty z analýzy a převede na lidské věty pro mail.
+ * Pořadí závažnosti: crit > warn > info > ok. Z každé skupiny bereme v pořadí příchodu.
+ *
+ * @param {Array<{ kind: string, text: string }>} verdicts
+ * @returns {string[]}
+ */
+export function getTop3Issues(verdicts) {
+  if (!Array.isArray(verdicts) || verdicts.length === 0) return [];
+  const order = { crit: 0, warn: 1, info: 2, ok: 3 };
+  // Stable sort — JS Array.sort je stable v ES2019+, drží pořadí příchodu uvnitř priority.
+  const sorted = verdicts
+    .filter((v) => v && typeof v.text === 'string' && v.kind !== 'ok')
+    .slice()
+    .sort((a, b) => (order[a.kind] ?? 9) - (order[b.kind] ?? 9));
+  return sorted.slice(0, 3).map((v) => v.text);
 }
 
 // Lidsky popíše error tak, aby byl k něčemu i bez `.message`.
@@ -160,7 +342,10 @@ function truncate(s, n) {
   return s.length > n ? s.slice(0, n - 1) + '…' : s;
 }
 
-async function runAnalysis(target, sse, startedAt, workerHost) {
+// `summary` je out-param — handleAnalyze ho předává a po `done` čte score + verdicts
+// pro lead-followup mail. Defaultní `{ score: null, verdicts: [] }` = žádná analýza
+// neproběhla / spadla. Šablony to musí umět handlovat.
+async function runAnalysis(target, sse, startedAt, workerHost, summary = { score: null, verdicts: [] }) {
   await sse.send('hello', {
     target: target.toString(),
     host: target.hostname,
@@ -281,7 +466,13 @@ async function runAnalysis(target, sse, startedAt, workerHost) {
   await sse.send('banners', banners);
 
   // Score — ne klasický grade, jen indikátor.
-  await sse.send('score', buildScore({ headerInfo, trackers, banners, meta, isHttps, status: response.status }));
+  const scoreObj = buildScore({ headerInfo, trackers, banners, meta, isHttps, status: response.status });
+  await sse.send('score', scoreObj);
+
+  // Naplníme summary pro post-`done` lead-followup mail (TASK-12).
+  // securityScore ze 100 = celkové „score" pro mail šablonu.
+  summary.score = scoreObj.securityScore;
+  summary.verdicts = Array.isArray(scoreObj.verdicts) ? scoreObj.verdicts : [];
 
   await sse.send('done', { ok: true, totalMs: Date.now() - startedAt });
   await sse.close();
