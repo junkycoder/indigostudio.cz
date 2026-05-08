@@ -42,6 +42,21 @@ Důvod: drží rytmus a punc původního taglinu (dvě věty, druhá popírá), 
 
 ---
 
+## Brand claim (přidáno 2026-05-08)
+
+**„Když web, jedině od Fakana."**
+
+Doplňková mantra k taglinu „Váš web. Bez starostí.". Funguje jako brand-line v meta description, OG share, eyebrow v hero, a Schema.org `slogan`. Schválil owner přímou cestou 2026-05-08, mimo standardní variant A/B/C process.
+
+**Kde se používá:**
+- `index.html` — eyebrow nad hero H1 (`<p class="brand-claim">Když web, jedině od Fakana.</p>`, nový styl `.brand-claim` zachovává sentence case s tečkou)
+- `index.html` + `prehled.html` — `<meta name="description">` první věta
+- `index.html` Schema.org `Organization.slogan`
+- `index.html` + `prehled.html` OG description + Twitter description
+- Mailové podpisy (volitelně, retro/další iterace)
+
+---
+
 ## 2. Privacy Policy — `/ochrana-udaju`
 
 > **Pozn. pro juniora:** plný text níže patří do `fakan.cz/ochrana-udaju.html` jako prose obsah `<main>`. Stylování per design § 6.5 (max-width 70ch, stejné CSS tokeny jako index). Slug per tie-breaker v decisions.md.

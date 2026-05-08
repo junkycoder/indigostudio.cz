@@ -96,6 +96,12 @@ Detail v [fakan-cz-brand-brief.md](fakan-cz-brand-brief.md). Kompaktní výtah:
 5. Přidán mikro-pravidlový bod o vykání i v UI mikrocopy.
 6. Příklad u „Konkrétních čísel" změněn z technického („LCP 0,9 s") na lidský („Web do 1,5 vteřiny") — reflektuje cílovku 40+.
 
+**Update 2026-05-08:** Owner přidal brand claim **„Když web, jedině od Fakana."** jako doplňkovou mantru k taglinu. Při finální merge do brand briefu sekce 5.1 (Tagline / Claim) doplnit oba prvky:
+- Tagline: „Váš web. Bez starostí." (varianta A)
+- Brand claim: „Když web, jedině od Fakana."
+
+Brand brief sekce 5.1 dnes nezná „claim" jako kategorii, doporučuju ji zavést.
+
 ---
 
 ## 2. fakan-cz-brand-brief.md sekce 3 — diff návrh
