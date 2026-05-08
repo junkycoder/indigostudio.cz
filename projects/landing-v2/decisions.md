@@ -38,7 +38,13 @@ Formát: **`[YYYY-MM-DD] [doména] konflikt: A vs. B → vyhrál: X. Důvod: Y.`
 
 - **[2026-05-08] [tech] Email Routing `send_email` binding (legacy) vs. nová Email Service Email Sending → vyhrál legacy `send_email` binding.** Důvod: senior-architect doménová autorita nad outbound mail tech volbou + design.md sekce 4 už `send_email` binding předpokládá + finance veto na placený plán (Email Service je Workers Paid only) + bootstrap fáze (100–500 leadů/měsíc) — legacy free tier sedí. Aplikace: `wrangler.toml` má `[[send_email]]` syntaxi (ne `[[email_sending]]`), import `EmailMessage` z `cloudflare:email`, `mimetext` ano (architect ověří údržbu před schválením dep). ADR-001 dostane upřesnění v PR připravovaném ve Fázi 6 (retro / následná iterace).
 - **[2026-05-08] [tech] DMARC pro fakan.cz → mimo scope této iterace.** Důvod: research dohledal DNS — MX + SPF + DKIM (`cf2024-1`) jsou aktivní, DMARC chybí. Bez DMARC je deliverability OK pro běžné inboxy (Gmail, Outlook). Doplnění DMARC je „nice to have", architect doporučuje samostatný úkol v README priority 2. Aplikace: junior backendu DMARC nepřidává, jen flagne v retru.
-- **[2026-05-08] [scope/owner-input] IČO + sídlo Fakana pro patičku obchodního mailu → otevřená otázka pro ownera, neblokuje backend.** Důvod: research § 3 (CZ patička) — § 435 NOZ vyžaduje IČO + sídlo + zápis v ŽR. Konkrétní hodnoty research nedohledal. Aplikace: marketer ve Fázi 4 (mail copy) si vyžádá od Fakana před finalizací patičky. **Neblokuje** backend pruh exekuce — junior implementuje binding + DB + Worker bez patičky, marketer dosadí konkrétní IČO/adresu do mail šablon. Pokud Fakan nedoplní do Gate 3, **legal blokuje launch** (nelze poslat první lead bez compliance patičky).
+- **[2026-05-08] [scope/owner-input] IČO + sídlo Fakana pro patičku obchodního mailu → vyřešeno.** Fakan 2026-05-08 dodal:
+  - **Firma:** Indigo Studio s.r.o. (právní forma **s.r.o.**, ne OSVČ — research předpokládal špatně)
+  - **IČO:** 14389096
+  - **Sídlo:** Chudenická 1059/30, Hostivař, 102 00 Praha
+  - **BÚ:** 2802169026/2010 Fio (volitelný údaj, ne povinný v patičce, pro fakturaci OK)
+  - **OR spisová značka:** TBD — protože je to s.r.o., § 435 NOZ vyžaduje navíc údaj o zápisu v OR včetně oddílu a vložky. Orchestrátor dohledá v ARES paralelně se spuštěním Fáze 3, doplní do tohoto záznamu.
+  Aplikace: marketer v TASK-15 použije patičku ve formátu „Indigo Studio s.r.o., Chudenická 1059/30, 102 00 Praha, IČO: 14389096, zapsáno v Obchodním rejstříku vedeném [Městský soud v Praze], oddíl C, vložka [XXXX]." Až bude OR spisovka dohledaná, marketer doplní.
 
 ---
 
