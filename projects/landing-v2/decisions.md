@@ -28,6 +28,12 @@ Formát: **`[YYYY-MM-DD] [doména] konflikt: A vs. B → vyhrál: X. Důvod: Y.`
 - **[2026-05-08] [compliance] Tracking pixel v mailech → zakázáno.** Důvod: legal autorita. Aplikace: žádné `<img>` na trackovací pixely v mailech, plain-text twin povinný, opt-out odkaz `/odhlasit?token=…` v každém mailu.
 - **[2026-05-08] [compliance] Privacy Policy povinná před prvním leadem do produkce.** Důvod: legal autorita, GDPR čl. 13 informační povinnost. Aplikace: blokuje Gate 3 (pre-launch). Junior musí dodat `fakan.cz/zasady-ochrany-osobnich-udaju.html` (název přesně podle úzu, ne „privacy-policy"). Marketer s legal dodá obsah.
 
+### Tie-breakery z konzistenčního gate (PM rozpad, 2026-05-08)
+
+- **[2026-05-08] [compliance/brand] URL slug Privacy Policy → vyhrál `/ochrana-udaju`.** Konflikt: design.md § 6.5 + decisions auto-rozhodnutí měly `/zasady-ochrany-osobnich-udaju.html`, ale risk-check § 4.2 (autoritativní finální znění souhlasu od legal-advisora) i fit-check § 4.4 (product-manager) používají krátký `/ochrana-udaju`. Důvod: legal autorita nad compliance + brand pivot na cílovku 40+ (kratší, lidštější URL, méně cizojazyčného žargonu). Aplikace: soubor `fakan.cz/ochrana-udaju.html`, route `/ochrana-udaju`. Decisions auto-rozhodnutí bylo nepřesné — opraveno per skutečným legal textem v risk-check § 4.2. Design § 6.5 a fit-check § 4.4 sjednoceny.
+- **[2026-05-08] [tech] Opt-out query parametr `t` vs `token` → vyhrál `t`.** Konflikt: brief.md říkal `/odhlasit?token=…`, design.md § 3.3 + risk-check § 5.1 + README úkol Lead capture říkali `/odhlasit?t=<token>`. Důvod: senior-architect doménová autorita nad URL kontraktem + tři ze čtyř dokumentů mají `?t=`. Brief poznámka byla zkratka. Aplikace: kontrakt `/odhlasit?t=<token>` (64 hex znaků).
+- **[2026-05-08] [compliance] MailChannels vs Email Workers v risk-check § 5.3 → vyhrál Email Workers.** Konflikt: risk-check.md § 5.3 měl historickou zmínku „MailChannels (pokud zvolíme)" + DPA požadavek; Gate 1 + ADR-001 vybral Email Workers. Důvod: Gate 1 explicitní rozhodnutí Fakana má přednost; risk-check zmínka je historická. Aplikace: jediný procesor mailů = Cloudflare Email Workers, žádný extra DPA s MailChannels. Privacy Policy v TASK-13 odkazuje jen na Cloudflare DPA + EU-US DPF. Update risk-check § 5.3 není ve scope landing-v2 (může legal-advisor v retro nebo následující iteraci).
+
 ---
 
-*Aktualizováno 2026-05-08 po Gate 1.*
+*Aktualizováno 2026-05-08 po Gate 1 + tie-breakery z PM rozpadu.*
