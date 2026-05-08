@@ -20,6 +20,7 @@ import {
 } from './detectors.js';
 import { captureLead } from './lib/lead.js';
 import { sendMail } from './lib/mail.js';
+import { checkRateLimit } from './lib/ratelimit.js';
 
 const FETCH_TIMEOUT_MS = 8000;
 const MAX_BODY_BYTES = 2_000_000; // 2 MB strop, ať nestáhneme něco šíleného
@@ -240,6 +241,15 @@ export function handleAnalyze(request, env, ctx) {
  * @param {{ env: any, request: Request, url: string, leadParams: ReturnType<typeof parseLeadParams>, summary: { score: number|null, verdicts: any[] } }} args
  */
 async function captureLeadAndMail({ env, request, url, leadParams, summary }) {
+  // Per-IP rate limit pro lead capture (5/h). Když IP překročí, lead tiše dropujeme
+  // — žádný DB write, žádný mail. Limit pro `/api/analyze` (3/24h) je v worker.js,
+  // tohle je separátní scope `lead-capture`.
+  const rl = await checkRateLimit({ env, request, scope: 'lead-capture', limit: 5, windowSeconds: 3600 });
+  if (!rl.ok) {
+    console.warn('[analyze] lead capture rate-limited:', { remaining: rl.remaining, resetAt: rl.resetAt });
+    return;
+  }
+
   let lead;
   try {
     const result = await captureLead({
