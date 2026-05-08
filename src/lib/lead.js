@@ -137,8 +137,11 @@ export async function captureLead({ env, request, url, email, source, consentVer
   } catch (e) {
     // Idempotence — UNIQUE index `leads_idem` (email, url, day) zachytí
     // duplicitu z téhož dne. To není chyba, jen tichý no-op.
+    // Záměrně chytáme jen `leads_idem`, ne generic `UNIQUE constraint failed`,
+    // ať náhodná kolize na `unsubscribe_token` (1/2^256, ale teoreticky možná)
+    // neskončí jako falešná duplicita.
     const msg = (e && e.message) || String(e);
-    if (msg.includes('UNIQUE constraint failed')) {
+    if (msg.includes('leads_idem')) {
       return { ok: true, lead: { duplicate: true } };
     }
 

@@ -206,6 +206,24 @@ async function testOtherDbError() {
   assert('detail present', typeof r.detail === 'string' && r.detail.length > 0, r);
 }
 
+async function testTokenUniqueCollision() {
+  // Architect FIX: kolize na `unsubscribe_token UNIQUE` se NESMÍ vyhodnotit jako
+  // duplicita, ale jako tvrdá DB chyba (jinak by mail šel ven, ale lead by chyběl).
+  console.log('\n# UNIQUE constraint na unsubscribe_token = db_error (NE duplicate)');
+  const env = mockEnv({
+    throwOnRun: new Error('D1_ERROR: UNIQUE constraint failed: leads.unsubscribe_token'),
+  });
+  const request = mockRequest({ 'cf-connecting-ip': '203.0.113.42' });
+  const origErr = console.error;
+  console.error = () => {};
+  const r = await captureLead({ env, request, ...baseArgs });
+  console.error = origErr;
+
+  assert('ok=false (not a duplicate)', r.ok === false, r);
+  assert('error=db_error', r.error === 'db_error', r);
+  assert('lead is undefined', r.lead === undefined, r);
+}
+
 async function testFallbackIp() {
   console.log('\n# fallback to x-forwarded-for');
   const env = mockEnv();
@@ -236,6 +254,7 @@ async function testUnknownIp() {
   await testInvalidUrl();
   await testMissingSalt();
   await testUniqueConstraint();
+  await testTokenUniqueCollision();
   await testOtherDbError();
   await testFallbackIp();
   await testUnknownIp();
