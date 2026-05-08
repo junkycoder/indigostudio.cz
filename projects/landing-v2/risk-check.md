@@ -320,3 +320,104 @@ Bude vyplněno až ve Fázi 5 (Pre-launch), nyní prázdné:
 - [ ] Opt-out flow funguje end-to-end (testovaný lead odhlášen do 1 minuty)?
 - [ ] DPA / procesor compliance dořešena?
 - [ ] Brand brief / CLAUDE.md diff je PR, nemergnutý?
+
+---
+
+## Pre-launch check 2026-05-08
+
+**Stav: GREEN s drobnou podmínkou.** Všech 7 oblastí (souhlas, Privacy Policy, mail šablony, opt-out, anti-abuse, minimalizace + stripping, CLAUDE.md mantinely) prošlo bez závažné vady. Pre-launch blokátory ze sekce 8 jsou pokryté. Owner ještě musí potvrdit retenci 12 měsíců (legal ji schvaluje, ale je to deviace od původního návrhu 24 měsíců — viz § B níže).
+
+Reviewoval: legal-advisor. Datum: 2026-05-08.
+
+### A. Souhlas
+
+- [PASS] **Checkbox neforčeknutý, separátní, required.** `fakan.cz/index.html:334` (hero) a `fakan.cz/index.html:537` (CTA banner) — `<input type="checkbox" id="consentChk" name="c" value="1" required>` bez `checked` atributu. Planet49 (C-673/17) je doržen.
+- [PASS] **Odkaz na Privacy Policy uvnitř textu, klikatelný.** `index.html:336` a `:539`: `Více v <a href="/ochrana-udaju">zásadách ochrany osobních údajů</a>.` — odkaz uvnitř labelu, ne v patičce. Čl. 7 odst. 2 GDPR splněn.
+- [PASS] **Verze textu se ukládá z hidden inputu** `<input type="hidden" name="v" value="v1-2026-05-08">` (`index.html:339, :542`) a server ji v `analyze.js:140-142` ověřuje a předává `captureLead({ consentVersion })`.
+- [PASS] **Server-side enforcement.** `src/analyze.js:128-149` `parseLeadParams` vrací `{ enabled: false, reason: 'missing_consent' }` pokud `c !== '1'`, `'missing_email'` pokud chybí email, `'missing_version'` pokud chybí verze. `analyze.js:191-194` to logguje a `:217` blokuje `captureLeadAndMail`. **Bez explicitního consent=1 + verze + emailu lead NEVZNIKNE a mail NEODEJDE.** Toto je hlavní GDPR garance.
+- [PASS] **Evidence souhlasu kompletní.** `src/lib/lead.js:104-125` ukládá `consent_at` (timestamp ISO), `consent_text_version` (z query), `consent_ip_hash` (sha256(ip + CONSENT_SALT) per `lead.js:92`). Bez `CONSENT_SALT` env secretu `lead.js:80-82` vrací `salt_missing` — žádný insert s plain IP nepůjde. Plain IP nikde v DB schema (`migrations/0001_leads.sql:19-37`).
+- [PASS] **Verze v1-2026-05-08 je primární klíč evidence.** Pravidlo: pokud Fakan v budoucnu přepíše consent text, MUSÍ zvýšit verzi (např. v2-YYYY-MM-DD) a starou verzi neměnit. Drž v review při každé další iteraci. Původní text v archivu — copy.md § 3 zmiňuje `legal/consent-versions/v1-2026-05-08.md`, ale **soubor zatím v repu nikde není** (viz § "Otevřené body" níže — drobná podmínka pro launch, ne blokátor).
+- [PASS] **Anti-csrf přes hidden `s` source whitelist.** `lead.js:26-31` `ALLOWED_SOURCES = {'landing-hero','landing-cta','vysledek-cta','manual'}` — útočník nemůže poslat ručně náhodnou source hodnotu. Není striktně legal, ale snižuje povrch.
+
+### B. Privacy Policy
+
+- [PASS] **Live a kompletní obsah.** `fakan.cz/ochrana-udaju.html` má všech 8 sekcí GDPR čl. 13: kdo (Indigo Studio s.r.o. + IČO + sídlo + OR), co (přesný výčet sloupců), proč (souhlas čl. 6/1/a), retence, příjemci (Cloudflare + EU-US DPF + DPA odkaz), práva (čl. 15-21 + ÚOOÚ stížnost), bezpečnost, změny.
+- [PASS] **Datum účinnosti a verze.** `ochrana-udaju.html:250`: „Účinné od: 8. května 2026 · Verze: 1." Dole znovu `:335`: „Aktuální verze je v1, účinná od 8. května 2026."
+- [PASS] **Identifikace správce.** `ochrana-udaju.html:255` — Indigo Studio s.r.o., Chudenická 1059/30, 102 00 Praha, IČO 14389096, MSPH C 364981. Souhlasí s decisions.md tie-breakerem (ARES VR ověřeno).
+- [PASS] **DPO správně řešený.** `ochrana-udaju.html:258` — DPO není povinný (zvláštní kategorie údajů a rozsáhlý monitoring nejsou v hřišti). Toto je správný výklad čl. 37 GDPR pro fakan.cz.
+- [PASS] **EU-US DPF + DPA odkazy.** `ochrana-udaju.html:314` — odkaz na `dataprivacyframework.gov` a Cloudflare DPA. Cloudflare jediný procesor.
+- [PASS] **Slug `/ochrana-udaju` souhlasí s decisions.md tie-breakerem.** `<link rel="canonical">` `:10` + interní odkaz z `index.html:336, :539` souhlasí.
+- [PASS] **Schema.org PrivacyPolicy JSON-LD** (`ochrana-udaju.html:31-41`) — drobnost, ale signál pro vyhledávače.
+- [FIX-LIGHT] **Retence 12 měsíců — schvaluju, s podmínkou.** `ochrana-udaju.html:293` říká „12 měsíců od posledního kontaktu". Risk-check § 2.3 původně navrhoval 24 měsíců. Marketer to v copy.md § 2 zdůvodnil minimalizací (GDPR čl. 5/1/c) a bootstrap fází.
+  - **Verdikt:** Schvaluju 12 měsíců. Důvod: kratší retence = nižší risk povrch, snadnější obhájitelnost, soulad s minimalizační zásadou. ÚOOÚ na kratší dobu nikdy nereagoval negativně (delší ano, kratší ne).
+  - **Podmínka:** v retro za 6 měsíců (2026-11) vyhodnotit, jestli 12 měsíců neutíná leadům, kteří mají dlouhý nákupní cyklus (B2B web build = 3-9 měsíců). Pokud ano, prodloužit na 18 měsíců novou verzí PP (v2). Do té doby drží 12.
+  - **Dodatečné FIX:** Komentář v `migrations/0001_leads.sql:35` a `:52-53` říká „24 měs" — to je nesoulad se skutečnou politikou. Ne legal blokátor (komentář, ne konfigurace), ale **junior musí cron task / retention skript psát na 12 měsíců**, ne 24. Aktualizace SQL komentáře = drobnost do retra.
+
+### C. Mail šablony
+
+- [PASS] **Žádný tracking pixel ani externí `<img>`.** `grep '<img' src/email/` vrátil 0 hitů. Patičky jsou plain `<a href>` bez wrapper trackerů.
+- [PASS] **Plain-text twin v každém mailu.** `_layout.js:82-123` má `layout({ html, text })` — text se píše ručně v každé šabloně (ne strip z HTML). Ověřeno v `lead-followup.js:86-132`, `optout-confirmation.js:30-43`, `magic-link-auth.js:42-60`, `soft-doi.js:46-64`. `multipart/alternative` se sestaví v `mime.js` (volá `buildMime` v `mail.js:110`).
+- [PASS] **Opt-out odkaz v lead-followup a soft-doi.** `_layout.js:26-29` — `withOptout: true` přidá řádek „Odhlásit z e-mailů od fakan.cz" + „Ochrana osobních údajů". `lead-followup.js:138`: `withOptout: true`. **Ale: `soft-doi.js:70`: `withOptout: false`.**
+  - **Důvod, proč to NENÍ blokátor:** soft-doi je v MVP NEPOUŽÍVANÁ šablona (per `soft-doi.js:1-5` komentář, copy.md § 10 a design § 4.6 — soft DOI je integrovaný do `lead-followup` úvodního odstavce). Šablona je „na sklad" pro budoucí flow.
+  - **Podmínka:** pokud někdy v budoucnu Fakan zapne plný DOI, `soft-doi.js:70` musí dostat `withOptout: true` + `vars.unsubscribe_url`. Junior to flagne v komentáři šablony jako TODO. Drobnost do retra.
+- [PASS] **`List-Unsubscribe` header pro lead/marketing.** `mail.js:30` `NEEDS_LIST_UNSUBSCRIBE = {'lead-followup','soft-doi'}`. `mail.js:103-106` přidává `List-Unsubscribe: <unsubscribe_url>, <mailto:nabidky@...>` + `List-Unsubscribe-Post: One-Click`. RFC 8058 splněn (Gmail/Outlook deliverability + GDPR-friendly).
+- [PASS] **Patička obchodního mailu.** `_layout.js:11-15` → `Indigo Studio s.r.o., Chudenická 1059/30, 102 00 Praha`, `IČO: 14389096, ... MSPH oddíl C, vložka 364981`, `jsem@fakan.cz · +420 604 690 539`. § 435 NOZ (obchodní listina) splněn napříč všemi 4 šablonami.
+- [PASS] **Soft DOI v lead-followup.** `lead-followup.js:52` — první odstavec: „Pokud to nejste vy a tenhle e-mail jste nečekal/a, klikněte na <a href...>Odhlásit</a> v patičce a okamžitě vás z databáze smažeme. Nikomu nevolejte, žádné uživatelské heslo neměňte — prostě jeden klik." Per risk-check § 4.3 — soft DOI úvod splněn.
+- [PASS] **Identifikace odesílatele (From/Reply-To).** `mail.js:21-26` — `lead-followup` / `soft-doi` / `optout-confirmation` z `Fakan — Indigo Studio <nabidky@fakan.cz>`, `magic-link-auth` z `Fakan — přihlášení <prihlaseni@fakan.cz>`. `mail.js:114` `replyTo: 'jsem@fakan.cz'`. Schvaluju — display name nese identitu firmy, jméno fyzické osoby je v patičce + podpisu.
+- [PASS] **Magic-link DRAFT v0.** `magic-link-auth.js:1-4` má jasný DRAFT komentář. `bodyHtml:23` má inline DRAFT komentář. `mail.js:11-16` ho má v allow-listu (musí), ale handler ho v MVP nezavolá (auth flow neexistuje). OK pro launch, schvaluju jako „na sklad".
+- [PASS] **Žádné automatické akcepty smluvní oferty.** `lead-followup.js:66`: „Tohle je jen návrh, nezávazná nabídka. Žádná smluvní oferta, žádný automatický odběr — než cokoliv potvrdíte, projdeme spolu rozsah, cenu a termín." Drží risk-check § 6.2.
+
+### D. Opt-out flow
+
+- [PASS] **Neutrální response napříč scénáři.** `src/optout.js:31-97` — všechny 4 cesty (chybný formát tokenu, neexistující token, idempotentní opt-out už opted_out, úspěšný opt-out) vrací stejnou stránku `renderDonePage()`. Útočník nepozná, jestli token existoval.
+- [PASS] **Token validace 64 hex (`/^[a-f0-9]{64}$/`).** `optout.js:20`. `renderDonePage()` na invalid format `:38`.
+- [PASS] **DB update jen pro valid + ne-opted_out tokeny.** `optout.js:67-71` — `UPDATE leads SET status='opted_out', opted_out_at=?, last_contact_at=? WHERE id=?`. Idempotentně přeskočeno na `:62` pokud už opted_out.
+- [PASS] **Confirmation mail přes `ctx.waitUntil`.** `optout.js:82-94` — neblokuje response, mail crash je catchnut a nevadí flow.
+- [PASS] **Žádný side effect mimo opt-out.** Žádné analytics ping, žádné „byl jsi tady" log. Jen `console.error` při DB chybě (provoz, ne PII tracking).
+- [PASS] **Žádný Set-Cookie.** `optout.js:101-105` — `HTML_HEADERS = { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store, max-age=0' }`. Komentář `:104` to drží explicitně.
+- [PASS] **`noindex, nofollow`.** `optout.js:130` (DONE_HTML) + `:167` (TEMP_ERROR_HTML) + `fakan.cz/odhlasit-hotovo.html:11`. Stránka se neindexuje.
+- [PASS] **Fallback `odhlasit-hotovo.html`.** Statická stránka, kdyby Worker spadl nebo někdo otevřel přímý link bez tokenu. Patička obsahuje identifikaci (Indigo Studio + IČO + spisovka).
+
+### E. Anti-abuse
+
+- [PASS-S-DROBNOSTÍ] **Honeypot.** `index.html:344, :546` mají `<input type="text" id="company" name="company">`. `analyze.js:111-118` `isHoneypotTriggered` kontroluje jak `website` tak `company`. **Drobnost:** brief sekce E vyjmenoval „`name="website"` a `name="company"` v `index.html`", ale HTML má **jen** `company` (ne `website`). Není to vada — server je „silnější" než klient (kontroluje obě, klient stačí jedno). Bot, který pole `website` vyplní z generického honeypot patternu, se chytne na server-side. Přesto: `senior-architect` může v retro doplnit i `website` field do HTML formuláře pro robustnější trip-wire (drobnost, ne blokátor).
+- [PASS] **Honeypot reakce = silent 200 SSE prázdná.** `analyze.js:158-171` — vrátí prázdný stream + zavře. Bot dostane „prošlo", žádný DB write, žádný mail. ✓
+- [PASS] **Rate limit pro lead-capture (5/h/IP-hash).** `analyze.js:247` — `checkRateLimit({ scope: 'lead-capture', limit: 5, windowSeconds: 3600 })`. Per-IP přes hash, ne per-cookie. ✓ legal-friendly (žádný tracking cookie).
+- [PASS] **Rate limit pro analyze endpoint** (3/24h) — odděleno do `worker.js`, mimo scope tohoto modulu, ale brief to potvrzuje.
+- [PASS] **CONSENT_SALT secret přes wrangler.** `lead.js:80-82` — pokud chybí, lead capture vrátí `salt_missing` a NEVZNIKNE záznam. Neukládá se nikdy plain IP. ✓
+
+### F. Minimalizace + stripping
+
+- [PASS] **`stripUrl()` funguje correct.** `src/lib/url-strip.js:8-11` — `new URL(input)` → `${u.origin}${u.pathname}`. Žádný `search`, žádný `hash`. To strpuje `utm_*`, `fbclid`, `gclid`, tokeny, session ID. ✓ risk-check § 1.3 splněn. Tady drobnost: doc komentář v `url-strip.js:1` říká „bez query stringu a hash", ale ne explicitně „bez senzitivních parametrů". Funkčně OK — strip je úplný (ne whitelist).
+- [PASS] **`consent_ip_hash` jen jako sha256.** `lead.js:92` — `await sha256Hex(ip, env.CONSENT_SALT)`. Plain IP nikde v DB schema (`migrations/0001_leads.sql:26-27`). Hash je deterministický → pro stejnou IP stejný hash → můžeme detekovat opakované klikání ze stejné IP, ale nemůžeme z hashu zpětně zjistit IP. ✓ recital 30 GDPR.
+- [PASS] **`unsubscribe_token` 64 hex random.** `lead.js:96` — `randomTokenHex(32)` = 32 bajtů náhody = 64 hex znaků. UNIQUE v DB (`migrations/0001_leads.sql:30`). Žádné odvození z emailu/ID. ✓ risk-check § 5.3.
+- [PASS] **Email lowercase normalizace.** `lead.js:98` — `email.trim().toLowerCase()`. UNIQUE idem `(email, url, day)` se nepokazí casingem. Drobnost, ale dobrý detail.
+- [PASS] **Žádný `consent_user_agent_hash` v MVP.** Schema `migrations/0001_leads.sql:27` má sloupec `consent_ua_hash` jako nullable, MVP ho nechává NULL. UA jako quasi-identifikátor by stejně byl jen volitelný důkaz. OK — jeden důkaz (IP hash + verze + timestamp) stačí.
+
+### G. CLAUDE.md mantinely
+
+- [PASS] **Žádné cookies.** Nikde `Set-Cookie`, nikde `document.cookie`. ✓ Jediné výskyty slova „cookie" jsou popisné v copy: `index.html:437` („Žádné akceptujte cookies…") a `ochrana-udaju.html:274` („žádné cookies, žádné sledovací pixely").
+- [PASS] **Žádné cookie banery, popupy.** Audit prošel — nic v HTML.
+- [PASS] **Žádné externí JS/font/CSS/tracker.** Grep pro `fonts.googleapis|googletagmanager|google-analytics|facebook.net|hotjar|smartsupp|clarity.ms` → nálezy jen v `src/detectors.js` (patterny pro analýzu cizích webů, ne náš kód). fakan.cz sám žádné neimportuje. ✓
+- [PASS] **Vykání důsledné.** Tester to už ověřil v paralelní práci, copy.md § 13 to potvrzuje. Schvaluju z legal pohledu — vykání je samo o sobě brand norma, ne legal požadavek, ale brief E ho zmiňuje.
+
+### Otevřené body / podmínky pro launch
+
+1. **`legal/consent-versions/v1-2026-05-08.md` v repu** — copy.md § 3 odkazuje na soubor, který v repu zatím není. Důvod, proč to existuje: pokud někdy přepíšeme znění souhlasu (v2), starou verzi musíme mít archivovanou jako důkaz, **co tehdejší uživatel skutečně odsouhlasil**. **Podmínka pro launch:** junior dodá soubor `legal/consent-versions/v1-2026-05-08.md` s plným zněním textu z `index.html:336` (v markdownu). Pětiminutová práce. **Drobná podmínka, ne blokátor — text je v gitu jako součást index.html, ale legal/ adresář ho dělá explicitně archivním.** Pokud junior nestihne, alternativa: README úkol „Založit legal/consent-versions/ adresář" a flagnout jako TODO. Tag pre-launch [TODO-legal-A].
+2. **Patička `vysledek.html:366`** — má pořád `Daniel Hromada`, ne `provozuje Indigo Studio s.r.o.` jako `index.html:560` po refreshu. Není to legal vada (vysledek.html není obchodní listina v užším smyslu — neobsahuje smluvní nabídku), ale konzistence s landingem je vhodná. Drobnost pro juniora, ne blokátor. Tag [TODO-marketing-B].
+3. **Komentář v `migrations/0001_leads.sql:35, :52-53`** — říká „24 měsíců" místo skutečné politiky 12 měsíců. Není to konfigurace, je to komentář — funkčně neškodí. Junior nebo architect to opraví v retro nebo příští migraci. Tag [TODO-junior-C].
+4. **Cron task na retenci** — risk-check § 2.3 navrhoval scheduled task na hard-delete leadů starších než retence. **MVP ho nemá implementovaný.** Pro launch je to OK (retence se počítá od `last_contact_at`, máme 12 měsíců než první lead vyprší, takže task musí být live nejpozději 2027-04). README úkol pro fázi po launchi. Ne blokátor.
+5. **Potvrzení ownera (Fakan) k retenci 12 měsíců** — viz § B. Schvaluju, ale chci aby Fakan v Gate 3 explicitně OK řekl, abychom tu nehráli na schovávanou. Pokud Fakan chce 24, vrátíme PP na v1 s 24 měsíci a publikuje se to v2 s 12 později.
+
+### Verdikt
+
+**GREEN** (s 5 drobnými otevřenými body, žádný blokátor).
+
+- Všech 7 doménových oblastí (souhlas, Privacy Policy, mail šablony, opt-out, anti-abuse, minimalizace, mantinely) prošlo bez závažné vady.
+- 24 PASS, 1 FIX-LIGHT (retence — schválena s podmínkou retra 6m), 1 PASS-S-DROBNOSTÍ (honeypot pole `website` ne v HTML, ale server ho hlídá).
+- 5 otevřených bodů je drobnostních (consent verze do `legal/`, footer ve `vysledek.html`, SQL komentář, cron task v budoucnu, owner OK retence). Žádný neblokuje launch.
+- Všech 8 původních blokátorů z risk-check § 8 je vyřešených.
+
+**Pre-launch zelené světlo. Lead capture do produkce může jít.**
+
+Pro vážnější věci (rozšíření o citlivé údaje, B2C platby, third-party integrace, regulované odvětví) **nadále platí, že posouzení patří kvalifikovanému advokátovi pro ICT/GDPR.** Tenhle check je interní iterace, ne posudek od advokátní kanceláře.
