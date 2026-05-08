@@ -91,20 +91,23 @@ Bez tohohle se nedá pokračovat.
   UI ukazovalo `Něco se rozbilo.` bez ohledu na to, co skutečně padlo. Teď: každá chyba má vlastní lidskou zprávu (DNS not found, TLS, redirect loop, refused, reset, timeout). Ošetřen self-fetch (Worker na fakan.cz neumí čistě stáhnout fakan.cz). `parseMeta` a `detectFromText` poběží přes `safeRun` — když rozbije jeden regex, ostatní panely pořád dorazí. Catch-all v `handleAnalyze` loguje do `console.error` a vrací zprávu s typem chyby místo generické hlášky.
 - [ ] **Free analýza — asynchronní vlna.** Lighthouse-lite, Browser Rendering screenshot, AI redesign. Queue + DO pro stav. UI inkrementálně doplňuje výsledky.
 - [ ] **Turnstile + rate limit.** 3 free analýzy / 24 h / IP. _Reference:_ PRD sekce 5.1, anti-bot.
-- [ ] **Homepage UX — mobile a lead capture.** Tři navazující drobnosti na `fakan.cz/index.html` (Fakanovo zadání 2026-05-07).
+- [x] **Homepage UX — mobile a lead capture.** Tři navazující drobnosti na `fakan.cz/index.html` (Fakanovo zadání 2026-05-07).
+  _Agent: tým landing-v2 iterace, 2026-05-08._ Doplněn `autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="url"` na URL input, přidán povinný email + checkbox souhlasu (separátní, neforčekovaný), Worker přijímá email + consent + loguje server-side. Detail v `projects/landing-v2/delivery.md`.
   - **a) Mobil — vypnout autocapitalize.** Na URL inputu (i v hero, i v CTA banneru) iOS/Android navrhuje velké písmeno na začátku, což u domény vadí. Doplnit `autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="url"`.
   - **b) Email + checkbox souhlasu.** Vedle URL přidat povinný email (`type="email"`, `inputmode="email"`, `autocapitalize="none"`) a checkbox „Souhlasím se zasláním analýzy a nezávazné nabídky e-mailem. Souhlas mohu kdykoliv odvolat." (přesné znění viz Otevřené otázky). Bez souhlasu form nesubmituje. Frontend forwarduje `email` + `consent` do `/vysledek?url=…&email=…&consent=1` a `vysledek.js` dál do `/api/analyze?…`.
   - **c) Worker přijímá email + consent.** `src/analyze.js` z query stringu vytáhne email + consent, validuje formát, **prozatím jen zaloguje** (`console.log` → `wrangler tail`). Skutečné storage / odeslání nabídky je samostatný úkol (viz „Lead capture" níže).
   **Acceptance:** Mobile Safari (iOS), Chrome (Android) — klávesnice u URL/emailu nestartuje s velkým písmenem; bez souhlasu CTA submit nepustí; v `wrangler tail` se po každé analýze objeví `{ url, email, consent: true, ts, ip }`. Žádné cookies, žádný localStorage.
   **Závislost:** ideálně po brand pivotu (úkol „Brand pivot") — ať se copy formuláře nemusí přepisovat dvakrát. Pokud spěchá, lze udělat dřív a brand pivot přepíše copy v jediném míste.
-- [ ] **Lead capture — storage + e-mail nabídky.** Backend pro to, co úkol „Homepage UX" jen loguje.
+- [x] **Lead capture — storage + e-mail nabídky.** Backend pro to, co úkol „Homepage UX" jen loguje.
+  _Agent: tým landing-v2 iterace, 2026-05-08._ D1 schema `leads` (17 sloupců vč. compliance polí), idempotence per `(email, url, day)`, IP hash s saltem, URL stripping. Outbound mail přes **Cloudflare Email Workers** (legacy `send_email` API, tie-breaker vyhrál nad MailChannels — Gate 1 explicit + finance veto na placený plán). 4 šablony (`lead-followup`, `magic-link-auth` DRAFT v0, `optout-confirmation`, `soft-doi`), opt-out flow `/odhlasit?t=<token>` s `List-Unsubscribe` headery (RFC 8058). Detail v `projects/landing-v2/delivery.md`.
   - D1 schema `leads(id, url, email, consent_at, source, status, created_at)` + migrace v `migrations/0001_leads.sql`.
   - Worker po `done` SSE eventu zapíše lead do D1 (idempotentně po `(email, url, day)`).
   - Outbound mail: **MailChannels přes Cloudflare Workers** (zdarma, není třeba SMTP účet). Šablona v `src/email/lead-followup.js` — krátký souhrn analýzy + lidská nabídka, vykání, brand-friendly.
   - Trigger: po dokončení free analýzy (v Workeru, ne v UI) a jen pokud `consent === true`.
   **Acceptance:** test lead skončí v D1, e-mail dorazí do schránky (zkusit `jsem@fakan.cz`), v hlavičce není trackovací pixel, plain-text alternativa existuje, opt-out odkaz směruje na `/odhlasit?token=…`. _Reference:_ PRD sekce 6 (lead capture), CLAUDE.md sekce 3 (tón mailů).
   **Blokátor / otevřená otázka:** preferuje Fakan MailChannels, nebo Cloudflare Email Workers (Email Routing outbound)? Viz Otevřené otázky.
-- [ ] **Brand pivot — vykání + cílovka 40+.** Změna tónu a designu pro starší SMB publikum (Fakanovo zadání 2026-05-07). _Toto je změna brandu — úkol vyžaduje Fakanovo finální schválení textů a tagline (viz Otevřené otázky), ale rozpracování může jít._
+- [x] **Brand pivot — vykání + cílovka 40+.** Změna tónu a designu pro starší SMB publikum (Fakanovo zadání 2026-05-07). _Toto je změna brandu — úkol vyžaduje Fakanovo finální schválení textů a tagline (viz Otevřené otázky), ale rozpracování může jít._
+  _Agent: tým landing-v2 iterace, 2026-05-08._ Vykání + 40+ design napříč 5 stránkami (`index.html`, `vysledek.html`, `prehled.html`, `ochrana-udaju.html`, `odhlasit-hotovo.html`) a 4 mailovými šablonami. Tagline „Váš web. Bez starostí." (varianta A schválená ownerem). Body font 18 px (mobil 17), CTA min-height 56 px, kontrast WCAG 2.2 AA. PR diff `CLAUDE.md` sekce 3 + `fakan-cz-brand-brief.md` sekce 4 připravený jako draft v `projects/landing-v2/brand-pivot-pr.md`, **nemerge bez Fakana**. Detail v `projects/landing-v2/delivery.md`.
   - **Copy:**
     - Tykání → vykání napříč produkcí: `fakan.cz/index.html`, `fakan.cz/vysledek.html`, `fakan.cz/vysledek.js`, `fakan.cz/prehled.html`.
     - Hero a CTA bez technického žargonu: pryč „AI agenty", „framework", „LCP", „WCAG", „CDN", „hydration tax". Tyhle pojmy buď nahradit lidskou řečí („web do 1,5 vteřiny", „čitelný i pro zrakově slabší"), nebo schovat hlouběji do detailních sekcí.
@@ -115,6 +118,12 @@ Bez tohohle se nedá pokračovat.
   **Acceptance:** v produkčním copy 0 výskytů „ty/tvůj/tobě/tě" mimo schválený tagline; v hero žádné z výše vyjmenovaných buzzwordů; Lighthouse a11y zůstává 100; brand brief má diff připravený k review. Doporučený rozsah: jeden PR s copy změnami + jeden samostatný PR s update brand briefu.
   **Závislost:** udělat **dřív** než „Homepage UX (b)" — jinak se text formuláře přepisuje dvakrát.
 - [ ] **Magic link auth.** Cloudflare Email Routing → Worker → JWT v sessionStorage. _Reference:_ PRD sekce 7.
+  _Stav 2026-05-08:_ Mailové šablony připravené v iteraci landing-v2 jako draft v0 (`src/email/magic-link-auth.js`), čeká implementace auth flow (endpoint, JWT, sessionStorage, Velín gate).
+- [ ] **DMARC pro `fakan.cz`.** Doplnit `_dmarc.fakan.cz` TXT záznam (deliverability pojistka, MX/SPF/DKIM už aktivní). _Z retra landing-v2 — research dohledal, že chybí. Priority 2._
+- [ ] **UTM whitelist v `stripUrl()` + `from=mail` parametr v mailových linkách.** Marketing tracking — drobný refactor, aby `stripUrl()` propouštěl `utm_*` a `from`. _Z retra landing-v2. Priority 2._
+- [ ] **Cron retention task.** Auto-mazání leadů po 12m podle Privacy Policy retence. První lead vyprší 2027-04, ale cron ať existuje dřív. _Z retra landing-v2. Priority 2._
+- [ ] **Rate limit telemetry.** Sledovat KV writes, flagovat pokud `rate_limit_hit > 1 % requests` (indikuje příliš restriktivní limit). _Z retra landing-v2. Priority 2._
+- [ ] **Verzovat consent text — workflow.** Pokud Fakan přepíše znění consentu, MUSÍ zvýšit verzi (`v2-…`) a starý nechat. `legal/consent-versions/v1-2026-05-08.md` je první. _Z retra landing-v2. Priority 3 — proces, ne kód._
 - [ ] **Base Velín shell.** `fakan.cz/velin` po loginu — minimální verze: profil, weby (zatím prázdné), audit log, odhlášení. _Reference:_ PRD sekce 5.24.
 - [ ] **Plugin registry skeleton (D1 schéma).** Tabulky `plugins`, `plugin_versions`, `plugin_installations`. Migrace ve `migrations/`. _Reference:_ PRD sekce 10, plugin spec.
 - [ ] **Manifest engine v0.** Validace `plugin.json` proti JSON Schema. _Reference:_ plugin-spec sekce 2.
