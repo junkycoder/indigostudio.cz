@@ -8,7 +8,6 @@ import { checkHeaders }     from './checks/headers.js';
 import { detectCms }        from './checks/cms.js';
 import { checkSeo }         from './checks/seo.js';
 import { score }            from './scoring.js';
-import { scheduleEmail }    from '../email/dispatcher.js';
 
 export async function processAuditJob(job, env, ctx) {
   const { auditId, leadId, url, domain, email, reportToken } = job;
@@ -112,22 +111,32 @@ export async function processAuditJob(job, env, ctx) {
     await env.DB.batch(stmts);
   }
 
-  // cache (7 dní per doména)
-  await env.AUDIT_CACHE.put(
-    `audit:${domain}`, JSON.stringify({ auditId, ts: now }),
-    { expirationTtl: 7 * 86400 },
-  );
+  // mail #1 — posunout placeholder z audit.js (Fáze 1) na "teď".
+  // Idempotentní: pokud z nějakého důvodu placeholder neexistuje (re-run, ruční zásah),
+  // INSERT-neme nový. Žádný duplikát ale necheme.
+  const updated = await env.DB.prepare(
+    `UPDATE email_events SET send_at = ?
+     WHERE audit_id = ? AND template = 'audit_done' AND status = 'queued'`
+  ).bind(now, auditId).run();
+  if ((updated.meta?.changes || 0) === 0) {
+    await env.DB.prepare(
+      `INSERT INTO email_events (id, lead_id, audit_id, template, status, send_at)
+       VALUES (?, ?, ?, 'audit_done', 'queued', ?)`
+    ).bind(crypto.randomUUID(), leadId, auditId, now).run();
+  }
 
-  // mail #1 — okamžitě
-  await scheduleEmail(env, {
-    leadId, auditId, template: 'audit_done',
-    sendInSeconds: 0,
-  });
+  // Cache + Strategist pouštíme jen při úspěšném auditu.
+  // - Failed audit cachovat = vrátit starý failed report po opravě domény (špatně).
+  // - Failed audit do Strategistu = LLM bude halucinovat bez findings (špatně).
+  if (!errMsg) {
+    await env.AUDIT_CACHE.put(
+      `audit:${domain}`, JSON.stringify({ auditId, ts: now }),
+      { expirationTtl: 7 * 86400 },
+    );
+    await env.AUDIT_QUEUE.send({ kind: 'strategist', auditId, leadId, email });
+  }
 
-  // strategist ihned (běží jako další queue zpráva)
-  await env.AUDIT_QUEUE.send({ kind: 'strategist', auditId, leadId, email });
-
-  console.log(`audit ${auditId} done in ${Date.now()-t0}ms score=${scores.total}`);
+  console.log(`audit ${auditId} ${errMsg ? 'FAILED' : 'done'} in ${Date.now()-t0}ms score=${scores.total}`);
 }
 
 // --- buildFindings: data → findings ---
