@@ -1,46 +1,48 @@
 // src/email/templates.js
 // 4 šablony: audit_done | strategist | offer | reaudit_30d
+// Hostname pro report a opt-out odkazy bere z env.PUBLIC_HOST (secret).
 
 import { scoreLabel } from '../audit/scoring.js';
 
 export async function renderEmail(ev, env) {
   switch (ev.template) {
-    case 'audit_done':   return tplAuditDone(ev);
+    case 'audit_done':   return tplAuditDone(ev, env);
     case 'strategist':   return await tplStrategist(ev, env);
     case 'offer':        return await tplOffer(ev, env);
-    case 'reaudit_30d':  return tplReaudit(ev);
+    case 'reaudit_30d':  return tplReaudit(ev, env);
     default: throw new Error(`Unknown template ${ev.template}`);
   }
 }
 
-const reportUrl = (ev) => `https://audit.fakan.cz/audit/${ev.report_token}`;
-const unsubBlock = (ev) => `
+const reportUrl  = (env, ev) => `https://${env.PUBLIC_HOST}/audit/${ev.report_token}`;
+const optoutUrl  = (env, ev) => `https://${env.PUBLIC_HOST}/odhlasit/${ev.unsub_token}`;
+const unsubBlock = (env, ev) => `
 <hr style="border:none;border-top:1px solid #e5e0d6;margin:32px 0 16px">
 <p style="font-size:12px;color:#8A7E6E;line-height:1.5">
   Tenhle e-mail vám jde z fakan.cz, protože jste si nechali zanalyzovat web ${ev.domain}.
-  <a href="https://fakan.cz/unsubscribe?token=${ev.unsub_token}" style="color:#8A7E6E">Odhlásit</a> · Indigo Studio s.r.o.
+  <a href="${optoutUrl(env, ev)}" style="color:#8A7E6E">Odhlásit</a> · Indigo Studio s.r.o.
 </p>`;
 
-function shell(title, bodyHtml, ev) {
+function shell(title, bodyHtml, env, ev) {
   return `<!doctype html><html lang="cs"><body style="font-family:Georgia,serif;background:#F9F6F0;color:#1F1B16;margin:0;padding:24px">
 <div style="max-width:560px;margin:0 auto;background:#fff;padding:32px;border-radius:6px">
 ${bodyHtml}
-${unsubBlock(ev)}
+${unsubBlock(env, ev)}
 </div></body></html>`;
 }
 
 // ---------- Mail #1: výsledky auditu ----------
-function tplAuditDone(ev) {
+function tplAuditDone(ev, env) {
   // PROMPT past: pokud audit selhal (Cloudflare bot challenge, login wall, timeout),
   // klient stejně dostane mail — ale s upozorněním, že se ozveme ručně.
-  if (ev.audit_status === 'failed') return tplAuditFailed(ev);
+  if (ev.audit_status === 'failed') return tplAuditFailed(ev, env);
 
   const subject = `Skóre Vašeho webu: ${ev.score}/100`;
   const text = `Audit ${ev.domain} máme hotový.
 
 Skóre: ${ev.score}/100 — ${scoreLabel(ev.score)}
 
-Detailní report: ${reportUrl(ev)}
+Detailní report: ${reportUrl(env, ev)}
 
 Za 2 dny Vám pošleme konkrétní návrh, co s tím.
 — Fakan`;
@@ -57,17 +59,17 @@ Za 2 dny Vám pošleme konkrétní návrh, co s tím.
 <p style="font-size:16px;line-height:1.6">Pět kategorií, 5–10 konkrétních věcí k řešení a náhled mobilu — vše v reportu:</p>
 
 <p style="margin:24px 0">
-  <a href="${reportUrl(ev)}" style="display:inline-block;background:#C84B31;color:#fff;padding:14px 24px;text-decoration:none;border-radius:4px;font-weight:bold">Otevřít report</a>
+  <a href="${reportUrl(env, ev)}" style="display:inline-block;background:#C84B31;color:#fff;padding:14px 24px;text-decoration:none;border-radius:4px;font-weight:bold">Otevřít report</a>
 </p>
 
 <p style="font-size:14px;color:#8A7E6E">Za 2 dny Vám pošleme konkrétní návrh, co s tím můžeme udělat. Nezávazně.</p>
-`, ev);
+`, env, ev);
 
   return { subject, html, text };
 }
 
 // ---------- Mail #1 (alternativa): audit nedoběhl ----------
-function tplAuditFailed(ev) {
+function tplAuditFailed(ev, env) {
   const subject = `Audit ${ev.domain} — ozveme se ručně`;
   const text = `Web ${ev.domain} se nám nepodařilo automaticky proauditovat.
 
@@ -94,7 +96,7 @@ Pokud by se mezitím něco hodilo doplnit, odpovězte na tuto zprávu.
 <p style="font-size:16px;line-height:1.6">Žádná z těch věcí neznamená, že je s webem něco zásadně špatně — jen na něj nesmí náš automat.</p>
 
 <p style="font-size:16px;line-height:1.6">Podíváme se na web sami a <strong>do 2 pracovních dnů Vám pošleme zhodnocení</strong>. Pokud by se mezitím něco hodilo doplnit, odpovězte přímo na tuto zprávu.</p>
-`, ev);
+`, env, ev);
 
   return { subject, html, text };
 }
@@ -131,7 +133,7 @@ ${variantBox(neu, '#C84B31')}
 <p style="margin:24px 0">
   <a href="mailto:jsem@fakan.cz?subject=${encodeURIComponent(ev.domain)}" style="display:inline-block;background:#1F1B16;color:#fff;padding:14px 24px;text-decoration:none;border-radius:4px;font-weight:bold">Odpovědět e-mailem</a>
 </p>
-`, ev);
+`, env, ev);
 
   return { subject, html, text: subject };
 }
@@ -152,18 +154,18 @@ async function tplOffer(ev, env) {
   <a href="mailto:jsem@fakan.cz?subject=${encodeURIComponent('Chci nabídku pro ' + ev.domain)}" style="display:inline-block;background:#C84B31;color:#fff;padding:14px 24px;text-decoration:none;border-radius:4px;font-weight:bold">Chci nabídku</a>
 </p>
 <p style="font-size:14px;color:#8A7E6E">Nebo zavolejte: +420 604 690 539. Beze srandy.</p>
-`, ev);
+`, env, ev);
   return { subject, html, text: subject };
 }
 
 // ---------- Mail #4: re-audit za 30 dní ----------
-function tplReaudit(ev) {
+function tplReaudit(ev, env) {
   const subject = `Měsíc utekl. Co se na ${ev.domain} změnilo?`;
   const html = shell(subject, `
 <h1 style="font-size:24px">Měsíc utekl.</h1>
 <p style="font-size:16px;line-height:1.6">Pustili jsme audit znovu. Tady je nové skóre vedle minulého:</p>
-<p style="font-size:16px"><a href="${reportUrl(ev)}">${reportUrl(ev)}</a></p>
+<p style="font-size:16px"><a href="${reportUrl(env, ev)}">${reportUrl(env, ev)}</a></p>
 <p style="font-size:14px;color:#8A7E6E">Když je skóre stejné, je nejspíš čas na zásah. Když se zlepšilo, gratulujeme — Vy nebo někdo jiný odvedl práci.</p>
-`, ev);
+`, env, ev);
   return { subject, html, text: subject };
 }

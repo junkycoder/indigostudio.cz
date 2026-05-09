@@ -1,10 +1,11 @@
 // src/lib/cors.js
-// CORS — POST formulář jde z fakan.cz, frontend reportu z audit.fakan.cz.
+// Po sjednocení do jednoho Workeru je všechno same-origin (fakan.cz),
+// takže CORS prakticky netřeba. Ponecháno defenzivně pro lokální dev origin
+// a krátkodobý 301 redirect z audit.fakan.cz (Bulk Redirect, ~3 měsíce po cutoffu).
 
 const ALLOWED_ORIGINS = new Set([
   'https://fakan.cz',
   'https://www.fakan.cz',
-  'https://audit.fakan.cz',
 ]);
 
 export function corsHeaders(request) {
