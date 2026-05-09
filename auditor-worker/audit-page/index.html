@@ -170,17 +170,53 @@ const CAT_LABEL = {
   cookie:'cookies', sec:'zabezpečení', cms:'CMS', error:'chyba',
 };
 
+// Audit může být v okamžiku otevření ještě v běhu (queued/running) — typicky
+// když user přijde rovnou z form submitu. Polling: každé 3 s zkus znovu, max
+// ~3 min. 404 = report token neexistuje (žádný retry, error rovnou).
+const POLL_MS = 3000;
+const MAX_POLLS = 60;
+
 (async () => {
-  try {
-    const resp = await fetch(`${API}/audit/${token}/data`);
-    if (!resp.ok) throw new Error('Report nenalezen.');
-    const { audit, findings, strategist } = await resp.json();
-    render(audit, findings, strategist);
-  } catch (err) {
-    root.innerHTML = `<div class="loading"><p>Tento report neexistuje nebo vypršel.</p>
-      <p><a href="https://fakan.cz">Zpět na fakan.cz</a></p></div>`;
+  let polls = 0;
+  while (polls++ < MAX_POLLS) {
+    let payload;
+    try {
+      const resp = await fetch(`${API}/audit/${token}/data`);
+      if (resp.status === 404) return showMissing();
+      if (!resp.ok) throw new Error('http ' + resp.status);
+      payload = await resp.json();
+    } catch (err) {
+      if (polls >= MAX_POLLS) return showMissing();
+      await sleep(POLL_MS);
+      continue;
+    }
+
+    if (payload.audit.status === 'queued' || payload.audit.status === 'running') {
+      renderRunning(payload.audit);
+      await sleep(POLL_MS);
+      continue;
+    }
+
+    return render(payload.audit, payload.findings, payload.strategist);
   }
+  showMissing();
 })();
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function showMissing() {
+  root.innerHTML = `<div class="loading"><p>Tento report neexistuje nebo vypršel.</p>
+    <p><a href="https://fakan.cz">Zpět na fakan.cz</a></p></div>`;
+}
+
+function renderRunning(audit) {
+  root.innerHTML = `
+    <div class="loading">
+      <div class="spinner" aria-hidden="true"></div>
+      <p style="margin-top:24px;font-size:18px">Auditujeme ${esc(audit.domain)}…</p>
+      <p style="font-size:14px;color:var(--muted)">Hotovo do pár sekund. Stránka se sama obnoví.</p>
+    </div>`;
+}
 
 function render(audit, findings, strat) {
   const score = audit.score ?? 0;

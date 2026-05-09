@@ -40,8 +40,15 @@ export async function handleAudit(request, env, ctx) {
   const cached = await env.AUDIT_CACHE.get(`audit:${domain}`);
   if (cached) {
     const { auditId } = JSON.parse(cached);
+    const row = await env.DB.prepare(
+      `SELECT report_token FROM audits WHERE id = ? LIMIT 1`
+    ).bind(auditId).first();
     ctx.waitUntil(scheduleResend(env, auditId, email));
-    return ok({ message: 'Tenhle web jsme nedávno auditovali. Posíláme výsledek.' });
+    return ok({
+      auditId,
+      reportToken: row?.report_token,
+      message: 'Tenhle web jsme nedávno auditovali. Posíláme výsledek.',
+    });
   }
 
   // 5) Vytvořit lead + audit row
@@ -76,6 +83,7 @@ export async function handleAudit(request, env, ctx) {
 
   return ok({
     auditId,
+    reportToken,
     message: 'Pracujeme na tom. Výsledek mailem do 5 minut.',
   });
 }
