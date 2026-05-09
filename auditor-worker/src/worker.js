@@ -47,10 +47,12 @@ export default {
 
       // ----- Audit report SPA -----
       // /audit/{token} → audit-page index.html (frontend si token přečte z URL).
-      // Asset cestu /audit/index.html nechce přepsat (ať lze otevřít přímo).
-      if (path.startsWith('/audit/') && path !== '/audit/index.html') {
-        const indexUrl = new URL('/audit/index.html', request.url);
-        return env.ASSETS.fetch(new Request(indexUrl, request));
+      // Asset bindingu posíláme `/audit/` (trailing slash), ten ho vyřeší jako
+      // adresář s default index.html. Pokud bychom poslali `/audit/index.html`,
+      // auto-trailing-slash by udělal 307 redirect na `/audit/` a vznikne loop.
+      if (path.startsWith('/audit/') && !path.endsWith('/data')) {
+        const assetUrl = new URL('/audit/', request.url);
+        return env.ASSETS.fetch(new Request(assetUrl, request));
       }
 
       // ----- Backwards-compat redirecty -----

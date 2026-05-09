@@ -20,12 +20,25 @@ custom_domain = true
 
 # ----- Static assets -----
 # public/ obsahuje landing (index.html, ochrana-udaju, …) + audit-page (audit/index.html).
-# run_worker_first = true → Worker rozhoduje pro každý request,
-# pro neznámé cesty volá env.ASSETS.fetch(request) jako fallback.
+# run_worker_first jako array — Worker dostane priority jen pro dynamické cesty.
+# Pro /audit/* je to klíčové: jinak asset binding udělá canonicalization redirect
+# na /audit/ pro neznámé tokeny místo aby pustil Worker rewrite na index.html.
+# Statiku (/, /ochrana-udaju, /audit/index.html …) servuje asset binding přímo.
 [assets]
 directory = "public"
 binding = "ASSETS"
-run_worker_first = true
+# html_handling = default ("auto-trailing-slash") — drop .html z URL,
+# force trailing slash pro directory s index.html (/ochrana-udaju.html → /ochrana-udaju,
+# /audit/ → /audit/index.html). Worker při rewrite na audit-page volá
+# env.ASSETS.fetch(/audit/), ne /audit/index.html, jinak vznikne 307 loop.
+run_worker_first = [
+  "/api/*",
+  "/audit/*",
+  "/odhlasit",
+  "/odhlasit/*",
+  "/unsubscribe",
+  "/screenshot/*",
+]
 
 # ----- D1 -----
 [[d1_databases]]
