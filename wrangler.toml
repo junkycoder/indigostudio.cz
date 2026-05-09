@@ -1,4 +1,4 @@
-name = "fakan-auditor"
+name = "fakan"
 main = "src/worker.js"
 compatibility_date = "2025-04-01"
 compatibility_flags = ["nodejs_compat"]
@@ -9,10 +9,8 @@ compatibility_flags = ["nodejs_compat"]
 browser = { binding = "MYBROWSER" }
 
 # ----- Routing -----
-# Worker drží celý fakan.cz po sjednocení (dříve to byly 3 deployments:
-# fakan-cz Worker, fakan-auditor Worker, audit.fakan.cz Pages).
-# Před prvním deployem MUSÍŠ v dashboardu sundat custom domain z Workeru
-# `fakan-cz`, jinak deploy selže na "route already in use".
+# Worker drží celý fakan.cz: landing, audit pipeline, audit report SPA,
+# opt-out, plus budoucí featury (placené návrhy, nákup domény).
 [[routes]]
 pattern = "fakan.cz"
 zone_name = "fakan.cz"

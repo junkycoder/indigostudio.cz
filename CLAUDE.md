@@ -1,50 +1,57 @@
 # CLAUDE.md — fakan repo
 
 Tenhle soubor Claude Code automaticky načte na začátku každého sezení.
-Drž se ho. Pokud něco není zde, koukni do `PROMPT.md` (původní zadání)
-a `auditor-worker/roadmap.md` (post-MVP fáze).
+Drž se ho. Pokud něco není zde, koukni do `PROMPT.md` (původní zadání auditoru)
+a `roadmap.md` (post-MVP fáze).
 
 ---
 
 ## Co je v tomhle repu
 
-Jeden Cloudflare Worker (`fakan-auditor`) servuje **celý fakan.cz** —
-landing, audit pipeline, audit report SPA i opt-out. Po sjednocení
-zaniká dělba na tři deployments (Worker `fakan-cz`, Worker `fakan-auditor`
-na `api.fakan.cz`, Pages na `audit.fakan.cz`).
+Jeden Cloudflare Worker (`fakan`) servuje **celý fakan.cz**. Začalo to
+jako auditor, postupně přibývají další featury:
 
-Vše je v `auditor-worker/`:
+- **Audit webů** — form na fakan.cz → 5min → mail s reportem → 4-mail drip.
+- **Placené návrhy** (chystá se) — AI (Claude) podle Fakanových instrukcí
+  + zadání uživatele dodá redesign návrh, klient platí předem.
+- **Nákup domény** (chystá se) — fakan.cz prodává doménu klientovi
+  (registrar API + platba).
 
+Všechno teče přes jeden Worker, jednu D1, jeden bucket. Žádné microservices.
+
+Adresářová struktura (klasický Workers layout v rootu):
+
+- **`wrangler.toml`** — config Workeru
 - **`src/worker.js`** — entry, routing podle path
-- **`src/handlers/`** — `/api/audit`, `/api/audit/{token}/data`, `/api/screenshot/{id}`
-- **`src/legacy/optout.js`** — sjednocený opt-out (zkusí `env.DB` =
-  `fakan_auditor`, fallback `env.LEGACY_DB` = `fakan_leads` z dávných mailů)
-- **`src/audit/`** — Browser Rendering, axe, processor, strategist (Claude)
+- **`src/handlers/`** — endpointy (`audit.js`, `report.js`, `screenshot.js`,
+  budoucí: `suggestion.js`, `domain.js`)
+- **`src/audit/`** — audit pipeline (processor, strategist, scoring)
 - **`src/email/`** — templates + dispatcher (cron každých 15 min, Resend)
-- **`public/`** — všechna statika
-  - `index.html` — landing
-  - `audit/index.html` — audit report SPA (servuje pod `/audit/{token}`)
-  - `ochrana-udaju.html`, `odhlasit-hotovo.html`, `prehled.html`
+- **`src/legacy/`** — sjednocený opt-out s fallbackem na původní fakan_leads DB
+- **`src/lib/`** — pomocné moduly (cors, …)
+- **`public/`** — statika (landing, audit-page SPA, ochrana-udaju, …)
+- **`db/schema.sql`** — D1 schéma (`fakan_auditor`)
 
 ## Stav (aktuální commit; vždy ověř `git log` pro skutečnost)
 
-Migrace na single Worker hotová v kódu. Před prvním deployem:
+Worker `fakan` běží na fakan.cz (deployed 2026-05-09). Sjednocení tří
+původních deploymentů (`fakan-cz` Worker, `fakan-auditor` Worker na
+api.fakan.cz, Pages na audit.fakan.cz) je hotové, code i deploy.
 
-1. `wrangler secret put PUBLIC_HOST` (hodnota: `fakan.cz`).
-2. Ověřit existující secrety: `RESEND_API_KEY`, `ANTHROPIC_API_KEY`.
-3. **V CF dashboardu sundat custom domain `fakan.cz` ze starého Workeru
-   `fakan-cz`.** Bez toho deploy auditora selže na "route already in use".
-4. `npm run deploy` v `auditor-worker/` → Worker se připojí na `fakan.cz`.
-5. Smoke z incognita: form → audit → mail → `/audit/{token}` → `/odhlasit/{token}`.
-6. (Volitelně) Bulk Redirect v dashboardu pro odeslané maily:
-   - `audit.fakan.cz/* → fakan.cz/$1` 301
-   - `api.fakan.cz/* → fakan.cz/$1` 301
-   Po ~3 měsících odstavit.
-7. Po týdnu úspěšného běhu: `wrangler delete` Worker `fakan-cz`,
-   smazat Pages projekt `fakan-audit-page`, KV `RATELIMIT` z fakan-cz.
-8. Až staré opt-out odkazy z analyze flow doodejdou (~3 měsíce po
-   cutoffu): smazat D1 `fakan_leads`, odstranit binding `LEGACY_DB`
-   z `auditor-worker/wrangler.toml`.
+Cleanup, který Fakan dělá ručně až bude jistá stabilita:
+
+1. CF dashboard → smazat starý Worker `fakan-cz` (už nedrží route).
+2. CF dashboard → smazat starý Worker `fakan-auditor` (po rename na `fakan`
+   už nedrží route, jen existuje v účtu).
+3. CF dashboard → smazat Pages projekt `fakan-audit-page`.
+4. (Volitelně) CF dashboard → Bulk Redirects:
+   - `audit.fakan.cz/*` → `https://fakan.cz/$1` (301)
+   - `api.fakan.cz/*` → `https://fakan.cz/$1` (301)
+   Drž 3 měsíce, pak zruš.
+5. (~3 měsíce po cutoffu) — až staré opt-out tokeny z analyze flow odejdou:
+   - smazat D1 `fakan_leads`
+   - odstranit binding `LEGACY_DB` a `[[send_email]] EMAIL` ve `wrangler.toml`
+   - smazat `src/legacy/`
 
 ## Pravidla práce
 
@@ -53,7 +60,7 @@ Migrace na single Worker hotová v kódu. Před prvním deployem:
   závislosti mimo Cloudflare ekosystém + Web Platform. Komentáře česky OK,
   identifikátory anglicky.
 - **Malé commity, jeden commit per fáze / per logická změna.** Po každé fázi smoke
-  test (`npx wrangler deploy --dry-run` v `auditor-worker/`).
+  test (`npx wrangler deploy --dry-run` v rootu).
 - **`wrangler.toml` resource ID nikdy nevyplňuj v repu** — placeholder `REPLACE_ME`,
   uživatel je vyplní lokálně. (Existující ID v repu zůstávají.)
 - **Tajemství** přes `wrangler secret put`, nikdy do `wrangler.toml` ani kódu.
@@ -99,8 +106,8 @@ SYSTEM prompt strategistovi, copy na fakan.cz):
                           → 429/5xx posune send_at, 4xx permanent fail
 
 [GET /audit/{token}]
-  → worker.js              env.ASSETS.fetch('/audit/index.html') (SPA)
-  → audit/index.html       fetch /api/audit/{token}/data + img /api/screenshot/{id}
+  → worker.js              env.ASSETS.fetch('/audit/') (audit-page SPA)
+  → public/audit/index.html  fetch /api/audit/{token}/data + img /api/screenshot/{id}
 
 [GET /odhlasit/{token}, /odhlasit?t=, /unsubscribe?token=]
   → legacy/optout.js       zkus auditor DB, fallback LEGACY_DB → render done page
@@ -110,18 +117,18 @@ SYSTEM prompt strategistovi, copy na fakan.cz):
   → env.ASSETS.fetch       statika z public/
 ```
 
-Doménová mapa po sjednocení:
-- `fakan.cz` — všechno (Worker `fakan-auditor`)
+Doménová mapa:
+- `fakan.cz` — Worker `fakan` (vše)
 - `api.fakan.cz`, `audit.fakan.cz` — zaniklé (volitelně 301 přes Bulk Redirect)
 
 ## Co NEdělej
 
-- Nesahat na `auditor-worker/wrangler.toml` `[[routes]]` ani `[[d1_databases]]` ID
+- Nesahat na `wrangler.toml` `[[routes]]` ani `[[d1_databases]]` ID
   bez explicitního požadavku.
 - Nepřidávat framework / TypeScript / build step (viz Pravidla).
 - Necacheovat failed audity do `AUDIT_CACHE` (vrátil by se starý failed report).
 - Neposílat strategist na failed audit (LLM by halucinoval bez findings).
-- Nevracet email leadu / lead_id / interní fields v `/api/audit/{token}/data` payloadu —
+- Nevracet email leadu / lead_id / interní fields v `/api/audit/{token}/data` —
   whitelist polí v `handlers/report.js`.
 - Nesmazat `LEGACY_DB` binding ani Email Workers `EMAIL` binding, dokud nepostane
   jasné, že už nikdo z dávných mailů na opt-out neklikne (~3 měsíce po cutoffu).
@@ -138,18 +145,17 @@ Doménová mapa po sjednocení:
 
 | Co | Kde |
 |----|-----|
-| Single Worker config | `auditor-worker/wrangler.toml` |
-| Worker entry + routing | `auditor-worker/src/worker.js` |
-| API handlery | `auditor-worker/src/handlers/` |
-| Sjednocený opt-out | `auditor-worker/src/legacy/optout.js` |
-| Statika (landing + audit-page) | `auditor-worker/public/` |
-| Email šablony + dispatcher | `auditor-worker/src/email/` |
-| Audit pipeline | `auditor-worker/src/audit/` |
-| DB schéma | `auditor-worker/db/schema.sql` |
-| Setup runbook | `auditor-worker/README.md` |
+| Worker config | `wrangler.toml` |
+| Worker entry + routing | `src/worker.js` |
+| API handlery | `src/handlers/` |
+| Sjednocený opt-out | `src/legacy/optout.js` |
+| Statika (landing + audit-page) | `public/` |
+| Email šablony + dispatcher | `src/email/` |
+| Audit pipeline | `src/audit/` |
+| DB schéma | `db/schema.sql` |
 | Zadání MVP fází 1–5 | `PROMPT.md` |
-| Post-MVP fáze 6/7 | `auditor-worker/roadmap.md` |
-| Strategist prompt (zdroj pro JS konstantu) | `auditor-worker/strategist-prompt.md` |
+| Post-MVP fáze 6/7 | `roadmap.md` |
+| Strategist prompt (zdroj pro JS konstantu) | `strategist-prompt.md` |
 
 ---
 

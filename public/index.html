@@ -354,6 +354,49 @@ section { padding: clamp(56px, 7vw, 88px) 0; border-bottom: 1px solid var(--line
 .cta-banner .cta-foot { text-align: center; margin-top: 20px; font-size: 14px; color: color-mix(in srgb, var(--bg) 75%, var(--ink)); }
 .cta-banner .cta-foot a { color: var(--bg); }
 
+/* Doménový vyhledávač — výsledková tabulka */
+.domain-results {
+  margin-top: 28px; background: var(--card);
+  border-radius: 6px; border-left: 3px solid var(--line);
+  overflow: hidden;
+}
+.domain-row {
+  display: grid; grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 18px;
+  padding: 14px 22px; border-top: 1px solid var(--line);
+}
+.domain-row:first-child { border-top: none; }
+.domain-name { font-weight: bold; font-size: 16px; word-break: break-all; }
+.domain-status {
+  justify-self: start;
+  font-size: 13px; padding: 4px 10px; border-radius: 3px;
+  white-space: nowrap;
+}
+.domain-status.free { background: color-mix(in srgb, var(--good) 22%, transparent); color: #3f6149; }
+.domain-status.taken { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+.domain-status.unknown { background: color-mix(in srgb, var(--warn) 18%, transparent); color: #8b4d1e; }
+.domain-status.loading { background: var(--bg); color: var(--muted); }
+.domain-price { font-size: 14px; color: var(--muted); white-space: nowrap; }
+.domain-price strong { color: var(--ink); font-size: 15px; }
+.domain-action {
+  font: inherit; font-family: Georgia, serif; font-size: 14px; font-weight: bold;
+  padding: 8px 14px; border-radius: 4px;
+  border: 1px solid var(--accent); color: var(--accent);
+  background: transparent; cursor: pointer; text-decoration: none;
+  white-space: nowrap; transition: background 0.15s, color 0.15s;
+}
+.domain-action:hover { background: var(--accent); color: #fff; }
+.domain-foot { margin: 18px 0 0; font-size: 14px; color: var(--muted); line-height: 1.55; }
+@media (max-width: 720px) {
+  .domain-row {
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    gap: 8px 14px; padding: 14px 18px;
+  }
+  .domain-name { grid-column: 1 / -1; }
+  .domain-action { grid-column: 1 / -1; justify-self: start; }
+}
+
 /* Footer */
 footer { padding: 40px 0 56px; color: var(--muted); font-size: 14px; }
 footer a { color: var(--muted); text-decoration: none; }
@@ -715,6 +758,42 @@ input:focus-visible { outline: none; }
   </div>
 </section>
 
+<!-- NOVÁ DOMÉNA -->
+<section id="domena">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Nová doména</span>
+      <h2>Najdeme Vaši doménu a postavíme na ní web.</h2>
+      <p>Zadejte název, který chcete (například <code>vasefirma</code>). Hned zjistíme, jestli je volný, kolik stojí ročně a co k tomu dostanete.</p>
+    </div>
+
+    <form class="url-form" data-domain-form novalidate>
+      <div class="form-row">
+        <label for="domainInput">Název domény</label>
+        <input
+          class="url-input"
+          id="domainInput"
+          name="domain"
+          type="text"
+          placeholder="vasefirma"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          required>
+        <p class="form-hint">Stačí samotný název. Koncovky zkontrolujeme za Vás (.cz, .com, .eu, .sk, .net, .org).</p>
+      </div>
+      <button class="btn-cta" type="submit">Zkontrolovat dostupnost →</button>
+      <p class="form-error" data-form-error role="alert"></p>
+    </form>
+
+    <div class="domain-results" data-domain-results hidden></div>
+    <p class="domain-foot" data-domain-foot hidden>
+      Cena zahrnuje <strong>registraci na rok</strong> u oficiálního registrátora (.cz přes Subreg, ostatní přes Cloudflare). Hosting si k tomu doplníte z balíčků nahoře — od 99 Kč měsíčně. Po objednávce vyřídíme registraci do jednoho pracovního dne.
+    </p>
+  </div>
+</section>
+
 <!-- CTA -->
 <section style="border-bottom: none;">
   <div class="wrap">
@@ -1034,6 +1113,179 @@ document.querySelectorAll('form[data-suggestion-form]').forEach((form) => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     submitSuggestion(form);
+  });
+});
+
+// Doména — frontend-only check přes Cloudflare DNS-over-HTTPS (NS query),
+// statický ceník (Subreg pro .cz, Cloudflare registrar pro ostatní + marže).
+// Po stabilizaci přesunout check + objednávku na backend (Subreg API).
+const DOMAIN_TLDS = ['cz', 'com', 'eu', 'sk', 'net', 'org'];
+const DOMAIN_PRICES_KC_YEAR = {
+  cz: 299,
+  com: 399,
+  eu: 349,
+  sk: 499,
+  net: 449,
+  org: 449,
+};
+const DOMAIN_INQUIRY_EMAIL = 'jsem@fakan.cz';
+
+function sanitizeDomainBase(raw) {
+  let s = String(raw || '').trim().toLowerCase();
+  if (!s) return null;
+  // Když uživatel zadá schéma / cestu / TLD, vezmeme jen první label.
+  s = s.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  s = s.split('.')[0];
+  // IDN → punycode pomocí URL parseru.
+  try {
+    const host = new URL('http://' + s + '.example').hostname;
+    s = host.split('.')[0];
+  } catch { /* fallback na raw */ }
+  if (!/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(s)) return null;
+  return s;
+}
+
+async function dohCheck(fqdn) {
+  const url = 'https://cloudflare-dns.com/dns-query?name=' + encodeURIComponent(fqdn) + '&type=NS';
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 5000);
+  try {
+    const r = await fetch(url, { headers: { accept: 'application/dns-json' }, signal: ctrl.signal });
+    if (!r.ok) return 'unknown';
+    const j = await r.json();
+    // Status 3 = NXDOMAIN → volná
+    if (j.Status === 3) return 'free';
+    // Status 0 + Answer s NS → registrovaná
+    if (j.Status === 0 && Array.isArray(j.Answer) && j.Answer.length) return 'taken';
+    // Status 0 bez Answer ale s Authority na vyšší úrovni → volná (existuje jen TLD SOA)
+    if (j.Status === 0 && Array.isArray(j.Authority) && j.Authority.length) {
+      const fqdnLower = fqdn.toLowerCase();
+      const authForDomain = j.Authority.some(a => String(a.name || '').toLowerCase() === fqdnLower);
+      return authForDomain ? 'taken' : 'free';
+    }
+    return 'unknown';
+  } catch {
+    return 'unknown';
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+function mailtoFor(status, fqdn, price) {
+  const isOrder = status === 'free';
+  const subject = (isOrder ? 'Objednávka domény ' : 'Poptávka domény ') + fqdn;
+  const lines = isOrder ? [
+    'Dobrý den,',
+    '',
+    'rád bych si u Vás zaregistroval doménu ' + fqdn + '.',
+    'Orientační cena dle webu: ' + price + ' Kč / rok.',
+    '',
+    'Kontaktní údaje:',
+    'Jméno / firma:',
+    'Telefon:',
+    '',
+    'Děkuji.',
+  ] : [
+    'Dobrý den,',
+    '',
+    'mám zájem o doménu ' + fqdn + '. Můžete prosím ověřit dostupnost a poslat nabídku?',
+    '',
+    'Děkuji.',
+  ];
+  return 'mailto:' + DOMAIN_INQUIRY_EMAIL +
+    '?subject=' + encodeURIComponent(subject) +
+    '&body=' + encodeURIComponent(lines.join('\r\n'));
+}
+
+const DOMAIN_STATUS_LABEL = {
+  free: 'Volné',
+  taken: 'Obsazené',
+  unknown: 'Neověřeno',
+  loading: 'Hledáme…',
+};
+
+function renderDomainRow(fqdn, status, price) {
+  const row = document.createElement('div');
+  row.className = 'domain-row';
+
+  const name = document.createElement('span');
+  name.className = 'domain-name';
+  name.textContent = fqdn;
+
+  const stat = document.createElement('span');
+  stat.className = 'domain-status ' + status;
+  stat.textContent = DOMAIN_STATUS_LABEL[status];
+
+  const priceEl = document.createElement('span');
+  priceEl.className = 'domain-price';
+  if (status === 'taken' || status === 'loading') {
+    priceEl.textContent = '—';
+  } else {
+    const strong = document.createElement('strong');
+    strong.textContent = price + ' Kč';
+    priceEl.appendChild(strong);
+    priceEl.appendChild(document.createTextNode(' / rok'));
+  }
+
+  row.appendChild(name);
+  row.appendChild(stat);
+  row.appendChild(priceEl);
+
+  if (status === 'free' || status === 'unknown') {
+    const action = document.createElement('a');
+    action.className = 'domain-action';
+    action.href = mailtoFor(status, fqdn, price);
+    action.textContent = status === 'free' ? 'Objednat →' : 'Poptat →';
+    row.appendChild(action);
+  }
+  return row;
+}
+
+async function submitDomainSearch(form) {
+  clearError(form);
+  const raw = form.querySelector('[name="domain"]').value;
+  const base = sanitizeDomainBase(raw);
+  if (!base) {
+    showError(form, 'Zadejte platný název domény (písmena, číslice a pomlčky, max 63 znaků).');
+    return;
+  }
+
+  const btn = form.querySelector('button[type="submit"]');
+  const origLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Hledáme…';
+
+  const results = document.querySelector('[data-domain-results]');
+  const foot = document.querySelector('[data-domain-foot]');
+  if (!results) return;
+  results.innerHTML = '';
+  results.hidden = false;
+
+  // Loading rows
+  const placeholders = {};
+  for (const tld of DOMAIN_TLDS) {
+    const fqdn = base + '.' + tld;
+    const row = renderDomainRow(fqdn, 'loading', DOMAIN_PRICES_KC_YEAR[tld]);
+    results.appendChild(row);
+    placeholders[tld] = row;
+  }
+
+  await Promise.all(DOMAIN_TLDS.map(async (tld) => {
+    const fqdn = base + '.' + tld;
+    const status = await dohCheck(fqdn);
+    const fresh = renderDomainRow(fqdn, status, DOMAIN_PRICES_KC_YEAR[tld]);
+    placeholders[tld].replaceWith(fresh);
+  }));
+
+  if (foot) foot.hidden = false;
+  btn.disabled = false;
+  btn.textContent = origLabel;
+}
+
+document.querySelectorAll('form[data-domain-form]').forEach((form) => {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitDomainSearch(form);
   });
 });
 </script>
