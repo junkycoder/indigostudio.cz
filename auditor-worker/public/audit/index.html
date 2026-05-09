@@ -157,9 +157,8 @@
 </footer>
 
 <script type="module">
-// Frontend běží na audit.fakan.cz (Cloudflare Pages), data Worker na api.fakan.cz.
-// Pokud lokálně (preview, file://, localhost), fallback na relativní cestu.
-const API = (location.hostname === 'audit.fakan.cz') ? 'https://api.fakan.cz' : '';
+// Frontend i API jedou na fakan.cz (jeden Worker, same-origin).
+// Audit data: GET /api/audit/{token}/data, screenshot: GET /api/screenshot/{auditId}.
 
 const root = document.getElementById('root');
 const token = location.pathname.split('/').filter(Boolean)[1];
@@ -181,7 +180,7 @@ const MAX_POLLS = 60;
   while (polls++ < MAX_POLLS) {
     let payload;
     try {
-      const resp = await fetch(`${API}/audit/${token}/data`);
+      const resp = await fetch(`/api/audit/${token}/data`);
       if (resp.status === 404) return showMissing();
       if (!resp.ok) throw new Error('http ' + resp.status);
       payload = await resp.json();
@@ -271,7 +270,7 @@ function render(audit, findings, strat) {
     </section>
 
     <section class="screenshot">
-      <img src="${API}/screenshot/${audit.id}"
+      <img src="/api/screenshot/${audit.id}"
            alt="Náhled webu na mobilu" loading="lazy"
            onerror="this.style.display='none'">
       <p>Jak Váš web vidí návštěvník na mobilu.</p>

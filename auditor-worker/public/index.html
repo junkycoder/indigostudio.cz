@@ -788,10 +788,9 @@ input:focus-visible { outline: none; }
 </footer>
 
 <script>
-// Form handler — POST na auditor (api.fakan.cz/api/audit), redirect na audit.fakan.cz/audit/{token}.
+// Form handler — POST na auditor (/api/audit, same-origin), redirect na /audit/{token}.
 // Lokální „účet" v localStorage — žádný backend auth, jen dohledatelnost vlastních reportů.
-const API = 'https://api.fakan.cz/api/audit';
-const REPORT_HOST = 'https://audit.fakan.cz';
+const API = '/api/audit';
 const USER_KEY = 'fakanUser';
 
 const NICK_ADJ = ['Hbitý', 'Mazaný', 'Statečný', 'Důmyslný', 'Vychytralý', 'Tichý', 'Drzý', 'Bdělý', 'Zamlklý', 'Pracovitý', 'Skromný', 'Nadšený', 'Zamyšlený', 'Klidný', 'Kurážný', 'Lstivý', 'Zarytý', 'Pichlavý'];
@@ -856,7 +855,7 @@ function renderUserModal() {
       for (const a of list) {
         const li = document.createElement('li');
         const link = document.createElement('a');
-        link.href = REPORT_HOST + '/audit/' + encodeURIComponent(a.token);
+        link.href = '/audit/' + encodeURIComponent(a.token);
         link.target = '_blank';
         link.rel = 'noopener';
         const u = document.createElement('span'); u.className = 'audit-url'; u.textContent = a.url;
@@ -949,7 +948,7 @@ async function submitAudit(form) {
 
     if (data.reportToken) {
       recordAudit({ email, url, token: data.reportToken });
-      window.location.href = `${REPORT_HOST}/audit/${encodeURIComponent(data.reportToken)}`;
+      window.location.href = `/audit/${encodeURIComponent(data.reportToken)}`;
       return;
     }
 
@@ -974,7 +973,7 @@ document.querySelectorAll('form[data-audit-form]').forEach((form) => {
 
 // Suggestion form — placená rychlá úprava designu. Backend endpoint /api/suggestion
 // zatím neexistuje (TODO v auditor-worker). Form ho volá multipart/form-data se soubory.
-const SUGGESTION_API = 'https://api.fakan.cz/api/suggestion';
+const SUGGESTION_API = '/api/suggestion';
 const SUGG_MAX_FILES = 10;
 const SUGG_MAX_TOTAL_BYTES = 20 * 1024 * 1024;
 
