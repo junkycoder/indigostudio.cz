@@ -1,0 +1,52 @@
+name = "fakan-auditor"
+main = "src/worker.js"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ----- Browser Rendering -----
+# (Top-level binding; v TOMLu MUSÍ být před prvním [[…]] headerem,
+# jinak ho parser přiřadí poslední sekci.)
+browser = { binding = "MYBROWSER" }
+
+# ----- D1 -----
+[[d1_databases]]
+binding = "DB"
+database_name = "fakan_auditor"
+database_id = "REPLACE_ME"
+
+# ----- KV (cache + rate limit) -----
+[[kv_namespaces]]
+binding = "AUDIT_CACHE"
+id = "REPLACE_ME"
+
+[[kv_namespaces]]
+binding = "RATELIMIT"
+id = "REPLACE_ME"
+
+# ----- R2 (uložené reporty + screenshoty) -----
+[[r2_buckets]]
+binding = "REPORTS"
+bucket_name = "fakan-reports"
+
+# ----- Queues -----
+[[queues.producers]]
+binding = "AUDIT_QUEUE"
+queue = "fakan-audit-jobs"
+
+[[queues.consumers]]
+queue = "fakan-audit-jobs"
+# @cloudflare/puppeteer má per-account concurrency limit (default 2).
+# max_batch_size > 2 = 503 z Browser Renderingu při souběhu auditů.
+max_batch_size = 2
+max_batch_timeout = 5
+max_retries = 3
+dead_letter_queue = "fakan-audit-dlq"
+
+# ----- Cron pro follow-upy -----
+[triggers]
+crons = ["*/15 * * * *"]   # každých 15 min — vyhodnotit naplánované maily
+
+# ----- Tajemství (wrangler secret put …) -----
+# RESEND_API_KEY
+# PUBLIC_HOST   = "fakan.cz"
+# REPORT_HOST   = "audit.fakan.cz"
