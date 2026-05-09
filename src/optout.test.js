@@ -95,7 +95,7 @@ test('valid token + existující řádek → DB UPDATE volaný, response 200, ct
   assert.equal(res.headers.get('set-cookie'), null, 'žádný Set-Cookie');
 
   const body = await res.text();
-  assert.match(body, /Hotovo, odhlásili jsme vás\./);
+  assert.match(body, /Odhlásili jsme Vás z e-mailů\./);
   assert.match(body, /noindex/, 'meta robots noindex');
   assert.match(body, /Indigo Studio s\.r\.o\./, 'footer s patičkou');
 
@@ -123,7 +123,7 @@ test('valid hex format ale řádek neexistuje → žádný UPDATE, žádný mail
 
   assert.equal(res.status, 200);
   const body = await res.text();
-  assert.match(body, /Hotovo, odhlásili jsme vás\./, 'stejná stránka jako úspěch');
+  assert.match(body, /Odhlásili jsme Vás z e-mailů\./, 'stejná stránka jako úspěch');
 
   assert.equal(calls.prepare.length, 1, 'jen SELECT, žádný UPDATE');
   assert.equal(calls.run, 0, 'žádný UPDATE run');
@@ -140,7 +140,7 @@ test("invalid format t=foo → žádné DB volání, response 200 generic", asyn
 
   assert.equal(res.status, 200);
   const body = await res.text();
-  assert.match(body, /Hotovo, odhlásili jsme vás\./);
+  assert.match(body, /Odhlásili jsme Vás z e-mailů\./);
 
   assert.equal(calls.prepare.length, 0, 'žádný DB call');
   assert.equal(calls.run, 0);
@@ -158,7 +158,7 @@ test("chybějící parametr t → response 200 generic (NE 400, per AC § risk-c
   // chybějící parametr je podmnožina „neplatného tokenu" → 200 generic.
   assert.equal(res.status, 200, '200 generic, ne 400');
   const body = await res.text();
-  assert.match(body, /Hotovo, odhlásili jsme vás\./);
+  assert.match(body, /Odhlásili jsme Vás z e-mailů\./);
   assert.equal(calls.prepare.length, 0, 'žádný DB call');
 });
 

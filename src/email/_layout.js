@@ -25,12 +25,12 @@ function escapeHtml(s) {
 
 function renderFooterHtml({ withOptout, unsubscribe_url } = {}) {
   const optoutLine = withOptout && unsubscribe_url
-    ? `<br><a href="${escapeHtml(unsubscribe_url)}" style="color:#6B7280;text-decoration:underline;">Odhlásit z e-mailů od fakan.cz</a> · <a href="https://fakan.cz/ochrana-udaju" style="color:#6B7280;text-decoration:underline;">Ochrana osobních údajů</a>`
+    ? `<br><a href="${escapeHtml(unsubscribe_url)}" style="color:#8A7E6E;text-decoration:underline;">Odhlásit z e-mailů od fakan.cz</a> · <a href="https://fakan.cz/ochrana-udaju" style="color:#8A7E6E;text-decoration:underline;">Ochrana osobních údajů</a>`
     : '';
 
   return `
         <tr>
-          <td style="padding-top:32px;border-top:1px solid #E2E8F0;font-size:13px;line-height:1.5;color:#6B7280;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+          <td style="padding-top:32px;border-top:1px solid #E5E0D6;font-size:13px;line-height:1.5;color:#8A7E6E;font-family:Georgia,'Times New Roman',serif;">
             <strong>${escapeHtml(FOOTER_LINES.identity.split(',')[0])}</strong>${escapeHtml(FOOTER_LINES.identity.slice(FOOTER_LINES.identity.indexOf(',')))}<br>
             ${escapeHtml(FOOTER_LINES.ico)}<br>
             ${escapeHtml(FOOTER_LINES.contact)}${optoutLine}
@@ -92,14 +92,14 @@ export function layout({ title, bodyHtml, bodyText, withOptout = false, unsubscr
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#F9F6F0;">
   <tr>
     <td align="center" style="padding:24px 12px;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:8px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:6px;">
         <tr>
-          <td style="padding:24px 32px 8px 32px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-            <div style="font-weight:700;font-size:20px;color:#FF5722;">Fakan</div>
+          <td style="padding:24px 32px 8px 32px;font-family:Georgia,'Times New Roman',serif;">
+            <div style="font-weight:bold;font-size:20px;color:#C84B31;">fakan.cz</div>
           </td>
         </tr>
         <tr>
-          <td style="padding:8px 32px 24px 32px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5;color:#0B1221;">
+          <td style="padding:8px 32px 24px 32px;font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.55;color:#1F1B16;">
 ${bodyHtml}
           </td>
         </tr>

@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>fakan.cz — váš web, bez starostí</title>
 <meta name="description" content="Když web, jedině od Fakana. Auditujeme, navrhujeme, hostujeme weby pro malé firmy v Česku. Bez cookies, bez výmluv, bez vázanosti.">
-<meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#F9F6F0">
 <link rel="canonical" href="https://fakan.cz/">
 <meta property="og:title" content="fakan.cz — váš web, bez starostí">
 <meta property="og:description" content="Když web, jedině od Fakana. Audit, návrh, hosting pro malé firmy v Česku. Bez cookies, bez výmluv.">
@@ -44,238 +43,232 @@
 <style>
 :root {
   --bg: #F9F6F0;
-  --fg: #0B1221;
-  --muted: #52606F;
-  --line: #E2E8F0;
-  --line-strong: #CBD5E1;
+  --ink: #1F1B16;
+  --muted: #8A7E6E;
+  --line: #E5E0D6;
   --card: #FFFFFF;
-  --orange: #FF5722;
-  --orange-soft: rgba(255,87,34,0.08);
-  --green: #52A47C;
-  --shadow: 0 1px 2px rgba(11,18,33,0.04), 0 12px 24px rgba(11,18,33,0.06);
-  --radius: 14px;
-  --radius-sm: 8px;
+  --accent: #C84B31;
+  --accent-dark: #A93D27;
+  --good: #84A98C;
+  --warn: #D4783A;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0B1221;
-    --fg: #F9F6F0;
-    --muted: #B6C0CC;
-    --line: #1E293B;
-    --line-strong: #334155;
-    --card: #111A2E;
-    --orange: #FF6B3D;
-    --orange-soft: rgba(255,107,61,0.14);
-    --green: #67BD93;
-    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 18px 30px rgba(0,0,0,0.45);
-  }
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  font-family: Georgia, 'Times New Roman', serif;
   background: var(--bg);
-  color: var(--fg);
+  color: var(--ink);
   font-size: 17px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-@media (min-width: 720px) {
-  body { font-size: 18px; }
-}
+@media (min-width: 720px) { body { font-size: 18px; } }
 
-.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
 
-a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-a:hover { text-decoration-color: var(--orange); }
+a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-color: var(--accent); }
 
-h1, h2, h3 { margin: 0 0 0.4em; font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
-h1 { font-size: clamp(34px, 5.5vw, 56px); letter-spacing: -0.025em; }
-h2 { font-size: clamp(26px, 3.4vw, 38px); letter-spacing: -0.02em; }
-h3 { font-size: clamp(19px, 2vw, 22px); }
+h1, h2, h3 { margin: 0 0 0.4em; font-weight: normal; line-height: 1.25; }
+h1 { font-size: clamp(32px, 5vw, 48px); letter-spacing: -0.01em; }
+h2 { font-size: clamp(24px, 3.2vw, 34px); }
+h3 { font-size: clamp(18px, 2vw, 22px); font-weight: bold; }
 p { margin: 0 0 1em; }
 
 /* Skip link */
 .skip { position: absolute; left: -9999px; top: 0; }
-.skip:focus { left: 16px; top: 16px; background: var(--orange); color: #fff; padding: 8px 12px; border-radius: 6px; z-index: 100; }
+.skip:focus { left: 16px; top: 16px; background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 4px; z-index: 100; }
+
+/* Eyebrow */
+.eyebrow {
+  display: inline-block; text-transform: uppercase; letter-spacing: 0.12em;
+  font-size: 12px; color: var(--muted); margin: 0 0 12px;
+  font-family: Georgia, serif;
+}
 
 /* Header */
 header {
-  position: sticky; top: 0; z-index: 50;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  -webkit-backdrop-filter: saturate(140%) blur(8px);
-  backdrop-filter: saturate(140%) blur(8px);
   border-bottom: 1px solid var(--line);
+  background: var(--bg);
 }
-.header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; gap: 16px; }
-.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; text-decoration: none; color: var(--fg); letter-spacing: -0.02em; }
-.brand-mark { width: 28px; height: 28px; }
-.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--muted); }
-.pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px var(--orange-soft); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; gap: 16px; }
+.brand { font-weight: bold; font-size: 18px; text-decoration: none; color: var(--ink); }
+.brand:hover { color: var(--accent); }
+.header-claim { font-size: 13px; color: var(--muted); font-style: italic; }
+@media (max-width: 600px) { .header-claim { display: none; } }
 
-/* Eyebrow */
-.eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; font-weight: 600; color: var(--orange); margin-bottom: 14px; }
-
-/* Brand claim — sentence case s tečkou, sedí nad eyebrow / H1 v hero */
-.brand-claim { display: block; letter-spacing: 0.08em; font-size: 14px; font-weight: 600; color: var(--orange); margin: 0 0 10px; }
+/* Brand claim — sentence above H1 */
+.brand-claim {
+  display: block; font-size: 14px; font-style: italic;
+  color: var(--accent); margin: 0 0 16px;
+  letter-spacing: 0.02em;
+}
 
 /* Hero */
-.hero { padding: clamp(70px, 9vw, 130px) 0 clamp(60px, 7vw, 100px); border-bottom: 1px solid var(--line); }
+.hero { padding: clamp(56px, 7vw, 96px) 0 clamp(48px, 6vw, 80px); border-bottom: 1px solid var(--line); }
 .hero h1 { max-width: 16ch; }
-.hero-sub { font-size: clamp(18px, 1.8vw, 22px); color: var(--muted); max-width: 50ch; margin: 18px 0 32px; }
+.hero-sub { font-size: clamp(17px, 1.6vw, 20px); color: var(--muted); max-width: 52ch; margin: 16px 0 32px; }
 
 /* Lead capture form */
 .url-form { display: grid; gap: 14px; max-width: 540px; }
 .form-row { display: flex; flex-direction: column; gap: 6px; }
-.form-row label { font-size: 14px; font-weight: 600; color: var(--fg); }
+.form-row label { font-size: 14px; color: var(--ink); font-weight: bold; }
 .url-input, .email-input {
   width: 100%;
-  padding: 14px 18px;
-  font: inherit; font-size: 18px;
+  padding: 14px 16px;
+  font: inherit; font-size: 17px;
   background: var(--card);
-  color: var(--fg);
-  border: 2px solid var(--line-strong);
-  border-radius: 14px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
   outline: none;
-  min-height: 56px;
+  min-height: 52px;
 }
-.url-input:focus, .email-input:focus { border-color: var(--orange); }
+.url-input:focus, .email-input:focus { border-color: var(--accent); }
 .url-input::placeholder, .email-input::placeholder { color: var(--muted); }
-.form-hint { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.5; }
+.form-hint { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.5; }
 .form-consent {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  font-size: 15px;
-  color: var(--muted);
-  line-height: 1.5;
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 14px; color: var(--muted); line-height: 1.5;
 }
 .form-consent input[type="checkbox"] {
-  flex: 0 0 auto;
-  width: 22px;
-  height: 22px;
-  margin-top: 2px;
-  accent-color: var(--orange);
+  flex: 0 0 auto; width: 20px; height: 20px; margin-top: 2px;
+  accent-color: var(--accent);
 }
 .form-consent label { cursor: pointer; }
-.form-consent a { color: var(--fg); }
+.form-consent a { color: var(--ink); }
 .btn-cta {
-  padding: 16px 24px;
-  background: var(--orange); color: #fff;
-  border: none; border-radius: 999px;
-  font: inherit; font-size: 17px; font-weight: 600;
+  padding: 14px 24px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 4px;
+  font: inherit; font-size: 16px; font-weight: bold;
+  font-family: Georgia, serif;
   cursor: pointer; white-space: nowrap;
-  min-height: 56px;
-  box-shadow: 0 8px 24px rgba(255,87,34,0.28);
-  transition: filter 0.15s;
+  min-height: 52px;
+  transition: background 0.15s;
 }
-.btn-cta:hover { filter: brightness(1.08); }
-@media (prefers-reduced-motion: reduce) {
-  .btn-cta { transition: none; }
-  html { scroll-behavior: auto; }
-}
+.btn-cta:hover { background: var(--accent-dark); }
+.btn-cta:disabled { opacity: 0.6; cursor: progress; }
+@media (prefers-reduced-motion: reduce) { .btn-cta { transition: none; } html { scroll-behavior: auto; } }
 
-/* Honeypot — skryté pole pro chytání botů */
-.honeypot {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+/* Form error message — inline pod tlačítkem */
+.form-error {
+  display: none;
+  margin: 0;
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--ink);
 }
+.form-error[data-visible="true"] { display: block; }
 
-/* Stats — 3 karty */
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line); }
-.stat strong { display: block; font-size: clamp(24px, 3vw, 34px); font-weight: 700; letter-spacing: -0.02em; }
-.stat span { color: var(--muted); font-size: 15px; }
+/* Honeypot */
+.honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Stats — 3 boxes */
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line);
+}
+.stat strong { display: block; font-size: clamp(22px, 2.6vw, 30px); font-weight: bold; }
+.stat span { color: var(--muted); font-size: 14px; }
 @media (max-width: 720px) { .stats { grid-template-columns: 1fr; gap: 20px; } }
 
 /* Sections */
-section { padding: clamp(60px, 8vw, 100px) 0; border-bottom: 1px solid var(--line); }
-.section-head { max-width: 660px; margin-bottom: 40px; }
-.section-head p { color: var(--muted); font-size: 18px; margin: 0; }
+section { padding: clamp(56px, 7vw, 88px) 0; border-bottom: 1px solid var(--line); }
+.section-head { max-width: 660px; margin-bottom: 36px; }
+.section-head p { color: var(--muted); margin: 0; }
 
 /* Grid */
-.grid { display: grid; gap: 20px; }
+.grid { display: grid; gap: 18px; }
 .g4 { grid-template-columns: repeat(4, 1fr); }
 .g3 { grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 960px) { .g4 { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .g4, .g3 { grid-template-columns: 1fr; } }
 
 /* Cards */
-.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+.card { background: var(--card); border-radius: 6px; padding: 24px; border-left: 3px solid var(--line); }
 .card h3 { margin-bottom: 8px; }
-.card p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
+.card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
 
 /* Steps */
-.step-num { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--orange-soft); color: var(--orange); font-weight: 700; font-size: 16px; margin-bottom: 12px; }
+.step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent); font-weight: bold; font-size: 15px;
+  margin-bottom: 12px;
+}
 
 /* Pricing tiers */
-.tier { padding: 28px 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
-.tier.featured { border: 2px solid var(--orange); position: relative; }
-.tier.featured::before { content: "Doporučeno"; position: absolute; top: -11px; left: 24px; background: var(--orange); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+.tier { padding: 28px 24px; border-radius: 6px; background: var(--card); border-left: 3px solid var(--line); position: relative; }
+.tier.featured { border-left-color: var(--accent); }
+.tier.featured::before {
+  content: "Doporučeno"; position: absolute; top: -10px; left: 24px;
+  background: var(--accent); color: #fff; font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px;
+}
 .tier h3 { font-size: 20px; margin-bottom: 4px; }
-.tier .tier-sub { font-size: 14px; color: var(--muted); margin: 0 0 8px; }
-.tier .price { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 4px; }
-.tier .price span { font-size: 14px; color: var(--muted); font-weight: 400; }
-.tier ul { padding-left: 18px; margin: 14px 0 0; color: var(--muted); font-size: 15px; }
+.tier .tier-sub { font-size: 13px; color: var(--muted); margin: 0 0 8px; font-style: italic; }
+.tier .price { font-size: 30px; font-weight: bold; margin: 8px 0 4px; }
+.tier .price span { font-size: 13px; color: var(--muted); font-weight: normal; }
+.tier ul { padding-left: 18px; margin: 14px 0 0; color: var(--muted); font-size: 14px; }
 .tier li { margin-bottom: 6px; }
 
 /* CTA banner */
 .cta-banner {
-  background: var(--fg); color: var(--bg);
-  border-radius: 22px;
+  background: var(--ink); color: var(--bg);
+  border-radius: 6px;
   padding: clamp(36px, 5vw, 56px);
 }
 .cta-banner h2 { color: var(--bg); text-align: center; }
-.cta-banner > p { color: color-mix(in srgb, var(--bg) 70%, var(--fg)); text-align: center; max-width: 50ch; margin: 0 auto 28px; }
+.cta-banner > p { color: color-mix(in srgb, var(--bg) 75%, var(--ink)); text-align: center; max-width: 50ch; margin: 0 auto 28px; }
 .cta-banner .url-form { margin: 0 auto; max-width: 540px; }
 .cta-banner .form-row label { color: var(--bg); }
 .cta-banner .url-input,
 .cta-banner .email-input {
-  background: color-mix(in srgb, var(--fg) 90%, var(--bg));
-  border-color: color-mix(in srgb, var(--fg) 75%, var(--bg));
+  background: color-mix(in srgb, var(--ink) 88%, var(--bg));
+  border-color: color-mix(in srgb, var(--ink) 70%, var(--bg));
   color: var(--bg);
 }
 .cta-banner .url-input::placeholder,
-.cta-banner .email-input::placeholder { color: color-mix(in srgb, var(--bg) 50%, var(--fg)); }
+.cta-banner .email-input::placeholder { color: color-mix(in srgb, var(--bg) 50%, var(--ink)); }
 .cta-banner .url-input:focus,
-.cta-banner .email-input:focus { border-color: var(--orange); }
-.cta-banner .form-consent { color: color-mix(in srgb, var(--bg) 70%, var(--fg)); }
-.cta-banner .form-consent a { color: var(--orange); }
-.cta-banner .form-hint { color: color-mix(in srgb, var(--bg) 60%, var(--fg)); }
+.cta-banner .email-input:focus { border-color: var(--accent); }
+.cta-banner .form-consent { color: color-mix(in srgb, var(--bg) 70%, var(--ink)); }
+.cta-banner .form-consent a { color: var(--bg); }
+.cta-banner .form-hint { color: color-mix(in srgb, var(--bg) 60%, var(--ink)); }
 .cta-banner .btn-cta { width: 100%; }
-.cta-banner .cta-foot { text-align: center; margin-top: 20px; font-size: 15px; }
-.cta-banner .cta-foot a { color: var(--orange); }
+.cta-banner .cta-foot { text-align: center; margin-top: 20px; font-size: 14px; color: color-mix(in srgb, var(--bg) 75%, var(--ink)); }
+.cta-banner .cta-foot a { color: var(--bg); }
 
 /* Footer */
-footer { padding: 48px 0 64px; color: var(--muted); font-size: 15px; }
+footer { padding: 40px 0 56px; color: var(--muted); font-size: 14px; }
 footer a { color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--fg); }
-.footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-top: 24px; border-top: 1px solid var(--line); }
-.footer-links { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+footer a:hover { color: var(--ink); }
+.footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 24px; border-top: 1px solid var(--line); }
+.footer-links { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
 
-/* Focus visible — silnější pro 40+ */
-:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 4px; }
+/* Focus visible */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 input:focus-visible { outline: none; }
 
-/* Mobile tweaks */
 @media (max-width: 600px) {
   .btn-cta { width: 100%; text-align: center; }
 }
-
 @media print {
-  header, .btn-cta { display: none; }
+  header, .btn-cta, .url-form { display: none; }
   body { background: #fff; color: #000; }
   section { padding: 36px 0; page-break-inside: avoid; }
 }
 </style>
 <!-- Cloudflare Web Analytics — cookieless, server-side aggregation -->
-<!-- Před produkčním deployem nahradit TBD-CF-WEB-ANALYTICS-TOKEN reálným tokenem z CF dashboardu. Viz projects/landing-v2/decisions.md. -->
+<!-- Před produkčním deployem nahradit TBD-CF-WEB-ANALYTICS-TOKEN reálným tokenem z CF dashboardu. -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "TBD-CF-WEB-ANALYTICS-TOKEN"}'></script>
 </head>
 <body>
@@ -284,14 +277,8 @@ input:focus-visible { outline: none; }
 
 <header>
   <div class="wrap header-inner">
-    <a class="brand" href="/" aria-label="fakan.cz — domů">
-      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-        <rect x="2" y="2" width="28" height="28" rx="8" fill="currentColor"/>
-        <path d="M10 23 V9 h12 v3 h-9 v3 h7 v3 h-7 v5 z" fill="#FF5722"/>
-      </svg>
-      fakan.cz
-    </a>
-    <span class="pill">Fáze 0 &middot; build</span>
+    <a class="brand" href="/" aria-label="fakan.cz — domů">fakan.cz</a>
+    <span class="header-claim">Když web, jedině od Fakana.</span>
   </div>
 </header>
 
@@ -300,14 +287,13 @@ input:focus-visible { outline: none; }
 <!-- HERO -->
 <section class="hero">
   <div class="wrap">
-    <p class="brand-claim">Když web, jedině od Fakana.</p>
-    <span class="eyebrow">Bezplatná analýza webu</span>
+    <span class="eyebrow">Bezplatný audit webu</span>
     <h1>Váš web. Bez&nbsp;starostí.</h1>
-    <p class="hero-sub">Zadejte adresu svého webu. Za pár sekund uvidíte, co s ním. Zdarma, bez registrace, bez háčků.</p>
+    <p class="hero-sub">Zadejte adresu svého webu. Do pěti minut Vám pošleme detailní report a tři varianty, jak to vyřešit. Zdarma, bez registrace, bez háčků.</p>
 
-    <form class="url-form" id="analyzeForm" action="/vysledek" method="get" novalidate>
+    <form class="url-form" data-audit-form="hero" novalidate>
       <div class="form-row">
-        <label for="urlInput">Adresa vašeho webu</label>
+        <label for="urlInput">Adresa Vašeho webu</label>
         <input
           class="url-input"
           id="urlInput"
@@ -320,7 +306,7 @@ input:focus-visible { outline: none; }
           spellcheck="false"
           inputmode="url"
           required>
-        <p class="form-hint">URL bez přihlašovacích tokenů, prosím.</p>
+        <p class="form-hint">URL bez přihlašovacích tokenů.</p>
       </div>
       <div class="form-row">
         <label for="emailInput">Váš e-mail</label>
@@ -336,29 +322,27 @@ input:focus-visible { outline: none; }
           spellcheck="false"
           inputmode="email"
           required>
-        <p class="form-hint">Pošleme vám výsledky a nezávazně se ozveme. Nikam jinam to nedáme.</p>
+        <p class="form-hint">Pošleme Vám výsledky a nezávazně se ozveme. Nikomu jinému to nedáme.</p>
       </div>
       <div class="form-consent">
-        <input type="checkbox" id="consentChk" name="c" value="1" required>
+        <input type="checkbox" id="consentChk" name="consent" value="1" required>
         <label for="consentChk">
-          Souhlasím, aby společnost <strong>Indigo Studio s.r.o.</strong> (IČO 14389096) zpracovala mou e-mailovou adresu pro účely zaslání výsledků analýzy a nezávazného návrhu řešení. Souhlas mohu kdykoliv odvolat kliknutím na „Odhlásit" v patičce e-mailu. Více v <a href="/ochrana-udaju">zásadách ochrany osobních údajů</a>.
+          Souhlasím, aby společnost <strong>Indigo Studio s.r.o.</strong> (IČO 14389096) zpracovala mou e-mailovou adresu pro účely zaslání výsledků auditu a nezávazného návrhu řešení. Souhlas mohu kdykoliv odvolat odhlášením v patičce e-mailu. Více v <a href="/ochrana-udaju">zásadách ochrany osobních údajů</a>.
         </label>
       </div>
-      <input type="hidden" name="v" value="v1-2026-05-08">
-      <input type="hidden" name="s" value="landing-hero">
-      <!-- honeypot — boti vyplní, server zahodí -->
       <div class="honeypot" aria-hidden="true">
         <label for="company">Pokud čtete tohle, nechte prázdné</label>
-        <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
+        <input type="text" id="company" name="website" tabindex="-1" autocomplete="off">
       </div>
-      <button class="btn-cta" type="submit">Analyzovat zdarma &rarr;</button>
-      <p class="form-hint">Trvá to chvilku. Žádný účet zakládat nemusíte.</p>
+      <button class="btn-cta" type="submit">Auditovat zdarma →</button>
+      <p class="form-error" data-form-error role="alert"></p>
+      <p class="form-hint">Hotovo do pár minut. Žádný účet zakládat nemusíte.</p>
     </form>
 
     <div class="stats" role="list">
       <div class="stat" role="listitem">
-        <strong>Do minuty</strong>
-        <span>Než si dáte kafe, uvidíte výsledky.</span>
+        <strong>Do 5 minut</strong>
+        <span>Než si dáte kafe, máte výsledky v mailu.</span>
       </div>
       <div class="stat" role="listitem">
         <strong>Zdarma</strong>
@@ -366,7 +350,7 @@ input:focus-visible { outline: none; }
       </div>
       <div class="stat" role="listitem">
         <strong>od 99 Kč</strong>
-        <span>Hosting měsíčně, kdyby vám u nás zůstal.</span>
+        <span>Hosting měsíčně, kdybyste u nás chtěli zůstat.</span>
       </div>
     </div>
   </div>
@@ -384,11 +368,11 @@ input:focus-visible { outline: none; }
     <div class="grid g4">
       <div class="card">
         <h3>Najdeme, co je špatně</h3>
-        <p>Zdarma vám projedeme web a ukážeme, co stojí za opravu. Bez registrace.</p>
+        <p>Zdarma Vám projedeme web a ukážeme, co stojí za opravu. Bez registrace.</p>
       </div>
       <div class="card">
         <h3>Navrhneme, jak to vyřešit</h3>
-        <p>Nový vzhled, opravu starého, nebo úplně nový web — vy si vyberete, co dává smysl.</p>
+        <p>Nový vzhled, oprava starého, nebo úplně nový web — vyberete si, co dává smysl.</p>
       </div>
       <div class="card">
         <h3>Postavíme nebo opravíme</h3>
@@ -396,7 +380,7 @@ input:focus-visible { outline: none; }
       </div>
       <div class="card">
         <h3>Postaráme se dál</h3>
-        <p>Hosting od 99 Kč měsíčně. Aktualizace, zálohy, opravy — bez vašich starostí.</p>
+        <p>Hosting od 99 Kč měsíčně. Aktualizace, zálohy, opravy — bez Vašich starostí.</p>
       </div>
     </div>
   </div>
@@ -413,8 +397,8 @@ input:focus-visible { outline: none; }
     <div class="grid g3">
       <div class="card">
         <div class="step-num">1</div>
-        <h3>Zadejte adresu webu</h3>
-        <p>Stačí napsat doménu (třeba <code>vasedomena.cz</code>). My to projedeme.</p>
+        <h3>Zadáte adresu webu</h3>
+        <p>Stačí napsat doménu (třeba <code>vasedomena.cz</code>). My ji projedeme.</p>
       </div>
       <div class="card">
         <div class="step-num">2</div>
@@ -442,7 +426,7 @@ input:focus-visible { outline: none; }
     <div class="grid g4">
       <div class="card">
         <h3>Žádné okénko se souhlasem</h3>
-        <p>Žádné „akceptujte cookies", žádné popupy. Návštěvník přijde a hned vidí váš web.</p>
+        <p>Žádné „akceptujte cookies", žádné popupy. Návštěvník přijde a hned vidí Váš web.</p>
       </div>
       <div class="card">
         <h3>Funguje to na mobilu</h3>
@@ -465,7 +449,7 @@ input:focus-visible { outline: none; }
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Hosting</span>
-      <h2>Když vám web bude hotový, postaráme se i o jeho provoz.</h2>
+      <h2>Když Vám web bude hotový, postaráme se i o jeho provoz.</h2>
       <p>Vlastní doména, šifrované spojení, denní záloha. Když budete chtít odejít, dostanete celý web v ZIPu — bez doplatků, bez výmluv.</p>
     </div>
 
@@ -509,10 +493,10 @@ input:focus-visible { outline: none; }
   <div class="wrap">
     <div class="cta-banner">
       <h2>Zkuste to. Nebudete nic muset.</h2>
-      <p>Analýza je zdarma. Bez registrace. Výsledky uvidíte za pár sekund a dostanete je i e-mailem.</p>
-      <form class="url-form" id="analyzeForm2" action="/vysledek" method="get" novalidate>
+      <p>Audit je zdarma. Bez registrace. Výsledky dorazí mailem do pěti minut.</p>
+      <form class="url-form" data-audit-form="cta" novalidate>
         <div class="form-row">
-          <label for="urlInput2">Adresa vašeho webu</label>
+          <label for="urlInput2">Adresa Vašeho webu</label>
           <input
             class="url-input"
             id="urlInput2"
@@ -542,18 +526,17 @@ input:focus-visible { outline: none; }
             required>
         </div>
         <div class="form-consent">
-          <input type="checkbox" id="consentChk2" name="c" value="1" required>
+          <input type="checkbox" id="consentChk2" name="consent" value="1" required>
           <label for="consentChk2">
-            Souhlasím, aby společnost <strong>Indigo Studio s.r.o.</strong> (IČO 14389096) zpracovala mou e-mailovou adresu pro účely zaslání výsledků analýzy a nezávazného návrhu řešení. Souhlas mohu kdykoliv odvolat kliknutím na „Odhlásit" v patičce e-mailu. Více v <a href="/ochrana-udaju">zásadách ochrany osobních údajů</a>.
+            Souhlasím, aby společnost <strong>Indigo Studio s.r.o.</strong> (IČO 14389096) zpracovala mou e-mailovou adresu pro účely zaslání výsledků auditu a nezávazného návrhu řešení. Více v <a href="/ochrana-udaju">zásadách ochrany osobních údajů</a>.
           </label>
         </div>
-        <input type="hidden" name="v" value="v1-2026-05-08">
-        <input type="hidden" name="s" value="landing-cta">
         <div class="honeypot" aria-hidden="true">
           <label for="company2">Pokud čtete tohle, nechte prázdné</label>
-          <input type="text" id="company2" name="company" tabindex="-1" autocomplete="off">
+          <input type="text" id="company2" name="website" tabindex="-1" autocomplete="off">
         </div>
-        <button class="btn-cta" type="submit">Analyzovat zdarma &rarr;</button>
+        <button class="btn-cta" type="submit">Auditovat zdarma →</button>
+        <p class="form-error" data-form-error role="alert"></p>
       </form>
       <p class="cta-foot">Nebo napište přímo: <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a></p>
     </div>
@@ -576,6 +559,88 @@ input:focus-visible { outline: none; }
     </div>
   </div>
 </footer>
+
+<script>
+// Form handler — POST na auditor (api.fakan.cz/api/audit), redirect na audit.fakan.cz/audit/{token}.
+// Žádný framework, žádné cookies, žádný localStorage.
+const API = 'https://api.fakan.cz/api/audit';
+const REPORT_HOST = 'https://audit.fakan.cz';
+
+function normalizeUrl(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return null;
+  const withScheme = /^https?:\/\//i.test(s) ? s : 'https://' + s;
+  try { return new URL(withScheme).toString(); } catch { return null; }
+}
+
+function showError(form, msg) {
+  const box = form.querySelector('[data-form-error]');
+  if (!box) return;
+  box.textContent = msg;
+  box.dataset.visible = 'true';
+}
+function clearError(form) {
+  const box = form.querySelector('[data-form-error]');
+  if (!box) return;
+  box.textContent = '';
+  box.dataset.visible = 'false';
+}
+
+async function submitAudit(form) {
+  clearError(form);
+  const url = normalizeUrl(form.querySelector('[name="url"]').value);
+  const email = String(form.querySelector('[name="email"]').value || '').trim().toLowerCase();
+  const consent = form.querySelector('[name="consent"]').checked;
+  const honeypot = String(form.querySelector('[name="website"]').value || '').trim();
+
+  if (!url) { showError(form, 'Zadejte platnou adresu webu (např. vasedomena.cz).'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError(form, 'Zadejte platný e-mail.'); return; }
+  if (!consent) { showError(form, 'Bez souhlasu Vám výsledky nemůžeme poslat.'); return; }
+
+  const btn = form.querySelector('button[type="submit"]');
+  const origLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Posíláme…';
+
+  try {
+    const resp = await fetch(API, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ url, email, consent: true, website: honeypot }),
+    });
+    const data = await resp.json().catch(() => null);
+
+    if (!resp.ok || !data || data.ok !== true) {
+      const msg = (data && data.error) || 'Nepodařilo se odeslat. Zkuste to prosím za chvíli.';
+      showError(form, msg);
+      btn.disabled = false;
+      btn.textContent = origLabel;
+      return;
+    }
+
+    if (data.reportToken) {
+      window.location.href = `${REPORT_HOST}/audit/${encodeURIComponent(data.reportToken)}`;
+      return;
+    }
+
+    // Fallback (cache hit bez tokenu z DB nebo sítě se ztratil ten field) —
+    // alespoň ukázat info, že mail přijde.
+    btn.textContent = 'Hotovo';
+    showError(form, data.message || 'Pracujeme na tom. Výsledek dorazí mailem do 5 minut.');
+  } catch (err) {
+    showError(form, 'Spojení se nepodařilo. Zkontrolujte prosím připojení.');
+    btn.disabled = false;
+    btn.textContent = origLabel;
+  }
+}
+
+document.querySelectorAll('form[data-audit-form]').forEach((form) => {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitAudit(form);
+  });
+});
+</script>
 
 </body>
 </html>

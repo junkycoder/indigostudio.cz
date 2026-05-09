@@ -108,8 +108,7 @@ const HTML_HEADERS = {
  * Generic „odhlášeno" stránka. Vrací se i pro neplatný token, neexistující
  * token i úspěšný opt-out — uživatel nepozná rozdíl (security).
  *
- * Inline CSS, brand barvy z fakan.cz/index.html, dark mode přes
- * prefers-color-scheme. Vykání per copy.md.
+ * Brand z fakan.cz/odhlasit-hotovo.html (Georgia + cream + terracotta).
  */
 function renderDonePage() {
   return new Response(DONE_HTML, { status: 200, headers: HTML_HEADERS });
@@ -122,40 +121,47 @@ function renderTempErrorPage() {
   return new Response(TEMP_ERROR_HTML, { status: 503, headers: HTML_HEADERS });
 }
 
+const SHARED_CSS = `
+  :root { --bg:#F9F6F0; --ink:#1F1B16; --muted:#8A7E6E; --line:#E5E0D6; --card:#FFFFFF; --accent:#C84B31; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Georgia,'Times New Roman',serif; font-size:17px; line-height:1.65; min-height:100vh; display:flex; flex-direction:column; }
+  a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--line); text-underline-offset:3px; }
+  a:hover { text-decoration-color:var(--accent); }
+  header { border-bottom:1px solid var(--line); }
+  .header-inner { max-width:720px; margin:0 auto; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .brand { font-weight:bold; font-size:18px; color:var(--ink); text-decoration:none; }
+  .brand:hover { color:var(--accent); }
+  .back { font-size:14px; color:var(--muted); text-decoration:none; }
+  .back:hover { color:var(--ink); }
+  main { max-width:720px; width:100%; margin:0 auto; padding:64px 24px 48px; flex:1; }
+  .card { background:var(--card); border-left:3px solid var(--accent); border-radius:6px; padding:32px 28px; }
+  h1 { font-size:clamp(26px, 4vw, 32px); font-weight:normal; line-height:1.25; margin:0 0 16px; }
+  p { margin:0 0 16px; }
+  p:last-child { margin-bottom:0; }
+  footer { border-top:1px solid var(--line); margin-top:32px; }
+  .footer-inner { max-width:720px; margin:0 auto; padding:24px; color:var(--muted); font-size:13px; line-height:1.5; text-align:center; }
+  @media (max-width: 480px) { main { padding:40px 20px 32px; } .card { padding:24px 20px; } h1 { font-size:24px; } }
+`;
+
 const DONE_HTML = `<!DOCTYPE html>
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
-<title>Odhlášeno — Fakan</title>
-<style>
-  :root { --bg:#F9F6F0; --fg:#0B1221; --muted:#6B7280; --border:#E2E8F0; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#0B1221; --fg:#F9F6F0; --muted:#94A3B8; --border:#1F2937; }
-  }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; line-height:1.5; }
-  main { max-width:560px; margin:0 auto; padding:64px 24px 32px; }
-  h1 { font-size:28px; line-height:1.2; margin:0 0 16px; }
-  p { margin:0 0 16px; }
-  a { color:var(--fg); }
-  .muted { color:var(--muted); font-size:14px; }
-  .back { display:inline-block; margin-top:8px; }
-  footer { border-top:1px solid var(--border); margin-top:48px; padding:24px; text-align:center; color:var(--muted); font-size:13px; }
-</style>
+<meta name="theme-color" content="#F9F6F0">
+<title>Odhlášeno — fakan.cz</title>
+<style>${SHARED_CSS}</style>
 </head>
 <body>
+<header><div class="header-inner"><a class="brand" href="/">fakan.cz</a><a class="back" href="/">← Zpět na fakan.cz</a></div></header>
 <main>
-  <h1>Hotovo, odhlásili jsme vás.</h1>
-  <p>Z naší strany už od nás žádný e-mail nepřijde. Pokud byste chtěl něco jiného, ozvěte se nám na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>.</p>
-  <p><a class="back" href="/">← Zpět na fakan.cz</a></p>
+  <div class="card">
+    <h1>Odhlásili jsme Vás z e-mailů.</h1>
+    <p>Z naší strany už žádný e-mail nepřijde. Pokud byste cokoliv potřeboval(a), ozvěte se nám na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>.</p>
+  </div>
 </main>
-<footer>
-  &copy; 2026 fakan.cz &middot; provozuje Indigo Studio s.r.o.
-</footer>
+<footer><div class="footer-inner">© 2026 fakan.cz · provozuje Indigo Studio s.r.o.</div></footer>
 </body>
 </html>`;
 
@@ -165,29 +171,18 @@ const TEMP_ERROR_HTML = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Dočasná chyba — Fakan</title>
-<style>
-  :root { --bg:#F9F6F0; --fg:#0B1221; --muted:#6B7280; --border:#E2E8F0; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#0B1221; --fg:#F9F6F0; --muted:#94A3B8; --border:#1F2937; }
-  }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; line-height:1.5; }
-  main { max-width:560px; margin:0 auto; padding:64px 24px 32px; }
-  h1 { font-size:28px; line-height:1.2; margin:0 0 16px; }
-  p { margin:0 0 16px; }
-  a { color:var(--fg); }
-  .muted { color:var(--muted); font-size:14px; }
-  footer { border-top:1px solid var(--border); margin-top:48px; padding:24px; text-align:center; color:var(--muted); font-size:13px; }
-</style>
+<meta name="theme-color" content="#F9F6F0">
+<title>Dočasná chyba — fakan.cz</title>
+<style>${SHARED_CSS}</style>
 </head>
 <body>
+<header><div class="header-inner"><a class="brand" href="/">fakan.cz</a><a class="back" href="/">← Zpět na fakan.cz</a></div></header>
 <main>
-  <h1>Dočasná chyba.</h1>
-  <p>Zkuste to prosím znovu za pár minut. Pokud to nepůjde, napište nám na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> a odhlásíme vás ručně.</p>
+  <div class="card">
+    <h1>Dočasná chyba.</h1>
+    <p>Zkuste to prosím znovu za pár minut. Pokud to nepůjde, napište nám na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> a odhlásíme Vás ručně.</p>
+  </div>
 </main>
-<footer>
-  &copy; 2026 fakan.cz &middot; provozuje Indigo Studio s.r.o.
-</footer>
+<footer><div class="footer-inner">© 2026 fakan.cz · provozuje Indigo Studio s.r.o.</div></footer>
 </body>
 </html>`;

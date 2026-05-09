@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Odhlášeno — fakan.cz</title>
-<meta name="description" content="Stránka pro odhlášení z e-mailů fakan.cz. Pro odhlášení použijte odkaz v e-mailu, který vám přišel.">
-<meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
+<meta name="description" content="Stránka pro odhlášení z e-mailů fakan.cz. Pro odhlášení použijte odkaz v e-mailu, který Vám přišel.">
+<meta name="theme-color" content="#F9F6F0">
 <link rel="canonical" href="https://fakan.cz/odhlasit-hotovo">
 <meta name="robots" content="noindex, nofollow">
 <meta property="og:title" content="Odhlášeno — fakan.cz">
@@ -38,43 +37,24 @@
 <style>
 :root {
   --bg: #F9F6F0;
-  --fg: #0B1221;
-  --muted: #52606F;
-  --line: #E2E8F0;
-  --line-strong: #CBD5E1;
+  --ink: #1F1B16;
+  --muted: #8A7E6E;
+  --line: #E5E0D6;
   --card: #FFFFFF;
-  --orange: #FF5722;
-  --orange-soft: rgba(255,87,34,0.08);
-  --radius: 14px;
-  --radius-sm: 8px;
+  --accent: #C84B31;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0B1221;
-    --fg: #F9F6F0;
-    --muted: #B6C0CC;
-    --line: #1E293B;
-    --line-strong: #334155;
-    --card: #111A2E;
-    --orange: #FF6B3D;
-    --orange-soft: rgba(255,107,61,0.14);
-  }
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
 body {
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  font-family: Georgia, 'Times New Roman', serif;
   background: var(--bg);
-  color: var(--fg);
-  font-size: 18px;
-  line-height: 1.6;
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
@@ -82,48 +62,27 @@ body {
   flex-direction: column;
 }
 
-a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-a:hover { text-decoration-color: var(--orange); }
-a:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: 2px; }
+a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 
-/* Skip link */
 .skip { position: absolute; left: -9999px; top: 0; }
-.skip:focus { left: 16px; top: 16px; background: var(--orange); color: #fff; padding: 8px 12px; border-radius: 6px; z-index: 100; text-decoration: none; }
+.skip:focus { left: 16px; top: 16px; background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 4px; z-index: 100; text-decoration: none; }
 
-/* Header */
-header {
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-}
+header { border-bottom: 1px solid var(--line); background: var(--bg); }
 .header-inner {
-  max-width: 720px;
-  margin: 0 auto;
+  max-width: 720px; margin: 0 auto;
   padding: 18px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
 }
-.brand {
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-  color: var(--fg);
-  text-decoration: none;
-}
-.back {
-  font-size: 15px;
-  color: var(--muted);
-  text-decoration: none;
-}
-.back:hover { color: var(--fg); }
-.back:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: 2px; }
+.brand { font-weight: bold; font-size: 18px; color: var(--ink); text-decoration: none; }
+.brand:hover { color: var(--accent); }
+.back { font-size: 14px; color: var(--muted); text-decoration: none; }
+.back:hover { color: var(--ink); }
 
-/* Main */
 main {
-  max-width: 720px;
-  width: 100%;
+  max-width: 720px; width: 100%;
   margin: 0 auto;
   padding: 64px 24px 48px;
   flex: 1;
@@ -131,53 +90,40 @@ main {
 
 .card {
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
   padding: 32px 28px;
 }
 
 h1 {
-  font-size: clamp(26px, 4.2vw, 36px);
-  font-weight: 650;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-size: clamp(26px, 4vw, 32px);
+  font-weight: normal;
+  line-height: 1.25;
   margin: 0 0 16px;
 }
 
 p { margin: 0 0 16px; }
 p:last-child { margin-bottom: 0; }
-
-.lead { color: var(--fg); }
-.muted { color: var(--muted); font-size: 15px; }
+.muted { color: var(--muted); font-size: 14px; font-style: italic; }
 
 .back-link {
   display: inline-block;
   margin-top: 24px;
-  font-size: 15px;
-  color: var(--muted);
-}
-.back-link:hover { color: var(--fg); }
-
-/* Footer */
-footer {
-  border-top: 1px solid var(--line);
-  background: var(--bg);
-  margin-top: 32px;
-}
-.footer-inner {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 24px;
-  color: var(--muted);
   font-size: 14px;
-  line-height: 1.5;
+  color: var(--muted);
+}
+.back-link:hover { color: var(--ink); }
+
+footer { border-top: 1px solid var(--line); background: var(--bg); margin-top: 32px; }
+.footer-inner {
+  max-width: 720px; margin: 0 auto; padding: 24px;
+  color: var(--muted); font-size: 13px; line-height: 1.5;
 }
 .footer-inner p { margin: 0 0 6px; }
 .footer-inner p:last-child { margin-bottom: 0; }
 .footer-inner a { color: var(--muted); }
-.footer-inner a:hover { color: var(--fg); }
+.footer-inner a:hover { color: var(--ink); }
 
-/* Mobil */
 @media (max-width: 480px) {
   main { padding: 40px 20px 32px; }
   .card { padding: 24px 20px; }
@@ -186,7 +132,7 @@ footer {
 }
 </style>
 <!-- Cloudflare Web Analytics — cookieless, server-side aggregation -->
-<!-- Před produkčním deployem nahradit TBD-CF-WEB-ANALYTICS-TOKEN reálným tokenem z CF dashboardu. Viz projects/landing-v2/decisions.md. -->
+<!-- Před produkčním deployem nahradit TBD-CF-WEB-ANALYTICS-TOKEN reálným tokenem z CF dashboardu. -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "TBD-CF-WEB-ANALYTICS-TOKEN"}'></script>
 </head>
 <body>
@@ -201,9 +147,9 @@ footer {
 
 <main id="obsah">
   <div class="card">
-    <h1>Odhlásili jsme vás z e-mailů.</h1>
-    <p class="lead">Pokud byste cokoliv potřeboval(a), ozvěte se nám na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>. Stránku můžete zavřít.</p>
-    <p class="muted">Pokud jste se sem dostali bez kliknutí na odkaz v e-mailu, použijte prosím odhlašovací odkaz v patičce našeho posledního e-mailu — jen tak vás dokážeme spárovat a opravdu odhlásit.</p>
+    <h1>Odhlásili jsme Vás z e-mailů.</h1>
+    <p>Pokud byste cokoliv potřeboval(a), ozvěte se nám na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>. Stránku můžete zavřít.</p>
+    <p class="muted">Pokud jste se sem dostali bez kliknutí na odkaz v e-mailu, použijte prosím odhlašovací odkaz v patičce našeho posledního e-mailu — jen tak Vás dokážeme spárovat a opravdu odhlásit.</p>
     <a class="back-link" href="/">← Zpět na fakan.cz</a>
   </div>
 </main>

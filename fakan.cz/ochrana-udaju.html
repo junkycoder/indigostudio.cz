@@ -4,13 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Zásady ochrany osobních údajů — fakan.cz</title>
-<meta name="description" content="Jak na webu fakan.cz zpracováváme vaše osobní údaje, když u nás vyplníte formulář pro analýzu webu nebo se nám ozvete.">
-<meta name="theme-color" content="#0B1221" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#F9F6F0" media="(prefers-color-scheme: light)">
+<meta name="description" content="Jak na webu fakan.cz zpracováváme Vaše osobní údaje, když u nás vyplníte formulář pro audit webu nebo se nám ozvete.">
+<meta name="theme-color" content="#F9F6F0">
 <link rel="canonical" href="https://fakan.cz/ochrana-udaju">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="Zásady ochrany osobních údajů — fakan.cz">
-<meta property="og:description" content="Jak na webu fakan.cz zpracováváme vaše osobní údaje, když u nás vyplníte formulář pro analýzu webu nebo se nám ozvete.">
+<meta property="og:description" content="Jak na webu fakan.cz zpracováváme Vaše osobní údaje, když u nás vyplníte formulář pro audit webu nebo se nám ozvete.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fakan.cz/ochrana-udaju">
 <meta property="og:locale" content="cs_CZ">
@@ -44,52 +43,33 @@
 <style>
 :root {
   --bg: #F9F6F0;
-  --fg: #0B1221;
-  --muted: #6B7280;
-  --line: #E2E8F0;
-  --line-strong: #CBD5E1;
+  --ink: #1F1B16;
+  --muted: #8A7E6E;
+  --line: #E5E0D6;
   --card: #FFFFFF;
-  --orange: #FF5722;
-  --orange-soft: rgba(255,87,34,0.08);
-  --radius: 14px;
-  --radius-sm: 8px;
+  --accent: #C84B31;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0B1221;
-    --fg: #F9F6F0;
-    --muted: #94A3B8;
-    --line: #1E293B;
-    --line-strong: #334155;
-    --card: #111A2E;
-    --orange: #FF6B3D;
-    --orange-soft: rgba(255,107,61,0.14);
-  }
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  font-family: Georgia, 'Times New Roman', serif;
   background: var(--bg);
-  color: var(--fg);
-  font-size: 18px;
-  line-height: 1.6;
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-a:hover { text-decoration-color: var(--orange); }
-a:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: 2px; }
+a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 
-/* Skip link */
 .skip { position: absolute; left: -9999px; top: 0; }
-.skip:focus { left: 16px; top: 16px; background: var(--orange); color: #fff; padding: 8px 12px; border-radius: 6px; z-index: 100; text-decoration: none; }
+.skip:focus { left: 16px; top: 16px; background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 4px; z-index: 100; text-decoration: none; }
 
-/* Header */
 header {
   border-bottom: 1px solid var(--line);
   background: var(--bg);
@@ -104,21 +84,11 @@ header {
   gap: 16px;
   flex-wrap: wrap;
 }
-.brand {
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-  color: var(--fg);
-  text-decoration: none;
-}
-.back {
-  font-size: 15px;
-  color: var(--muted);
-  text-decoration: none;
-}
-.back:hover { color: var(--fg); }
+.brand { font-weight: bold; font-size: 18px; color: var(--ink); text-decoration: none; }
+.brand:hover { color: var(--accent); }
+.back { font-size: 14px; color: var(--muted); text-decoration: none; }
+.back:hover { color: var(--ink); }
 
-/* Main prose */
 main {
   max-width: 720px;
   margin: 0 auto;
@@ -126,86 +96,61 @@ main {
 }
 
 h1 {
-  font-size: clamp(28px, 4.5vw, 40px);
-  font-weight: 650;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: normal;
+  line-height: 1.25;
   margin: 0 0 8px;
 }
-
-.meta {
-  color: var(--muted);
-  font-size: 15px;
-  margin: 0 0 32px;
-}
+.meta { color: var(--muted); font-size: 14px; margin: 0 0 32px; font-style: italic; }
 
 h2 {
   font-size: clamp(20px, 2.4vw, 24px);
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-weight: normal;
   line-height: 1.3;
   margin: 40px 0 12px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
 }
 
 p { margin: 0 0 16px; }
 
-ul {
-  margin: 0 0 16px;
-  padding-left: 22px;
-}
+ul { margin: 0 0 16px; padding-left: 22px; }
 ul li { margin-bottom: 8px; }
 ul li::marker { color: var(--muted); }
 
-strong { font-weight: 650; }
+strong { font-weight: bold; }
 
-/* Highlight blok pro „NESBÍRÁME" */
 .callout {
-  background: var(--orange-soft);
-  border-left: 3px solid var(--orange);
+  background: var(--card);
+  border-left: 3px solid var(--accent);
   padding: 16px 20px;
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   margin: 16px 0 20px;
 }
 .callout p:last-child { margin-bottom: 0; }
 
-/* Tabulka retence */
 .table-wrap {
   overflow-x: auto;
   margin: 16px 0 20px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 16px;
-}
-th, td {
-  padding: 12px 16px;
-  text-align: left;
-  vertical-align: top;
-  border-bottom: 1px solid var(--line);
-}
-thead th {
+  border-radius: 6px;
   background: var(--card);
-  font-weight: 650;
-  color: var(--fg);
 }
-tbody tr:last-child th,
-tbody tr:last-child td { border-bottom: none; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { padding: 12px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+thead th { font-weight: bold; color: var(--ink); }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
 
-/* Verze blok dole */
 .version {
   margin-top: 40px;
   padding: 16px 20px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  background: var(--card);
+  border-radius: 6px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 14px;
+  font-style: italic;
 }
-.version strong { color: var(--fg); }
+.version strong { color: var(--ink); font-style: normal; }
 
-/* Footer */
 footer {
   border-top: 1px solid var(--line);
   background: var(--bg);
@@ -216,26 +161,24 @@ footer {
   margin: 0 auto;
   padding: 24px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
 }
 .footer-inner p { margin: 0 0 6px; }
 .footer-inner p:last-child { margin-bottom: 0; }
 .footer-inner a { color: var(--muted); }
-.footer-inner a:hover { color: var(--fg); }
+.footer-inner a:hover { color: var(--ink); }
 
-/* Mobil */
 @media (max-width: 480px) {
-  body { font-size: 18px; }
   main { padding: 32px 20px 48px; }
   .header-inner { padding: 14px 20px; }
   h1 { font-size: 26px; }
   h2 { font-size: 19px; margin-top: 32px; }
-  th, td { padding: 10px 12px; font-size: 15px; }
+  th, td { padding: 10px 12px; font-size: 14px; }
 }
 </style>
 <!-- Cloudflare Web Analytics — cookieless, server-side aggregation -->
-<!-- Před produkčním deployem nahradit TBD-CF-WEB-ANALYTICS-TOKEN reálným tokenem z CF dashboardu. Viz projects/landing-v2/decisions.md. -->
+<!-- Před produkčním deployem nahradit TBD-CF-WEB-ANALYTICS-TOKEN reálným tokenem z CF dashboardu. -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "TBD-CF-WEB-ANALYTICS-TOKEN"}'></script>
 </head>
 <body>
@@ -252,23 +195,21 @@ footer {
   <h1>Zásady ochrany osobních údajů</h1>
   <p class="meta"><strong>Účinné od:</strong> 8. května 2026 &middot; <strong>Verze:</strong> 1</p>
 
-  <p>Tyto zásady popisují, jak na webu <strong>fakan.cz</strong> zpracováváme vaše osobní údaje, když u nás vyplníte formulář pro analýzu webu nebo se nám ozvete.</p>
+  <p>Tyto zásady popisují, jak na webu <strong>fakan.cz</strong> zpracováváme Vaše osobní údaje, když u nás vyplníte formulář pro audit webu nebo se nám ozvete.</p>
 
-  <h2>1. Kdo zpracovává vaše údaje</h2>
+  <h2>1. Kdo zpracovává Vaše údaje</h2>
   <p>Správcem je společnost <strong>Indigo Studio s.r.o.</strong>, Chudenická 1059/30, 102 00 Praha, IČO: 14389096, zapsaná v obchodním rejstříku vedeném Městským soudem v Praze, oddíl C, vložka 364981.</p>
   <p>Provozovatelem služby fakan.cz je Daniel Hromada (Fakan).</p>
   <p><strong>Kontakt:</strong> <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>, <a href="tel:+420604690539">+420 604 690 539</a>.</p>
   <p>Pověřence pro ochranu osobních údajů (DPO) nemáme — nezpracováváme zvláštní kategorie údajů ani neprovádíme rozsáhlý monitoring, takže ho zákon nevyžaduje.</p>
 
   <h2>2. Jaké údaje sbíráme</h2>
-  <p>Když u nás vyplníte formulář pro bezplatnou analýzu webu, ukládáme:</p>
+  <p>Když u nás vyplníte formulář pro bezplatný audit webu, ukládáme:</p>
   <ul>
-    <li><strong>adresu vašeho webu</strong> (URL), kterou jste zadali — bez přihlašovacích tokenů a citlivých parametrů (ty před uložením z URL odřežeme),</li>
-    <li><strong>vaši e-mailovou adresu</strong>,</li>
+    <li><strong>adresu Vašeho webu</strong> (URL), kterou jste zadali — bez přihlašovacích tokenů a citlivých parametrů (ty před uložením z URL odřežeme),</li>
+    <li><strong>Vaši e-mailovou adresu</strong>,</li>
     <li><strong>datum a čas</strong> vyplnění formuláře,</li>
-    <li><strong>šifrovaný otisk vaší IP adresy</strong> (jako důkaz, že jste souhlas opravdu udělili — neumíme z něj zpětně zjistit vaši IP),</li>
-    <li><strong>verzi textu souhlasu</strong>, který jste odsouhlasili,</li>
-    <li><strong>zdroj</strong> (z které stránky jste formulář odeslali — třeba úvod, výsledky, kontakt).</li>
+    <li><strong>Vaši IP adresu</strong> (jako důkaz, že jste souhlas opravdu udělili).</li>
   </ul>
 
   <div class="callout">
@@ -281,8 +222,8 @@ footer {
   </div>
 
   <h2>3. Proč to sbíráme (právní základ)</h2>
-  <p>Vaše údaje zpracováváme <strong>na základě vašeho souhlasu</strong> (čl. 6 odst. 1 písm. a) GDPR). Souhlas dáváte zaškrtnutím políčka u formuláře. Bez tohoto souhlasu od vás nic neuložíme a žádný e-mail vám nepošleme.</p>
-  <p>Účel je jediný: <strong>poslat vám výsledky analýzy a nezávazný návrh, jak váš web zlepšit nebo o něj postaráme.</strong></p>
+  <p>Vaše údaje zpracováváme <strong>na základě Vašeho souhlasu</strong> (čl. 6 odst. 1 písm. a) GDPR). Souhlas dáváte zaškrtnutím políčka u formuláře. Bez tohoto souhlasu od Vás nic neuložíme a žádný e-mail Vám nepošleme.</p>
+  <p>Účel je jediný: <strong>poslat Vám výsledky auditu a nezávazný návrh, jak Váš web zlepšit nebo o něj postaráme.</strong></p>
 
   <h2>4. Jak dlouho to držíme</h2>
   <div class="table-wrap">
@@ -309,19 +250,19 @@ footer {
       </tbody>
     </table>
   </div>
-  <p>12 měsíců držíme krátce schválně — chceme zpracovávat <strong>co nejméně, co nejkratší dobu</strong>. Když si do roka neozvete, smažeme vás z databáze, abychom měli klid v hlavě my i vy.</p>
+  <p>12 měsíců držíme krátce schválně — chceme zpracovávat <strong>co nejméně, co nejkratší dobu</strong>. Když si do roka neozvete, smažeme Vás z databáze, abychom měli klid v hlavě my i Vy.</p>
 
   <h2>5. Komu to předáváme</h2>
   <p>Vaše údaje předáváme jen jednomu zpracovateli:</p>
   <ul>
     <li><strong>Cloudflare, Inc.</strong> — provozovatel naší infrastruktury (databáze, e-maily, hosting). Cloudflare je certifikován v rámci <a href="https://www.dataprivacyframework.gov/" rel="noopener" target="_blank">EU-US Data Privacy Framework</a> a má s námi uzavřenou smlouvu o zpracování osobních údajů (<a href="https://www.cloudflare.com/cloudflare-customer-dpa/" rel="noopener" target="_blank">DPA</a>).</li>
   </ul>
-  <p>Žádné další třetí straně vaše údaje nepředáváme. Žádný marketingový partner, žádný analytický nástroj, nic.</p>
+  <p>Žádné další třetí straně Vaše údaje nepředáváme. Žádný marketingový partner, žádný analytický nástroj, nic.</p>
 
   <h2>6. Vaše práva</h2>
   <p>Podle GDPR máte právo:</p>
   <ul>
-    <li><strong>vědět, co o vás máme</strong> (čl. 15) — napište nám a do 30 dnů vám pošleme výpis,</li>
+    <li><strong>vědět, co o Vás máme</strong> (čl. 15) — napište nám a do 30 dnů Vám pošleme výpis,</li>
     <li><strong>opravit chybný údaj</strong> (čl. 16) — třeba špatně napsaný e-mail,</li>
     <li><strong>požádat o smazání</strong> (čl. 17) — buď přes odhlašovací odkaz v každém našem e-mailu, nebo nám napište na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>,</li>
     <li><strong>odvolat souhlas</strong> kdykoliv (čl. 7 odst. 3) — jeden klik na „Odhlásit" v patičce e-mailu, hotovo,</li>
@@ -330,10 +271,10 @@ footer {
   <p>Stačí napsat na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> a do 30 dnů to vyřídíme.</p>
 
   <h2>7. Bezpečnost</h2>
-  <p>Vaše data jsou uložená v databázi Cloudflare (D1) v zašifrované podobě. Vaši IP adresu si neukládáme v plné podobě, ale jen jako jednosměrný šifrovaný otisk. Komunikaci chráníme HTTPS/TLS.</p>
+  <p>Vaše data jsou uložená v databázi Cloudflare (D1) v zašifrované podobě. Komunikaci chráníme HTTPS/TLS.</p>
 
   <h2>8. Změny těchto zásad</h2>
-  <p>Pokud změníme znění souhlasu, vytvoříme novou verzi tohoto dokumentu a v databázi si pamatujeme, <strong>kterou verzi jste odsouhlasili vy</strong>. Když se zásady významně změní, dáme vám vědět e-mailem.</p>
+  <p>Pokud změníme znění souhlasu, vytvoříme novou verzi tohoto dokumentu. Když se zásady významně změní, dáme Vám vědět e-mailem.</p>
 
   <p class="version">Aktuální verze je <strong>v1, účinná od 8. května 2026</strong>.</p>
 </main>

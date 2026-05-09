@@ -17,11 +17,11 @@ export function render({ email, opted_out_at }) {
 
   const bodyHtml = `            <p>Dobrý den,</p>
 
-            <p>odhlásili jsme vás z e-mailové komunikace fakan.cz. <strong>Hotovo.</strong></p>
+            <p>odhlásili jsme Vás z e-mailové komunikace fakan.cz. <strong>Hotovo.</strong></p>
 
-            <p>Adresa <code>${escapeHtml(email)}</code> byla v našem seznamu označena jako odhlášená dnes v ${escapeHtml(opted_out_at)}. Žádný další e-mail vám už neodejde.</p>
+            <p>Adresa <code>${escapeHtml(email)}</code> byla v našem seznamu označena jako odhlášená dnes v ${escapeHtml(opted_out_at)}. Žádný další e-mail Vám už neodejde.</p>
 
-            <p>Pokud to byla chyba a chcete se vrátit, napište nám prostě na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> — vrátíme vás zpět ručně.</p>
+            <p>Pokud to byla chyba a chcete se vrátit, napište nám prostě na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> — vrátíme Vás zpět ručně.</p>
 
             <p>Díky za zájem a hezký den.</p>
 
@@ -29,13 +29,13 @@ export function render({ email, opted_out_at }) {
 
   const bodyText = `Dobrý den,
 
-odhlásili jsme vás z e-mailové komunikace fakan.cz. Hotovo.
+odhlásili jsme Vás z e-mailové komunikace fakan.cz. Hotovo.
 
 Adresa ${email} byla v našem seznamu označena jako odhlášená dnes
-v ${opted_out_at}. Žádný další e-mail vám už neodejde.
+v ${opted_out_at}. Žádný další e-mail Vám už neodejde.
 
 Pokud to byla chyba a chcete se vrátit, napište nám prostě na
-jsem@fakan.cz — vrátíme vás zpět ručně.
+jsem@fakan.cz — vrátíme Vás zpět ručně.
 
 Díky za zájem a hezký den.
 
