@@ -1,20 +1,36 @@
 // src/worker.js
-import { handleAudit }       from './handlers/audit.js';
-import { handleReport }      from './handlers/report.js';
-import { handleUnsubscribe } from './handlers/unsubscribe.js';
-import { processAuditJob }   from './audit/processor.js';
-import { runStrategist }     from './audit/strategist.js';
+import { handleAudit }         from './handlers/audit.js';
+import { handleReport }        from './handlers/report.js';
+import { handleUnsubscribe }   from './handlers/unsubscribe.js';
+import { handleScreenshot }    from './handlers/screenshot.js';
+import { processAuditJob }     from './audit/processor.js';
+import { runStrategist }       from './audit/strategist.js';
 import { dispatchPendingMail } from './email/dispatcher.js';
+import { corsHeaders, withCors } from './lib/cors.js';
 
 export default {
   async fetch(request, env, ctx) {
-    const url   = new URL(request.url);
-    const route = `${request.method} ${url.pathname}`;
+    // CORS preflight — POST z fakan.cz formuláře, GET data z audit.fakan.cz frontendu.
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: corsHeaders(request) });
+    }
+
+    const url = new URL(request.url);
+    const path = url.pathname;
 
     try {
-      if (route === 'POST /api/audit')              return handleAudit(request, env, ctx);
-      if (url.pathname.startsWith('/audit/'))       return handleReport(request, env);
-      if (url.pathname === '/unsubscribe')          return handleUnsubscribe(request, env);
+      if (request.method === 'POST' && path === '/api/audit') {
+        return withCors(await handleAudit(request, env, ctx), request);
+      }
+      if (path.startsWith('/audit/')) {
+        return withCors(await handleReport(request, env), request);
+      }
+      if (path.startsWith('/screenshot/')) {
+        return withCors(await handleScreenshot(request, env), request);
+      }
+      if (path === '/unsubscribe') {
+        return handleUnsubscribe(request, env);
+      }
       return new Response('Not found', { status: 404 });
     } catch (err) {
       console.error('fetch error', err);

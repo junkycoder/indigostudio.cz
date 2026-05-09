@@ -53,9 +53,20 @@ npm run db:init
 wrangler secret put RESEND_API_KEY
 wrangler secret put ANTHROPIC_API_KEY
 
-# 6. deploy
+# 6. deploy Workeru (api.fakan.cz)
 npm run deploy
+
+# 7. deploy frontend reportu (audit.fakan.cz, Cloudflare Pages)
+wrangler pages deploy audit-page --project-name=fakan-audit-page
+# pak v dashboardu navázat custom domain audit.fakan.cz
 ```
+
+Doménová mapa:
+- `fakan.cz` — landing s formulářem (jiný projekt v repu)
+- `api.fakan.cz` — tento Worker (POST /api/audit, GET /audit/{token}/data,
+  GET /screenshot/{auditId}, GET /unsubscribe)
+- `audit.fakan.cz` — Cloudflare Pages s `audit-page/index.html`, frontend
+  fetchuje z `api.fakan.cz`
 
 ## Form na fakan.cz volá:
 

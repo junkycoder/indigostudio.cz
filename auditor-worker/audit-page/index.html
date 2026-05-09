@@ -157,6 +157,10 @@
 </footer>
 
 <script type="module">
+// Frontend běží na audit.fakan.cz (Cloudflare Pages), data Worker na api.fakan.cz.
+// Pokud lokálně (preview, file://, localhost), fallback na relativní cestu.
+const API = (location.hostname === 'audit.fakan.cz') ? 'https://api.fakan.cz' : '';
+
 const root = document.getElementById('root');
 const token = location.pathname.split('/').filter(Boolean)[1];
 
@@ -168,12 +172,12 @@ const CAT_LABEL = {
 
 (async () => {
   try {
-    const resp = await fetch(`/audit/${token}/data`);
+    const resp = await fetch(`${API}/audit/${token}/data`);
     if (!resp.ok) throw new Error('Report nenalezen.');
     const { audit, findings, strategist } = await resp.json();
     render(audit, findings, strategist);
   } catch (err) {
-    root.innerHTML = `<div class="loading"><p>Tenhle report neexistuje nebo vypršel.</p>
+    root.innerHTML = `<div class="loading"><p>Tento report neexistuje nebo vypršel.</p>
       <p><a href="https://fakan.cz">Zpět na fakan.cz</a></p></div>`;
   }
 })();
@@ -231,10 +235,10 @@ function render(audit, findings, strat) {
     </section>
 
     <section class="screenshot">
-      <img src="https://reports.fakan.cz/audits/${audit.id}/screenshot.jpg"
+      <img src="${API}/screenshot/${audit.id}"
            alt="Náhled webu na mobilu" loading="lazy"
            onerror="this.style.display='none'">
-      <p>Jak váš web vidí návštěvník na mobilu.</p>
+      <p>Jak Váš web vidí návštěvník na mobilu.</p>
     </section>
 
     <section class="findings">

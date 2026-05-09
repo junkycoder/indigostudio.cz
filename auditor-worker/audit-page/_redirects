@@ -1,0 +1,3 @@
+# SPA-style routing pro Cloudflare Pages.
+# Všechny /audit/{token} cesty servují index.html, který si pak token vytáhne z URL.
+/audit/*  /index.html  200
