@@ -31,32 +31,69 @@ ${unsubBlock(ev)}
 
 // ---------- Mail #1: výsledky auditu ----------
 function tplAuditDone(ev) {
-  const subject = `Skóre vašeho webu: ${ev.score}/100`;
-  const text = `Audit ${ev.domain} hotov.
+  // PROMPT past: pokud audit selhal (Cloudflare bot challenge, login wall, timeout),
+  // klient stejně dostane mail — ale s upozorněním, že se ozveme ručně.
+  if (ev.audit_status === 'failed') return tplAuditFailed(ev);
+
+  const subject = `Skóre Vašeho webu: ${ev.score}/100`;
+  const text = `Audit ${ev.domain} máme hotový.
 
 Skóre: ${ev.score}/100 — ${scoreLabel(ev.score)}
 
 Detailní report: ${reportUrl(ev)}
 
-Za 2 dny vám pošleme konkrétní návrh, co s tím.
+Za 2 dny Vám pošleme konkrétní návrh, co s tím.
 — Fakan`;
 
   const html = shell(subject, `
 <h1 style="font-size:28px;margin:0 0 8px">${ev.domain}</h1>
-<p style="font-size:14px;color:#8A7E6E;margin:0 0 24px">Audit hotov.</p>
+<p style="font-size:14px;color:#8A7E6E;margin:0 0 24px">Audit máme hotový.</p>
 
 <div style="text-align:center;padding:24px;background:#F9F6F0;border-radius:6px;margin:0 0 24px">
   <div style="font-size:64px;font-weight:bold;color:#1F1B16;line-height:1">${ev.score}<span style="font-size:24px;color:#8A7E6E">/100</span></div>
   <p style="font-size:16px;font-style:italic;margin:12px 0 0;color:#1F1B16">${scoreLabel(ev.score)}</p>
 </div>
 
-<p style="font-size:16px;line-height:1.6">Pět kategorií, 5–10 konkrétních věcí k řešení a screenshot mobilu — vše v reportu:</p>
+<p style="font-size:16px;line-height:1.6">Pět kategorií, 5–10 konkrétních věcí k řešení a náhled mobilu — vše v reportu:</p>
 
 <p style="margin:24px 0">
   <a href="${reportUrl(ev)}" style="display:inline-block;background:#C84B31;color:#fff;padding:14px 24px;text-decoration:none;border-radius:4px;font-weight:bold">Otevřít report</a>
 </p>
 
-<p style="font-size:14px;color:#8A7E6E">Za 2 dny vám pošleme konkrétní návrh, co s tím můžeme udělat my. Nezávazně.</p>
+<p style="font-size:14px;color:#8A7E6E">Za 2 dny Vám pošleme konkrétní návrh, co s tím můžeme udělat. Nezávazně.</p>
+`, ev);
+
+  return { subject, html, text };
+}
+
+// ---------- Mail #1 (alternativa): audit nedoběhl ----------
+function tplAuditFailed(ev) {
+  const subject = `Audit ${ev.domain} — ozveme se ručně`;
+  const text = `Web ${ev.domain} se nám nepodařilo automaticky proauditovat.
+
+Důvod bývá obvykle jeden ze tří: web má ochranu proti robotům, vyžaduje přihlášení,
+nebo se nestihl načíst včas. Žádná z těch věcí neznamená, že je s webem něco zásadně
+špatně — jen na něj nesmí náš robot.
+
+Podíváme se na něj sami a do 2 pracovních dnů Vám pošleme zhodnocení mailem.
+Pokud by se mezitím něco hodilo doplnit, odpovězte na tuto zprávu.
+
+— Fakan`;
+
+  const html = shell(subject, `
+<h1 style="font-size:24px;margin:0 0 8px">${ev.domain}</h1>
+<p style="font-size:14px;color:#8A7E6E;margin:0 0 24px">Audit se automaticky nepodařil.</p>
+
+<p style="font-size:16px;line-height:1.6">Web se nám nepodařilo automaticky proauditovat. Důvod bývá jeden ze tří:</p>
+<ul style="font-size:15px;line-height:1.7;margin:0 0 16px">
+  <li>web má ochranu proti robotům (Cloudflare challenge a podobně),</li>
+  <li>vyžaduje přihlášení,</li>
+  <li>nestihl se načíst včas.</li>
+</ul>
+
+<p style="font-size:16px;line-height:1.6">Žádná z těch věcí neznamená, že je s webem něco zásadně špatně — jen na něj nesmí náš automat.</p>
+
+<p style="font-size:16px;line-height:1.6">Podíváme se na web sami a <strong>do 2 pracovních dnů Vám pošleme zhodnocení</strong>. Pokud by se mezitím něco hodilo doplnit, odpovězte přímo na tuto zprávu.</p>
 `, ev);
 
   return { subject, html, text };
@@ -65,7 +102,11 @@ Za 2 dny vám pošleme konkrétní návrh, co s tím.
 // ---------- Mail #2: strategist (3 varianty) ----------
 async function tplStrategist(ev, env) {
   const s = await env.DB.prepare(`SELECT * FROM strategist_outputs WHERE audit_id=?`).bind(ev.audit_id).first();
-  if (!s) return tplAuditDone(ev); // fallback
+  // Pokud strategist_outputs zmizel, fail loud — dispatcher chytne v render try/catch
+  // a označí mail jako failed. NIKDY neposílat fallback na mail #1 (klient by ho měl
+  // duplicitně). runStrategist schedule-uje #2 jen po úspěšném ukládání outputs,
+  // takže tahle větev je defenzivní pro ruční zásahy.
+  if (!s) throw new Error(`strategist_outputs missing for audit ${ev.audit_id}`);
 
   const subject = `${ev.domain} — 3 cesty, jak to řešit`;
   const fix = JSON.parse(s.variant_fix || '{}');
@@ -86,7 +127,7 @@ async function tplStrategist(ev, env) {
 ${variantBox(fix, '#84A98C')}
 ${variantBox(red, '#D4783A')}
 ${variantBox(neu, '#C84B31')}
-<p style="font-size:14px;line-height:1.6;margin:24px 0 0"><strong>Co se stane když nic neudělá:</strong> ${s.risks}</p>
+<p style="font-size:14px;line-height:1.6;margin:24px 0 0"><strong>Co se stane, když s tím nic neuděláte:</strong> ${s.risks}</p>
 <p style="margin:24px 0">
   <a href="mailto:jsem@fakan.cz?subject=${encodeURIComponent(ev.domain)}" style="display:inline-block;background:#1F1B16;color:#fff;padding:14px 24px;text-decoration:none;border-radius:4px;font-weight:bold">Odpovědět e-mailem</a>
 </p>
@@ -120,9 +161,9 @@ function tplReaudit(ev) {
   const subject = `Měsíc utekl. Co se na ${ev.domain} změnilo?`;
   const html = shell(subject, `
 <h1 style="font-size:24px">Měsíc utekl.</h1>
-<p style="font-size:16px;line-height:1.6">Pustil jsem audit znovu. Tady je nové skóre vs. minulé:</p>
+<p style="font-size:16px;line-height:1.6">Pustili jsme audit znovu. Tady je nové skóre vedle minulého:</p>
 <p style="font-size:16px"><a href="${reportUrl(ev)}">${reportUrl(ev)}</a></p>
-<p style="font-size:14px;color:#8A7E6E">Když je skóre stejné, pravděpodobně je to čas na zásah. Když se zlepšilo, gratuluju — vy nebo někdo jiný odvedl práci.</p>
+<p style="font-size:14px;color:#8A7E6E">Když je skóre stejné, je nejspíš čas na zásah. Když se zlepšilo, gratulujeme — Vy nebo někdo jiný odvedl práci.</p>
 `, ev);
   return { subject, html, text: subject };
 }
