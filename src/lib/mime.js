@@ -3,9 +3,13 @@
 // Bez npm závislostí. RFC 5322 + RFC 2047 (header encoding) + RFC 2045 (MIME).
 // Architect veto na npm `mimetext` (design.md § 4.5) — vlastní implementace.
 
-import { randomTokenHex } from './hash.js';
-
 const CRLF = '\r\n';
+
+function randomTokenHex(byteLen) {
+  const buf = new Uint8Array(byteLen);
+  crypto.getRandomValues(buf);
+  return [...buf].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
 
 /**
  * UTF-8 string → base64. Pracuje s `btoa` (Workers runtime + Node 20+ má globálně).

@@ -2,10 +2,6 @@ name = "fakan-cz"
 main = "src/worker.js"
 compatibility_date = "2025-05-01"
 
-# ⚠️ Před prvním produkčním deployem spustit `wrangler secret put CONSENT_SALT`
-# (32+ bytes random string). Bez secretu IP hash nefunguje a lead capture vrátí
-# `salt_missing`. Žádný `[vars] CONSENT_SALT = ""` — prázdný var by přepsal secret.
-
 # Custom domain — přidáno přes dashboard při migraci z Pages → Workers (2026-05-07).
 # Zafixováno v repu, aby ho lokální `wrangler deploy` neodhlásil. wrangler.toml = source of truth.
 [[routes]]
@@ -13,33 +9,24 @@ pattern = "fakan.cz"
 zone_name = "fakan.cz"
 custom_domain = true
 
-# Smart Placement — Cloudflare auto-optimalizuje, kde se Worker spouští (blíž k DB / origin).
-# Defaultně off; zapnuto v dashboardu při migraci, držíme to v repu.
 [placement]
 mode = "smart"
 
 [assets]
 directory = "fakan.cz"
 # /odhlasit* musí jít přes Worker (DB update opt-out tokenu), ne přes statiku.
-run_worker_first = ["/api/*", "/odhlasit*"]
+# Form pro audit jde z prohlížeče POSTem rovnou na api.fakan.cz, tady ho neřešíme.
+run_worker_first = ["/odhlasit*"]
 
-# D1 databáze pro lead capture (formulář na free analýzu → uložení leadu, idempotence per den).
-# Schema je v migrations/0001_leads.sql.
+# D1 — lead tabulka pro opt-out flow (lookup unsubscribe_token → email).
+# Po deprekaci analyze flow píše do ní jen optout.js (UPDATE status='opted_out').
+# Migration v migrations/0001_leads.sql.
 [[d1_databases]]
 binding = "DB"
 database_name = "fakan_leads"
 database_id = "4e9b7569-b422-4b02-ad99-aa50c773ee4f"
 
-# KV pro anti-abuse rate limit (5 leadů/h/IP, klíč = hash IP, TTL 1 h).
-[[kv_namespaces]]
-binding = "RATELIMIT"
-id = "803a80bdbffb44ee90fb843bd19b62b2"
-
-# Cloudflare Email Workers — outbound mail (lead followup, opt-out potvrzení).
-# Bez destination_address / allowed_destination_addresses = unrestricted, posíláme komukoliv,
-# kdo nám zadá email v formuláři. Vyžaduje verified doménu fakan.cz v Email Routing dashboardu.
+# Email Workers — outbound mail (opt-out confirmation).
+# Vyžaduje verified doménu fakan.cz v Email Routing dashboardu.
 [[send_email]]
 name = "EMAIL"
-
-# CONSENT_SALT — viz komentář na vrcholu souboru. Řízeno přes `wrangler secret put`,
-# nikoliv přes `[vars]` (prázdný var by secret přepsal a lead capture by selhal).

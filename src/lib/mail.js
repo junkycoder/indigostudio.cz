@@ -8,26 +8,14 @@
 import { buildMime } from './mime.js';
 
 // Whitelist šablon. Jméno = filename bez .js v src/email/.
+// Po deprekaci analyze flow zbývá jen transakční optout-confirmation.
 const TEMPLATES = new Set([
-  'lead-followup',
-  'magic-link-auth',
   'optout-confirmation',
-  'soft-doi',
 ]);
 
-// Mapování template → from address + display name.
-// Per design § 4.3 + orchestrátor: lead-followup / soft-doi / optout-confirmation
-// jdou z `nabidky@fakan.cz`, magic-link-auth z `prihlaseni@fakan.cz`.
 const SENDERS = {
-  'lead-followup':         { name: 'Fakan — Indigo Studio',  addr: 'nabidky@fakan.cz' },
-  'soft-doi':              { name: 'Fakan — Indigo Studio',  addr: 'nabidky@fakan.cz' },
-  'optout-confirmation':   { name: 'Fakan — Indigo Studio',  addr: 'nabidky@fakan.cz' },
-  'magic-link-auth':       { name: 'Fakan — přihlášení',     addr: 'prihlaseni@fakan.cz' },
+  'optout-confirmation': { name: 'Fakan — Indigo Studio', addr: 'nabidky@fakan.cz' },
 };
-
-// List-Unsubscribe je relevantní jen pro marketing/lead obsah.
-// Transakční (magic-link, optout-confirmation) ho nemají.
-const NEEDS_LIST_UNSUBSCRIBE = new Set(['lead-followup', 'soft-doi']);
 
 /**
  * Lazy resolve `EmailMessage` — `cloudflare:email` je dostupné jen v Workers runtime.
@@ -67,7 +55,7 @@ function sleep(ms) {
  *
  * @param {{
  *   env: { EMAIL: { send: (msg: any) => Promise<void> } },
- *   template: 'lead-followup' | 'magic-link-auth' | 'optout-confirmation' | 'soft-doi',
+ *   template: 'optout-confirmation',
  *   to: string,
  *   vars: Record<string, any>,
  * }} opts
@@ -98,13 +86,6 @@ export async function sendMail({ env, template, to, vars }) {
   const { subject, html, text } = rendered;
   const from = SENDERS[template];
 
-  // Headers — List-Unsubscribe jen pro lead/marketing typy.
-  const headers = {};
-  if (NEEDS_LIST_UNSUBSCRIBE.has(template) && vars && vars.unsubscribe_url) {
-    headers['List-Unsubscribe'] = `<${vars.unsubscribe_url}>, <mailto:nabidky@fakan.cz?subject=unsubscribe>`;
-    headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
-  }
-
   let raw;
   try {
     raw = buildMime({
@@ -112,7 +93,7 @@ export async function sendMail({ env, template, to, vars }) {
       to,
       subject,
       replyTo: 'jsem@fakan.cz',
-      headers,
+      headers: {},
       text,
       html,
     });

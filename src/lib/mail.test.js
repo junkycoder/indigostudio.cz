@@ -1,11 +1,10 @@
 // src/lib/mail.test.js
-// Mock test pro sendMail() — ověřuje happy path, retry, header logiku.
+// Mock test pro sendMail() — happy path, retry, bounced, unknown template, missing env.
 // Email Workers runtime API se mockuje přes globalThis.EmailMessage,
 // `env.EMAIL.send` přes injected handler.
 //
 // Spuštění: `node src/lib/mail.test.js`. Bez frameworku, bez deps.
 
-// Mock EmailMessage — sendMail.js si ho vyzvedne přes globalThis (cesta okolo `cloudflare:email`).
 globalThis.EmailMessage = class MockEmailMessage {
   constructor(from, to, raw) {
     this.from = from;
@@ -30,29 +29,22 @@ function assert(cond, label) {
 }
 
 // ---------------------------------------------------------------------------
-// Test 1: happy path — lead-followup
+// Test 1: happy path — optout-confirmation
 // ---------------------------------------------------------------------------
-console.log('Test 1: happy path lead-followup');
+console.log('Test 1: happy path optout-confirmation');
 {
   let captured = null;
   const env = {
     EMAIL: {
-      send: async (msg) => {
-        captured = msg;
-      },
+      send: async (msg) => { captured = msg; },
     },
   };
 
   const result = await sendMail({
     env,
-    template: 'lead-followup',
+    template: 'optout-confirmation',
     to: 'host@example.cz',
-    vars: {
-      url: 'https://example.cz',
-      score: 73,
-      top3issues: ['LCP 4,2 s — pomalé', 'chybí h1', 'meta description chybí'],
-      unsubscribe_url: 'https://fakan.cz/odhlasit?t=abc',
-    },
+    vars: { email: 'host@example.cz', opted_out_at: '14:30' },
   });
 
   assert(result.ok === true, 'result.ok === true');
@@ -61,65 +53,23 @@ console.log('Test 1: happy path lead-followup');
   assert(captured && captured.from === 'nabidky@fakan.cz', "msg.from === 'nabidky@fakan.cz'");
   assert(captured && captured.to === 'host@example.cz', "msg.to === 'host@example.cz'");
   assert(
-    captured && captured.raw.includes('List-Unsubscribe: <https://fakan.cz/odhlasit?t=abc>'),
-    'List-Unsubscribe header obsahuje unsubscribe_url',
-  );
-  assert(
-    captured && captured.raw.includes('List-Unsubscribe-Post: List-Unsubscribe=One-Click'),
-    'List-Unsubscribe-Post header je v mailu',
-  );
-  assert(
     captured && captured.raw.includes('Reply-To: jsem@fakan.cz'),
-    "Reply-To: jsem@fakan.cz",
+    'Reply-To: jsem@fakan.cz',
   );
-  // Subject je base64-encoded přes RFC 2047 (obsahuje ne-ASCII), takže hledáme prefix.
+  assert(
+    captured && !captured.raw.includes('List-Unsubscribe:'),
+    'transakční mail nemá List-Unsubscribe',
+  );
   assert(
     captured && captured.raw.includes('Subject: '),
     'mail má Subject header',
   );
-  // Žádný tracking pixel (template ho nemá per legal autorita).
-  assert(
-    captured && !captured.raw.includes('<img'),
-    'žádný <img tracking pixel v mailu',
-  );
 }
 
 // ---------------------------------------------------------------------------
-// Test 2: magic-link-auth → jiný sender, žádný List-Unsubscribe
+// Test 2: retry — první pokus selže, druhý projde
 // ---------------------------------------------------------------------------
-console.log('Test 2: magic-link-auth — sender + transactional headers');
-{
-  let captured = null;
-  const env = {
-    EMAIL: {
-      send: async (msg) => {
-        captured = msg;
-      },
-    },
-  };
-
-  const result = await sendMail({
-    env,
-    template: 'magic-link-auth',
-    to: 'user@example.cz',
-    vars: {
-      magic_link: 'https://fakan.cz/login?t=xyz',
-      expires_in_min: 15,
-    },
-  });
-
-  assert(result.ok === true, 'result.ok === true');
-  assert(captured && captured.from === 'prihlaseni@fakan.cz', "magic-link sender = prihlaseni@fakan.cz");
-  assert(
-    captured && !captured.raw.includes('List-Unsubscribe:'),
-    'magic-link nemá List-Unsubscribe header',
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Test 3: retry — první pokus selže, druhý projde
-// ---------------------------------------------------------------------------
-console.log('Test 3: retry — 1× fail, pak success');
+console.log('Test 2: retry — 1× fail, pak success');
 {
   let calls = 0;
   const env = {
@@ -136,7 +86,7 @@ console.log('Test 3: retry — 1× fail, pak success');
     env,
     template: 'optout-confirmation',
     to: 'host@example.cz',
-    vars: { url: 'https://example.cz' },
+    vars: { email: 'host@example.cz', opted_out_at: '14:30' },
   });
   const elapsed = Date.now() - start;
 
@@ -146,9 +96,9 @@ console.log('Test 3: retry — 1× fail, pak success');
 }
 
 // ---------------------------------------------------------------------------
-// Test 4: oba pokusy selžou → bounced
+// Test 3: oba pokusy selžou → bounced
 // ---------------------------------------------------------------------------
-console.log('Test 4: oba pokusy fail → bounced');
+console.log('Test 3: oba pokusy fail → bounced');
 {
   let calls = 0;
   const env = {
@@ -162,14 +112,9 @@ console.log('Test 4: oba pokusy fail → bounced');
 
   const result = await sendMail({
     env,
-    template: 'lead-followup',
+    template: 'optout-confirmation',
     to: 'host@example.cz',
-    vars: {
-      url: 'https://example.cz',
-      score: 50,
-      top3issues: ['a', 'b', 'c'],
-      unsubscribe_url: 'https://fakan.cz/odhlasit?t=zzz',
-    },
+    vars: { email: 'host@example.cz', opted_out_at: '14:30' },
   });
 
   assert(result.ok === false, 'result.ok === false');
@@ -179,9 +124,9 @@ console.log('Test 4: oba pokusy fail → bounced');
 }
 
 // ---------------------------------------------------------------------------
-// Test 5: neznámá šablona
+// Test 4: neznámá šablona
 // ---------------------------------------------------------------------------
-console.log('Test 5: neznámá šablona → bounced bez crash');
+console.log('Test 4: neznámá šablona → bounced bez crash');
 {
   const env = { EMAIL: { send: async () => {} } };
   const result = await sendMail({
@@ -195,19 +140,18 @@ console.log('Test 5: neznámá šablona → bounced bez crash');
 }
 
 // ---------------------------------------------------------------------------
-// Test 6: chybí env.EMAIL — nesmí trhnout
+// Test 5: chybí env.EMAIL — nesmí trhnout
 // ---------------------------------------------------------------------------
-console.log('Test 6: chybí env.EMAIL → graceful fail');
+console.log('Test 5: chybí env.EMAIL → graceful fail');
 {
   const result = await sendMail({
     env: {},
-    template: 'lead-followup',
+    template: 'optout-confirmation',
     to: 'host@example.cz',
-    vars: { url: 'https://example.cz', score: 50, top3issues: ['a','b','c'], unsubscribe_url: 'https://fakan.cz/odhlasit?t=zzz' },
+    vars: { email: 'host@example.cz', opted_out_at: '14:30' },
   });
   assert(result.ok === false, 'chybí binding → ok=false');
 }
 
-// ---------------------------------------------------------------------------
 console.log(`\nSouhrn: ${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);
