@@ -1,22 +1,12 @@
 // src/handlers/report.js
-// GET /audit/{token}        → 302 na audit.fakan.cz Pages frontend
-// GET /audit/{token}/data   → JSON payload pro Pages frontend
-
-const REPORT_HOST = 'https://audit.fakan.cz';
+// GET /api/audit/{token}/data → JSON payload pro audit-page SPA.
+// Sjednocený router směruje sem jen po validním tvaru cesty, ale token validujeme.
 
 export async function handleReport(request, env) {
-  const url    = new URL(request.url);
-  const parts  = url.pathname.split('/').filter(Boolean);
-  const token  = parts[1];
-  const isJson = parts[2] === 'data';
+  const parts = new URL(request.url).pathname.split('/').filter(Boolean);
+  // Očekáváme ['api', 'audit', '{token}', 'data']
+  const token = parts[2];
   if (!token) return new Response('Bad token', { status: 400 });
-
-  // /audit/{token} (bez /data) — pošlat klienta na Pages frontend, který si data dotáhne sám.
-  // Mail templates linkují rovnou na audit.fakan.cz, tahle větev je jen pojistka pro
-  // případ, že někdo otevře Worker URL ručně.
-  if (!isJson) {
-    return Response.redirect(`${REPORT_HOST}/audit/${encodeURIComponent(token)}`, 302);
-  }
 
   const audit = await env.DB.prepare(
     `SELECT * FROM audits WHERE report_token = ? LIMIT 1`

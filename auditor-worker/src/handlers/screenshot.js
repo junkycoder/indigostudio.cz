@@ -1,11 +1,12 @@
 // src/handlers/screenshot.js
-// GET /screenshot/{auditId} — proxy přes R2.
+// GET /api/screenshot/{auditId} — proxy přes R2.
 // PROMPT past: alternativa k veřejnému R2 bucketu. R2 zůstává private,
 // Worker přečte objekt a vrátí ho s ETag, aby browser uměl 304 Not Modified.
 
 export async function handleScreenshot(request, env) {
   const parts = new URL(request.url).pathname.split('/').filter(Boolean);
-  const auditId = parts[1];
+  // Očekáváme ['api', 'screenshot', '{auditId}']
+  const auditId = parts[2];
   if (!auditId || !/^[a-f0-9-]{36}$/i.test(auditId)) {
     return new Response('Bad audit id', { status: 400 });
   }

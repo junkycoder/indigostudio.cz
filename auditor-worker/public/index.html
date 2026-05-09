@@ -199,6 +199,43 @@ header {
 }
 .url-input:focus, .email-input:focus { border-color: var(--accent); }
 .url-input::placeholder, .email-input::placeholder { color: var(--muted); }
+
+.brief-input {
+  width: 100%;
+  padding: 14px 16px;
+  font: inherit; font-size: 17px;
+  font-family: Georgia, 'Times New Roman', serif;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  outline: none;
+  resize: vertical;
+  min-height: 130px;
+  line-height: 1.5;
+}
+.brief-input:focus { border-color: var(--accent); }
+.brief-input::placeholder { color: var(--muted); }
+
+.file-input {
+  width: 100%;
+  font: inherit; font-size: 14px;
+  color: var(--ink);
+  padding: 4px 0;
+}
+.file-input::file-selector-button {
+  margin-right: 12px;
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font: inherit; font-size: 14px;
+  font-family: Georgia, serif;
+  cursor: pointer;
+}
+.file-input::file-selector-button:hover { border-color: var(--accent); color: var(--accent); }
+
 .form-hint { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.5; }
 .form-consent {
   display: flex; gap: 10px; align-items: flex-start;
@@ -521,6 +558,86 @@ input:focus-visible { outline: none; }
         <p>Chcete to opravit sami? Stáhnete si přehled. Chcete, abychom to vyřešili? Napíšete a my se ozveme.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- RYCHLÉ NÁVRHY -->
+<section id="navrhy">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Rychlé návrhy úprav</span>
+      <h2>Audit ukáže, co opravit. AI ukáže, jak to může vypadat.</h2>
+      <p>Z auditu víte, kde to drhne. Popíšete, co chcete změnit, a my Vám pošleme vizuální návrh — AI vykreslí Vaši stránku v upravené podobě podle Vašeho zadání. 50 Kč za jeden návrh, do pár minut v mailu.</p>
+    </div>
+
+    <form class="url-form" data-suggestion-form novalidate>
+      <div class="form-row">
+        <label for="suggUrl">Adresa Vašeho webu</label>
+        <input
+          class="url-input"
+          id="suggUrl"
+          name="url"
+          type="text"
+          placeholder="vasedomena.cz"
+          autocomplete="url"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="url"
+          required>
+        <p class="form-hint">Sdílíme s auditem — když jste ho ještě nespustili, projedeme web zdarma teď.</p>
+      </div>
+      <div class="form-row">
+        <label for="suggEmail">Váš e-mail</label>
+        <input
+          class="email-input"
+          id="suggEmail"
+          name="email"
+          type="email"
+          placeholder="vy@vasedomena.cz"
+          autocomplete="email"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="email"
+          required>
+      </div>
+      <div class="form-row">
+        <label for="suggBrief">Co chcete předělat</label>
+        <textarea
+          class="brief-input"
+          id="suggBrief"
+          name="brief"
+          rows="5"
+          placeholder="Třeba: nelíbí se mi hlavička, působí starobyle. Chtěl bych jednodušší, něco jako mají na floriana.cz. Barvy beze změny."
+          required></textarea>
+        <p class="form-hint">Stačí pár vět. Čím konkrétněji, tím přesnější návrh.</p>
+      </div>
+      <div class="form-row">
+        <label for="suggFiles">Podklady (volitelné)</label>
+        <input
+          class="file-input"
+          id="suggFiles"
+          name="files"
+          type="file"
+          multiple
+          accept="image/*,application/pdf,.doc,.docx,.txt">
+        <p class="form-hint">Logo, fotky, ukázky webů, které se Vám líbí, screenshoty s poznámkami. Maximálně 10 souborů, dohromady do 20 MB.</p>
+      </div>
+      <div class="form-consent">
+        <input type="checkbox" id="consentSugg" name="consent" value="1" required>
+        <label for="consentSugg">
+          Souhlasím, aby společnost <strong>Indigo Studio s.r.o.</strong> (IČO 14389096) zpracovala mé údaje a podklady pro zpracování poptávky a zaslání nabídky. Více v <a href="/ochrana-udaju">zásadách ochrany osobních údajů</a>.
+        </label>
+      </div>
+      <div class="honeypot" aria-hidden="true">
+        <label for="companySugg">Pokud čtete tohle, nechte prázdné</label>
+        <input type="text" id="companySugg" name="website" tabindex="-1" autocomplete="off">
+      </div>
+      <button class="btn-cta" type="submit">Objednat návrh za 50 Kč →</button>
+      <p class="form-error" data-form-error role="alert"></p>
+      <p class="form-hint">Návrh dorazí mailem do pár minut. Platba po doručení.</p>
+    </form>
   </div>
 </section>
 
@@ -852,6 +969,72 @@ document.querySelectorAll('form[data-audit-form]').forEach((form) => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     submitAudit(form);
+  });
+});
+
+// Suggestion form — placená rychlá úprava designu. Backend endpoint /api/suggestion
+// zatím neexistuje (TODO v auditor-worker). Form ho volá multipart/form-data se soubory.
+const SUGGESTION_API = 'https://api.fakan.cz/api/suggestion';
+const SUGG_MAX_FILES = 10;
+const SUGG_MAX_TOTAL_BYTES = 20 * 1024 * 1024;
+
+async function submitSuggestion(form) {
+  clearError(form);
+  const url = normalizeUrl(form.querySelector('[name="url"]').value);
+  const email = String(form.querySelector('[name="email"]').value || '').trim().toLowerCase();
+  const brief = String(form.querySelector('[name="brief"]').value || '').trim();
+  const consent = form.querySelector('[name="consent"]').checked;
+  const honeypot = String(form.querySelector('[name="website"]').value || '').trim();
+  const filesInput = form.querySelector('[name="files"]');
+  const files = filesInput && filesInput.files ? Array.from(filesInput.files) : [];
+
+  if (!url) { showError(form, 'Zadejte platnou adresu webu (např. vasedomena.cz).'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError(form, 'Zadejte platný e-mail.'); return; }
+  if (brief.length < 10) { showError(form, 'Popište prosím alespoň jednou větou, co chcete předělat.'); return; }
+  if (!consent) { showError(form, 'Bez souhlasu Vám nabídku nemůžeme poslat.'); return; }
+  if (files.length > SUGG_MAX_FILES) { showError(form, `Maximálně ${SUGG_MAX_FILES} souborů.`); return; }
+  const totalBytes = files.reduce((s, f) => s + f.size, 0);
+  if (totalBytes > SUGG_MAX_TOTAL_BYTES) { showError(form, 'Soubory dohromady přesahují 20 MB. Pošlete prosím méně nebo menší.'); return; }
+
+  const btn = form.querySelector('button[type="submit"]');
+  const origLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Posíláme…';
+
+  const fd = new FormData();
+  fd.append('url', url);
+  fd.append('email', email);
+  fd.append('brief', brief);
+  fd.append('consent', '1');
+  fd.append('website', honeypot);
+  files.forEach((f, i) => fd.append(`file_${i}`, f, f.name));
+
+  try {
+    const resp = await fetch(SUGGESTION_API, { method: 'POST', body: fd });
+    const data = await resp.json().catch(() => null);
+
+    if (!resp.ok || !data || data.ok !== true) {
+      const msg = (data && data.error) || 'Nepodařilo se odeslat. Zkuste to prosím za chvíli, nebo napište přímo na jsem@fakan.cz.';
+      showError(form, msg);
+      btn.disabled = false;
+      btn.textContent = origLabel;
+      return;
+    }
+
+    if (data.reportToken) recordAudit({ email, url, token: data.reportToken });
+    btn.textContent = 'Hotovo';
+    showError(form, data.message || 'Poptávka přijata. Ozveme se do 24 hodin s nabídkou.');
+  } catch (err) {
+    showError(form, 'Spojení se nepodařilo. Napište prosím přímo na jsem@fakan.cz.');
+    btn.disabled = false;
+    btn.textContent = origLabel;
+  }
+}
+
+document.querySelectorAll('form[data-suggestion-form]').forEach((form) => {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitSuggestion(form);
   });
 });
 </script>

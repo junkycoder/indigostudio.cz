@@ -1,99 +1,128 @@
-// src/optout.js
-// Worker handler GET /odhlasit?t=<token> — opt-out endpoint.
-// Per design.md § 3.3 + tasks.md TASK-09 + risk-check.md § 5.1.
+// src/legacy/optout.js
+// Sjednocený opt-out handler pro celý fakan.cz.
 //
-// Pravidla:
-//   * Validace `t` formátu (64 hex). Fail → 200 generic stránka (NE 400/404),
+// Zachytává:
+//   /odhlasit/{token}        — nové hezké URL
+//   /odhlasit?t=<token>      — legacy z fakan-cz (analyze flow)
+//   /odhlasit?token=<token>  — varianta
+//   /unsubscribe?token=...   — List-Unsubscribe header z auditor mailů
+//
+// Dva DB binding:
+//   env.DB         — fakan_auditor.leads.unsub_token (32 hex)
+//   env.LEGACY_DB  — fakan_leads.leads.unsubscribe_token (64 hex), z dávných mailů
+//
+// Pravidla (z původního design.md § 3.3 + risk-check § 5.1):
+//   * Validace formátu tokenu. Fail → 200 generic stránka (NE 400/404),
 //     aby útočník neviděl jestli token "vypadá platně" nebo ne.
-//   * Lookup v D1: pokud nenalezen → 200 generic stránka (NE leak existence).
-//   * Pokud nalezen a status != 'opted_out' → UPDATE + ctx.waitUntil(sendMail).
-//   * Pokud nalezen a už `opted_out` → idempotentně render stránku, žádný UPDATE,
-//     žádný duplicitní mail.
+//   * Token nenalezen v žádné DB → 200 generic (NE leak existence).
+//   * Auditor flow: UPDATE status='unsubscribed', bez confirmation mailu.
+//   * Legacy flow:  UPDATE status='opted_out', + confirmation mail (zachované chování).
 //   * DB error → 503 s lidskou hláškou.
-//   * Žádné cookies, žádný Set-Cookie. Cache-Control: no-store. noindex meta.
-//
-// Routing tohohle handleru řeší TASK-10 (úprava src/worker.js + wrangler.toml).
-// Tento modul jen exportuje `handleOptout`.
+//   * Žádné cookies. Cache-Control: no-store. noindex meta.
 
 import { sendMail } from './lib/mail.js';
 
-const TOKEN_RE = /^[a-f0-9]{64}$/;
+const TOKEN_RE = /^[a-f0-9]{32,64}$/;
 
 /**
- * Hlavní handler. Vrací vždy `Response`. Nikdy netrhne — DB chybu
- * převádí na 503 stránku, ostatní chyby na 200 generic (security).
+ * Hlavní handler. Vrací vždy `Response`. Nikdy netrhne.
  *
  * @param {Request} request
- * @param {{ DB: D1Database, EMAIL?: any }} env
+ * @param {{ DB: D1Database, LEGACY_DB?: D1Database, EMAIL?: any }} env
  * @param {{ waitUntil: (p: Promise<any>) => void }} ctx
  * @returns {Promise<Response>}
  */
 export async function handleOptout(request, env, ctx) {
   const url = new URL(request.url);
-  const token = url.searchParams.get('t');
+  const token = extractToken(url);
 
-  // 1) Formátová validace tokenu. Vše co neodpovídá formátu → generic stránka.
-  // Per risk-check § 5.4 + design § 8: nesmíme dát útočníkovi signál.
+  // 1) Formátová validace. Vše co neodpovídá → generic stránka (security).
   if (!token || !TOKEN_RE.test(token)) {
     return renderDonePage();
   }
 
-  // 2) Lookup v D1. DB error → 503 s česky lidskou hláškou (per AC).
-  let row;
+  // 2) Auditor DB (běžný případ — všechny nové leady)
   try {
-    row = await env.DB
-      .prepare('SELECT id, email, status FROM leads WHERE unsubscribe_token = ? LIMIT 1')
+    const row = await env.DB
+      .prepare('SELECT id, email, status FROM leads WHERE unsub_token = ? LIMIT 1')
       .bind(token)
       .first();
+
+    if (row) {
+      if (row.status !== 'unsubscribed') {
+        await env.DB
+          .prepare(`UPDATE leads SET status = 'unsubscribed' WHERE id = ?`)
+          .bind(row.id)
+          .run();
+      }
+      return renderDonePage();
+    }
   } catch (err) {
-    console.error('[optout] DB lookup failed', err);
+    console.error('[optout] auditor DB lookup failed', err);
     return renderTempErrorPage();
   }
 
-  // 3) Token nenalezen → render generic stránku jako by nalezen byl.
-  // (Bez DB write, bez mailu.)
-  if (!row) {
-    return renderDonePage();
+  // 3) Legacy DB (analyze flow, dávné maily). Confirmation mail jako dřív.
+  if (env.LEGACY_DB) {
+    let legacyRow;
+    try {
+      legacyRow = await env.LEGACY_DB
+        .prepare('SELECT id, email, status FROM leads WHERE unsubscribe_token = ? LIMIT 1')
+        .bind(token)
+        .first();
+    } catch (err) {
+      console.error('[optout] legacy DB lookup failed', err);
+      return renderTempErrorPage();
+    }
+
+    if (legacyRow) {
+      if (legacyRow.status === 'opted_out') {
+        return renderDonePage();
+      }
+
+      const nowIso = new Date().toISOString();
+      try {
+        await env.LEGACY_DB
+          .prepare('UPDATE leads SET status = ?, opted_out_at = ?, last_contact_at = ? WHERE id = ?')
+          .bind('opted_out', nowIso, nowIso, legacyRow.id)
+          .run();
+      } catch (err) {
+        console.error('[optout] legacy DB update failed', err);
+        return renderTempErrorPage();
+      }
+
+      // Confirmation mail (legacy flow). HH:MM ze "2026-05-08T14:30:00.000Z".
+      const optedOutTime = nowIso.slice(11, 16);
+      if (ctx && typeof ctx.waitUntil === 'function') {
+        ctx.waitUntil(
+          sendMail({
+            env,
+            template: 'optout-confirmation',
+            to: legacyRow.email,
+            vars: { email: legacyRow.email, opted_out_at: optedOutTime },
+          }).catch((err) => {
+            console.error('[optout] sendMail crashed', err);
+          })
+        );
+      }
+      return renderDonePage();
+    }
   }
 
-  // 4) Idempotence: pokud už opted_out, jen render stránku, NIC neupdatovat
-  // a NEPOSÍLAT druhý confirmation mail.
-  if (row.status === 'opted_out') {
-    return renderDonePage();
-  }
-
-  // 5) Update + odeslání confirmation mailu (paralelně, neblokuje response).
-  const nowIso = new Date().toISOString();
-  try {
-    await env.DB
-      .prepare('UPDATE leads SET status = ?, opted_out_at = ?, last_contact_at = ? WHERE id = ?')
-      .bind('opted_out', nowIso, nowIso, row.id)
-      .run();
-  } catch (err) {
-    console.error('[optout] DB update failed', err);
-    return renderTempErrorPage();
-  }
-
-  // optout-confirmation šablona chce čas v "HH:MM" (per src/email/optout-confirmation.js).
-  const optedOutTime = nowIso.slice(11, 16); // ISO "2026-05-08T14:30:00.000Z" → "14:30"
-
-  // ctx.waitUntil prodlouží životnost requestu, aby mail stihl odejít,
-  // ale neblokuje response uživateli.
-  if (ctx && typeof ctx.waitUntil === 'function') {
-    ctx.waitUntil(
-      sendMail({
-        env,
-        template: 'optout-confirmation',
-        to: row.email,
-        vars: { email: row.email, opted_out_at: optedOutTime },
-      }).catch((err) => {
-        // sendMail sám nikdy netrhne, ale safety net.
-        console.error('[optout] sendMail crashed', err);
-      })
-    );
-  }
-
+  // 4) Token nenalezen ani v jedné DB → idempotentní generic page (security).
   return renderDonePage();
+}
+
+/**
+ * Extrahuje token z URL — podporuje path i query variantu.
+ * @param {URL} url
+ * @returns {string | null}
+ */
+function extractToken(url) {
+  const pathMatch = url.pathname.match(/^\/odhlasit\/([a-f0-9]+)\/?$/i);
+  if (pathMatch) return pathMatch[1].toLowerCase();
+  const t = url.searchParams.get('t') || url.searchParams.get('token');
+  return t ? t.toLowerCase() : null;
 }
 
 // --- HTML rendery ------------------------------------------------------------
@@ -101,22 +130,12 @@ export async function handleOptout(request, env, ctx) {
 const HTML_HEADERS = {
   'content-type': 'text/html; charset=utf-8',
   'cache-control': 'no-store, max-age=0',
-  // Žádný Set-Cookie. Žádný third-party origin.
 };
 
-/**
- * Generic „odhlášeno" stránka. Vrací se i pro neplatný token, neexistující
- * token i úspěšný opt-out — uživatel nepozná rozdíl (security).
- *
- * Brand z fakan.cz/odhlasit-hotovo.html (Georgia + cream + terracotta).
- */
 function renderDonePage() {
   return new Response(DONE_HTML, { status: 200, headers: HTML_HEADERS });
 }
 
-/**
- * Stránka pro DB chybu. 503 + lidská česká hláška.
- */
 function renderTempErrorPage() {
   return new Response(TEMP_ERROR_HTML, { status: 503, headers: HTML_HEADERS });
 }
