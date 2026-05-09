@@ -94,11 +94,81 @@ header {
   border-bottom: 1px solid var(--line);
   background: var(--bg);
 }
-.header-inner { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; gap: 16px; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; padding-top: 18px; padding-bottom: 18px; gap: 16px; }
 .brand { font-weight: bold; font-size: 18px; text-decoration: none; color: var(--ink); }
 .brand:hover { color: var(--accent); }
-.header-claim { font-size: 13px; color: var(--muted); font-style: italic; }
+.header-claim { font-size: 13px; color: var(--muted); font-style: italic; margin-right: auto; margin-left: 16px; }
 @media (max-width: 600px) { .header-claim { display: none; } }
+
+/* User link — vpravo v hlavičce, viditelný jen po prvním auditu */
+.user-link {
+  font: inherit; font-size: 14px;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 4px;
+  padding: 6px 12px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  max-width: 180px;
+}
+.user-link:hover { border-color: var(--accent); color: var(--accent); }
+.user-link[hidden] { display: none; }
+.user-link span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* User modal — nativní <dialog> */
+.user-modal {
+  border: none; border-radius: 8px; padding: 0;
+  background: var(--card); color: var(--ink);
+  max-width: 560px; width: calc(100% - 32px);
+  max-height: calc(100vh - 32px); overflow: hidden;
+}
+.user-modal::backdrop { background: rgba(31, 27, 22, 0.45); }
+.user-modal-form { display: flex; flex-direction: column; max-height: calc(100vh - 32px); }
+.user-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 20px 24px; border-bottom: 1px solid var(--line);
+}
+.user-modal-head h2 { margin: 0; font-size: 22px; }
+.user-modal-close {
+  background: transparent; border: none; cursor: pointer;
+  font: inherit; font-size: 28px; line-height: 1; color: var(--muted);
+  padding: 0 6px;
+}
+.user-modal-close:hover { color: var(--ink); }
+.user-modal-body { padding: 16px 24px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.user-section { padding: 16px 0 0; border: none; border-top: 1px solid var(--line); }
+.user-section:first-child { padding-top: 0; border-top: none; }
+.user-section h3 { font-size: 15px; margin: 0 0 12px; }
+.user-row { display: grid; gap: 6px; margin-bottom: 12px; }
+.user-row label { font-weight: bold; font-size: 14px; }
+.user-row input {
+  font: inherit; font-size: 16px; padding: 10px 12px;
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 4px; color: var(--ink); outline: none;
+}
+.user-row input:focus { border-color: var(--accent); }
+.user-row .user-static {
+  margin: 0; padding: 10px 12px;
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 4px; color: var(--ink); font-size: 15px;
+  word-break: break-all;
+}
+.user-logout {
+  font: inherit; font-size: 14px;
+  background: transparent; border: 1px solid var(--line);
+  color: var(--muted); padding: 8px 14px; border-radius: 4px;
+  cursor: pointer; margin-top: 4px;
+}
+.user-logout:hover { border-color: var(--accent); color: var(--accent); }
+.user-audits { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; max-height: 260px; overflow-y: auto; }
+.user-audits li { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
+.user-audits a { display: block; padding: 10px 14px; color: var(--ink); text-decoration: none; }
+.user-audits a:hover { background: color-mix(in srgb, var(--accent) 6%, var(--bg)); }
+.user-audits .audit-url { display: block; font-weight: bold; font-size: 14px; word-break: break-all; }
+.user-audits .audit-meta { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.user-note {
+  margin: 0; padding: 12px 14px;
+  background: var(--bg); border-left: 3px solid var(--line);
+  border-radius: 4px; font-size: 14px; color: var(--muted); line-height: 1.5;
+}
 
 /* Brand claim — sentence above H1 */
 .brand-claim {
@@ -279,8 +349,48 @@ input:focus-visible { outline: none; }
   <div class="wrap header-inner">
     <a class="brand" href="/" aria-label="fakan.cz — domů">fakan.cz</a>
     <span class="header-claim">Když web, jedině od Fakana.</span>
+    <button class="user-link" type="button" data-user-link hidden aria-haspopup="dialog">
+      <span data-user-nick>—</span>
+    </button>
   </div>
 </header>
+
+<dialog class="user-modal" data-user-modal aria-labelledby="userModalTitle">
+  <form class="user-modal-form" method="dialog">
+    <div class="user-modal-head">
+      <h2 id="userModalTitle">Můj fakan</h2>
+      <button class="user-modal-close" type="submit" value="close" aria-label="Zavřít">×</button>
+    </div>
+    <div class="user-modal-body">
+
+      <section class="user-section" aria-labelledby="userProfileTitle">
+        <h3 id="userProfileTitle">Profil</h3>
+        <div class="user-row">
+          <label for="userNickInput">Přezdívka</label>
+          <input type="text" id="userNickInput" data-user-nick-input maxlength="40" autocomplete="off">
+          <p class="form-hint">Vygenerovali jsme Vám jednu vtipnou. Klidně si ji upravte.</p>
+        </div>
+        <div class="user-row">
+          <label>E-mail</label>
+          <p class="user-static" data-user-email>—</p>
+        </div>
+        <button type="button" class="user-logout" data-user-logout>Odhlásit</button>
+      </section>
+
+      <section class="user-section" aria-labelledby="userAuditsTitle">
+        <h3 id="userAuditsTitle">Moje weby a reporty</h3>
+        <ul class="user-audits" data-user-audits></ul>
+        <p class="form-hint" data-user-audits-empty hidden>Zatím žádný audit. Spusťte první nahoře v formuláři.</p>
+      </section>
+
+      <section class="user-section" aria-labelledby="userIntegrationsTitle">
+        <h3 id="userIntegrationsTitle">Integrace</h3>
+        <p class="user-note">Brzy: napojení na Git. Z reportu rovnou pull request s opravami do Vašeho repa. Připravujeme.</p>
+      </section>
+
+    </div>
+  </form>
+</dialog>
 
 <main id="obsah">
 
@@ -562,9 +672,111 @@ input:focus-visible { outline: none; }
 
 <script>
 // Form handler — POST na auditor (api.fakan.cz/api/audit), redirect na audit.fakan.cz/audit/{token}.
-// Žádný framework, žádné cookies, žádný localStorage.
+// Lokální „účet" v localStorage — žádný backend auth, jen dohledatelnost vlastních reportů.
 const API = 'https://api.fakan.cz/api/audit';
 const REPORT_HOST = 'https://audit.fakan.cz';
+const USER_KEY = 'fakanUser';
+
+const NICK_ADJ = ['Hbitý', 'Mazaný', 'Statečný', 'Důmyslný', 'Vychytralý', 'Tichý', 'Drzý', 'Bdělý', 'Zamlklý', 'Pracovitý', 'Skromný', 'Nadšený', 'Zamyšlený', 'Klidný', 'Kurážný', 'Lstivý', 'Zarytý', 'Pichlavý'];
+const NICK_NOUN = ['Liška', 'Jezevec', 'Sojka', 'Sokol', 'Kuna', 'Vydra', 'Tchoř', 'Veverka', 'Datel', 'Sysel', 'Hraboš', 'Krokýš', 'Rys', 'Kojot', 'Bobr', 'Ježek', 'Krtek', 'Sova'];
+
+function generateNick() {
+  const a = NICK_ADJ[Math.floor(Math.random() * NICK_ADJ.length)];
+  const n = NICK_NOUN[Math.floor(Math.random() * NICK_NOUN.length)];
+  return a + ' ' + n;
+}
+
+function getUser() {
+  try { const raw = localStorage.getItem(USER_KEY); return raw ? JSON.parse(raw) : null; }
+  catch { return null; }
+}
+function setUser(u) {
+  try { localStorage.setItem(USER_KEY, JSON.stringify(u)); } catch {}
+}
+function clearUser() {
+  try { localStorage.removeItem(USER_KEY); } catch {}
+}
+
+function recordAudit({ email, url, token }) {
+  let user = getUser();
+  if (!user || user.email !== email) {
+    user = { email, nick: generateNick(), audits: [] };
+  }
+  user.audits = (user.audits || []).filter(a => a.url !== url);
+  if (token) user.audits.unshift({ url, token, createdAt: Date.now() });
+  setUser(user);
+  renderUserLink();
+}
+
+function renderUserLink() {
+  const link = document.querySelector('[data-user-link]');
+  const nickEl = document.querySelector('[data-user-nick]');
+  if (!link || !nickEl) return;
+  const user = getUser();
+  if (user) { nickEl.textContent = user.nick; link.hidden = false; }
+  else { link.hidden = true; }
+}
+
+function renderUserModal() {
+  const user = getUser();
+  if (!user) return;
+  const nickInput = document.querySelector('[data-user-nick-input]');
+  const emailEl = document.querySelector('[data-user-email]');
+  const auditsEl = document.querySelector('[data-user-audits]');
+  const auditsEmpty = document.querySelector('[data-user-audits-empty]');
+
+  if (nickInput) nickInput.value = user.nick || '';
+  if (emailEl) emailEl.textContent = user.email || '—';
+
+  if (auditsEl && auditsEmpty) {
+    auditsEl.innerHTML = '';
+    const list = user.audits || [];
+    if (list.length === 0) {
+      auditsEmpty.hidden = false;
+    } else {
+      auditsEmpty.hidden = true;
+      const fmt = new Intl.DateTimeFormat('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' });
+      for (const a of list) {
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = REPORT_HOST + '/audit/' + encodeURIComponent(a.token);
+        link.target = '_blank';
+        link.rel = 'noopener';
+        const u = document.createElement('span'); u.className = 'audit-url'; u.textContent = a.url;
+        const m = document.createElement('span'); m.className = 'audit-meta';
+        m.textContent = a.createdAt ? fmt.format(new Date(a.createdAt)) : '';
+        link.appendChild(u); link.appendChild(m);
+        li.appendChild(link);
+        auditsEl.appendChild(li);
+      }
+    }
+  }
+}
+
+(function initUserUI() {
+  const link = document.querySelector('[data-user-link]');
+  const modal = document.querySelector('[data-user-modal]');
+  const nickInput = document.querySelector('[data-user-nick-input]');
+  const logoutBtn = document.querySelector('[data-user-logout]');
+
+  if (link && modal && typeof modal.showModal === 'function') {
+    link.addEventListener('click', () => { renderUserModal(); modal.showModal(); });
+  }
+  if (nickInput) {
+    nickInput.addEventListener('change', () => {
+      const u = getUser(); if (!u) return;
+      const v = nickInput.value.trim().slice(0, 40);
+      if (v) { u.nick = v; setUser(u); renderUserLink(); }
+    });
+  }
+  if (logoutBtn && modal) {
+    logoutBtn.addEventListener('click', () => {
+      clearUser(); renderUserLink();
+      if (typeof modal.close === 'function') modal.close();
+    });
+  }
+  renderUserLink();
+})();
 
 function normalizeUrl(raw) {
   const s = String(raw || '').trim();
@@ -619,12 +831,14 @@ async function submitAudit(form) {
     }
 
     if (data.reportToken) {
+      recordAudit({ email, url, token: data.reportToken });
       window.location.href = `${REPORT_HOST}/audit/${encodeURIComponent(data.reportToken)}`;
       return;
     }
 
     // Fallback (cache hit bez tokenu z DB nebo sítě se ztratil ten field) —
     // alespoň ukázat info, že mail přijde.
+    recordAudit({ email, url, token: null });
     btn.textContent = 'Hotovo';
     showError(form, data.message || 'Pracujeme na tom. Výsledek dorazí mailem do 5 minut.');
   } catch (err) {
