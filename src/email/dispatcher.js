@@ -52,7 +52,7 @@ export async function dispatchPendingMail(env) {
         to:      ev.email,
         subject, html, text,
         headers: {
-          'List-Unsubscribe': `<https://${env.PUBLIC_HOST}/odhlasit/${ev.unsub_token}>`,
+          'List-Unsubscribe': `<https://${env.PUBLIC_HOST || 'fakan.cz'}/odhlasit/${ev.unsub_token}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
         },
       }),
