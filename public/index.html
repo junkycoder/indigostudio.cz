@@ -685,11 +685,6 @@ input:focus-visible { outline: none; }
         <p class="form-hint" data-user-audits-empty hidden>Zatím žádný audit. Spusťte první nahoře v formuláři.</p>
       </section>
 
-      <section class="user-section" aria-labelledby="userIntegrationsTitle">
-        <h3 id="userIntegrationsTitle">Integrace</h3>
-        <p class="user-note">Brzy: napojení na Git. Z reportu rovnou pull request s opravami do Vašeho repa. Připravujeme.</p>
-      </section>
-
     </div>
   </form>
 </dialog>
@@ -1315,6 +1310,7 @@ function renderUserLink() {
 function renderAccountStatus() {
   const el = document.querySelector('[data-user-account-status]');
   const form = document.querySelector('[data-magic-form]');
+  const logoutBtn = document.querySelector('[data-user-logout]');
   if (!el || !form) return;
   const verifiedEmail = serverMe && serverMe.account && serverMe.account.emailVerifiedAt
     ? serverMe.account.email : null;
@@ -1322,10 +1318,12 @@ function renderAccountStatus() {
     el.dataset.state = 'verified';
     el.textContent = `Přihlášen jako ${verifiedEmail}. Své audity uvidíte i z jiného zařízení po přihlášení stejným e-mailem.`;
     form.hidden = true;
+    if (logoutBtn) logoutBtn.textContent = 'Odhlásit se';
   } else {
     el.dataset.state = 'unverified';
     el.textContent = 'Profil máte zatím jen v tomhle prohlížeči. Pokud chcete vidět své audity i z jiného zařízení, ověřte si e-mail jednorázovým odkazem.';
     form.hidden = false;
+    if (logoutBtn) logoutBtn.textContent = 'Odhlásit lokálně';
   }
 }
 
@@ -1419,15 +1417,33 @@ function applyUserToForms({ overwrite = false } = {}) {
     });
   }
   if (logoutBtn && modal) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', async () => {
+      const wasVerified = !!(serverMe && serverMe.account && serverMe.account.emailVerifiedAt);
+
+      // Pokud je e-mail ověřený, nestačí smazat localStorage — cookie
+      // 'fakan_device' je navázaná na account a po reloadu by se profil
+      // vrátil. Server endpoint odpojí device od accountu a expiruje cookie.
+      if (wasVerified) {
+        logoutBtn.disabled = true;
+        try {
+          await fetch('/api/account/logout', { method: 'POST', credentials: 'same-origin' });
+        } catch { /* offline / network — pokračujeme s lokálním clearem */ }
+        logoutBtn.disabled = false;
+      }
+
       clearUser();
-      renderUserLink();
       // Po odhlášení smazat hodnoty, které byly prefillnuté ze store —
       // jinak by zůstaly viditelné pod novým návštěvníkem.
       document.querySelectorAll('main form input[name="url"], main form input[name="email"]').forEach((inp) => {
         inp.value = '';
       });
       if (typeof modal.close === 'function') modal.close();
+
+      // Po odhlášení obnovit serverMe (vyrobí se čerstvý anonymní device)
+      // a překreslit profil button + status.
+      serverMe = wasVerified ? await fetchMe() : null;
+      renderUserLink();
+      renderAccountStatus();
     });
   }
 

@@ -3,6 +3,8 @@
 // POST /api/account/start  { email }   — vyrobí magic link a pošle ho mailem.
 // GET  /api/account/verify ?t={token}  — ověří, sváže device s accountem,
 //                                        sjednotí anonymní journeys.
+// POST /api/account/logout              — odpojí current device od accountu
+//                                        a zneplatní cookie. Bez těla.
 //
 // Žádné heslo, žádný registrační formulář. Magic link single-use, TTL 30 min.
 // Při verify použijeme aktuální device (klient může kliknout z jiného browseru).
@@ -106,4 +108,25 @@ export async function handleAccountVerify(request, env, ctx) {
 
 function redirectErr(host, reason) {
   return Response.redirect(`https://${host}/?prihlaseni_chyba=${reason}`, 302);
+}
+
+// Odhlášení: odpojí current device od accountu (account_id = NULL)
+// a expiruje cookie 'fakan_device'. Idempotentní — bez cookie / s neplatnou
+// cookie projde stejně 200 OK. Account row + journeys zůstávají, jen tenhle
+// browser je odpojený. Po /api/me si klient vyrobí čerstvý anonymní device.
+export async function handleAccountLogout(request, env, _ctx) {
+  if (request.method !== 'POST') return json(405, { ok: false, error: 'Method not allowed' });
+
+  const cookieHeader = request.headers.get('Cookie') || '';
+  const m = cookieHeader.match(/(?:^|;\s*)fakan_device=([^;]+)/);
+  const deviceToken = m ? m[1] : null;
+
+  if (deviceToken) {
+    await env.DB.prepare(
+      `UPDATE account_devices SET account_id = NULL WHERE device_token = ?`
+    ).bind(deviceToken).run();
+  }
+
+  const expireCookie = `fakan_device=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+  return json(200, { ok: true }, { 'Set-Cookie': expireCookie });
 }

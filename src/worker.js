@@ -12,7 +12,7 @@ import { handleDomainOrder, handleDomainStatus } from './handlers/domain-order.j
 import { handleStripeWebhook } from './handlers/stripe-webhook.js';
 import { handleOptout }        from './handlers/optout.js';
 import { handleMe }            from './handlers/me.js';
-import { handleAccountStart, handleAccountVerify } from './handlers/account.js';
+import { handleAccountStart, handleAccountVerify, handleAccountLogout } from './handlers/account.js';
 import { processAuditJob }     from './audit/processor.js';
 import { runStrategist }       from './audit/strategist.js';
 import { processSuggestionRender } from './suggestion/render.js';
@@ -74,6 +74,9 @@ export default {
       }
       if (request.method === 'GET'  && path === '/api/account/verify') {
         return handleAccountVerify(request, env, ctx);
+      }
+      if (request.method === 'POST' && path === '/api/account/logout') {
+        return withCors(await handleAccountLogout(request, env, ctx), request);
       }
 
       // Stripe webhook — bez CORS (volá ho Stripe server, ne browser)
