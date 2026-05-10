@@ -30,6 +30,7 @@ export async function handleReport(request, env) {
   const summary = safeParse(audit.json_summary) || {};
   const summaryScores = summary.scores || {};
   const screenshots = summary.screenshots || {};
+  const aiReview = summary.aiReview || null;
 
   // Whitelist polí — NEVRACET lead email, lead_id, error, json_summary, ip, …
   // Frontend si zná token z URL, víc nepotřebuje.
@@ -57,6 +58,9 @@ export async function handleReport(request, env) {
       desktop:         Boolean(screenshots.desktop),
       mobileDark:      Boolean(screenshots.mobileDark),
     },
+    // AI shrnutí — vykání, max 2 věty, vrací jen text (žádné scores_detail
+    // a usage; ty jsou interní).
+    ai_summary: aiReview?.summary || null,
     findings:   findings.results,
     strategist: strategist ? hydrateStrategist(strategist) : null,
   };

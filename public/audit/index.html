@@ -52,6 +52,17 @@
   .score-circle .num small{font-size:18px;color:var(--muted);margin-left:4px}
   .label{font-style:italic;font-size:18px;margin:8px 0 0}
 
+  /* AI SUMMARY */
+  .ai-summary{
+    margin:0 0 48px;padding:24px;background:#fff;border-left:3px solid var(--ink);
+    border-radius:0 6px 6px 0;
+  }
+  .ai-summary h2{
+    font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);
+    margin:0 0 12px;font-weight:normal;
+  }
+  .ai-summary p{font-size:18px;line-height:1.5;margin:0;font-style:italic}
+
   /* BREAKDOWN */
   .breakdown{margin:0 0 48px}
   .breakdown h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 0 16px;font-weight:normal}
@@ -227,7 +238,7 @@ const MAX_POLLS = 60;
       continue;
     }
 
-    return render(payload.audit, payload.findings, payload.strategist, payload.screenshots || {});
+    return render(payload.audit, payload.findings, payload.strategist, payload.screenshots || {}, payload.ai_summary);
   }
   showMissing();
 })();
@@ -248,7 +259,7 @@ function renderRunning(audit) {
     </div>`;
 }
 
-function render(audit, findings, strat, shots) {
+function render(audit, findings, strat, shots, aiSummary) {
   const score = audit.score ?? 0;
   const label = scoreLabel(score);
 
@@ -293,6 +304,12 @@ function render(audit, findings, strat, shots) {
       </div>
       <p class="label">${esc(label)}</p>
     </section>
+
+    ${aiSummary ? `
+    <section class="ai-summary">
+      <h2>Co o webu říká AI</h2>
+      <p>${esc(aiSummary)}</p>
+    </section>` : ''}
 
     <section class="breakdown">
       <h2>Rozpis kategorií</h2>
