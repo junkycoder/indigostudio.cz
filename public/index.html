@@ -40,6 +40,78 @@
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Co všechno mi řekne audit zdarma?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Projedeme váš web jako návštěvník i jako stroj. Najdeme, co zpomaluje načtení, co odrazuje od poptávky, a co nesplňuje evropský zákon o přístupnosti webů (EAA), který platí i pro malé firmy v Česku. Report a tři varianty řešení dorazí mailem do pěti minut. Bez registrace, bez háčků, bez nečekaných hovorů."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kolik bude stát nový web nebo oprava starého?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cena záleží na rozsahu. Po odeslání poptávky vám do dvou pracovních dnů přijde nezávazná nabídka s pevnou cenou a termínem. Žádné hodinové sazby, žádné vícepráce v průběhu."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co když budu chtít po čase odejít k jinému provideru?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dostanete celý web v ZIPu kdykoli a zdarma. Žádné výpovědní lhůty, žádné výkupné. Doménu si odvezete také — patří vám, ne nám."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Funguje to i pro úplně malou firmu? Třeba kadeřnictví, řemeslníka, restauraci?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Většina našich klientů jsou živnostníci a malé firmy do deseti lidí. Vizitkové weby, restaurační menu, prezentace služeb. Velké e-shopy s tisíci produktů neděláme."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Splňuje váš web zákon o přístupnosti pro slabozraké (EAA)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ano. Od poloviny roku 2025 musí každý komerční web v EU splňovat evropský zákon o přístupnosti. Naše weby ho splňují automaticky — přečte je hlasový čtenář, ovládají se klávesnicí, kontrasty a velikosti písma sedí."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Můžu si nechat svůj stávající hosting a chtít jen audit nebo opravu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ano. Audit je úplně zdarma a nezávislý — výstup si můžete vzít a použít kdekoli. Opravu i nový web rádi dodáme bez toho, abyste přecházeli s hostingem k nám."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak rychle bude web hotový?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Termín dostanete v nabídce a držíme ho. Menší vizitkové weby zhruba do tří týdnů od potvrzení, větší podle rozsahu."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Komu vlastně platím? Kdo to dělá?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Indigo Studio s.r.o., IČO 14389096, se sídlem v Praze. Stojí za tím Daniel Hromada — drží web, kód, hosting i kontakt s vámi v jedné ruce."
+      }
+    }
+  ]
+}
+</script>
 <style>
 :root {
   --bg: #F9F6F0;
@@ -93,7 +165,12 @@ p { margin: 0 0 1em; }
 header {
   border-bottom: 1px solid var(--line);
   background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
+/* Kotvy v navigaci nesmí podjet pod sticky header. */
+main section[id] { scroll-margin-top: 80px; }
 .header-inner { display: flex; align-items: center; justify-content: space-between; padding-top: 18px; padding-bottom: 18px; gap: 16px; }
 .brand { font-weight: bold; font-size: 18px; text-decoration: none; color: var(--ink); }
 .brand:hover { color: var(--accent); }
@@ -403,6 +480,8 @@ section { padding: clamp(56px, 7vw, 88px) 0; border-bottom: 1px solid var(--line
 .cta-banner .btn-cta { width: 100%; }
 .cta-banner .cta-foot { text-align: center; margin-top: 20px; font-size: 14px; color: color-mix(in srgb, var(--bg) 75%, var(--ink)); }
 .cta-banner .cta-foot a { color: var(--bg); }
+.cta-banner .cta-actions { text-align: center; margin: 0; }
+.cta-banner a.btn-cta { display: inline-block; width: auto; text-decoration: none; line-height: 1.3; padding: 14px 28px; }
 
 /* Stripe Payment Element — sekce co se objeví po odeslání suggestion formy */
 .suggestion-payment {
@@ -474,6 +553,34 @@ section { padding: clamp(56px, 7vw, 88px) 0; border-bottom: 1px solid var(--line
   .domain-action { grid-column: 1 / -1; justify-self: start; }
 }
 
+/* FAQ — accordion z nativního <details>, klíčová slova + obavy */
+.faq { display: grid; gap: 12px; max-width: 760px; margin: 0 auto; }
+.faq details {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 22px;
+  transition: border-color 0.15s;
+}
+.faq details[open] { border-color: var(--accent); }
+.faq summary {
+  font-weight: bold; font-size: 17px;
+  padding: 18px 0; cursor: pointer; list-style: none;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+"; flex: 0 0 auto;
+  font-size: 22px; line-height: 1; color: var(--muted);
+}
+.faq details[open] summary::after { content: "−"; color: var(--accent); }
+.faq details > p {
+  margin: 0 0 18px;
+  color: color-mix(in srgb, var(--ink) 82%, var(--bg));
+  line-height: 1.65;
+}
+@media (prefers-reduced-motion: reduce) { .faq details { transition: none; } }
+
 /* Footer */
 footer { padding: 40px 0 56px; color: var(--muted); font-size: 14px; }
 footer a { color: var(--muted); text-decoration: none; }
@@ -508,9 +615,9 @@ input:focus-visible { outline: none; }
     <span class="header-claim">Když web, jedině od Fakana.</span>
     <nav class="header-nav" aria-label="Sekce stránky">
       <a href="#audit">Audit</a>
-      <a href="#navrhy">Návrhy</a>
-      <a href="#domena">Doména</a>
+      <a href="#co-delame">Co děláme</a>
       <a href="#hosting">Hosting</a>
+      <a href="#faq">FAQ</a>
     </nav>
     <button class="user-link unverified" type="button" data-user-link aria-haspopup="dialog" hidden>
       <span data-user-nick>Můj profil</span>
@@ -657,7 +764,7 @@ input:focus-visible { outline: none; }
 </section>
 
 <!-- CO DĚLÁME -->
-<section>
+<section id="co-delame">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Co děláme</span>
@@ -714,8 +821,8 @@ input:focus-visible { outline: none; }
   </div>
 </section>
 
-<!-- RYCHLÉ NÁVRHY -->
-<section id="navrhy">
+<!-- RYCHLÉ NÁVRHY — dočasně schováno (zjednodušená nabídka, jen audit + paušál). Obnovit smazáním atributu hidden. -->
+<section id="navrhy" hidden>
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Rychlé návrhy úprav</span>
@@ -836,7 +943,7 @@ input:focus-visible { outline: none; }
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Hosting</span>
-      <h2>Když Vám web bude hotový, postaráme se i o jeho provoz.</h2>
+      <h2>Když Váš web bude hotový, postaráme se i o jeho provoz.</h2>
       <p>Vlastní doména, šifrované spojení, denní záloha. Když budete chtít odejít, dostanete celý web v ZIPu — bez doplatků, bez výmluv.</p>
     </div>
 
@@ -875,8 +982,21 @@ input:focus-visible { outline: none; }
   </div>
 </section>
 
-<!-- NOVÁ DOMÉNA -->
-<section id="domena">
+<!-- POPTÁVKA POD PAUŠÁLEM — mail CTA, akviziční vstup pro klienty, kteří chtějí paušál nebo nový web -->
+<section>
+  <div class="wrap">
+    <div class="cta-banner">
+      <h2>Líbí se Vám paušál? Napište nám.</h2>
+      <p>Hosting, oprava starého webu, nebo nový web na míru — pošlete krátkou poptávku a do dvou pracovních dnů Vám odpovíme s návrhem řešení a cenou.</p>
+      <p class="cta-actions">
+        <a class="btn-cta" href="mailto:jsem@fakan.cz?subject=Popt%C3%A1vka%20%E2%80%93%20fakan.cz">Napsat na jsem@fakan.cz →</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- NOVÁ DOMÉNA — dočasně schováno (zjednodušená nabídka). Obnovit smazáním hidden. -->
+<section id="domena" hidden>
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Nová doména</span>
@@ -911,8 +1031,8 @@ input:focus-visible { outline: none; }
   </div>
 </section>
 
-<!-- PŘEVOD DOMÉNY -->
-<section id="prevod">
+<!-- PŘEVOD DOMÉNY — dočasně schováno (zjednodušená nabídka). Obnovit smazáním hidden. -->
+<section id="prevod" hidden>
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Převod domény</span>
@@ -955,6 +1075,59 @@ input:focus-visible { outline: none; }
       <p class="form-error" data-form-error role="alert"></p>
       <p class="form-hint">Cena převodu zahrnuje prodloužení o jeden rok. Platba kartou, Apple Pay nebo Google Pay.</p>
     </form>
+  </div>
+</section>
+
+<!-- FAQ — odpovědi na nejčastější obavy + klíčová slova pro vyhledávače (audit webu zdarma, cena nový web malá firma, EAA přístupnost, hosting) -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Časté otázky</span>
+      <h2>Na co se ptáte nejčastěji.</h2>
+      <p>Pokud Vám něco chybí, napište na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>. Odpovíme do dvou pracovních dnů.</p>
+    </div>
+
+    <div class="faq">
+      <details>
+        <summary>Co všechno mi řekne audit zdarma?</summary>
+        <p>Projedeme Váš web jako návštěvník i jako stroj. Najdeme, co zpomaluje načtení, co odrazuje od poptávky, a co nesplňuje <a href="/zakon-pristupnost">evropský zákon o přístupnosti webů (EAA)</a>, který platí i pro malé firmy v Česku. Report a tři varianty řešení dorazí mailem do pěti minut. Bez registrace, bez háčků, bez nečekaných hovorů.</p>
+      </details>
+
+      <details>
+        <summary>Kolik bude stát nový web nebo oprava starého?</summary>
+        <p>Cena záleží na rozsahu. Po odeslání poptávky Vám do dvou pracovních dnů přijde nezávazná nabídka s pevnou cenou a termínem. Žádné hodinové sazby, žádné vícepráce v průběhu. Když řekneme částku, platí.</p>
+      </details>
+
+      <details>
+        <summary>Co když budu chtít po čase odejít k jinému provideru?</summary>
+        <p>Dostanete celý web v ZIPu kdykoli a zdarma. Žádné výpovědní lhůty, žádné výkupné. Doménu si odvezete také — patří Vám, ne nám. Vázanost je proti naší filozofii.</p>
+      </details>
+
+      <details>
+        <summary>Funguje to i pro úplně malou firmu? Třeba kadeřnictví, řemeslníka, restauraci?</summary>
+        <p>Většina našich klientů jsou živnostníci a malé firmy do deseti lidí. Vizitkové weby, restaurační menu, prezentace služeb. Velké e-shopy s tisíci produktů neděláme — ty patří jinam.</p>
+      </details>
+
+      <details>
+        <summary>Splňuje Váš web zákon o přístupnosti pro slabozraké (EAA)?</summary>
+        <p>Ano. Od poloviny roku 2025 musí každý komerční web v Evropské unii splňovat evropský zákon o přístupnosti. Týká se to i malých firem v Česku. Naše weby ho splňují automaticky — přečte je hlasový čtenář, ovládají se klávesnicí, kontrasty a velikosti písma sedí.</p>
+      </details>
+
+      <details>
+        <summary>Můžu si nechat svůj stávající hosting a chtít od Vás jen audit nebo opravu?</summary>
+        <p>Ano. Audit je úplně zdarma a nezávislý — výstup si můžete vzít a použít kdekoli. Opravu i nový web rádi dodáme bez toho, abyste museli přejít s hostingem k nám. Hosting u nás je nabídka, ne podmínka.</p>
+      </details>
+
+      <details>
+        <summary>Jak rychle bude web hotový?</summary>
+        <p>Termín dostanete v nabídce a držíme ho. Menší vizitkové weby zhruba do tří týdnů od potvrzení, větší podle rozsahu. Když řekneme do tří týdnů, znamená to do tří týdnů.</p>
+      </details>
+
+      <details>
+        <summary>Komu vlastně platím? Kdo to dělá?</summary>
+        <p>Indigo Studio s.r.o., IČO 14389096, se sídlem v Praze. Stojí za tím Daniel Hromada — drží web, kód, hosting i kontakt s Vámi v jedné ruce. Žádný outsourcing do zahraničí, žádné šablony stažené z internetu.</p>
+      </details>
+    </div>
   </div>
 </section>
 
@@ -1023,6 +1196,10 @@ input:focus-visible { outline: none; }
         <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>
         <span aria-hidden="true">&middot;</span>
         <a href="tel:+420604690539">+420 604 690 539</a>
+        <span aria-hidden="true">&middot;</span>
+        <a href="/zakon-pristupnost">Zákon o přístupnosti (EAA)</a>
+        <span aria-hidden="true">&middot;</span>
+        <a href="/web-bez-cookies">Web bez cookies</a>
         <span aria-hidden="true">&middot;</span>
         <a href="/ochrana-udaju">Zásady ochrany osobních údajů</a>
       </span>
