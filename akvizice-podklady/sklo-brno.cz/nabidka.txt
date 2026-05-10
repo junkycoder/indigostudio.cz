@@ -1,35 +1,62 @@
-====================================================
-NABÍDKA MODERNIZACE WEBU
-====================================================
-Firma: Sklenářství Brno – Brno
-Web: https://www.sklo-brno.cz
+PŘEDMĚT E-MAILU:
+Bezplatný audit webu sklo-brno.cz — fakan.cz
 
-POPIS:
-Rodinné sklenářství s tradicí od roku 1972. NON-STOP servis. Zasklívání oken a dveří, výroba akvárií, zrcadel a izolačních skel.
+----------------------------------------------------
 
-PROBLÉMY (6):
-❌ Copyright © 2008 – web nebyl aktualizován 17+ let
-❌ Tabulkový HTML layout – nefunkční na mobilních zařízeních
-❌ Oranžové a zelené ikony ve stylu Windows XP
-❌ Patička doporučuje nesouvisející firmy (tonery, účetnictví)
-❌ Žádný online kontaktní formulář
-❌ Žádné fotografie reálných prací
-
-NABÍDKOVÝ DOPIS:
 Vážení,
 
-Vaše sklenářství funguje od roku 1972 – ale web zůstal v roce 2008.
+prošel jsem si Vaše stránky www.sklo-brno.cz. Sklenářství od
+roku 1972 je tradice, ze které těžíte právem. Web ji ale dnes
+neukazuje.
 
-CO ZAŘÍDÍME:
-• Moderní web plně fungující na mobilech
-• Fotogalerie skutečných prací
-• Online poptávkový formulář 24/7
-• SEO optimalizace pro Google
+Tři konkrétní věci:
 
-CENA: od 12 990 Kč bez DPH | TERMÍN: 2–3 týdny
+1. Stránky nemají mobilní verzi. Na telefonu vidí zákazník
+   zmenšenou stránku, kterou musí prsty zvětšovat. Většina
+   ji rovnou zavře. Přitom víc než polovina poptávek dnes
+   přichází z mobilu.
 
-S pozdravem, [Vaše jméno / agentura]
+2. V patičce stojí „© 2008". Zákazník si všimne, že stránku
+   sedmnáct let nikdo nedotkl, a začne pochybovat, jestli
+   firma ještě funguje.
 
-====================================================
-6. 5. 2026
-====================================================
+3. Web nemá poptávkový formulář. Když má někdo o víkendu
+   rozbité okno, nemůže nic poslat — musí čekat na ranní
+   hovor.
+
+Provozuji bezplatnou službu fakan.cz. Zadáte adresu Vašich
+stránek a do pěti minut dostanete mailem detailní rozbor —
+co přesně opravit a v jakém pořadí. Bez registrace, bez
+závazků.
+
+Když Vás výsledky budou zajímat, postaráme se i o nový web.
+Pevná cena, jasný termín. Hosting od 99 Kč měsíčně. Pokud
+byste si web vzali jinam, dostanete ho v ZIPu — bez doplatků.
+
+Stačí navštívit fakan.cz nebo odpovědět na tento mail.
+
+S pozdravem,
+Fakan
+Indigo Studio s.r.o.
+IČO 14389096
+fakan.cz
+
+----------------------------------------------------
+INTERNÍ POZNÁMKY (neposílat klientovi)
+Aktualizováno 10. 5. 2026
+
+POPIS FIRMY:
+Rodinné sklenářství s tradicí od roku 1972. NON-STOP servis.
+Zasklívání oken a dveří, výroba akvárií, zrcadel a izolačních
+skel.
+
+ZJIŠTĚNÍ K 10. 5. 2026:
+- HTTPS funguje.
+- Žádný viewport meta — opravdu nemobilní web. Potvrzeno.
+- Copyright © 2008 v patičce drží.
+- 0 forms (potvrzeno: žádný kontaktní formulář).
+- Tabulkový HTML layout.
+- Server: Apache.
+
+ZMĚNY OD 6. 5. 2026:
+- Beze změn. Body z původní nabídky drží.

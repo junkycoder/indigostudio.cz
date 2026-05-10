@@ -1,35 +1,62 @@
-====================================================
-NABÍDKA MODERNIZACE WEBU
-====================================================
-Firma: Hotel Malý Pivovar – Třeboň
-Web: https://www.hotelmalypivovar.cz
+PŘEDMĚT E-MAILU:
+Bezplatný audit webu hotelmalypivovar.cz — fakan.cz
 
-POPIS:
-Historický hotel v Třeboni s vlastním minipivovarem, restauracemi, konferenčními prostory a relaxačním centrem.
+----------------------------------------------------
 
-PROBLÉMY (6):
-❌ URL obsahuje /index.php/cz/ – zastaralá PHP architektura
-❌ Rigidní layout bez mobilní optimalizace
-❌ Navigace bez loga
-❌ Chybí online rezervační systém
-❌ Fotografie jsou malé a nekvalitní
-❌ Chybí propojení s Booking.com a TripAdvisorem
-
-NABÍDKOVÝ DOPIS:
 Vážení,
 
-Hotel Malý Pivovar je unikátní místo – web ale turistům atmosféru nedokáže přiblížit.
+prošel jsem si Vaše stránky www.hotelmalypivovar.cz. Hotel
+s vlastním minipivovarem v Třeboni — místo, které si zaslouží
+lepší prezentaci, než je dnešní web.
 
-CO ZAŘÍDÍME:
-• Hotelový web s fullscreen fotografiemi
-• Přímý online rezervační systém
-• Galerie pivovaru, restaurace a pokojů
-• Sekce pro konference a svatby
+Tři věci, které stojí za pozornost:
 
-CENA: od 24 990 Kč bez DPH | TERMÍN: 4 týdny
+1. Adresa Vašeho webu obsahuje „/index.php/cz/". Je to
+   technický pozůstatek staré platformy. Google to penalizuje
+   a hosté si toho v adresním řádku všímají.
 
-S pozdravem, [Vaše jméno / agentura]
+2. Patička je z roku 2017. Hosté dnes vybírají hotel podle
+   fotek a recenzí. Statický web devět let starý jim atmosféru
+   neukáže.
 
-====================================================
-6. 5. 2026
-====================================================
+3. Bez přímého online rezervačního systému. Host musí psát
+   mail a čekat. Konkurence rezervaci řeší jedním kliknutím
+   a často to zvládne i v noci.
+
+Provozuji bezplatnou službu fakan.cz. Zadáte adresu Vašich
+stránek a do pěti minut dostanete mailem detailní rozbor —
+co přesně opravit a v jakém pořadí. Bez registrace, bez
+závazků.
+
+Když Vás výsledky budou zajímat, postaráme se i o nový web.
+Pevná cena, jasný termín. Hosting od 99 Kč měsíčně. Pokud
+byste si web vzali jinam, dostanete ho v ZIPu — bez doplatků.
+
+Stačí navštívit fakan.cz nebo odpovědět na tento mail.
+
+S pozdravem,
+Fakan
+Indigo Studio s.r.o.
+IČO 14389096
+fakan.cz
+
+----------------------------------------------------
+INTERNÍ POZNÁMKY (neposílat klientovi)
+Aktualizováno 10. 5. 2026
+
+POPIS FIRMY:
+Historický hotel v Třeboni s vlastním minipivovarem,
+restauracemi, konferenčními prostory a relaxačním centrem.
+
+ZJIŠTĚNÍ K 10. 5. 2026:
+- HTTPS funguje.
+- Joomla CMS, URL stále s /index.php/cz/.
+- Copyright © 2017 v patičce. Pozn.: copyright zmiňuje
+  i „Turnov | Mladá Boleslav" — vypadá jako kopie cizí
+  šablony, hotel je v Třeboni. V dopisu nezmiňuju.
+- Bez online rezervačního systému (jen mail/telefon).
+- Apache server, P3P hlavička (zastaralá).
+- 1 form (asi vyhledávání nebo jednoduchý kontakt).
+
+ZMĚNY OD 6. 5. 2026:
+- Beze změn. Body z původní nabídky drží.

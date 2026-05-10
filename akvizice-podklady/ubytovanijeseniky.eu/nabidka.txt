@@ -1,36 +1,77 @@
-====================================================
-NABÍDKA MODERNIZACE WEBU
-====================================================
-Firma: Penzion U Rodinky – Domašov (Jeseníky)
-Web: https://www.ubytovanijeseniky.eu
+PŘEDMĚT E-MAILU:
+Česká doména a bezplatný audit — fakan.cz
 
-POPIS:
-Rodinný penzion v Jeseníkách pro lyžaře, cyklisty a rekreanty. V blízkosti Pradědu.
+----------------------------------------------------
 
-PROBLÉMY (6):
-❌ Web na doméně .eu – zákazníci důvěřují více .cz
-❌ Šablonový design bez vizuální identity
-❌ Fotografie pokojů malé a málo reprezentativní
-❌ Chybí přímý online rezervační systém
-❌ Ceník bez ověření dostupnosti termínů
-❌ Žádné zákaznické recenze na webu
-
-NABÍDKOVÝ DOPIS:
 Vážení,
 
-Penzion v Jeseníkách – skvělá poloha, ale zákazníci dnes vybírají online.
+prošel jsem si Vaše stránky www.ubytovanijeseniky.eu. Penzion
+u Pradědu — místo, na které lidé hledají dovolenou. Hledají ho
+ale jinde, než kde Vás teď najdou.
 
-CO ZAŘÍDÍME:
-• Atraktivní fotografický web
-• Rezervační kalendář s dostupností
-• Přehledný ceník
-• Tipy na výlety v okolí
-• Nová .cz doména
+Tři konkrétní věci:
 
-CENA: od 14 990 Kč bez DPH | TERMÍN: 3 týdny
+1. Penzion v Jeseníkách máte na adrese .eu. Čeští turisté
+   důvěřují adresám .cz a podle nich hledají na Googlu. Adresa
+   .eu Vám návštěvnost ubírá.
 
-S pozdravem, [Vaše jméno / agentura]
+2. Bez online rezervačního systému s dostupností. Host musí
+   mailem nebo SMS ptát, jestli máte volno, pak ještě čekat
+   na odpověď. Konkurence (Booking) to řeší jedním kliknutím
+   a host často neváhá ani v noci.
 
-====================================================
-6. 5. 2026
-====================================================
+3. Fotky pokojů jsou malé. Host, který si penzion vybírá podle
+   fotek, jich potřebuje víc — a větších. Bez nich přejde na
+   další nabídku.
+
+Co s tím:
+
+Provozuji službu fakan.cz. Pro penzion má dvě věci, které
+spolu zapadají:
+
+  · Vlastní českou doménu — třeba penzion-rodinky.cz —
+    Vám zaregistrujeme za 299 Kč ročně. Z původní adresy
+    přesměrujeme staré odkazy, abyste neztratili návštěvníky.
+
+  · Bezplatný audit Vašich stávajících stránek. Zadáte adresu
+    na fakan.cz a do pěti minut máte v mailu detailní rozbor.
+
+Když Vás zaujme i nový web s rezervačním kalendářem, postaráme
+se o něj. Pevná cena, jasný termín. Hosting od 99 Kč měsíčně.
+Pokud byste si web vzali jinam, dostanete ho v ZIPu — bez
+doplatků.
+
+Stačí navštívit fakan.cz nebo odpovědět na tento mail.
+
+S pozdravem,
+Fakan
+Indigo Studio s.r.o.
+IČO 14389096
+fakan.cz
+
+----------------------------------------------------
+INTERNÍ POZNÁMKY (neposílat klientovi)
+Aktualizováno 10. 5. 2026
+
+POPIS FIRMY:
+Rodinný penzion v Jeseníkách (Domašov) pro lyžaře, cyklisty
+a rekreanty. V blízkosti Pradědu.
+
+ZJIŠTĚNÍ K 10. 5. 2026:
+- HTTPS funguje, server Apache.
+- CMS „Noteo Engine" (zřejmě český CMS).
+- Title: „Ubytování Jeseníky - Penzion u Rodinky" — OK.
+- Copyright © 2015-2026 — drží.
+- 1 form (kontaktní).
+- Doména .eu — pro českou klientelu suboptimální.
+
+NABÍDKA DOMÉNY:
+- .cz registrace přes fakan.cz: 299 Kč/rok.
+- Návrh fqdn: penzion-rodinky.cz nebo penzionurodinky.cz
+  (ověřit avail přes /api/domain/check).
+- Hosting Standard (249 Kč/měs) by se hodil — víc obsahu,
+  až 3 domény (drží i původní .eu jako redirect).
+
+ZMĚNY OD 6. 5. 2026:
+- Beze změn. Body z původní nabídky drží.
+- Posíleno o konkrétní cenu .cz domény (299 Kč/rok).
