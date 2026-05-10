@@ -100,7 +100,18 @@ header {
 .header-claim { font-size: 13px; color: var(--muted); font-style: italic; margin-right: auto; margin-left: 16px; }
 @media (max-width: 600px) { .header-claim { display: none; } }
 
-/* User link — vždy viditelný. Vykřičník = profil ještě neověřený e-mailem */
+/* Sekční navigace v headeru — kotvy na hlavní bloky landing page */
+.header-nav { display: flex; gap: 18px; font-size: 14px; align-items: center; }
+.header-nav a {
+  color: var(--ink); text-decoration: none; padding: 6px 2px;
+  border-bottom: 1px solid transparent; white-space: nowrap;
+}
+.header-nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+@media (max-width: 860px) { .header-nav { gap: 12px; font-size: 13px; } }
+@media (max-width: 600px) { .header-nav { display: none; } }
+
+/* User link — viditelný až user něco má (audit historie / ověřený login / email v profilu).
+   Vykřičník = profil ještě neověřený e-mailem (jen lokální device). */
 .user-link {
   font: inherit; font-size: 14px;
   background: transparent; color: var(--ink);
@@ -495,7 +506,13 @@ input:focus-visible { outline: none; }
   <div class="wrap header-inner">
     <a class="brand" href="/" aria-label="fakan.cz — domů">fakan.cz</a>
     <span class="header-claim">Když web, jedině od Fakana.</span>
-    <button class="user-link unverified" type="button" data-user-link aria-haspopup="dialog">
+    <nav class="header-nav" aria-label="Sekce stránky">
+      <a href="#audit">Audit</a>
+      <a href="#navrhy">Návrhy</a>
+      <a href="#domena">Doména</a>
+      <a href="#hosting">Hosting</a>
+    </nav>
+    <button class="user-link unverified" type="button" data-user-link aria-haspopup="dialog" hidden>
       <span data-user-nick>Můj profil</span>
     </button>
   </div>
@@ -568,7 +585,7 @@ input:focus-visible { outline: none; }
 <main id="obsah">
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="audit">
   <div class="wrap">
     <span class="eyebrow">Bezplatný audit webu</span>
     <h1>Váš web. Bez&nbsp;starostí.</h1>
@@ -815,7 +832,7 @@ input:focus-visible { outline: none; }
 </section>
 
 <!-- HOSTING -->
-<section>
+<section id="hosting">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Hosting</span>
@@ -1083,6 +1100,19 @@ async function fetchMe() {
   } catch { return null; }
 }
 
+// Profil button má smysl až když user něco má. Bez auditu, bez emailu, bez
+// verified accountu by modal nabízel jen prázdný profil + magic link sekci —
+// to je cold visitor noise. Skrýt dokud není čím se chlubit.
+function userHasProfile() {
+  if (serverMe && serverMe.account && serverMe.account.emailVerifiedAt) return true;
+  const u = getUser();
+  if (!u) return false;
+  if (u.email) return true;
+  if (u.audits && u.audits.length > 0) return true;
+  if (u.lastUrl) return true;
+  return false;
+}
+
 function renderUserLink() {
   const link = document.querySelector('[data-user-link]');
   const nickEl = document.querySelector('[data-user-nick]');
@@ -1090,10 +1120,10 @@ function renderUserLink() {
   const verifiedEmail = serverMe && serverMe.account && serverMe.account.emailVerifiedAt
     ? serverMe.account.email : null;
 
-  // Profil button je vždy viditelný. Text natvrdo "Můj profil" — neukazujeme
-  // email v hlavičce (privacy na sdílených zařízeních).
+  // Text natvrdo "Můj profil" — neukazujeme email v hlavičce (privacy na
+  // sdílených zařízeních).
   nickEl.textContent = 'Můj profil';
-  link.hidden = false;
+  link.hidden = !userHasProfile();
 
   // Vykřičník: pokud nemáme ověřený account, profil přístup jen z tohoto prohlížeče.
   if (verifiedEmail) link.classList.remove('unverified');
