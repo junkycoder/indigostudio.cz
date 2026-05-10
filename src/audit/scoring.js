@@ -7,13 +7,14 @@
 // Kategorie `content` (Fáze B) bude AI hodnocení obsahu a estetiky.
 
 const WEIGHTS = {
-  perf:   22,
-  a11y:   22,
-  visual: 15,
-  cookie: 12,
-  seo:    12,
-  sec:    12,
-  cms:     5,
+  perf:    18,
+  a11y:    18,
+  visual:  14,
+  content: 14,
+  cookie:  10,
+  seo:     10,
+  sec:     11,
+  cms:      5,
 };  // sum = 100
 
 const SEVERITY_PENALTY = {
@@ -26,7 +27,8 @@ const SEVERITY_PENALTY = {
 
 export function score(findings, ctx) {
   const sub = {
-    perf: 100, a11y: 100, visual: 100, cookie: 100, seo: 100, sec: 100, cms: 100,
+    perf: 100, a11y: 100, visual: 100, content: 100,
+    cookie: 100, seo: 100, sec: 100, cms: 100,
   };
 
   for (const f of findings) {
@@ -47,14 +49,15 @@ export function score(findings, ctx) {
 
   return {
     total,
-    perf:   sub.perf,
-    a11y:   sub.a11y,
-    visual: sub.visual,
-    seo:    sub.seo,
-    cookie: sub.cookie,
-    sec:    sub.sec,
-    cms:    sub.cms,
-    label:  scoreLabel(total),
+    perf:    sub.perf,
+    a11y:    sub.a11y,
+    visual:  sub.visual,
+    content: sub.content,
+    seo:     sub.seo,
+    cookie:  sub.cookie,
+    sec:     sub.sec,
+    cms:     sub.cms,
+    label:   scoreLabel(total),
   };
 }
 

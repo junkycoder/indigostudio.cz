@@ -8,6 +8,7 @@ import { checkHeaders }     from './checks/headers.js';
 import { detectCms }        from './checks/cms.js';
 import { checkSeo }         from './checks/seo.js';
 import { runVisualChecks }  from './checks/visual.js';
+import { runAiReview }      from './checks/ai-review.js';
 import { score }            from './scoring.js';
 
 export async function processAuditJob(job, env, ctx) {
@@ -21,6 +22,7 @@ export async function processAuditJob(job, env, ctx) {
   const findings = [];
   let perfData = {}, cookieData = {}, headerData = {}, cmsData = {}, seoData = {};
   let visualData = { screenshots: {}, metrics: {} };
+  let aiData = { findings: [], scores: {}, summary: null };
   let browser, errMsg = null;
 
   try {
@@ -79,6 +81,27 @@ export async function processAuditJob(job, env, ctx) {
       visualData = { screenshots: {}, metrics: { error: vErr.message?.slice(0, 200) } };
     }
 
+    // AI hodnocení vizuálu a obsahu (Claude Sonnet 4.5 Vision).
+    // Synchronně před score, abychom měli content_score v mailu #1.
+    // Selhání nesmí shodit audit — fallback je prázdné AI findings.
+    try {
+      const lead = await env.DB.prepare(
+        `SELECT segment FROM leads WHERE id = ? LIMIT 1`,
+      ).bind(leadId).first();
+
+      aiData = await runAiReview(page, visualData.screenshots, env, {
+        domain,
+        url,
+        cms: cmsData?.cms,
+        segment: lead?.segment || 'unknown',
+        techScores: { perf: perfData.fcp, a11y: null },  // skutečné scores ještě nepočítané
+      });
+      findings.push(...(aiData.findings || []));
+    } catch (aiErr) {
+      console.warn(`audit ${auditId}: ai review failed: ${aiErr.message}`);
+      aiData = { findings: [], scores: {}, summary: null, error: aiErr.message?.slice(0, 200) };
+    }
+
     headerData = await checkHeaders(url);
 
     findings.push(...buildFindings({ perfData, cookieData, headerData, cmsData, seoData }));
@@ -115,6 +138,14 @@ export async function processAuditJob(job, env, ctx) {
       perfData, cookieData, headerData, cmsData, seoData,
       visualMetrics: visualData.metrics,
       screenshots: visualData.screenshots,
+      aiReview: {
+        summary:        aiData.summary || null,
+        visual_ai:      aiData.scores?.visual_ai ?? null,
+        content_ai:     aiData.scores?.content   ?? null,
+        scores_detail:  aiData.scores?.detail    || {},
+        usage:          aiData.usage             || null,
+        error:          aiData.error             || null,
+      },
       scores,
     }),
     now, auditId,
