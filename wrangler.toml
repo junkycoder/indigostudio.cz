@@ -86,7 +86,7 @@ crons = ["*/15 * * * *"]   # každých 15 min — vyhodnotit naplánované maily
 [vars]
 # Stripe publishable key — pošle ho frontend k Payment Elementu. Není citlivý
 # (sám Stripe ho čeká v JS bundlu klienta). Pro dev override .dev.vars.
-STRIPE_PUBLISHABLE_KEY = ""   # Fakan vyplní 'pk_live_…' (test 'pk_test_…')
+STRIPE_PUBLISHABLE_KEY = "pk_test_51TVBCXL1rnp3BMhw3l80YGl6bLD8RGAtm9kcqUQ5qD6fBgbrn7ktLGrr2EecQktpuvfe5ufxb8nKT6xKYHO4Ln8l00Aw8FlKjG"   # Fakan vyplní 'pk_live_…' (test 'pk_test_…')
 
 # ----- Tajemství (wrangler secret put …) -----
 # RESEND_API_KEY
