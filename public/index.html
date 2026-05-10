@@ -505,17 +505,12 @@ input:focus-visible { outline: none; }
   <form class="user-modal-form" method="dialog">
     <div class="user-modal-head">
       <h2 id="userModalTitle">Můj fakan</h2>
-      <button class="user-modal-close" type="submit" value="close" aria-label="Zavřít">×</button>
+      <button class="user-modal-close" type="submit" value="close" formnovalidate aria-label="Zavřít">×</button>
     </div>
     <div class="user-modal-body">
 
       <section class="user-section" aria-labelledby="userProfileTitle">
         <h3 id="userProfileTitle">Profil</h3>
-        <div class="user-row">
-          <label for="userNickInput">Přezdívka</label>
-          <input type="text" id="userNickInput" data-user-nick-input maxlength="40" autocomplete="off">
-          <p class="form-hint">Vygenerovali jsme Vám jednu vtipnou. Klidně si ji upravte.</p>
-        </div>
         <div class="user-row">
           <label for="userEmailInput">E-mail</label>
           <input type="email" id="userEmailInput" data-user-email-input autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false">
@@ -1024,15 +1019,6 @@ input:focus-visible { outline: none; }
 const API = '/api/audit';
 const USER_KEY = 'fakanUser';
 
-const NICK_ADJ = ['Hbitý', 'Mazaný', 'Statečný', 'Důmyslný', 'Vychytralý', 'Tichý', 'Drzý', 'Bdělý', 'Zamlklý', 'Pracovitý', 'Skromný', 'Nadšený', 'Zamyšlený', 'Klidný', 'Kurážný', 'Lstivý', 'Zarytý', 'Pichlavý'];
-const NICK_NOUN = ['Liška', 'Jezevec', 'Sojka', 'Sokol', 'Kuna', 'Vydra', 'Tchoř', 'Veverka', 'Datel', 'Sysel', 'Hraboš', 'Krokýš', 'Rys', 'Kojot', 'Bobr', 'Ježek', 'Krtek', 'Sova'];
-
-function generateNick() {
-  const a = NICK_ADJ[Math.floor(Math.random() * NICK_ADJ.length)];
-  const n = NICK_NOUN[Math.floor(Math.random() * NICK_NOUN.length)];
-  return a + ' ' + n;
-}
-
 function getUser() {
   try { const raw = localStorage.getItem(USER_KEY); return raw ? JSON.parse(raw) : null; }
   catch { return null; }
@@ -1063,13 +1049,13 @@ function emitUserChange() {
   document.dispatchEvent(new CustomEvent('fakan:user-changed'));
 }
 
-// Sjednocený zápis profilu — drží email, nick, lastUrl, historie auditů.
+// Sjednocený zápis profilu — drží email, lastUrl, historie auditů.
 // Když přijde nový email (jiný než uložený), reset profilu (nový "uživatel").
 function recordAudit({ email, url, token }) {
   let user = getUser();
   if (email) {
     if (!user || user.email !== email) {
-      user = { email, nick: (user && user.nick) || generateNick(), audits: [] };
+      user = { email, audits: [] };
     }
   } else if (!user) {
     return; // bez emailu i bez existujícího profilu nemáme co ukládat
@@ -1101,14 +1087,12 @@ function renderUserLink() {
   const link = document.querySelector('[data-user-link]');
   const nickEl = document.querySelector('[data-user-nick]');
   if (!link || !nickEl) return;
-  const user = getUser();
   const verifiedEmail = serverMe && serverMe.account && serverMe.account.emailVerifiedAt
     ? serverMe.account.email : null;
 
-  // Profil button je vždy viditelný. Text: nick z localStorage > ověřený email > default.
-  if (user && user.nick) nickEl.textContent = user.nick;
-  else if (verifiedEmail) nickEl.textContent = verifiedEmail;
-  else nickEl.textContent = 'Můj profil';
+  // Profil button je vždy viditelný. Text natvrdo "Můj profil" — neukazujeme
+  // email v hlavičce (privacy na sdílených zařízeních).
+  nickEl.textContent = 'Můj profil';
   link.hidden = false;
 
   // Vykřičník: pokud nemáme ověřený account, profil přístup jen z tohoto prohlížeče.
@@ -1136,13 +1120,11 @@ function renderAccountStatus() {
 function renderUserModal() {
   const user = getUser();
   if (!user) return;
-  const nickInput  = document.querySelector('[data-user-nick-input]');
   const emailInput = document.querySelector('[data-user-email-input]');
   const urlInput   = document.querySelector('[data-user-url-input]');
   const auditsEl   = document.querySelector('[data-user-audits]');
   const auditsEmpty = document.querySelector('[data-user-audits-empty]');
 
-  if (nickInput)  nickInput.value  = user.nick || '';
   if (emailInput) emailInput.value = user.email || '';
   if (urlInput)   urlInput.value   = prettyUrlForInput(user.lastUrl || '');
 
@@ -1194,7 +1176,6 @@ function applyUserToForms({ overwrite = false } = {}) {
 (function initUserUI() {
   const link = document.querySelector('[data-user-link]');
   const modal = document.querySelector('[data-user-modal]');
-  const nickInput  = document.querySelector('[data-user-nick-input]');
   const emailInput = document.querySelector('[data-user-email-input]');
   const urlInput   = document.querySelector('[data-user-url-input]');
   const logoutBtn  = document.querySelector('[data-user-logout]');
@@ -1204,13 +1185,6 @@ function applyUserToForms({ overwrite = false } = {}) {
       renderUserModal();
       renderAccountStatus();
       modal.showModal();
-    });
-  }
-  if (nickInput) {
-    nickInput.addEventListener('change', () => {
-      const u = getUser(); if (!u) return;
-      const v = nickInput.value.trim().slice(0, 40);
-      if (v) { u.nick = v; setUser(u); renderUserLink(); emitUserChange(); }
     });
   }
   if (emailInput) {
