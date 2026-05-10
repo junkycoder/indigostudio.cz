@@ -19,6 +19,46 @@ export async function renderEmail(ev, env) {
 const reportUrl  = (env, ev) => `https://${env.PUBLIC_HOST}/audit/${ev.report_token}`;
 const optoutUrl  = (env, ev) => `https://${env.PUBLIC_HOST}/odhlasit/${ev.unsub_token}`;
 
+// ---------- Transakční: magic link (přihlášení k profilu) ----------
+// Volá se z handlers/account.js přes sendTransactional. Žádný unsub blok —
+// klient si přihlášení sám vyžádal, není to marketingový mail.
+export function tplMagicLink({ link, email }) {
+  const subject = 'Přihlášení na fakan.cz';
+  const text = `Klikněte na odkaz a uvidíte své audity, návrhy a domény u nás:
+
+${link}
+
+Odkaz platí 30 minut a dá se použít jen jednou.
+
+Pokud jste o přihlášení nežádali, tenhle e-mail klidně ignorujte — bez kliku
+se nic nestane.
+
+— Fakan
+`;
+
+  const html = `<!doctype html><html lang="cs"><body style="font-family:Georgia,serif;background:#F9F6F0;color:#1F1B16;margin:0;padding:24px">
+<div style="max-width:560px;margin:0 auto;background:#fff;padding:32px;border-radius:6px">
+  <h1 style="font-size:26px;margin:0 0 24px">Přihlášení na fakan.cz</h1>
+
+  <p style="font-size:16px;line-height:1.6;margin:0 0 24px">Klikněte na tlačítko a uvidíte své audity, návrhy a domény u nás.</p>
+
+  <p style="margin:24px 0">
+    <a href="${link}" style="display:inline-block;background:#C84B31;color:#fff;padding:14px 24px;text-decoration:none;border-radius:4px;font-weight:bold">Přihlásit se</a>
+  </p>
+
+  <p style="font-size:14px;color:#8A7E6E;line-height:1.5">Odkaz platí 30 minut a dá se použít jen jednou.</p>
+
+  <p style="font-size:14px;color:#8A7E6E;line-height:1.5">Pokud jste o přihlášení nežádali, tenhle e-mail klidně ignorujte — bez kliku se nic nestane.</p>
+
+  <hr style="border:none;border-top:1px solid #e5e0d6;margin:32px 0 16px">
+  <p style="font-size:12px;color:#8A7E6E;line-height:1.5">
+    Zaslala fakan.cz na ${email} kvůli žádosti o přihlášení. Indigo Studio s.r.o.
+  </p>
+</div></body></html>`;
+
+  return { subject, html, text };
+}
+
 // ---------- Transakční: suggestion done ----------
 // Volá se přímo ze suggestion/render.js přes sendTransactional, ne přes drip.
 // Vrací stejný { subject, html, text } tvar.
