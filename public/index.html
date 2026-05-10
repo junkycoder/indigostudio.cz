@@ -100,18 +100,25 @@ header {
 .header-claim { font-size: 13px; color: var(--muted); font-style: italic; margin-right: auto; margin-left: 16px; }
 @media (max-width: 600px) { .header-claim { display: none; } }
 
-/* User link — vpravo v hlavičce, viditelný jen po prvním auditu */
+/* User link — vždy viditelný. Vykřičník = profil ještě neověřený e-mailem */
 .user-link {
   font: inherit; font-size: 14px;
   background: transparent; color: var(--ink);
   border: 1px solid var(--line); border-radius: 4px;
   padding: 6px 12px; cursor: pointer;
   display: inline-flex; align-items: center; gap: 6px;
-  max-width: 180px;
+  max-width: 220px; position: relative;
 }
 .user-link:hover { border-color: var(--accent); color: var(--accent); }
 .user-link[hidden] { display: none; }
 .user-link span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-link.unverified::after {
+  content: "!"; flex: 0 0 auto;
+  width: 18px; height: 18px; line-height: 18px;
+  background: var(--accent); color: #fff;
+  border-radius: 50%; font-weight: bold; font-size: 12px;
+  text-align: center;
+}
 
 /* User modal — nativní <dialog> */
 .user-modal {
@@ -169,6 +176,38 @@ header {
   background: var(--bg); border-left: 3px solid var(--line);
   border-radius: 4px; font-size: 14px; color: var(--muted); line-height: 1.5;
 }
+
+/* Magic link sekce v profilovém modalu */
+.user-account-status {
+  margin: 0 0 12px; padding: 10px 12px;
+  border-radius: 4px; font-size: 14px; line-height: 1.5;
+}
+.user-account-status[data-state="unverified"] {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-left: 3px solid var(--accent); color: var(--ink);
+}
+.user-account-status[data-state="verified"] {
+  background: color-mix(in srgb, var(--good) 14%, transparent);
+  border-left: 3px solid var(--good); color: var(--ink);
+}
+.magic-form { display: grid; gap: 10px; margin-top: 8px; }
+.magic-form .btn-cta { width: 100%; min-height: 44px; padding: 10px 16px; font-size: 15px; }
+.magic-status { margin: 0; padding: 10px 12px; border-radius: 4px; font-size: 14px; line-height: 1.5; }
+.magic-status[hidden] { display: none; }
+.magic-status[data-state="ok"]  { background: color-mix(in srgb, var(--good) 18%, transparent); color: #3f6149; }
+.magic-status[data-state="err"] { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--ink); border-left: 3px solid var(--accent); }
+
+/* Flash banner — pod headerem, auto-dismiss po 6 s */
+.flash {
+  position: fixed; top: 76px; left: 50%; transform: translateX(-50%);
+  z-index: 200; max-width: calc(100vw - 32px);
+  padding: 12px 18px; border-radius: 6px;
+  font-size: 14px; font-family: Georgia, serif;
+  background: var(--ink); color: var(--bg);
+  box-shadow: 0 4px 16px rgba(31, 27, 22, 0.18);
+}
+.flash[data-state="ok"]  { background: #3f6149; color: #fff; }
+.flash[data-state="err"] { background: var(--accent); color: #fff; }
 
 /* Brand claim — sentence above H1 */
 .brand-claim {
@@ -456,8 +495,8 @@ input:focus-visible { outline: none; }
   <div class="wrap header-inner">
     <a class="brand" href="/" aria-label="fakan.cz — domů">fakan.cz</a>
     <span class="header-claim">Když web, jedině od Fakana.</span>
-    <button class="user-link" type="button" data-user-link hidden aria-haspopup="dialog">
-      <span data-user-nick>—</span>
+    <button class="user-link unverified" type="button" data-user-link aria-haspopup="dialog">
+      <span data-user-nick>Můj profil</span>
     </button>
   </div>
 </header>
@@ -466,17 +505,12 @@ input:focus-visible { outline: none; }
   <form class="user-modal-form" method="dialog">
     <div class="user-modal-head">
       <h2 id="userModalTitle">Můj fakan</h2>
-      <button class="user-modal-close" type="submit" value="close" aria-label="Zavřít">×</button>
+      <button class="user-modal-close" type="submit" value="close" formnovalidate aria-label="Zavřít">×</button>
     </div>
     <div class="user-modal-body">
 
       <section class="user-section" aria-labelledby="userProfileTitle">
         <h3 id="userProfileTitle">Profil</h3>
-        <div class="user-row">
-          <label for="userNickInput">Přezdívka</label>
-          <input type="text" id="userNickInput" data-user-nick-input maxlength="40" autocomplete="off">
-          <p class="form-hint">Vygenerovali jsme Vám jednu vtipnou. Klidně si ji upravte.</p>
-        </div>
         <div class="user-row">
           <label for="userEmailInput">E-mail</label>
           <input type="email" id="userEmailInput" data-user-email-input autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false">
@@ -487,7 +521,33 @@ input:focus-visible { outline: none; }
           <input type="text" id="userUrlInput" data-user-url-input autocomplete="url" inputmode="url" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="vasedomena.cz">
           <p class="form-hint">Předvyplníme ji ve formulářích, ať to nemusíte psát znovu.</p>
         </div>
-        <button type="button" class="user-logout" data-user-logout>Odhlásit</button>
+        <button type="button" class="user-logout" data-user-logout>Odhlásit lokálně</button>
+      </section>
+
+      <section class="user-section" aria-labelledby="userLoginTitle">
+        <h3 id="userLoginTitle">Přihlášení e-mailem</h3>
+        <p class="user-account-status" data-user-account-status data-state="unverified">
+          Profil máte zatím jen v tomhle prohlížeči. Pokud chcete vidět své audity i z jiného zařízení, ověřte si e-mail jednorázovým odkazem.
+        </p>
+        <div class="magic-form" data-magic-form>
+          <div class="user-row">
+            <label for="magicEmail">E-mail pro přihlášení</label>
+            <input
+              type="email"
+              id="magicEmail"
+              name="email"
+              autocomplete="email"
+              inputmode="email"
+              autocapitalize="none"
+              autocorrect="off"
+              spellcheck="false"
+              data-magic-submit-on-enter
+              required>
+          </div>
+          <button type="button" class="btn-cta" data-magic-submit>Poslat odkaz pro přihlášení →</button>
+          <p class="magic-status" data-magic-status hidden></p>
+          <p class="form-hint">Odkaz Vám pošleme do mailu. Platí 30 minut, použije se jednou.</p>
+        </div>
       </section>
 
       <section class="user-section" aria-labelledby="userAuditsTitle">
@@ -959,15 +1019,6 @@ input:focus-visible { outline: none; }
 const API = '/api/audit';
 const USER_KEY = 'fakanUser';
 
-const NICK_ADJ = ['Hbitý', 'Mazaný', 'Statečný', 'Důmyslný', 'Vychytralý', 'Tichý', 'Drzý', 'Bdělý', 'Zamlklý', 'Pracovitý', 'Skromný', 'Nadšený', 'Zamyšlený', 'Klidný', 'Kurážný', 'Lstivý', 'Zarytý', 'Pichlavý'];
-const NICK_NOUN = ['Liška', 'Jezevec', 'Sojka', 'Sokol', 'Kuna', 'Vydra', 'Tchoř', 'Veverka', 'Datel', 'Sysel', 'Hraboš', 'Krokýš', 'Rys', 'Kojot', 'Bobr', 'Ježek', 'Krtek', 'Sova'];
-
-function generateNick() {
-  const a = NICK_ADJ[Math.floor(Math.random() * NICK_ADJ.length)];
-  const n = NICK_NOUN[Math.floor(Math.random() * NICK_NOUN.length)];
-  return a + ' ' + n;
-}
-
 function getUser() {
   try { const raw = localStorage.getItem(USER_KEY); return raw ? JSON.parse(raw) : null; }
   catch { return null; }
@@ -998,13 +1049,13 @@ function emitUserChange() {
   document.dispatchEvent(new CustomEvent('fakan:user-changed'));
 }
 
-// Sjednocený zápis profilu — drží email, nick, lastUrl, historie auditů.
+// Sjednocený zápis profilu — drží email, lastUrl, historie auditů.
 // Když přijde nový email (jiný než uložený), reset profilu (nový "uživatel").
 function recordAudit({ email, url, token }) {
   let user = getUser();
   if (email) {
     if (!user || user.email !== email) {
-      user = { email, nick: (user && user.nick) || generateNick(), audits: [] };
+      user = { email, audits: [] };
     }
   } else if (!user) {
     return; // bez emailu i bez existujícího profilu nemáme co ukládat
@@ -1019,25 +1070,61 @@ function recordAudit({ email, url, token }) {
   emitUserChange();
 }
 
+// Stav profilu ze serveru — drží se v paměti po fetchMe(). Default null = ještě
+// jsme se nezeptali. Po /api/me máme device + (volitelně) ověřený account.
+let serverMe = null;
+
+async function fetchMe() {
+  try {
+    const resp = await fetch('/api/me', { credentials: 'same-origin' });
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return data && data.ok ? data : null;
+  } catch { return null; }
+}
+
 function renderUserLink() {
   const link = document.querySelector('[data-user-link]');
   const nickEl = document.querySelector('[data-user-nick]');
   if (!link || !nickEl) return;
-  const user = getUser();
-  if (user) { nickEl.textContent = user.nick; link.hidden = false; }
-  else { link.hidden = true; }
+  const verifiedEmail = serverMe && serverMe.account && serverMe.account.emailVerifiedAt
+    ? serverMe.account.email : null;
+
+  // Profil button je vždy viditelný. Text natvrdo "Můj profil" — neukazujeme
+  // email v hlavičce (privacy na sdílených zařízeních).
+  nickEl.textContent = 'Můj profil';
+  link.hidden = false;
+
+  // Vykřičník: pokud nemáme ověřený account, profil přístup jen z tohoto prohlížeče.
+  if (verifiedEmail) link.classList.remove('unverified');
+  else link.classList.add('unverified');
+}
+
+function renderAccountStatus() {
+  const el = document.querySelector('[data-user-account-status]');
+  const form = document.querySelector('[data-magic-form]');
+  if (!el || !form) return;
+  const verifiedEmail = serverMe && serverMe.account && serverMe.account.emailVerifiedAt
+    ? serverMe.account.email : null;
+  if (verifiedEmail) {
+    el.dataset.state = 'verified';
+    el.textContent = `Přihlášen jako ${verifiedEmail}. Své audity uvidíte i z jiného zařízení po přihlášení stejným e-mailem.`;
+    form.hidden = true;
+  } else {
+    el.dataset.state = 'unverified';
+    el.textContent = 'Profil máte zatím jen v tomhle prohlížeči. Pokud chcete vidět své audity i z jiného zařízení, ověřte si e-mail jednorázovým odkazem.';
+    form.hidden = false;
+  }
 }
 
 function renderUserModal() {
   const user = getUser();
   if (!user) return;
-  const nickInput  = document.querySelector('[data-user-nick-input]');
   const emailInput = document.querySelector('[data-user-email-input]');
   const urlInput   = document.querySelector('[data-user-url-input]');
   const auditsEl   = document.querySelector('[data-user-audits]');
   const auditsEmpty = document.querySelector('[data-user-audits-empty]');
 
-  if (nickInput)  nickInput.value  = user.nick || '';
   if (emailInput) emailInput.value = user.email || '';
   if (urlInput)   urlInput.value   = prettyUrlForInput(user.lastUrl || '');
 
@@ -1089,19 +1176,15 @@ function applyUserToForms({ overwrite = false } = {}) {
 (function initUserUI() {
   const link = document.querySelector('[data-user-link]');
   const modal = document.querySelector('[data-user-modal]');
-  const nickInput  = document.querySelector('[data-user-nick-input]');
   const emailInput = document.querySelector('[data-user-email-input]');
   const urlInput   = document.querySelector('[data-user-url-input]');
   const logoutBtn  = document.querySelector('[data-user-logout]');
 
   if (link && modal && typeof modal.showModal === 'function') {
-    link.addEventListener('click', () => { renderUserModal(); modal.showModal(); });
-  }
-  if (nickInput) {
-    nickInput.addEventListener('change', () => {
-      const u = getUser(); if (!u) return;
-      const v = nickInput.value.trim().slice(0, 40);
-      if (v) { u.nick = v; setUser(u); renderUserLink(); emitUserChange(); }
+    link.addEventListener('click', () => {
+      renderUserModal();
+      renderAccountStatus();
+      modal.showModal();
     });
   }
   if (emailInput) {
@@ -1139,6 +1222,95 @@ function applyUserToForms({ overwrite = false } = {}) {
   document.addEventListener('fakan:user-changed', () => applyUserToForms({ overwrite: true }));
   renderUserLink();
   applyUserToForms();
+})();
+
+// ----- Magic link login (POST /api/account/start) -----
+async function submitMagicLink(form) {
+  const status = form.querySelector('[data-magic-status]');
+  const btn    = form.querySelector('[data-magic-submit]');
+  const email  = String(form.querySelector('[name="email"]').value || '').trim().toLowerCase();
+  const setStatus = (msg, state) => {
+    status.textContent = msg;
+    status.dataset.state = state;
+    status.hidden = !msg;
+  };
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    setStatus('Zadejte platný e-mail.', 'err');
+    return;
+  }
+
+  const origLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Odesíláme…';
+  setStatus('', 'ok');
+
+  try {
+    const resp = await fetch('/api/account/start', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email }),
+      credentials: 'same-origin',
+    });
+    const data = await resp.json().catch(() => null);
+    if (!resp.ok || !data || data.ok !== true) {
+      setStatus((data && data.error) || 'Nepodařilo se odeslat odkaz. Zkuste to prosím znovu.', 'err');
+      btn.disabled = false;
+      btn.textContent = origLabel;
+      return;
+    }
+    setStatus(data.message || 'Odkaz Vám právě dorazil. Mrkněte do schránky.', 'ok');
+    btn.textContent = 'Odkaz odeslán';
+  } catch {
+    setStatus('Spojení se nepodařilo. Zkontrolujte prosím připojení.', 'err');
+    btn.disabled = false;
+    btn.textContent = origLabel;
+  }
+}
+
+// Magic link form je <div>, ne <form> — vnořený <form> uvnitř modal-form HTML5
+// zahodí. Trigger ručně z click na tlačítko + Enter v inputu.
+document.querySelectorAll('[data-magic-form]').forEach((container) => {
+  const submit = (e) => { if (e) e.preventDefault(); submitMagicLink(container); };
+  const btn    = container.querySelector('[data-magic-submit]');
+  const input  = container.querySelector('[data-magic-submit-on-enter]');
+  if (btn)   btn.addEventListener('click', submit);
+  if (input) input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(e); });
+});
+
+// ----- Flash banner po návratu z magic linku (?prihlaseni=ok | ?prihlaseni_chyba=…) -----
+(function showLoginFlash() {
+  const params = new URLSearchParams(window.location.search);
+  const ok  = params.get('prihlaseni');
+  const err = params.get('prihlaseni_chyba');
+  if (!ok && !err) return;
+
+  const flash = document.createElement('div');
+  flash.className = 'flash';
+  flash.dataset.state = ok ? 'ok' : 'err';
+  flash.setAttribute('role', 'status');
+  flash.textContent = ok
+    ? 'Přihlášení proběhlo. Svůj profil najdete vpravo nahoře.'
+    : err === 'expired' ? 'Odkaz pro přihlášení vypršel. Vyžádejte si nový z profilu.'
+    : err === 'used'    ? 'Tenhle odkaz už byl použit. Vyžádejte si nový z profilu.'
+    :                     'Odkaz pro přihlášení je neplatný. Vyžádejte si nový z profilu.';
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 6000);
+
+  const url = new URL(window.location.href);
+  url.searchParams.delete('prihlaseni');
+  url.searchParams.delete('prihlaseni_chyba');
+  window.history.replaceState({}, '', url.toString());
+})();
+
+// ----- Načtení server stavu (/api/me) -----
+// Volá se asynchronně po DOMContentLoaded, neblokuje render. Když dorazí, přepíše
+// link + modal stav. Zatím se journeys ze serveru nepárují s lokální historií —
+// bude až po fázi D (audit handler integrace s journey).
+(async function initServerIdentity() {
+  serverMe = await fetchMe();
+  renderUserLink();
+  renderAccountStatus();
 })();
 
 function normalizeUrl(raw) {

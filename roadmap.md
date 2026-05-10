@@ -174,6 +174,42 @@ ověřených developerů z Fáze 8). Free i placené.
 
 ---
 
+## Fáze 11 — Reklamní podpora (PPC + sociální sítě)
+
+**Cíl:** Klient u nás má audit, návrh, doménu, hosting — pomůžeme i s tím,
+aby na nový web někdo přišel. Rozšíření portfolia služeb jako placený modul
+v pipeline (vedle suggestion / extraction).
+
+**Kanály v pořadí priority:**
+
+1. **Google Ads / Sklik** — keyword research z auditních dat (CMS, doména,
+   industry z fáze 7), generovaný ad copy + landing page check (recyklujeme
+   strategist prompt). Largest reach pro CZ trh.
+2. **Facebook + Instagram Ads (Meta)** — vizuál (recyklujeme suggestion
+   pipeline pro variace) + copy + audience targeting podle ARES segmentu.
+3. **TikTok / LinkedIn** — low priority, jen pokud reálná poptávka přijde.
+
+**Otevřené otázky (vyřešit před implementací):**
+
+- **Mandát:** dostáváme přístup do klientova Google Ads účtu (MCC linking),
+  nebo kampaň běží z našeho účtu s reklamním kreditem od klienta? MCC =
+  čisté právně, klient platí Google přímo. Naše = jednodušší účtování,
+  ale my zodpovídáme za billing (kreditní karta, výdaje, refundy).
+- **Pricing:** setup fee + % z měsíčního budgetu (běžný agentúrní model,
+  10–20 %), nebo flat rate per kampaň, nebo úspěch-based (CPL/CPA)?
+- **Měření:** integrace s Cloudflare Web Analytics (bez cookies, ale slabší
+  attribution) nebo Plausible (bez cookies, lepší event tracking),
+  nebo Google Analytics 4 (tracking cookies = potřeba consent banner —
+  velký přechod oproti zbytku produktu).
+- **Kdo dělá kreativu:** Claude generuje copy + suggestion pipeline generuje
+  vizuál, nebo zprostředkujeme externí designéry / copywritery jako sub-modul?
+
+**Pořadí:** spouštět až po stabilizaci modulů audit / suggestion /
+domain redirect / extraction. Tj. nejdřív musí klient něco u nás reálně
+objednat — pak má smysl mu nabídnout, ať na ten výsledek někdo chodí.
+
+---
+
 ## Pořadí
 
 1. Dokončit MVP (Fáze 1–5).
@@ -184,3 +220,5 @@ ověřených developerů z Fáze 8). Free i placené.
 4. Fáze 8–10 jsou samostatný produktový směr (developer ekosystém + marketplace),
    nezávislý na Fázi 6/7. Otevřít až po revenue validaci MVP — vyžaduje řádově
    víc engineering času a nový business model (revenue share).
+5. Fáze 11 (reklama) až po stabilizaci pipeline a prvních ~10 reálných
+   suggestion / domain orderech — pak víme, kdo by ji mohl koupit.

@@ -11,6 +11,8 @@ import { handleDomainCheck }   from './handlers/domain-check.js';
 import { handleDomainOrder, handleDomainStatus } from './handlers/domain-order.js';
 import { handleStripeWebhook } from './handlers/stripe-webhook.js';
 import { handleOptout }        from './handlers/optout.js';
+import { handleMe }            from './handlers/me.js';
+import { handleAccountStart, handleAccountVerify } from './handlers/account.js';
 import { processAuditJob }     from './audit/processor.js';
 import { runStrategist }       from './audit/strategist.js';
 import { processSuggestionRender } from './suggestion/render.js';
@@ -57,6 +59,21 @@ export default {
       }
       if (path.startsWith('/api/screenshot/')) {
         return withCors(await handleScreenshot(request, env), request);
+      }
+
+      // ----- Identita: profil + magic link -----
+      // /api/me čte device cookie a vrací aktuální journeys. Bezpečné volat
+      // anonymně — middleware vyrobí device_token, pokud chybí.
+      // /api/account/start posílá magic link. /verify je redirect z mailu,
+      // ne JSON endpoint (bez CORS, vrací 302).
+      if (request.method === 'GET'  && path === '/api/me') {
+        return withCors(await handleMe(request, env, ctx), request);
+      }
+      if (request.method === 'POST' && path === '/api/account/start') {
+        return withCors(await handleAccountStart(request, env, ctx), request);
+      }
+      if (request.method === 'GET'  && path === '/api/account/verify') {
+        return handleAccountVerify(request, env, ctx);
       }
 
       // Stripe webhook — bez CORS (volá ho Stripe server, ne browser)
