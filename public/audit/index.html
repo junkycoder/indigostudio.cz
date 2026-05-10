@@ -70,6 +70,23 @@
   }
   .screenshot p{font-size:12px;color:var(--muted);margin:8px 0 0}
 
+  /* SCREENSHOT GALLERY (multi-viewport) */
+  .gallery{margin:0 0 48px}
+  .gallery h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 0 16px;font-weight:normal}
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+    gap:16px;
+  }
+  .gallery-item{text-align:center}
+  .gallery-item figure{margin:0}
+  .gallery-item img{
+    max-width:100%;width:100%;border:1px solid var(--line);border-radius:4px;
+    background:#fff;box-shadow:0 2px 12px rgba(31,27,22,.04);
+  }
+  .gallery-item.dark img{background:#1F1B16}
+  .gallery-item figcaption{font-size:12px;color:var(--muted);margin:8px 0 0}
+
   /* FINDINGS */
   .findings{margin:0 0 48px}
   .findings h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 0 16px;font-weight:normal}
@@ -165,8 +182,22 @@ const token = location.pathname.split('/').filter(Boolean)[1];
 
 const SEV_LABEL = { critical:'kritické', high:'vysoké', medium:'střední', low:'nízké', info:'info' };
 const CAT_LABEL = {
-  perf:'výkon', a11y:'přístupnost', seo:'SEO',
-  cookie:'cookies', sec:'zabezpečení', cms:'CMS', error:'chyba',
+  perf:'výkon', a11y:'přístupnost', visual:'vizuál', content:'obsah',
+  seo:'SEO', cookie:'cookies', sec:'zabezpečení', cms:'CMS', error:'chyba',
+};
+
+const SHOT_LABEL = {
+  mobilePortrait:  'Mobil (na výšku)',
+  mobileLandscape: 'Mobil (na šířku)',
+  desktop:         'Desktop',
+  mobileDark:      'Mobil — tmavý režim',
+};
+
+const SHOT_KIND = {
+  mobilePortrait:  'mobile-portrait',
+  mobileLandscape: 'mobile-landscape',
+  desktop:         'desktop',
+  mobileDark:      'mobile-dark',
 };
 
 // Audit může být v okamžiku otevření ještě v běhu (queued/running) — typicky
@@ -196,7 +227,7 @@ const MAX_POLLS = 60;
       continue;
     }
 
-    return render(payload.audit, payload.findings, payload.strategist);
+    return render(payload.audit, payload.findings, payload.strategist, payload.screenshots || {});
   }
   showMissing();
 })();
@@ -217,17 +248,21 @@ function renderRunning(audit) {
     </div>`;
 }
 
-function render(audit, findings, strat) {
+function render(audit, findings, strat, shots) {
   const score = audit.score ?? 0;
   const label = scoreLabel(score);
 
+  // Vizuál a Obsah zobrazujeme jen když je má backend (nové audity).
+  // Staré audity ze stejné DB ty hodnoty mít nebudou — tvar se přizpůsobí.
   const bars = [
-    ['Výkon',         audit.perf_score],
-    ['Přístupnost',   audit.a11y_score],
-    ['Cookies',       audit.cookie_score],
-    ['SEO',           audit.seo_score],
-    ['Zabezpečení',   audit.sec_score],
-  ];
+    ['Výkon',        audit.perf_score],
+    ['Přístupnost',  audit.a11y_score],
+    audit.visual_score  != null ? ['Vizuál', audit.visual_score]  : null,
+    audit.content_score != null ? ['Obsah',  audit.content_score] : null,
+    ['Cookies',      audit.cookie_score],
+    ['SEO',          audit.seo_score],
+    ['Zabezpečení',  audit.sec_score],
+  ].filter(Boolean);
 
   const findingsHtml = findings.length
     ? findings.map(f => `
@@ -269,12 +304,7 @@ function render(audit, findings, strat) {
         </div>`).join('')}
     </section>
 
-    <section class="screenshot">
-      <img src="/api/screenshot/${audit.id}"
-           alt="Náhled webu na mobilu" loading="lazy"
-           onerror="this.style.display='none'">
-      <p>Jak Váš web vidí návštěvník na mobilu.</p>
-    </section>
+    ${renderGallery(audit, shots)}
 
     <section class="findings">
       <h2>Co konkrétně</h2>
@@ -290,6 +320,40 @@ function render(audit, findings, strat) {
       <a class="cta-alt" href="tel:+420604690539">Nebo zavolejte: +420 604 690 539</a>
     </section>
   `;
+}
+
+function renderGallery(audit, shots) {
+  // Pořadí v galerii: portrait → landscape → desktop → dark.
+  // Staré audity (před vizuálními checky) shots prázdný objekt → fallback
+  // na původní /api/screenshot/{auditId} jednoobrázkový náhled.
+  const order = ['mobilePortrait', 'mobileLandscape', 'desktop', 'mobileDark'];
+  const present = order.filter((k) => shots[k]);
+
+  if (present.length === 0) {
+    return `
+      <section class="screenshot">
+        <img src="/api/screenshot/${audit.id}"
+             alt="Náhled webu na mobilu" loading="lazy"
+             onerror="this.style.display='none'">
+        <p>Jak Váš web vidí návštěvník na mobilu.</p>
+      </section>`;
+  }
+
+  const items = present.map((k) => `
+    <div class="gallery-item${k === 'mobileDark' ? ' dark' : ''}">
+      <figure>
+        <img src="/api/screenshot/${audit.id}/${SHOT_KIND[k]}"
+             alt="${esc(SHOT_LABEL[k])}" loading="lazy"
+             onerror="this.parentElement.parentElement.style.display='none'">
+        <figcaption>${esc(SHOT_LABEL[k])}</figcaption>
+      </figure>
+    </div>`).join('');
+
+  return `
+    <section class="gallery">
+      <h2>Jak Váš web vypadá</h2>
+      <div class="gallery-grid">${items}</div>
+    </section>`;
 }
 
 function renderVariants(s) {

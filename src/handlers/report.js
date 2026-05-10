@@ -24,22 +24,38 @@ export async function handleReport(request, env) {
     `SELECT * FROM strategist_outputs WHERE audit_id = ?`
   ).bind(audit.id).first();
 
+  // visual_score / content_score zatím nejsou samostatné DB sloupce — žijí
+  // v json_summary.scores. Až se po stabilizaci přesunou do `audits` sloupců,
+  // přečtu je rovnou z audit row.
+  const summary = safeParse(audit.json_summary) || {};
+  const summaryScores = summary.scores || {};
+  const screenshots = summary.screenshots || {};
+
   // Whitelist polí — NEVRACET lead email, lead_id, error, json_summary, ip, …
   // Frontend si zná token z URL, víc nepotřebuje.
   const payload = {
     audit: {
-      id:            audit.id,
-      domain:        audit.domain,
-      url:           audit.url,
-      status:        audit.status,
-      score:         audit.score,
-      perf_score:    audit.perf_score,
-      a11y_score:    audit.a11y_score,
-      seo_score:     audit.seo_score,
-      cookie_score:  audit.cookie_score,
-      sec_score:     audit.sec_score,
-      cms:           audit.cms,
-      finished_at:   audit.finished_at,
+      id:             audit.id,
+      domain:         audit.domain,
+      url:            audit.url,
+      status:         audit.status,
+      score:          audit.score,
+      perf_score:     audit.perf_score,
+      a11y_score:     audit.a11y_score,
+      visual_score:   summaryScores.visual ?? null,
+      content_score:  summaryScores.content ?? null,
+      seo_score:      audit.seo_score,
+      cookie_score:   audit.cookie_score,
+      sec_score:      audit.sec_score,
+      cms:            audit.cms,
+      finished_at:    audit.finished_at,
+    },
+    // Mapa kind → bool (víme jen, že screenshot existuje; URL skládá frontend).
+    screenshots: {
+      mobilePortrait:  Boolean(screenshots.mobilePortrait),
+      mobileLandscape: Boolean(screenshots.mobileLandscape),
+      desktop:         Boolean(screenshots.desktop),
+      mobileDark:      Boolean(screenshots.mobileDark),
     },
     findings:   findings.results,
     strategist: strategist ? hydrateStrategist(strategist) : null,

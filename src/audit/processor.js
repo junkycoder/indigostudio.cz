@@ -7,6 +7,7 @@ import { detectCookies }    from './checks/cookies.js';
 import { checkHeaders }     from './checks/headers.js';
 import { detectCms }        from './checks/cms.js';
 import { checkSeo }         from './checks/seo.js';
+import { runVisualChecks }  from './checks/visual.js';
 import { score }            from './scoring.js';
 
 export async function processAuditJob(job, env, ctx) {
@@ -19,6 +20,7 @@ export async function processAuditJob(job, env, ctx) {
 
   const findings = [];
   let perfData = {}, cookieData = {}, headerData = {}, cmsData = {}, seoData = {};
+  let visualData = { screenshots: {}, metrics: {} };
   let browser, errMsg = null;
 
   try {
@@ -57,11 +59,25 @@ export async function processAuditJob(job, env, ctx) {
     const axe = await runAxe(page);
     findings.push(...axe.findings);
 
-    // mobilní screenshot
+    // Mobilní screenshot pro zpětnou kompatibilitu s /api/screenshot/{auditId}.
+    // Visual checky pak doplní mobile-portrait + landscape + desktop + dark
+    // pod samostatné R2 keys (shot-*.jpg).
     const shot = await page.screenshot({ type: 'jpeg', quality: 70 });
     await env.REPORTS.put(`audits/${auditId}/screenshot.jpg`, shot, {
       httpMetadata: { contentType: 'image/jpeg' },
     });
+
+    // Vizuální checky napříč viewporty + dark mode + UX detaily na mobilu.
+    // Pouští se nad stejnou Page instancí (přepínání viewportu bez reloadu).
+    // Findings + screenshot R2 keys jdou do souhrnu, screenshoty do R2.
+    try {
+      visualData = await runVisualChecks(page, env, auditId);
+      findings.push(...visualData.findings);
+    } catch (vErr) {
+      // Visual checky jsou doplněk — selhání nesmí shodit celý audit.
+      console.warn(`audit ${auditId}: visual checks failed: ${vErr.message}`);
+      visualData = { screenshots: {}, metrics: { error: vErr.message?.slice(0, 200) } };
+    }
 
     headerData = await checkHeaders(url);
 
@@ -80,6 +96,9 @@ export async function processAuditJob(job, env, ctx) {
   const scores = score(findings, { perfData, cookieData, cmsData });
 
   // persist
+  // Pozn.: visual_score zatím žije jen v json_summary.scores — nový sloupec
+  // bychom museli přidat ALTER migrací, což rozbije idempotentní schema.sql.
+  // Po stabilizaci (~50 reálných auditů) přesunout do samostatného sloupce.
   const now = Math.floor(Date.now()/1000);
   await env.DB.prepare(`
     UPDATE audits SET
@@ -92,7 +111,12 @@ export async function processAuditJob(job, env, ctx) {
     scores.total, scores.perf, scores.a11y, scores.seo,
     scores.cookie, scores.sec,
     cmsData?.cms || null, errMsg,
-    JSON.stringify({ perfData, cookieData, headerData, cmsData, seoData, scores }),
+    JSON.stringify({
+      perfData, cookieData, headerData, cmsData, seoData,
+      visualMetrics: visualData.metrics,
+      screenshots: visualData.screenshots,
+      scores,
+    }),
     now, auditId,
   ).run();
 

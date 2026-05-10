@@ -1,8 +1,20 @@
 // src/audit/scoring.js
-// Vyrobí 5 sub-skóre 0–100 + váženého průměru.
-// Váhy záměrně zvýrazňují to, co je Fakanovo USP: a11y/EAA + cookie-free.
+// Vyrobí sub-skóre 0–100 pro každou kategorii + vážený průměr (celkové score).
+// Váhy zvýrazňují, co je Fakanovo USP: a11y/EAA + cookie-free.
+//
+// Kategorie `visual` (Fáze A) sbírá deterministické vizuální findings
+// (multi-viewport overflow, iOS focus zoom, touch targety, dark mode).
+// Kategorie `content` (Fáze B) bude AI hodnocení obsahu a estetiky.
 
-const WEIGHTS = { perf: 25, a11y: 25, seo: 15, cookie: 15, sec: 15, cms: 5 };
+const WEIGHTS = {
+  perf:   22,
+  a11y:   22,
+  visual: 15,
+  cookie: 12,
+  seo:    12,
+  sec:    12,
+  cms:     5,
+};  // sum = 100
 
 const SEVERITY_PENALTY = {
   critical: 30,
@@ -13,7 +25,9 @@ const SEVERITY_PENALTY = {
 };
 
 export function score(findings, ctx) {
-  const sub = { perf: 100, a11y: 100, seo: 100, cookie: 100, sec: 100, cms: 100 };
+  const sub = {
+    perf: 100, a11y: 100, visual: 100, cookie: 100, seo: 100, sec: 100, cms: 100,
+  };
 
   for (const f of findings) {
     if (sub[f.category] === undefined) continue;
@@ -35,6 +49,7 @@ export function score(findings, ctx) {
     total,
     perf:   sub.perf,
     a11y:   sub.a11y,
+    visual: sub.visual,
     seo:    sub.seo,
     cookie: sub.cookie,
     sec:    sub.sec,
