@@ -16,8 +16,8 @@ export async function renderEmail(ev, env) {
   }
 }
 
-const reportUrl  = (env, ev) => `https://${env.PUBLIC_HOST}/audit/${ev.report_token}`;
-const optoutUrl  = (env, ev) => `https://${env.PUBLIC_HOST}/odhlasit/${ev.unsub_token}`;
+const reportUrl  = (env, ev) => `https://${env.PUBLIC_HOST || 'fakan.cz'}/audit/${ev.report_token}`;
+const optoutUrl  = (env, ev) => `https://${env.PUBLIC_HOST || 'fakan.cz'}/odhlasit/${ev.unsub_token}`;
 
 // ---------- Transakční: magic link (přihlášení k profilu) ----------
 // Volá se z handlers/account.js přes sendTransactional. Žádný unsub blok —
