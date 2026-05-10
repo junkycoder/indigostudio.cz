@@ -32,6 +32,10 @@ binding = "ASSETS"
 run_worker_first = [
   "/api/*",
   "/audit/*",
+  "/navrh/*",
+  "/domena/objednat",
+  "/domena/objednat/*",
+  "/domena/stav/*",
   "/odhlasit",
   "/odhlasit/*",
   "/unsubscribe",
@@ -43,14 +47,6 @@ run_worker_first = [
 binding = "DB"
 database_name = "fakan_auditor"
 database_id = "c7cc11ac-3769-4f72-ab62-09da19be6612"
-
-# Legacy D1 z fakan-cz Workeru (analyze flow). Po sjednocení se z ní jen čte
-# kvůli opt-outu z dávných mailů. Až staré unsubscribe odkazy odejdou do
-# minulosti (~3 měsíce po cutoffu), tabulku smaž a binding odstraň.
-[[d1_databases]]
-binding = "LEGACY_DB"
-database_name = "fakan_leads"
-database_id = "4e9b7569-b422-4b02-ad99-aa50c773ee4f"
 
 # ----- KV (cache + rate limit) -----
 [[kv_namespaces]]
@@ -86,13 +82,15 @@ dead_letter_queue = "fakan-audit-dlq"
 [triggers]
 crons = ["*/15 * * * *"]   # každých 15 min — vyhodnotit naplánované maily
 
-# ----- Email Workers -----
-# Outbound mail pro opt-out confirmation (legacy flow z fakan_leads).
-# Vyžaduje verified doménu fakan.cz v Email Routing dashboardu.
-[[send_email]]
-name = "EMAIL"
+# ----- Veřejné proměnné (lze do repa, nejsou tajné) -----
+[vars]
+# Stripe publishable key — pošle ho frontend k Payment Elementu. Není citlivý
+# (sám Stripe ho čeká v JS bundlu klienta). Pro dev override .dev.vars.
+STRIPE_PUBLISHABLE_KEY = ""   # Fakan vyplní 'pk_live_…' (test 'pk_test_…')
 
 # ----- Tajemství (wrangler secret put …) -----
 # RESEND_API_KEY
 # ANTHROPIC_API_KEY
-# PUBLIC_HOST   = "fakan.cz"   (jen jeden hostname po sjednocení)
+# PUBLIC_HOST           = "fakan.cz"   (jen jeden hostname po sjednocení)
+# STRIPE_SECRET_KEY     = sk_live_… (test: sk_test_…)
+# STRIPE_WEBHOOK_SECRET = whsec_…   (z Dashboard → Webhooks → fakan.cz endpoint)

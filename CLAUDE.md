@@ -8,35 +8,70 @@ a `roadmap.md` (post-MVP fáze).
 
 ## Co je v tomhle repu
 
-Jeden Cloudflare Worker (`fakan`) servuje **celý fakan.cz**. Začalo to
-jako auditor, postupně přibývají další featury:
+Jeden Cloudflare Worker (`fakan`) servuje **celý fakan.cz**. Autonomní webové
+studio — vše end-to-end přes API:
 
-- **Audit webů** — form na fakan.cz → 5min → mail s reportem → 4-mail drip.
-- **Placené návrhy** (chystá se) — AI (Claude) podle Fakanových instrukcí
-  + zadání uživatele dodá redesign návrh, klient platí předem.
-- **Nákup domény** (chystá se) — fakan.cz prodává doménu klientovi
-  (registrar API + platba).
+- **Audit webů** (zdarma) — form → 5 min → mail s reportem → 4-mail drip.
+- **AI návrhy úprav webu** (500 Kč přes Stripe ApplePay/GooglePay) — klient
+  pošle URL + brief + uploady, Claude Sonnet 4.5 Vision vyrobí HTML/CSS
+  variantu, Browser Rendering vykreslí preview, klient dostane mail s linkem.
+- **Nákup domény** (přes Subreg) — klient vybere fqdn, vyplní registrant
+  data, zaplatí, my registrujeme u Subreg, klient dostane NS + expiry mail.
+- **Převod domény** (přes Subreg) — klient zadá fqdn + AuthInfo, zaplatí,
+  Subreg + CZ.NIC schvalují (až 5 dní), po dokončení mail s NS.
 
-Všechno teče přes jeden Worker, jednu D1, jeden bucket. Žádné microservices.
+Všechno teče přes jeden Worker, jednu D1, jeden R2 bucket. Žádné microservices.
 
 Adresářová struktura (klasický Workers layout v rootu):
 
 - **`wrangler.toml`** — config Workeru
-- **`src/worker.js`** — entry, routing podle path
-- **`src/handlers/`** — endpointy (`audit.js`, `report.js`, `screenshot.js`,
-  budoucí: `suggestion.js`, `domain.js`)
+- **`src/worker.js`** — entry, routing + queue dispatch (audit / strategist /
+  suggestion-render / domain-register / domain-transfer)
+- **`src/handlers/`** — HTTP endpointy
+  - `audit.js`, `report.js`, `screenshot.js` — audit flow
+  - `suggestion.js`, `suggestion-status.js` — AI návrh + status/preview/output
+  - `domain-check.js`, `domain-order.js` — doménový lookup + nákup/převod + status
+  - `stripe-webhook.js` — Stripe lifecycle eventy s HMAC ověřením
+  - `optout.js` — `/odhlasit/{token}` + `/unsubscribe?token=…`
 - **`src/audit/`** — audit pipeline (processor, strategist, scoring)
-- **`src/email/`** — templates + dispatcher (cron každých 15 min, Resend)
-- **`src/legacy/`** — sjednocený opt-out s fallbackem na původní fakan_leads DB
-- **`src/lib/`** — pomocné moduly (cors, …)
-- **`public/`** — statika (landing, audit-page SPA, ochrana-udaju, …)
+- **`src/suggestion/`** — AI render pipeline (Claude Vision → HTML/CSS → Browser Rendering screenshot)
+- **`src/domain/`** — Subreg orchestrace (register + transfer + Domain_Info)
+- **`src/email/`** — templates + dispatcher (drip cron) + send.js (transakční Resend)
+- **`src/lib/`** — pomocné moduly (cors, stripe, subreg, claude-vision,
+  html-sanitize, idempotency, files)
+- **`public/`** — statika (landing, audit-page SPA, navrh status SPA,
+  domena/objednat + domena/stav SPA, ochrana-udaju, .well-known/ pro Apple Pay)
 - **`db/schema.sql`** — D1 schéma (`fakan_auditor`)
+
+## Endpointy (přehled)
+
+| Method | Path                                       | Účel                              |
+|--------|---------------------------------------------|----------------------------------|
+| POST   | `/api/audit`                                | spustit audit (zdarma)             |
+| GET    | `/api/audit/{token}/data`                   | data pro audit-page SPA           |
+| GET    | `/api/screenshot/{auditId}`                 | mobilní screenshot z R2            |
+| POST   | `/api/suggestion`                           | AI návrh — order + Stripe PI       |
+| GET    | `/api/suggestion/{orderId}/status`          | polling stavu návrhu              |
+| GET    | `/api/suggestion/{orderId}/preview`         | preview PNG                        |
+| GET    | `/api/suggestion/{orderId}/output`          | hotový HTML/CSS                    |
+| GET    | `/api/domain/check?base=…`                  | dostupnost + cena pro 6 TLD       |
+| POST   | `/api/domain/order`                         | registrace / převod — order + PI   |
+| GET    | `/api/domain/{orderId}/status`              | polling stavu doménové operace     |
+| POST   | `/api/stripe/webhook`                       | Stripe lifecycle (HMAC verified)   |
+| GET    | `/odhlasit*`, `/unsubscribe`                | opt-out (sjednocený s fallbackem)  |
+| —      | `/`, `/audit/{token}`, `/navrh/{orderId}`,  |                                  |
+|        | `/domena/objednat`, `/domena/stav/{id}`     | statika přes asset binding         |
 
 ## Stav (aktuální commit; vždy ověř `git log` pro skutečnost)
 
 Worker `fakan` běží na fakan.cz (deployed 2026-05-09). Sjednocení tří
 původních deploymentů (`fakan-cz` Worker, `fakan-auditor` Worker na
 api.fakan.cz, Pages na audit.fakan.cz) je hotové, code i deploy.
+
+**Studio funkčnost (commit 2026-05-09):** suggestion + domain register +
+domain transfer flows kompletní v kódu, neotestované live (čeká na
+Fakanovy Stripe + Subreg secrety + Apple Pay domain verifikační soubor —
+viz Deploy checklist níž).
 
 Cleanup, který Fakan dělá ručně až bude jistá stabilita:
 
@@ -48,10 +83,8 @@ Cleanup, který Fakan dělá ručně až bude jistá stabilita:
    - `audit.fakan.cz/*` → `https://fakan.cz/$1` (301)
    - `api.fakan.cz/*` → `https://fakan.cz/$1` (301)
    Drž 3 měsíce, pak zruš.
-5. (~3 měsíce po cutoffu) — až staré opt-out tokeny z analyze flow odejdou:
-   - smazat D1 `fakan_leads`
-   - odstranit binding `LEGACY_DB` a `[[send_email]] EMAIL` ve `wrangler.toml`
-   - smazat `src/legacy/`
+5. CF dashboard → smazat D1 `fakan_leads` (bývalý LEGACY_DB) — kód i binding
+   už ho nepoužívá. Když chce mít Fakan zálohu, předtím export.
 
 ## Pravidla práce
 
@@ -100,20 +133,47 @@ SYSTEM prompt strategistovi, copy na fakan.cz):
                           → D1 strategist_outputs
                           → scheduleEmail #2 +2d, #3 +5d, #4 +30d
 
+[POST /api/suggestion]                                   (placená — 500 Kč)
+  → handlers/suggestion.js  multipart parse + file sniff (PNG/JPG/WebP/PDF/DOC/TXT)
+                            → R2 upload (suggestions/{orderId}/*)
+                            → D1 (lead + orders + suggestions)
+                            → Stripe getOrCreateCustomer + PaymentIntent
+                            → return { orderId, clientSecret, publishableKey }
+  Frontend → Stripe Payment Element (ApplePay/GooglePay/card) → confirmPayment
+  → POST /api/stripe/webhook (HMAC verified)
+    → orders.status='paid' → Queue { kind: 'suggestion-render' }
+  → suggestion/render.js  Claude Sonnet 4.5 Vision (baseline screenshot
+                          z auditu nebo capture teď + uploady + brief)
+                          → HTML/CSS string → HTMLRewriter sanitize
+                          → Browser Rendering setContent → screenshot PNG
+                          → R2 (output.html + preview.png)
+                          → email/send.js → tplSuggestionDone
+
+[POST /api/domain/order]                                 (placená — 299–999 Kč/rok)
+  → handlers/domain-order.js  validate + Subreg checkDomain (znova, race condition)
+                              → D1 (lead + orders + domain_orders)
+                              → Stripe PaymentIntent
+                              → return { orderId, clientSecret, publishableKey }
+  Frontend → Stripe Payment Element → confirmPayment
+  → POST /api/stripe/webhook
+    → orders.status='paid' → Queue { kind: 'domain-register' | 'domain-transfer' }
+  → domain/register.js  Subreg Make_Order (Create_Domain | Transfer_Domain)
+                        → completed: Domain_Info → orders.status='done' → mail
+                        → in_progress (transfer): orders.status='processing',
+                          čekáme na Subreg callback (mimo MVP — Fakan ručně)
+
 [Cron */15 min]
   → email/dispatcher.js   D1 vyzvedne queued mail se send_at <= now
                           → Resend (List-Unsubscribe → /odhlasit/{token})
                           → 429/5xx posune send_at, 4xx permanent fail
 
-[GET /audit/{token}]
-  → worker.js              env.ASSETS.fetch('/audit/') (audit-page SPA)
-  → public/audit/index.html  fetch /api/audit/{token}/data + img /api/screenshot/{id}
+[GET /audit/{token}, /navrh/{orderId}, /domena/objednat, /domena/stav/{id}]
+  → worker.js              env.ASSETS.fetch('/{path}/') (SPA)
 
 [GET /odhlasit/{token}, /odhlasit?t=, /unsubscribe?token=]
-  → legacy/optout.js       zkus auditor DB, fallback LEGACY_DB → render done page
-                           legacy flow taky pošle confirmation mail (env.EMAIL)
+  → handlers/optout.js     UPDATE leads.status='unsubscribed' → render done page
 
-[GET /, /ochrana-udaju, /odhlasit-hotovo, /prehled]
+[GET /, /ochrana-udaju, /odhlasit-hotovo, /prehled, /.well-known/*]
   → env.ASSETS.fetch       statika z public/
 ```
 
@@ -130,8 +190,14 @@ Doménová mapa:
 - Neposílat strategist na failed audit (LLM by halucinoval bez findings).
 - Nevracet email leadu / lead_id / interní fields v `/api/audit/{token}/data` —
   whitelist polí v `handlers/report.js`.
-- Nesmazat `LEGACY_DB` binding ani Email Workers `EMAIL` binding, dokud nepostane
-  jasné, že už nikdo z dávných mailů na opt-out neklikne (~3 měsíce po cutoffu).
+- Stripe webhook **nikdy** parsovat před `verifyWebhookSignature` — handler musí
+  číst `request.text()` a poslat raw body do verifikace, jinak HMAC nesedí
+  a útočník propašuje libovolný event.
+- HTML output z Claude Vision **nikdy** servovat klientovi bez `sanitizeHtml()` —
+  zákaz `<script>`, `on*=` handlerů, `javascript:` URL, externích `<iframe>`.
+- Cena návrhu / domény je hardcoded v `handlers/suggestion.js` a
+  `handlers/domain-check.js` + `domain-order.js`. Změna ceny musí jít do
+  obou míst (po stabilizaci přesunout do D1 tabulky).
 
 ## Známá omezení
 
@@ -146,16 +212,79 @@ Doménová mapa:
 | Co | Kde |
 |----|-----|
 | Worker config | `wrangler.toml` |
-| Worker entry + routing | `src/worker.js` |
-| API handlery | `src/handlers/` |
-| Sjednocený opt-out | `src/legacy/optout.js` |
-| Statika (landing + audit-page) | `public/` |
-| Email šablony + dispatcher | `src/email/` |
-| Audit pipeline | `src/audit/` |
+| Worker entry + routing + queue dispatch | `src/worker.js` |
+| Audit handlery | `src/handlers/audit.js`, `report.js`, `screenshot.js` |
+| Suggestion handlery | `src/handlers/suggestion.js`, `suggestion-status.js` |
+| Doménové handlery | `src/handlers/domain-check.js`, `domain-order.js` |
+| Stripe webhook | `src/handlers/stripe-webhook.js` |
+| Stripe API klient | `src/lib/stripe.js` |
+| Subreg SOAP klient | `src/lib/subreg.js` |
+| Claude Vision klient | `src/lib/claude-vision.js` |
+| HTML sanitizer (HTMLRewriter) | `src/lib/html-sanitize.js` |
+| Idempotency klíče | `src/lib/idempotency.js` |
+| File upload + sniff | `src/lib/files.js` |
+| AI render pipeline | `src/suggestion/render.js` |
+| Doménová orchestrace | `src/domain/register.js` |
+| Email drip + dispatcher | `src/email/dispatcher.js` |
+| Email transakční | `src/email/send.js` |
+| Email šablony | `src/email/templates.js` |
+| Opt-out | `src/handlers/optout.js` |
+| Statika (landing + audit + navrh + domena) | `public/` |
 | DB schéma | `db/schema.sql` |
 | Zadání MVP fází 1–5 | `PROMPT.md` |
 | Post-MVP fáze 6/7 | `roadmap.md` |
 | Strategist prompt (zdroj pro JS konstantu) | `strategist-prompt.md` |
+
+## Deploy checklist (poprvé / nové secrety)
+
+**1. D1 schema migration:**
+```bash
+npx wrangler d1 execute fakan_auditor --remote --file=db/schema.sql
+```
+Idempotentní (`CREATE TABLE IF NOT EXISTS`), bezpečné spustit opakovaně.
+
+**2. Secrety (run jednou pro live):**
+```bash
+echo "sk_live_…"        | npx wrangler secret put STRIPE_SECRET_KEY
+echo "whsec_…"          | npx wrangler secret put STRIPE_WEBHOOK_SECRET
+echo "<subreg-login>"   | npx wrangler secret put SUBREG_LOGIN
+echo "<subreg-pwd>"     | npx wrangler secret put SUBREG_PASSWORD
+# Existující (zkontrolovat):
+#   RESEND_API_KEY, ANTHROPIC_API_KEY, PUBLIC_HOST=fakan.cz
+```
+
+**3. Vars v `wrangler.toml`:**
+- `STRIPE_PUBLISHABLE_KEY` — vyplnit `pk_live_…` (test `pk_test_…`).
+
+**4. Stripe Dashboard:**
+- Settings → Payment methods → enable card / Apple Pay / Google Pay.
+- Apple Pay → Add new domain `fakan.cz` → stáhnout
+  `apple-developer-merchantid-domain-association` →
+  uložit do `public/.well-known/apple-developer-merchantid-domain-association`
+  (bez přípony!) → deploy → Stripe Dashboard "Verify".
+- Developers → Webhooks → Add endpoint `https://fakan.cz/api/stripe/webhook`,
+  events: `payment_intent.succeeded`, `payment_intent.payment_failed`,
+  `payment_intent.canceled`, `charge.refunded`. Signing secret → step 2.
+
+**5. Subreg Dashboard:**
+- Vytvořit účet v test režimu (sandbox.subreg.cz) pro vývoj.
+- Před live: `wrangler secret put SUBREG_LOGIN` / `SUBREG_PASSWORD`.
+- Cena domény: `wrangler secret put SUBREG_LOGIN` se ceník automaticky
+  natáhne z `Pricelist` (cache 6 h v KV). Klientský ceník je hardcoded
+  v `handlers/domain-check.js` + `domain-order.js`.
+
+**6. E2E smoke v test mode:**
+```bash
+npx wrangler deploy --dry-run    # bundle prochází
+npx wrangler tail                # sledovat live logs
+# Zkusit: free audit, suggestion s test kartou 4242 4242 4242 4242,
+# domain check, domain order s test mode (Subreg sandbox).
+```
+
+**7. Live deploy:**
+```bash
+npx wrangler deploy
+```
 
 ---
 

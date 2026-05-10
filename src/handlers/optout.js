@@ -1,123 +1,46 @@
-// src/legacy/optout.js
-// Sjednocený opt-out handler pro celý fakan.cz.
+// src/handlers/optout.js
 //
-// Zachytává:
-//   /odhlasit/{token}        — nové hezké URL
-//   /odhlasit?t=<token>      — legacy z fakan-cz (analyze flow)
-//   /odhlasit?token=<token>  — varianta
-//   /unsubscribe?token=...   — List-Unsubscribe header z auditor mailů
+// Opt-out z mailů (List-Unsubscribe + ručně z patičky):
+//   /odhlasit/{token}     — token v cestě
+//   /odhlasit?t=…         — query
+//   /odhlasit?token=…     — query alias
+//   /unsubscribe?token=…  — RFC List-Unsubscribe one-click
 //
-// Dva DB binding:
-//   env.DB         — fakan_auditor.leads.unsub_token (32 hex)
-//   env.LEGACY_DB  — fakan_leads.leads.unsubscribe_token (64 hex), z dávných mailů
-//
-// Pravidla (z původního design.md § 3.3 + risk-check § 5.1):
-//   * Validace formátu tokenu. Fail → 200 generic stránka (NE 400/404),
-//     aby útočník neviděl jestli token "vypadá platně" nebo ne.
-//   * Token nenalezen v žádné DB → 200 generic (NE leak existence).
-//   * Auditor flow: UPDATE status='unsubscribed', bez confirmation mailu.
-//   * Legacy flow:  UPDATE status='opted_out', + confirmation mail (zachované chování).
-//   * DB error → 503 s lidskou hláškou.
-//   * Žádné cookies. Cache-Control: no-store. noindex meta.
-
-import { sendMail } from './lib/mail.js';
+// Pravidla (security):
+//   * Validace tokenu jen formátově. Nematchuje → 200 generic stránka,
+//     ne 400/404 (jinak by útočník zjistil "tenhle tvar je platný").
+//   * Token nenalezen → 200 generic (nesmí leaknout existence).
+//   * Žádný confirmation mail — záznam o opt-outu je sám o sobě potvrzení,
+//     posílat mail po unsubscribe je iritační anti-pattern.
+//   * Žádné cookies. Cache-Control: no-store. <meta noindex>.
 
 const TOKEN_RE = /^[a-f0-9]{32,64}$/;
 
-/**
- * Hlavní handler. Vrací vždy `Response`. Nikdy netrhne.
- *
- * @param {Request} request
- * @param {{ DB: D1Database, LEGACY_DB?: D1Database, EMAIL?: any }} env
- * @param {{ waitUntil: (p: Promise<any>) => void }} ctx
- * @returns {Promise<Response>}
- */
-export async function handleOptout(request, env, ctx) {
+export async function handleOptout(request, env, _ctx) {
   const url = new URL(request.url);
   const token = extractToken(url);
+  if (!token || !TOKEN_RE.test(token)) return renderDonePage();
 
-  // 1) Formátová validace. Vše co neodpovídá → generic stránka (security).
-  if (!token || !TOKEN_RE.test(token)) {
-    return renderDonePage();
-  }
-
-  // 2) Auditor DB (běžný případ — všechny nové leady)
   try {
     const row = await env.DB
-      .prepare('SELECT id, email, status FROM leads WHERE unsub_token = ? LIMIT 1')
-      .bind(token)
-      .first();
+      .prepare('SELECT id, status FROM leads WHERE unsub_token = ? LIMIT 1')
+      .bind(token).first();
 
     if (row) {
       if (row.status !== 'unsubscribed') {
         await env.DB
           .prepare(`UPDATE leads SET status = 'unsubscribed' WHERE id = ?`)
-          .bind(row.id)
-          .run();
+          .bind(row.id).run();
       }
-      return renderDonePage();
     }
+    // Token nenalezen i nalezen → stejná stránka (defenzivně bez leaků).
+    return renderDonePage();
   } catch (err) {
-    console.error('[optout] auditor DB lookup failed', err);
+    console.error('[optout] DB error', err);
     return renderTempErrorPage();
   }
-
-  // 3) Legacy DB (analyze flow, dávné maily). Confirmation mail jako dřív.
-  if (env.LEGACY_DB) {
-    let legacyRow;
-    try {
-      legacyRow = await env.LEGACY_DB
-        .prepare('SELECT id, email, status FROM leads WHERE unsubscribe_token = ? LIMIT 1')
-        .bind(token)
-        .first();
-    } catch (err) {
-      console.error('[optout] legacy DB lookup failed', err);
-      return renderTempErrorPage();
-    }
-
-    if (legacyRow) {
-      if (legacyRow.status === 'opted_out') {
-        return renderDonePage();
-      }
-
-      const nowIso = new Date().toISOString();
-      try {
-        await env.LEGACY_DB
-          .prepare('UPDATE leads SET status = ?, opted_out_at = ?, last_contact_at = ? WHERE id = ?')
-          .bind('opted_out', nowIso, nowIso, legacyRow.id)
-          .run();
-      } catch (err) {
-        console.error('[optout] legacy DB update failed', err);
-        return renderTempErrorPage();
-      }
-
-      // Confirmation mail (legacy flow). HH:MM ze "2026-05-08T14:30:00.000Z".
-      const optedOutTime = nowIso.slice(11, 16);
-      if (ctx && typeof ctx.waitUntil === 'function') {
-        ctx.waitUntil(
-          sendMail({
-            env,
-            template: 'optout-confirmation',
-            to: legacyRow.email,
-            vars: { email: legacyRow.email, opted_out_at: optedOutTime },
-          }).catch((err) => {
-            console.error('[optout] sendMail crashed', err);
-          })
-        );
-      }
-      return renderDonePage();
-    }
-  }
-
-  // 4) Token nenalezen ani v jedné DB → idempotentní generic page (security).
-  return renderDonePage();
 }
 
-/**
- * Extrahuje token z URL — podporuje path i query variantu.
- * @param {URL} url
- * @returns {string | null}
- */
 function extractToken(url) {
   const pathMatch = url.pathname.match(/^\/odhlasit\/([a-f0-9]+)\/?$/i);
   if (pathMatch) return pathMatch[1].toLowerCase();
@@ -125,20 +48,15 @@ function extractToken(url) {
   return t ? t.toLowerCase() : null;
 }
 
-// --- HTML rendery ------------------------------------------------------------
+// --- HTML ------------------------------------------------------------------
 
 const HTML_HEADERS = {
   'content-type': 'text/html; charset=utf-8',
   'cache-control': 'no-store, max-age=0',
 };
 
-function renderDonePage() {
-  return new Response(DONE_HTML, { status: 200, headers: HTML_HEADERS });
-}
-
-function renderTempErrorPage() {
-  return new Response(TEMP_ERROR_HTML, { status: 503, headers: HTML_HEADERS });
-}
+function renderDonePage()      { return new Response(DONE_HTML,       { status: 200, headers: HTML_HEADERS }); }
+function renderTempErrorPage() { return new Response(TEMP_ERROR_HTML, { status: 503, headers: HTML_HEADERS }); }
 
 const SHARED_CSS = `
   :root { --bg:#F9F6F0; --ink:#1F1B16; --muted:#8A7E6E; --line:#E5E0D6; --card:#FFFFFF; --accent:#C84B31; }

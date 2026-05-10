@@ -4,7 +4,7 @@
     {
       "name": "fakan.cz static server",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8080", "--directory", "fakan.cz"],
+      "runtimeArgs": ["-m", "http.server", "8080", "--directory", "public"],
       "port": 8080
     }
   ]

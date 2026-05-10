@@ -354,6 +354,33 @@ section { padding: clamp(56px, 7vw, 88px) 0; border-bottom: 1px solid var(--line
 .cta-banner .cta-foot { text-align: center; margin-top: 20px; font-size: 14px; color: color-mix(in srgb, var(--bg) 75%, var(--ink)); }
 .cta-banner .cta-foot a { color: var(--bg); }
 
+/* Stripe Payment Element — sekce co se objeví po odeslání suggestion formy */
+.suggestion-payment {
+  margin-top: 24px; padding: 24px;
+  background: var(--card); border-radius: 6px;
+  border-left: 3px solid var(--accent);
+  display: grid; gap: 16px;
+}
+.suggestion-payment[hidden] { display: none; }
+.suggestion-payment-summary {
+  font-size: 14px; color: var(--muted); line-height: 1.55;
+}
+.suggestion-payment-summary strong { color: var(--ink); }
+.suggestion-payment-mount {
+  /* Stripe Elements iframe sem; min-height ať to nepoblikává */
+  min-height: 280px;
+}
+.suggestion-payment-status {
+  font-size: 14px; color: var(--muted);
+  padding: 10px 12px; background: var(--bg);
+  border-radius: 4px; margin: 0;
+}
+.suggestion-payment-status[data-state="error"] {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-left: 3px solid var(--accent);
+}
+
 /* Doménový vyhledávač — výsledková tabulka */
 .domain-results {
   margin-top: 28px; background: var(--card);
@@ -451,8 +478,14 @@ input:focus-visible { outline: none; }
           <p class="form-hint">Vygenerovali jsme Vám jednu vtipnou. Klidně si ji upravte.</p>
         </div>
         <div class="user-row">
-          <label>E-mail</label>
-          <p class="user-static" data-user-email>—</p>
+          <label for="userEmailInput">E-mail</label>
+          <input type="email" id="userEmailInput" data-user-email-input autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false">
+          <p class="form-hint">Posíláme sem výsledky a faktury. Změnu zapamatujeme i pro příští objednávky.</p>
+        </div>
+        <div class="user-row">
+          <label for="userUrlInput">Poslední adresa webu</label>
+          <input type="text" id="userUrlInput" data-user-url-input autocomplete="url" inputmode="url" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="vasedomena.cz">
+          <p class="form-hint">Předvyplníme ji ve formulářích, ať to nemusíte psát znovu.</p>
         </div>
         <button type="button" class="user-logout" data-user-logout>Odhlásit</button>
       </section>
@@ -609,8 +642,8 @@ input:focus-visible { outline: none; }
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Rychlé návrhy úprav</span>
-      <h2>Audit ukáže, co opravit. AI ukáže, jak to může vypadat.</h2>
-      <p>Z auditu víte, kde to drhne. Popíšete, co chcete změnit, a my Vám pošleme vizuální návrh — AI vykreslí Vaši stránku v upravené podobě podle Vašeho zadání. 50 Kč za jeden návrh, do pár minut v mailu.</p>
+      <h2>Audit ukáže, co opravit. AI navrhne, jak to udělat.</h2>
+      <p>Z auditu víte, kde to drhne. Popíšete, co chcete změnit, a my Vám pošleme upravenou variantu Vaší stránky — vizuální náhled i hotový HTML/CSS, který si můžete rovnou nasadit. Jeden návrh za 500 Kč, do pár minut v mailu.</p>
     </div>
 
     <form class="url-form" data-suggestion-form novalidate>
@@ -677,9 +710,16 @@ input:focus-visible { outline: none; }
         <label for="companySugg">Pokud čtete tohle, nechte prázdné</label>
         <input type="text" id="companySugg" name="website" tabindex="-1" autocomplete="off">
       </div>
-      <button class="btn-cta" type="submit">Objednat návrh za 50 Kč →</button>
+      <button class="btn-cta" type="submit" data-sugg-submit-btn>Objednat návrh za 500 Kč →</button>
       <p class="form-error" data-form-error role="alert"></p>
-      <p class="form-hint">Návrh dorazí mailem do pár minut. Platba po doručení.</p>
+      <p class="form-hint">Platba kartou, Apple Pay nebo Google Pay. Návrh Vám dorazí mailem do pár minut.</p>
+
+      <div class="suggestion-payment" data-sugg-payment hidden>
+        <p class="suggestion-payment-summary" data-sugg-summary></p>
+        <div class="suggestion-payment-mount" data-sugg-mount></div>
+        <button type="button" class="btn-cta" data-sugg-pay-btn>Zaplatit 500 Kč →</button>
+        <p class="suggestion-payment-status" data-sugg-status hidden></p>
+      </div>
     </form>
   </div>
 </section>
@@ -794,6 +834,53 @@ input:focus-visible { outline: none; }
   </div>
 </section>
 
+<!-- PŘEVOD DOMÉNY -->
+<section id="prevod">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Převod domény</span>
+      <h2>Doménu, kterou už máte, převedeme k nám.</h2>
+      <p>Pokud máte doménu u jiného registrátora a chcete ji přesunout pod nás, stačí nám doménu a takzvaný AuthInfo kód (autorizační heslo, které dostanete u stávajícího registrátora). My vyřídíme zbytek. Schválení trvá u .cz domén do 5 dnů.</p>
+    </div>
+
+    <form class="url-form" data-transfer-form novalidate>
+      <div class="form-row">
+        <label for="transferDomain">Adresa domény</label>
+        <input
+          class="url-input"
+          id="transferDomain"
+          name="fqdn"
+          type="text"
+          placeholder="vasedomena.cz"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          required>
+        <p class="form-hint">Včetně koncovky (.cz, .com, …).</p>
+      </div>
+      <div class="form-row">
+        <label for="transferAuth">AuthInfo kód</label>
+        <input
+          class="url-input"
+          id="transferAuth"
+          name="authInfo"
+          type="text"
+          placeholder="váš AuthInfo / autorizační heslo"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          required>
+        <p class="form-hint">Vygeneruje Vám ho stávající registrátor v administraci. Někdy se mu říká „autorizační heslo" nebo „transfer code".</p>
+      </div>
+      <button class="btn-cta" type="submit">Pokračovat na objednávku →</button>
+      <p class="form-error" data-form-error role="alert"></p>
+      <p class="form-hint">Cena převodu zahrnuje prodloužení o jeden rok. Platba kartou, Apple Pay nebo Google Pay.</p>
+    </form>
+  </div>
+</section>
+
 <!-- CTA -->
 <section style="border-bottom: none;">
   <div class="wrap">
@@ -892,15 +979,44 @@ function clearUser() {
   try { localStorage.removeItem(USER_KEY); } catch {}
 }
 
+// Pretty version URL pro input — bez schématu, bez www, bez koncového slashe.
+// Cílem je, aby předvyplněný input vypadal jako placeholder ("vasedomena.cz"),
+// ne jako "https://vasedomena.cz/".
+function prettyUrlForInput(absoluteOrRaw) {
+  if (!absoluteOrRaw) return '';
+  try {
+    const u = absoluteOrRaw.startsWith('http')
+      ? new URL(absoluteOrRaw)
+      : new URL('https://' + absoluteOrRaw);
+    let out = u.hostname.replace(/^www\./, '');
+    if (u.pathname && u.pathname !== '/') out += u.pathname;
+    return out;
+  } catch { return String(absoluteOrRaw); }
+}
+
+function emitUserChange() {
+  document.dispatchEvent(new CustomEvent('fakan:user-changed'));
+}
+
+// Sjednocený zápis profilu — drží email, nick, lastUrl, historie auditů.
+// Když přijde nový email (jiný než uložený), reset profilu (nový "uživatel").
 function recordAudit({ email, url, token }) {
   let user = getUser();
-  if (!user || user.email !== email) {
-    user = { email, nick: generateNick(), audits: [] };
+  if (email) {
+    if (!user || user.email !== email) {
+      user = { email, nick: (user && user.nick) || generateNick(), audits: [] };
+    }
+  } else if (!user) {
+    return; // bez emailu i bez existujícího profilu nemáme co ukládat
   }
-  user.audits = (user.audits || []).filter(a => a.url !== url);
-  if (token) user.audits.unshift({ url, token, createdAt: Date.now() });
+  if (url) user.lastUrl = url;
+  if (token) {
+    user.audits = (user.audits || []).filter(a => a.url !== url);
+    user.audits.unshift({ url, token, createdAt: Date.now() });
+  }
   setUser(user);
   renderUserLink();
+  emitUserChange();
 }
 
 function renderUserLink() {
@@ -915,13 +1031,15 @@ function renderUserLink() {
 function renderUserModal() {
   const user = getUser();
   if (!user) return;
-  const nickInput = document.querySelector('[data-user-nick-input]');
-  const emailEl = document.querySelector('[data-user-email]');
-  const auditsEl = document.querySelector('[data-user-audits]');
+  const nickInput  = document.querySelector('[data-user-nick-input]');
+  const emailInput = document.querySelector('[data-user-email-input]');
+  const urlInput   = document.querySelector('[data-user-url-input]');
+  const auditsEl   = document.querySelector('[data-user-audits]');
   const auditsEmpty = document.querySelector('[data-user-audits-empty]');
 
-  if (nickInput) nickInput.value = user.nick || '';
-  if (emailEl) emailEl.textContent = user.email || '—';
+  if (nickInput)  nickInput.value  = user.nick || '';
+  if (emailInput) emailInput.value = user.email || '';
+  if (urlInput)   urlInput.value   = prettyUrlForInput(user.lastUrl || '');
 
   if (auditsEl && auditsEmpty) {
     auditsEl.innerHTML = '';
@@ -948,11 +1066,33 @@ function renderUserModal() {
   }
 }
 
+// Předvyplnění všech formů napříč stránkou — URL i e-mail z UserStore.
+// Init běh (overwrite=false): plní jen prázdné inputy, aby právě psaný text
+// uživatele nikdy nepřepsalo. Po explicit změně v profilovém modalu
+// (overwrite=true) přepíšeme i neprázdné — uživatel akci spustil v modalu
+// proto, aby se promítla všude.
+function applyUserToForms({ overwrite = false } = {}) {
+  const user = getUser();
+  if (!user) return;
+  const lastUrl = user.lastUrl || '';
+  const email   = user.email || '';
+  const pretty  = prettyUrlForInput(lastUrl);
+
+  document.querySelectorAll('main form input[name="url"]').forEach((inp) => {
+    if ((overwrite || !inp.value) && pretty) inp.value = pretty;
+  });
+  document.querySelectorAll('main form input[name="email"]').forEach((inp) => {
+    if ((overwrite || !inp.value) && email) inp.value = email;
+  });
+}
+
 (function initUserUI() {
   const link = document.querySelector('[data-user-link]');
   const modal = document.querySelector('[data-user-modal]');
-  const nickInput = document.querySelector('[data-user-nick-input]');
-  const logoutBtn = document.querySelector('[data-user-logout]');
+  const nickInput  = document.querySelector('[data-user-nick-input]');
+  const emailInput = document.querySelector('[data-user-email-input]');
+  const urlInput   = document.querySelector('[data-user-url-input]');
+  const logoutBtn  = document.querySelector('[data-user-logout]');
 
   if (link && modal && typeof modal.showModal === 'function') {
     link.addEventListener('click', () => { renderUserModal(); modal.showModal(); });
@@ -961,16 +1101,44 @@ function renderUserModal() {
     nickInput.addEventListener('change', () => {
       const u = getUser(); if (!u) return;
       const v = nickInput.value.trim().slice(0, 40);
-      if (v) { u.nick = v; setUser(u); renderUserLink(); }
+      if (v) { u.nick = v; setUser(u); renderUserLink(); emitUserChange(); }
+    });
+  }
+  if (emailInput) {
+    emailInput.addEventListener('change', () => {
+      const u = getUser(); if (!u) return;
+      const v = emailInput.value.trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return; // neukládat nevalidní
+      u.email = v;
+      setUser(u);
+      emitUserChange();
+    });
+  }
+  if (urlInput) {
+    urlInput.addEventListener('change', () => {
+      const u = getUser(); if (!u) return;
+      const v = urlInput.value.trim();
+      if (!v) { u.lastUrl = ''; setUser(u); emitUserChange(); return; }
+      const norm = normalizeUrl(v);
+      if (norm) { u.lastUrl = norm; setUser(u); emitUserChange(); }
     });
   }
   if (logoutBtn && modal) {
     logoutBtn.addEventListener('click', () => {
-      clearUser(); renderUserLink();
+      clearUser();
+      renderUserLink();
+      // Po odhlášení smazat hodnoty, které byly prefillnuté ze store —
+      // jinak by zůstaly viditelné pod novým návštěvníkem.
+      document.querySelectorAll('main form input[name="url"], main form input[name="email"]').forEach((inp) => {
+        inp.value = '';
+      });
       if (typeof modal.close === 'function') modal.close();
     });
   }
+
+  document.addEventListener('fakan:user-changed', () => applyUserToForms({ overwrite: true }));
   renderUserLink();
+  applyUserToForms();
 })();
 
 function normalizeUrl(raw) {
@@ -1050,34 +1218,75 @@ document.querySelectorAll('form[data-audit-form]').forEach((form) => {
   });
 });
 
-// Suggestion form — placená rychlá úprava designu. Backend endpoint /api/suggestion
-// zatím neexistuje (TODO v auditor-worker). Form ho volá multipart/form-data se soubory.
+// Suggestion form — placená rychlá úprava designu.
+// Tok:
+//   1) POST /api/suggestion (multipart) → server vytvoří Stripe PaymentIntent
+//      a vrátí { orderId, clientSecret, publishableKey }
+//   2) Frontend lazy-loadne Stripe.js, mountne Payment Element s clientSecretem
+//   3) Klient klikne "Zaplatit" → stripe.confirmPayment({ redirect: 'if_required' })
+//   4) Po úspěchu redirect na /navrh/{orderId} (status page s pollingem)
+//   5) 3DS / SEPA / Bancontact: Stripe sám redirectne na return_url
 const SUGGESTION_API = '/api/suggestion';
 const SUGG_MAX_FILES = 10;
 const SUGG_MAX_TOTAL_BYTES = 20 * 1024 * 1024;
+const STRIPE_JS_URL = 'https://js.stripe.com/v3/';
+
+let stripeJsPromise = null;
+function loadStripeJs() {
+  if (window.Stripe) return Promise.resolve(window.Stripe);
+  if (stripeJsPromise) return stripeJsPromise;
+  stripeJsPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = STRIPE_JS_URL;
+    s.async = true;
+    s.onload  = () => resolve(window.Stripe);
+    s.onerror = () => reject(new Error('Nepodařilo se načíst platební bránu.'));
+    document.head.appendChild(s);
+  });
+  return stripeJsPromise;
+}
+
+function formatCzk(cents) {
+  return new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 }).format(cents / 100);
+}
+
+function suggSetStatus(form, msg, isError = false) {
+  const el = form.querySelector('[data-sugg-status]');
+  if (!el) return;
+  el.textContent = msg;
+  el.hidden = !msg;
+  el.dataset.state = isError ? 'error' : 'info';
+}
 
 async function submitSuggestion(form) {
   clearError(form);
-  const url = normalizeUrl(form.querySelector('[name="url"]').value);
-  const email = String(form.querySelector('[name="email"]').value || '').trim().toLowerCase();
-  const brief = String(form.querySelector('[name="brief"]').value || '').trim();
+  const url     = normalizeUrl(form.querySelector('[name="url"]').value);
+  const email   = String(form.querySelector('[name="email"]').value || '').trim().toLowerCase();
+  const brief   = String(form.querySelector('[name="brief"]').value || '').trim();
   const consent = form.querySelector('[name="consent"]').checked;
-  const honeypot = String(form.querySelector('[name="website"]').value || '').trim();
+  const honeypot= String(form.querySelector('[name="website"]').value || '').trim();
   const filesInput = form.querySelector('[name="files"]');
   const files = filesInput && filesInput.files ? Array.from(filesInput.files) : [];
 
-  if (!url) { showError(form, 'Zadejte platnou adresu webu (např. vasedomena.cz).'); return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError(form, 'Zadejte platný e-mail.'); return; }
-  if (brief.length < 10) { showError(form, 'Popište prosím alespoň jednou větou, co chcete předělat.'); return; }
-  if (!consent) { showError(form, 'Bez souhlasu Vám nabídku nemůžeme poslat.'); return; }
-  if (files.length > SUGG_MAX_FILES) { showError(form, `Maximálně ${SUGG_MAX_FILES} souborů.`); return; }
+  if (!url)                                           { showError(form, 'Zadejte platnou adresu webu (např. vasedomena.cz).'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))      { showError(form, 'Zadejte platný e-mail.'); return; }
+  if (brief.length < 10)                              { showError(form, 'Popište prosím alespoň jednou větou, co chcete předělat.'); return; }
+  if (!consent)                                       { showError(form, 'Bez souhlasu Vám návrh nemůžeme zpracovat.'); return; }
+  if (files.length > SUGG_MAX_FILES)                  { showError(form, `Maximálně ${SUGG_MAX_FILES} souborů.`); return; }
   const totalBytes = files.reduce((s, f) => s + f.size, 0);
-  if (totalBytes > SUGG_MAX_TOTAL_BYTES) { showError(form, 'Soubory dohromady přesahují 20 MB. Pošlete prosím méně nebo menší.'); return; }
+  if (totalBytes > SUGG_MAX_TOTAL_BYTES)              { showError(form, 'Soubory dohromady přesahují 20 MB. Pošlete prosím méně nebo menší.'); return; }
 
-  const btn = form.querySelector('button[type="submit"]');
-  const origLabel = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Posíláme…';
+  const submitBtn = form.querySelector('[data-sugg-submit-btn]');
+  const origLabel = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Připravujeme platbu…';
+
+  // Idempotency-Key persistujeme per-form, ať retry po síťové chybě dostane
+  // tutéž PaymentIntent místo nové (klient by jinak platil dvakrát).
+  if (!form.dataset.idempotencyKey) {
+    form.dataset.idempotencyKey = (crypto.randomUUID && crypto.randomUUID()) ||
+      String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+  }
 
   const fd = new FormData();
   fd.append('url', url);
@@ -1087,26 +1296,118 @@ async function submitSuggestion(form) {
   fd.append('website', honeypot);
   files.forEach((f, i) => fd.append(`file_${i}`, f, f.name));
 
+  let data;
   try {
-    const resp = await fetch(SUGGESTION_API, { method: 'POST', body: fd });
-    const data = await resp.json().catch(() => null);
-
+    const resp = await fetch(SUGGESTION_API, {
+      method: 'POST',
+      body: fd,
+      headers: { 'Idempotency-Key': form.dataset.idempotencyKey },
+    });
+    data = await resp.json().catch(() => null);
     if (!resp.ok || !data || data.ok !== true) {
       const msg = (data && data.error) || 'Nepodařilo se odeslat. Zkuste to prosím za chvíli, nebo napište přímo na jsem@fakan.cz.';
       showError(form, msg);
-      btn.disabled = false;
-      btn.textContent = origLabel;
+      submitBtn.disabled = false;
+      submitBtn.textContent = origLabel;
       return;
     }
-
-    if (data.reportToken) recordAudit({ email, url, token: data.reportToken });
-    btn.textContent = 'Hotovo';
-    showError(form, data.message || 'Poptávka přijata. Ozveme se do 24 hodin s nabídkou.');
   } catch (err) {
-    showError(form, 'Spojení se nepodařilo. Napište prosím přímo na jsem@fakan.cz.');
-    btn.disabled = false;
-    btn.textContent = origLabel;
+    showError(form, 'Spojení se nepodařilo. Zkontrolujte prosím připojení.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = origLabel;
+    return;
   }
+
+  // Pamatuj profil pro budoucí formuláře
+  recordAudit({ email, url, token: null });
+
+  if (!data.publishableKey) {
+    showError(form, 'Platební brána není nakonfigurovaná. Napište prosím na jsem@fakan.cz.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = origLabel;
+    return;
+  }
+
+  // Mount Stripe Payment Element
+  try {
+    await mountStripePayment(form, data);
+  } catch (err) {
+    showError(form, err.message || 'Platební brána se nenačetla. Zkuste obnovit stránku.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = origLabel;
+    return;
+  }
+
+  // Skryj formulářová pole, ukaž platební sekci
+  form.querySelectorAll('.form-row, .form-consent').forEach((el) => { el.hidden = true; });
+  submitBtn.hidden = true;
+  form.querySelector('[data-sugg-payment]').hidden = false;
+}
+
+async function mountStripePayment(form, data) {
+  const StripeCtor = await loadStripeJs();
+  const stripe = StripeCtor(data.publishableKey);
+
+  const elements = stripe.elements({
+    clientSecret: data.clientSecret,
+    appearance: {
+      theme: 'stripe',
+      variables: {
+        colorPrimary:    '#C84B31',
+        colorBackground: '#FFFFFF',
+        colorText:       '#1F1B16',
+        colorDanger:     '#C84B31',
+        fontFamily:      'Georgia, serif',
+        borderRadius:    '6px',
+      },
+    },
+    locale: 'cs',
+  });
+
+  const paymentElement = elements.create('payment', {
+    layout: { type: 'tabs', defaultCollapsed: false },
+    wallets: { applePay: 'auto', googlePay: 'auto' },
+  });
+  paymentElement.mount(form.querySelector('[data-sugg-mount]'));
+
+  const summary = form.querySelector('[data-sugg-summary]');
+  if (summary) {
+    summary.innerHTML =
+      'Souhrn objednávky: <strong>AI návrh úprav webu — ' +
+      String(data.url || '').replace(/[<>&"']/g, '') +
+      '</strong>. Cena <strong>' + formatCzk(data.amountCents) + '</strong> včetně DPH.';
+  }
+
+  const payBtn = form.querySelector('[data-sugg-pay-btn]');
+  payBtn.textContent = 'Zaplatit ' + formatCzk(data.amountCents) + ' →';
+
+  payBtn.addEventListener('click', async () => {
+    suggSetStatus(form, '');
+    payBtn.disabled = true;
+    const origText = payBtn.textContent;
+    payBtn.textContent = 'Platíme…';
+
+    const returnUrl = new URL(`/navrh/${encodeURIComponent(data.orderId)}`, window.location.origin).toString();
+
+    const result = await stripe.confirmPayment({
+      elements,
+      confirmParams: { return_url: returnUrl },
+      redirect: 'if_required',
+    });
+
+    if (result.error) {
+      suggSetStatus(form, result.error.message || 'Platba se nepodařila.', true);
+      payBtn.disabled = false;
+      payBtn.textContent = origText;
+      return;
+    }
+    // Žádná chyba a žádný redirect = succeeded okamžitě (typicky karta bez 3DS)
+    if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+      window.location.href = returnUrl;
+      return;
+    }
+    // Jinak Stripe redirectoval sám (3DS / Apple Pay / …)
+  }, { once: false });
 }
 
 document.querySelectorAll('form[data-suggestion-form]').forEach((form) => {
@@ -1116,76 +1417,35 @@ document.querySelectorAll('form[data-suggestion-form]').forEach((form) => {
   });
 });
 
-// Doména — frontend-only check přes Cloudflare DNS-over-HTTPS (NS query),
-// statický ceník (Subreg pro .cz, Cloudflare registrar pro ostatní + marže).
-// Po stabilizaci přesunout check + objednávku na backend (Subreg API).
-const DOMAIN_TLDS = ['cz', 'com', 'eu', 'sk', 'net', 'org'];
-const DOMAIN_PRICES_KC_YEAR = {
-  cz: 299,
-  com: 399,
-  eu: 349,
-  sk: 499,
-  net: 449,
-  org: 449,
-};
+// Doménový check — backend volá Subreg, vrací aktuální stav i klientskou cenu.
+// Frontend si pamatuje jen labely a UI logiku.
+const DOMAIN_CHECK_API = '/api/domain/check';
 const DOMAIN_INQUIRY_EMAIL = 'jsem@fakan.cz';
+
+const DOMAIN_STATUS_LABEL = {
+  free: 'Volné',
+  taken: 'Obsazené',
+  banned: 'Blokované',
+  unknown: 'Neověřeno',
+  loading: 'Hledáme…',
+};
 
 function sanitizeDomainBase(raw) {
   let s = String(raw || '').trim().toLowerCase();
   if (!s) return null;
-  // Když uživatel zadá schéma / cestu / TLD, vezmeme jen první label.
   s = s.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
   s = s.split('.')[0];
-  // IDN → punycode pomocí URL parseru.
   try {
     const host = new URL('http://' + s + '.example').hostname;
     s = host.split('.')[0];
-  } catch { /* fallback na raw */ }
+  } catch { /* fallback */ }
   if (!/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(s)) return null;
   return s;
 }
 
-async function dohCheck(fqdn) {
-  const url = 'https://cloudflare-dns.com/dns-query?name=' + encodeURIComponent(fqdn) + '&type=NS';
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 5000);
-  try {
-    const r = await fetch(url, { headers: { accept: 'application/dns-json' }, signal: ctrl.signal });
-    if (!r.ok) return 'unknown';
-    const j = await r.json();
-    // Status 3 = NXDOMAIN → volná
-    if (j.Status === 3) return 'free';
-    // Status 0 + Answer s NS → registrovaná
-    if (j.Status === 0 && Array.isArray(j.Answer) && j.Answer.length) return 'taken';
-    // Status 0 bez Answer ale s Authority na vyšší úrovni → volná (existuje jen TLD SOA)
-    if (j.Status === 0 && Array.isArray(j.Authority) && j.Authority.length) {
-      const fqdnLower = fqdn.toLowerCase();
-      const authForDomain = j.Authority.some(a => String(a.name || '').toLowerCase() === fqdnLower);
-      return authForDomain ? 'taken' : 'free';
-    }
-    return 'unknown';
-  } catch {
-    return 'unknown';
-  } finally {
-    clearTimeout(t);
-  }
-}
-
-function mailtoFor(status, fqdn, price) {
-  const isOrder = status === 'free';
-  const subject = (isOrder ? 'Objednávka domény ' : 'Poptávka domény ') + fqdn;
-  const lines = isOrder ? [
-    'Dobrý den,',
-    '',
-    'rád bych si u Vás zaregistroval doménu ' + fqdn + '.',
-    'Orientační cena dle webu: ' + price + ' Kč / rok.',
-    '',
-    'Kontaktní údaje:',
-    'Jméno / firma:',
-    'Telefon:',
-    '',
-    'Děkuji.',
-  ] : [
+function mailtoForUnknown(fqdn) {
+  const subject = 'Poptávka domény ' + fqdn;
+  const lines = [
     'Dobrý den,',
     '',
     'mám zájem o doménu ' + fqdn + '. Můžete prosím ověřit dostupnost a poslat nabídku?',
@@ -1197,32 +1457,27 @@ function mailtoFor(status, fqdn, price) {
     '&body=' + encodeURIComponent(lines.join('\r\n'));
 }
 
-const DOMAIN_STATUS_LABEL = {
-  free: 'Volné',
-  taken: 'Obsazené',
-  unknown: 'Neověřeno',
-  loading: 'Hledáme…',
-};
-
-function renderDomainRow(fqdn, status, price) {
+function renderDomainRow(entry) {
+  // entry: { fqdn, tld, status, available, price_kc_year } nebo placeholder
   const row = document.createElement('div');
   row.className = 'domain-row';
 
   const name = document.createElement('span');
   name.className = 'domain-name';
-  name.textContent = fqdn;
+  name.textContent = entry.fqdn;
 
   const stat = document.createElement('span');
-  stat.className = 'domain-status ' + status;
-  stat.textContent = DOMAIN_STATUS_LABEL[status];
+  stat.className = 'domain-status ' + entry.status;
+  stat.textContent = DOMAIN_STATUS_LABEL[entry.status] || entry.status;
 
   const priceEl = document.createElement('span');
   priceEl.className = 'domain-price';
-  if (status === 'taken' || status === 'loading') {
+  const isTakenLike = entry.status === 'taken' || entry.status === 'banned' || entry.status === 'loading';
+  if (isTakenLike || !entry.price_kc_year) {
     priceEl.textContent = '—';
   } else {
     const strong = document.createElement('strong');
-    strong.textContent = price + ' Kč';
+    strong.textContent = entry.price_kc_year + ' Kč';
     priceEl.appendChild(strong);
     priceEl.appendChild(document.createTextNode(' / rok'));
   }
@@ -1231,11 +1486,19 @@ function renderDomainRow(fqdn, status, price) {
   row.appendChild(stat);
   row.appendChild(priceEl);
 
-  if (status === 'free' || status === 'unknown') {
+  if (entry.status === 'free') {
+    // Po E3 to bude link na /domena/{fqdn} (registrant form + Stripe).
+    // Zatím mailto fallback, ať klient může objednat hned.
     const action = document.createElement('a');
     action.className = 'domain-action';
-    action.href = mailtoFor(status, fqdn, price);
-    action.textContent = status === 'free' ? 'Objednat →' : 'Poptat →';
+    action.href = '/domena/objednat?fqdn=' + encodeURIComponent(entry.fqdn);
+    action.textContent = 'Objednat →';
+    row.appendChild(action);
+  } else if (entry.status === 'unknown') {
+    const action = document.createElement('a');
+    action.className = 'domain-action';
+    action.href = mailtoForUnknown(entry.fqdn);
+    action.textContent = 'Poptat →';
     row.appendChild(action);
   }
   return row;
@@ -1257,25 +1520,40 @@ async function submitDomainSearch(form) {
 
   const results = document.querySelector('[data-domain-results]');
   const foot = document.querySelector('[data-domain-foot]');
-  if (!results) return;
+  if (!results) { btn.disabled = false; btn.textContent = origLabel; return; }
   results.innerHTML = '';
   results.hidden = false;
 
-  // Loading rows
-  const placeholders = {};
-  for (const tld of DOMAIN_TLDS) {
-    const fqdn = base + '.' + tld;
-    const row = renderDomainRow(fqdn, 'loading', DOMAIN_PRICES_KC_YEAR[tld]);
-    results.appendChild(row);
-    placeholders[tld] = row;
+  // Optimistic placeholders, ať uživatel hned vidí scope.
+  const PLACEHOLDER_TLDS = ['cz', 'com', 'eu', 'sk', 'net', 'org'];
+  PLACEHOLDER_TLDS.forEach((tld) => {
+    results.appendChild(renderDomainRow({ fqdn: base + '.' + tld, tld, status: 'loading' }));
+  });
+
+  let data;
+  try {
+    const resp = await fetch(DOMAIN_CHECK_API + '?base=' + encodeURIComponent(base));
+    data = await resp.json().catch(() => null);
+    if (!resp.ok || !data || data.ok !== true) {
+      const msg = (data && data.error) || 'Nepodařilo se ověřit dostupnost. Zkuste to prosím za chvíli.';
+      showError(form, msg);
+      results.hidden = true;
+      btn.disabled = false;
+      btn.textContent = origLabel;
+      return;
+    }
+  } catch {
+    showError(form, 'Spojení se nepodařilo. Zkontrolujte prosím připojení.');
+    results.hidden = true;
+    btn.disabled = false;
+    btn.textContent = origLabel;
+    return;
   }
 
-  await Promise.all(DOMAIN_TLDS.map(async (tld) => {
-    const fqdn = base + '.' + tld;
-    const status = await dohCheck(fqdn);
-    const fresh = renderDomainRow(fqdn, status, DOMAIN_PRICES_KC_YEAR[tld]);
-    placeholders[tld].replaceWith(fresh);
-  }));
+  results.innerHTML = '';
+  for (const entry of data.results) {
+    results.appendChild(renderDomainRow(entry));
+  }
 
   if (foot) foot.hidden = false;
   btn.disabled = false;
@@ -1286,6 +1564,36 @@ document.querySelectorAll('form[data-domain-form]').forEach((form) => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     submitDomainSearch(form);
+  });
+});
+
+// Převod domény — frontend jen redirectne na /domena/objednat?kind=transfer&fqdn=…
+// se základní validací FQDN. AuthInfo se předá jen ve fragmentu (#authInfo=…),
+// aby se nedostal do server access logů. Frontend objednat-stránky si ho přečte.
+function submitTransferForm(form) {
+  clearError(form);
+  const raw = form.querySelector('[name="fqdn"]').value || '';
+  const fqdn = raw.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  if (!/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.[a-z]{2,}$/i.test(fqdn)) {
+    showError(form, 'Zadejte platnou doménu včetně koncovky (např. vasedomena.cz).');
+    return;
+  }
+  const auth = (form.querySelector('[name="authInfo"]').value || '').trim();
+  if (auth.length < 4) {
+    showError(form, 'Zadejte AuthInfo kód od stávajícího registrátora.');
+    return;
+  }
+  // AuthInfo do fragmentu, ne do query — fragmenty se neposílají na server
+  // ani do referer, takže se neloguje.
+  const url = '/domena/objednat?kind=transfer&fqdn=' + encodeURIComponent(fqdn) +
+              '#authInfo=' + encodeURIComponent(auth);
+  window.location.href = url;
+}
+
+document.querySelectorAll('form[data-transfer-form]').forEach((form) => {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitTransferForm(form);
   });
 });
 </script>
