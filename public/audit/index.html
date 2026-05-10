@@ -98,6 +98,93 @@
   .gallery-item.dark img{background:#1F1B16}
   .gallery-item figcaption{font-size:12px;color:var(--muted);margin:8px 0 0}
 
+  /* SEO PREVIEW (SERP + OG + Twitter + JSON-LD + robots/sitemap) */
+  .seo-preview{margin:0 0 48px}
+  .seo-preview h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 0 16px;font-weight:normal}
+  .seo-preview h3{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:24px 0 12px;font-weight:normal}
+  .preview-grid{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:680px){
+    .preview-grid.two-cols{grid-template-columns:1fr 1fr}
+  }
+
+  /* Google SERP náhled (Roboto/Arial, modrý title, breadcrumb URL) */
+  .serp-google{
+    font:14px/1.5 Arial, sans-serif;background:#fff;padding:16px;border-radius:6px;
+    border:1px solid var(--line);
+  }
+  .serp-google .head{font-size:11px;color:#5f6368;margin:0 0 4px;font-weight:bold;letter-spacing:.3px}
+  .serp-google .url{font-size:12px;color:#202124;margin:0 0 4px;line-height:1.4;word-break:break-all}
+  .serp-google .url .domain{color:#5f6368}
+  .serp-google .title{
+    font:20px/1.3 Arial, sans-serif;color:#1a0dab;margin:0 0 4px;font-weight:400;
+    cursor:pointer;
+  }
+  .serp-google .desc{color:#4d5156;font-size:13px;line-height:1.5;margin:0}
+  .serp-google .desc.empty{color:#9aa0a6;font-style:italic}
+
+  /* Seznam SERP náhled (jiný font, tmavomodrý title, URL s ›) */
+  .serp-seznam{
+    font:14px/1.5 'Helvetica Neue', Helvetica, Arial, sans-serif;background:#fff;
+    padding:16px;border-radius:6px;border:1px solid var(--line);
+  }
+  .serp-seznam .head{font-size:11px;color:#666;margin:0 0 4px;font-weight:bold;letter-spacing:.3px}
+  .serp-seznam .title{
+    font:18px/1.3 'Helvetica Neue', Helvetica, Arial, sans-serif;color:#0066cc;
+    margin:0 0 4px;font-weight:600;
+  }
+  .serp-seznam .url{font-size:12px;color:#3b9c00;margin:0 0 4px;word-break:break-all}
+  .serp-seznam .desc{color:#222;font-size:13px;line-height:1.5;margin:0}
+  .serp-seznam .desc.empty{color:#999;font-style:italic}
+
+  /* Facebook/LinkedIn OG card */
+  .og-card{
+    background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;
+    font:14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  .og-card .img{
+    aspect-ratio:1.91/1;background:#f0ede5;display:flex;align-items:center;justify-content:center;
+    color:var(--muted);font-size:12px;font-style:italic;
+  }
+  .og-card .img img{display:block;width:100%;height:100%;object-fit:cover}
+  .og-card .body{padding:12px 14px;background:#f7f7f7}
+  .og-card .domain{font-size:11px;color:#606770;text-transform:uppercase;letter-spacing:.3px;margin:0 0 4px}
+  .og-card .title{font:16px/1.3 inherit;color:#1c1e21;margin:0 0 4px;font-weight:600}
+  .og-card .desc{font-size:13px;color:#606770;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .og-card .head{font-size:11px;color:var(--muted);margin:0 0 4px;font-weight:bold;letter-spacing:.3px}
+
+  /* Twitter card */
+  .tw-card .img{background:#15202b}
+  .tw-card .body{background:#fff;padding:10px 14px}
+  .tw-card .domain{color:#536471}
+  .tw-card .title{color:#0f1419;font-weight:700}
+  .tw-card .desc{color:#536471}
+
+  /* Schema.org list */
+  .jsonld-list{
+    background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 20px;margin:0;
+  }
+  .jsonld-list li{font-size:14px;line-height:1.6;margin:0;list-style:none}
+  .jsonld-list li .type{font-weight:bold;color:var(--ink)}
+  .jsonld-list li .name{color:var(--muted);margin-left:8px}
+
+  /* Robots/sitemap status řádky */
+  .seo-status{background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 20px}
+  .seo-status .row{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .seo-status .row:last-child{border-bottom:none}
+  .seo-status .row .dot{
+    flex:0 0 10px;width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--good);
+  }
+  .seo-status .row.bad  .dot{background:var(--bad)}
+  .seo-status .row.warn .dot{background:var(--warn)}
+  .seo-status .row .body{flex:1}
+  .seo-status .row .label{font-weight:bold;color:var(--ink);display:block;margin:0 0 2px}
+  .seo-status .row .meta{font-size:13px;color:var(--muted);line-height:1.5}
+
+  .preview-empty{
+    background:#fff;border:1px dashed var(--line);border-radius:6px;padding:20px;
+    text-align:center;color:var(--muted);font-style:italic;font-size:14px;
+  }
+
   /* FINDINGS */
   .findings{margin:0 0 48px}
   .findings h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 0 16px;font-weight:normal}
@@ -238,7 +325,7 @@ const MAX_POLLS = 60;
       continue;
     }
 
-    return render(payload.audit, payload.findings, payload.strategist, payload.screenshots || {}, payload.ai_summary);
+    return render(payload.audit, payload.findings, payload.strategist, payload.screenshots || {}, payload.ai_summary, payload.seo_preview || null);
   }
   showMissing();
 })();
@@ -259,7 +346,7 @@ function renderRunning(audit) {
     </div>`;
 }
 
-function render(audit, findings, strat, shots, aiSummary) {
+function render(audit, findings, strat, shots, aiSummary, seoPreview) {
   const score = audit.score ?? 0;
   const label = scoreLabel(score);
 
@@ -323,6 +410,8 @@ function render(audit, findings, strat, shots, aiSummary) {
 
     ${renderGallery(audit, shots)}
 
+    ${renderSeoPreview(audit, seoPreview)}
+
     <section class="findings">
       <h2>Co konkrétně</h2>
       ${findingsHtml}
@@ -337,6 +426,193 @@ function render(audit, findings, strat, shots, aiSummary) {
       <a class="cta-alt" href="tel:+420604690539">Nebo zavolejte: +420 604 690 539</a>
     </section>
   `;
+}
+
+// --- SEO náhledy: SERP (Google + Seznam) + OG + Twitter + JSON-LD + robots/sitemap ---
+
+function renderSeoPreview(audit, seo) {
+  if (!seo) return '';
+
+  const url = audit.url || `https://${audit.domain}/`;
+  const domain = audit.domain || '';
+
+  const title = seo.title || '';
+  const desc  = seo.metaDescription || '';
+
+  // Title si Google sám zkrátí, my pro náhled emulujeme cropping ~60 znaků.
+  const titleGoogle = title ? truncMid(title, 60) : '(stránka nemá <title>)';
+  const titleSeznam = title ? truncMid(title, 65) : '(stránka nemá titulek)';
+  const descGoogle  = desc  ? truncMid(desc, 160) : '';
+  const descSeznam  = desc  ? truncMid(desc, 200) : '';
+
+  const breadcrumb = urlBreadcrumb(url, domain);
+
+  // OG / Twitter náhled — preferujeme OG, fallback na meta description / title.
+  const og = seo.og || {};
+  const tw = seo.twitter || {};
+  const ogImage = og.image || tw.image || null;
+  const ogTitle = og.title || tw.title || title;
+  const ogDesc  = og.description || tw.description || desc;
+  const hasAnyOg = Boolean(og.title || og.description || og.image || tw.title || tw.image);
+
+  const fbCard = `
+    <div class="og-card" aria-label="Náhled sdílení na Facebooku a LinkedInu">
+      <p class="head" style="padding:8px 14px 0;margin:0;color:var(--muted)">Sdílení na Facebooku / LinkedInu</p>
+      <div class="img">${ogImage ? `<img src="${esc(ogImage)}" alt="" onerror="this.parentElement.textContent='(obrázek se nenačetl)'">` : '(žádný náhled — chybí og:image)'}</div>
+      <div class="body">
+        <p class="domain">${esc(domain.toLowerCase())}</p>
+        <p class="title">${esc(ogTitle || '(bez titulku)')}</p>
+        ${ogDesc ? `<p class="desc">${esc(ogDesc)}</p>` : ''}
+      </div>
+    </div>`;
+
+  const twCard = (tw.title || tw.image) ? `
+    <div class="og-card tw-card" aria-label="Náhled sdílení na X (Twitteru)">
+      <p class="head" style="padding:8px 14px 0;margin:0;color:var(--muted)">Sdílení na X (Twitter)</p>
+      <div class="img">${tw.image ? `<img src="${esc(tw.image)}" alt="" onerror="this.parentElement.textContent='(obrázek se nenačetl)'">` : '(bez obrázku)'}</div>
+      <div class="body">
+        <p class="domain">${esc(domain.toLowerCase())}</p>
+        <p class="title">${esc(tw.title || ogTitle || '(bez titulku)')}</p>
+        ${(tw.description || ogDesc) ? `<p class="desc">${esc(tw.description || ogDesc)}</p>` : ''}
+      </div>
+    </div>` : '';
+
+  // Schema.org JSON-LD list.
+  const jsonLdHtml = (seo.jsonLd && seo.jsonLd.length) ? `
+    <h3>Co o vás vyhledávače ví (Schema.org)</h3>
+    <ul class="jsonld-list">
+      ${seo.jsonLd.map((it) => `
+        <li><span class="type">${esc(it.type)}</span>${it.name ? `<span class="name">— ${esc(it.name)}</span>` : ''}</li>
+      `).join('')}
+    </ul>` : '';
+
+  // Robots / sitemap status
+  const robotsRow = renderRobotsRow(seo.robots);
+  const sitemapRow = renderSitemapRow(seo.sitemap);
+
+  return `
+    <section class="seo-preview">
+      <h2>Jak vás vidí vyhledávače</h2>
+      <div class="preview-grid two-cols">
+        <div class="serp-google">
+          <p class="head">Google</p>
+          <p class="url">
+            <span class="domain">${esc(domain)}</span>
+            ${breadcrumb ? ` › ${esc(breadcrumb)}` : ''}
+          </p>
+          <p class="title">${esc(titleGoogle)}</p>
+          <p class="desc${desc ? '' : ' empty'}">${desc ? esc(descGoogle) : '(žádný popis stránky — Google si vymyslí svůj.)'}</p>
+        </div>
+        <div class="serp-seznam">
+          <p class="head">Seznam</p>
+          <p class="title">${esc(titleSeznam)}</p>
+          <p class="url">${esc(domain)}${breadcrumb ? ` › ${esc(breadcrumb)}` : ''}</p>
+          <p class="desc${desc ? '' : ' empty'}">${desc ? esc(descSeznam) : '(žádný popis stránky.)'}</p>
+        </div>
+      </div>
+
+      <h3>Jak vypadá sdílení Vašeho webu</h3>
+      ${hasAnyOg
+        ? `<div class="preview-grid${twCard ? ' two-cols' : ''}">
+             ${fbCard}
+             ${twCard}
+           </div>`
+        : `<div class="preview-empty">Web nemá Open Graph tagy. Při sdílení na sociálních sítích se zobrazí jen URL bez obrázku, titulku i popisu.</div>`
+      }
+
+      ${jsonLdHtml}
+
+      <h3>Robots a mapa webu</h3>
+      <div class="seo-status">
+        ${robotsRow}
+        ${sitemapRow}
+      </div>
+    </section>
+  `;
+}
+
+function renderRobotsRow(r) {
+  if (!r || !r.exists) {
+    return `
+      <div class="row warn">
+        <div class="dot"></div>
+        <div class="body">
+          <span class="label">robots.txt — chybí</span>
+          <span class="meta">Vyhledávače nedostanou pokyny, kam smějí a kde najdou mapu webu.</span>
+        </div>
+      </div>`;
+  }
+  if (r.disallowAll) {
+    return `
+      <div class="row bad">
+        <div class="dot"></div>
+        <div class="body">
+          <span class="label">robots.txt — zakazuje celý web</span>
+          <span class="meta">Soubor obsahuje "Disallow: /". Google ani Seznam web nezaindexují.</span>
+        </div>
+      </div>`;
+  }
+  return `
+    <div class="row">
+      <div class="dot"></div>
+      <div class="body">
+        <span class="label">robots.txt — v pořádku</span>
+        <span class="meta">${r.sitemapUrls && r.sitemapUrls.length ? `Odkazuje na sitemap: ${esc(r.sitemapUrls[0])}` : 'Bez odkazu na sitemap.'}</span>
+      </div>
+    </div>`;
+}
+
+function renderSitemapRow(s) {
+  if (!s || !s.exists) {
+    return `
+      <div class="row warn">
+        <div class="dot"></div>
+        <div class="body">
+          <span class="label">sitemap.xml — chybí</span>
+          <span class="meta">Mapa webu pomáhá Googlu najít všechny stránky, hlavně u nových webů.</span>
+        </div>
+      </div>`;
+  }
+  if (s.urlCount === 0) {
+    return `
+      <div class="row warn">
+        <div class="dot"></div>
+        <div class="body">
+          <span class="label">sitemap.xml — prázdná</span>
+          <span class="meta">Soubor existuje, ale neobsahuje žádné URL.</span>
+        </div>
+      </div>`;
+  }
+  const kindLabel = s.kind === 'index' ? `${s.urlCount} pod-mapy` : `${s.urlCount} ${pluralCs(s.urlCount, 'URL', 'URL', 'URL')}`;
+  return `
+    <div class="row">
+      <div class="dot"></div>
+      <div class="body">
+        <span class="label">sitemap.xml — v pořádku</span>
+        <span class="meta">${esc(kindLabel)}${s.truncated ? ' (zobrazujeme jen prvních ' + s.urlCount + ').' : '.'}</span>
+      </div>
+    </div>`;
+}
+
+function urlBreadcrumb(url, domain) {
+  try {
+    const u = new URL(url);
+    const path = u.pathname.replace(/\/$/, '').replace(/^\//, '');
+    if (!path) return '';
+    return path.split('/').join(' › ');
+  } catch { return ''; }
+}
+
+function truncMid(str, max) {
+  if (!str) return '';
+  if (str.length <= max) return str;
+  return str.slice(0, max - 1).replace(/\s+\S*$/, '') + '…';
+}
+
+function pluralCs(n, one, few, many) {
+  if (n === 1) return one;
+  if (n >= 2 && n <= 4) return few;
+  return many;
 }
 
 function renderGallery(audit, shots) {

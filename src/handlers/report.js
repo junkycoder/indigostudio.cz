@@ -31,6 +31,8 @@ export async function handleReport(request, env) {
   const summaryScores = summary.scores || {};
   const screenshots = summary.screenshots || {};
   const aiReview = summary.aiReview || null;
+  const seoData = summary.seoData || {};
+  const discovery = summary.discovery || {};
 
   // Whitelist polí — NEVRACET lead email, lead_id, error, json_summary, ip, …
   // Frontend si zná token z URL, víc nepotřebuje.
@@ -61,6 +63,23 @@ export async function handleReport(request, env) {
     // AI shrnutí — vykání, max 2 věty, vrací jen text (žádné scores_detail
     // a usage; ty jsou interní).
     ai_summary: aiReview?.summary || null,
+    // SEO náhledy pro SPA: Google + Seznam SERP, Facebook/LinkedIn OG card,
+    // Twitter card, nalezené Schema.org typy, robots.txt + sitemap.xml.
+    seo_preview: {
+      title:                 seoData.title || null,
+      titleLength:           seoData.titleLength || 0,
+      metaDescription:       seoData.metaDescription || null,
+      metaDescriptionLength: seoData.metaDescriptionLength || 0,
+      canonical:             seoData.canonical || null,
+      lang:                  seoData.lang || null,
+      h1Count:               seoData.h1Count || 0,
+      hreflang:              Array.isArray(seoData.hreflang) ? seoData.hreflang : [],
+      jsonLd:                Array.isArray(seoData.jsonLd)   ? seoData.jsonLd   : [],
+      og:                    seoData.og      || {},
+      twitter:               seoData.twitter || {},
+      robots:                discovery.robots   || { exists: false },
+      sitemap:               discovery.sitemap  || { exists: false },
+    },
     findings:   findings.results,
     strategist: strategist ? hydrateStrategist(strategist) : null,
   };

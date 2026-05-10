@@ -6,7 +6,8 @@ import { runAxe }           from './checks/axe.js';
 import { detectCookies }    from './checks/cookies.js';
 import { checkHeaders }     from './checks/headers.js';
 import { detectCms }        from './checks/cms.js';
-import { checkSeo }         from './checks/seo.js';
+import { checkSeo, buildSeoLengthFindings } from './checks/seo.js';
+import { checkDiscovery }   from './checks/discovery.js';
 import { runVisualChecks }  from './checks/visual.js';
 import { runAiReview }      from './checks/ai-review.js';
 import { score }            from './scoring.js';
@@ -21,6 +22,7 @@ export async function processAuditJob(job, env, ctx) {
 
   const findings = [];
   let perfData = {}, cookieData = {}, headerData = {}, cmsData = {}, seoData = {};
+  let discoveryData = { robots: { exists: false }, sitemap: { exists: false } };
   let visualData = { screenshots: {}, metrics: {} };
   let aiData = { findings: [], scores: {}, summary: null };
   let browser, errMsg = null;
@@ -102,9 +104,16 @@ export async function processAuditJob(job, env, ctx) {
       aiData = { findings: [], scores: {}, summary: null, error: aiErr.message?.slice(0, 200) };
     }
 
-    headerData = await checkHeaders(url);
+    // Headers + discovery (robots.txt + sitemap.xml) — oboje mimo browser,
+    // pustit paralelně.
+    [headerData, discoveryData] = await Promise.all([
+      checkHeaders(url),
+      checkDiscovery(url),
+    ]);
 
     findings.push(...buildFindings({ perfData, cookieData, headerData, cmsData, seoData }));
+    findings.push(...buildSeoLengthFindings(seoData));
+    findings.push(...(discoveryData.findings || []));
 
   } catch (err) {
     errMsg = err.message?.slice(0, 500) || 'Unknown error';
@@ -136,6 +145,7 @@ export async function processAuditJob(job, env, ctx) {
     cmsData?.cms || null, errMsg,
     JSON.stringify({
       perfData, cookieData, headerData, cmsData, seoData,
+      discovery:   discoveryData,
       visualMetrics: visualData.metrics,
       screenshots: visualData.screenshots,
       aiReview: {
@@ -228,14 +238,12 @@ function buildFindings({ perfData, cookieData, headerData, cmsData, seoData }) {
   if (!headerData.https) f.push({ category:'sec', severity:'critical', title:'Web nejede na HTTPS',
     fix_hint:'Cloudflare zdarma, do hodiny máš zelený zámek.', weight:5 });
 
-  // SEO
-  if (!seoData.title) f.push({ category:'seo', severity:'high', title:'Chybí <title>', weight:3 });
+  // SEO — chybějící title / description je vážné. Délky a OG tagy řeší
+  // buildSeoLengthFindings() (volá se z processoru zvlášť).
+  if (!seoData.title) f.push({ category:'seo', severity:'high', title:'Chybí titulek stránky', weight:3 });
   if (!seoData.metaDescription) f.push({ category:'seo', severity:'medium',
-    title:'Chybí meta description',
-    fix_hint:'Krátký popis (do 160 znaků). Google si jinak vymyslí.', weight:2 });
-  if (!seoData.ogTitle) f.push({ category:'seo', severity:'low',
-    title:'Chybí Open Graph tagy',
-    fix_hint:'Bez OG tagů má sdílení na Facebooku/LinkedInu generický náhled.', weight:1 });
+    title:'Chybí popis stránky',
+    fix_hint:'Krátký popis (do 160 znaků). Google si jinak vymyslí, co o stránce napíše.', weight:2 });
 
   // CMS
   if (cmsData.cms === 'wordpress' && cmsData.outdated)
