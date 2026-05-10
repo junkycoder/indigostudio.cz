@@ -94,6 +94,86 @@ CREATE TABLE lead_profiles (
 
 ---
 
+## Fáze 8 — Developer účet + vlastní browser extension
+
+**Cíl:** Placený developer účet s vlastním buildem web-extension. V extension
+sedí konfig + jednodenní refresh token, takže developer po instalaci nemusí
+nikam psát login.
+
+**Flow:**
+- Developer si v `fakan.cz` koupí účet → vygeneruje se mu vlastní build extension
+  (CRX/ZIP) s předpečeným configem + krátkým refresh tokenem (24 h).
+- Po instalaci extension buď:
+  a) automaticky otevře `fakan.cz` s rozkliknutým modálem "Developer extension
+     připojena" → web přes postMessage / cookie zpáruje extension s účtem,
+  b) nebo modál spustí ručně user, výsledek stejný.
+- Token rotace: extension si refreshuje token, expiruje za 24 h pokud user
+  není aktivní (security default).
+- **Návod na instalaci přes Developer mode v Chrome** (chrome://extensions →
+  Load unpacked) — jednoduchý krok-za-krokem screenshot guide, protože
+  Chrome Web Store schvalování nechceme řešit dokud není stable.
+
+**Otevřené otázky:**
+- Firefox / Edge / Safari build? Manifest V3 napříč nemusí být přímočarý.
+- Sideload v Chrome ukazuje warning "Disable developer mode extensions" každý
+  restart — pro paying customera otravné, ale alternativa = Chrome Web Store
+  review (~2 týdny + ongoing compliance).
+- Co extension reálně dělá? (TBD — předpoklad: in-page debug overlay nad
+  audit findings, případně injektor pro marketplace komponenty z Fáze 10.)
+
+---
+
+## Fáze 9 — Native apps (web / iOS / Android)
+
+**Cíl:** Vlastní aplikace pro dvě persony:
+- **Developer** — správa zakázek, klientů, marketplace produktů, výplat.
+- **Majitel webu** — přehled vlastních webů, audit historie, správa
+  marketplace komponent na webu, fakturace.
+
+**Stack open question:**
+- Web app: pravděpodobně rozšíření `fakan.cz` (vanilla JS / SPA per route,
+  drží se stack pravidla z CLAUDE.md).
+- Mobile: PWA jako MVP (nepřidává build step, instaluje se z webu),
+  nebo Capacitor / React Native pokud bude potřeba native API
+  (push notifikace, biometrie, NFC platby).
+- Auth: jednotný session backend ve Workeru (existuje pro free audit token,
+  rozšířit o login/refresh).
+
+**Pasti:**
+- Rozhodnout per-persona feature scope dřív než se začne kódit — jinak
+  jedna app dělá všechno špatně.
+- Apple App Store + Google Play review = další compliance overhead;
+  PWA nedává placenou distribuci přes store, ale ušetří review cyklus.
+
+---
+
+## Fáze 10 — Marketplace komponent pro weby
+
+**Cíl:** Katalog hotových funkcionalit, které si majitel webu instaluje
+do svého webu jedním kliknutím — formuláře, košík, rezervace, chatbot,
+analytics widget, atd. Mix vlastních (od fakan.cz) a third-party (od
+ověřených developerů z Fáze 8). Free i placené.
+
+**Otevřené otázky:**
+- Distribuce: snippet kódu (script tag / iframe), npm package, nebo
+  injection přes developer extension z Fáze 8?
+- Hosting: my hostujeme runtime na Workeru, developer dodá jen kód +
+  config schema?
+- Revenue split: kolik si bere fakan.cz z placených komponent
+  (typický marketplace 15–30 %).
+- QA / bezpečnost: každá komponenta musí projít sandboxem (iframe origin
+  isolation, CSP whitelist) jinak XSS na klientském webu = naše blame.
+- Verzování + breaking changes: developer pushne v2 — jak migrovat
+  existující instalace bez rozbitých webů?
+
+**Závislosti:**
+- Fáze 8 (developer účet) musí existovat dřív, jinak nemáme kdo komponenty
+  dodává mimo nás.
+- Fáze 9 (app pro majitele webu) je ideální UI pro instalaci komponent,
+  ale marketplace lze startovat i z `fakan.cz` web admin.
+
+---
+
 ## Pořadí
 
 1. Dokončit MVP (Fáze 1–5).
@@ -101,3 +181,6 @@ CREATE TABLE lead_profiles (
 3. Po **50 reálných** auditech rozhodnout, jestli začít s Fází 6 nebo 7.
    - Pokud >40 % leadů odpoví: Fáze 6 (auto-reply šetří hodně práce).
    - Pokud Fakan rozhoduje sales priority "od oka": Fáze 7 (priority list ze zdat).
+4. Fáze 8–10 jsou samostatný produktový směr (developer ekosystém + marketplace),
+   nezávislý na Fázi 6/7. Otevřít až po revenue validaci MVP — vyžaduje řádově
+   víc engineering času a nový business model (revenue share).
