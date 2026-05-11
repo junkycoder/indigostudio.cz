@@ -78,8 +78,9 @@ export async function getOrCreateCustomer(env, { email, name, metadata }) {
 // ---- PaymentIntent --------------------------------------------------------
 
 // `automatic_payment_methods` zapne všechny platební metody enabled v Stripe
-// dashboardu — karta + Apple Pay + Google Pay + bank redirects (Bancontact aj.).
-// Pro MVP držíme jen card + wallets (Stripe to default takhle).
+// dashboardu. `allow_redirects: 'never'` vyloučí off-site redirect-based methods
+// (Klarna, Bancontact, Sofort, EPS …) — chceme jen on-site instantní metody:
+// karta + Apple Pay + Google Pay. Klarna/BNPL na 299 Kč doménu nedává smysl.
 export async function createPaymentIntent(env, {
   amountCents,
   currency = 'czk',
@@ -95,7 +96,7 @@ export async function createPaymentIntent(env, {
   const body = {
     amount: amountCents,
     currency,
-    automatic_payment_methods: { enabled: true },
+    automatic_payment_methods: { enabled: true, allow_redirects: 'never' },
     metadata: { ...metadata, order_id: orderId },
   };
   if (customerId)    body.customer = customerId;
