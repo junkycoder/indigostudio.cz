@@ -132,7 +132,7 @@ async function safeFetch(url) {
   try {
     return await fetch(url, {
       method: 'GET',
-      headers: { 'user-agent': 'FakanAuditor/1.0 (+https://fakan.cz)' },
+      headers: { 'user-agent': 'IndigoStudioAuditor/1.0 (+https://indigostudio.cz)' },
       redirect: 'follow',
       signal: ac.signal,
       cf: { cacheTtl: 0 },

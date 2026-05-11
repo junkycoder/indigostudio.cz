@@ -49,7 +49,7 @@ export async function handleAccountStart(request, env, ctx) {
   const { device, setCookieHeader } = await getOrCreateDevice(env, request);
   const now   = Math.floor(Date.now() / 1000);
   const token = randomTokenHex(32);
-  const host  = env.PUBLIC_HOST || 'fakan.cz';
+  const host  = env.PUBLIC_HOST || 'indigostudio.cz';
 
   await env.DB.prepare(
     `INSERT INTO magic_links (token, email, device_id, expires_at, created_at)
@@ -78,7 +78,7 @@ export async function handleAccountVerify(request, env, ctx) {
 
   const url   = new URL(request.url);
   const token = url.searchParams.get('t') || '';
-  const host  = env.PUBLIC_HOST || 'fakan.cz';
+  const host  = env.PUBLIC_HOST || 'indigostudio.cz';
   if (!token) return redirectErr(host, 'invalid');
 
   const now = Math.floor(Date.now() / 1000);
@@ -111,14 +111,14 @@ function redirectErr(host, reason) {
 }
 
 // Odhlášení: odpojí current device od accountu (account_id = NULL)
-// a expiruje cookie 'fakan_device'. Idempotentní — bez cookie / s neplatnou
+// a expiruje cookie 'indigo_device'. Idempotentní — bez cookie / s neplatnou
 // cookie projde stejně 200 OK. Account row + journeys zůstávají, jen tenhle
 // browser je odpojený. Po /api/me si klient vyrobí čerstvý anonymní device.
 export async function handleAccountLogout(request, env, _ctx) {
   if (request.method !== 'POST') return json(405, { ok: false, error: 'Method not allowed' });
 
   const cookieHeader = request.headers.get('Cookie') || '';
-  const m = cookieHeader.match(/(?:^|;\s*)fakan_device=([^;]+)/);
+  const m = cookieHeader.match(/(?:^|;\s*)indigo_device=([^;]+)/);
   const deviceToken = m ? m[1] : null;
 
   if (deviceToken) {
@@ -127,6 +127,6 @@ export async function handleAccountLogout(request, env, _ctx) {
     ).bind(deviceToken).run();
   }
 
-  const expireCookie = `fakan_device=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+  const expireCookie = `indigo_device=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
   return json(200, { ok: true }, { 'Set-Cookie': expireCookie });
 }

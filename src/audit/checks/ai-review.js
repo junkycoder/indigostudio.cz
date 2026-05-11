@@ -27,7 +27,7 @@ const SCREENSHOT_KEYS = ['mobilePortrait', 'mobileLandscape', 'desktop', 'mobile
 const SEVERITY_WHITELIST = new Set(['critical', 'high', 'medium', 'low']);
 const CATEGORY_WHITELIST = new Set(['visual', 'content']);
 
-const SYSTEM_PROMPT = `Jste vizuální a obsahový redaktor fakan.cz. Hodnotíte weby českých malých podnikatelů a spolků.
+const SYSTEM_PROMPT = `Jste vizuální a obsahový redaktor Indigo Studia. Hodnotíte weby českých malých podnikatelů a spolků.
 
 VSTUP, KTERÝ DOSTÁVÁTE:
 - 4 screenshoty webu (mobil na výšku, mobil na šířku, desktop, mobil v tmavém režimu)

@@ -4,7 +4,7 @@
 //
 // Anonymní flow:
 //   - Frontend volá /api/me → middleware vyrobí device_token, pošle Set-Cookie.
-//   - Cookie 'fakan_device' (httpOnly, Secure, SameSite=Lax, 1 rok).
+//   - Cookie 'indigo_device' (httpOnly, Secure, SameSite=Lax, 1 rok).
 //   - Token sám stačí pro plný UX (vidí svoje journeys v profilu).
 //
 // Verifikace emailu:
@@ -16,7 +16,7 @@
 // Magic link váže 'originating_device' (kdo si link vyžádal) jen pro audit log.
 // Při verify použijeme aktuální device (klient může kliknout z jiného browseru).
 
-const COOKIE_NAME    = 'fakan_device';
+const COOKIE_NAME    = 'indigo_device';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;     // 1 rok
 
 const RX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

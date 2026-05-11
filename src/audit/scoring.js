@@ -1,6 +1,6 @@
 // src/audit/scoring.js
 // Vyrobí sub-skóre 0–100 pro každou kategorii + vážený průměr (celkové score).
-// Váhy zvýrazňují, co je Fakanovo USP: a11y/EAA + cookie-free.
+// Váhy zvýrazňují naše USP: a11y/EAA + cookie-free.
 //
 // Kategorie `visual` (Fáze A) sbírá deterministické vizuální findings
 // (multi-viewport overflow, iOS focus zoom, touch targety, dark mode).

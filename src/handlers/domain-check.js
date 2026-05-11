@@ -13,8 +13,8 @@ import { checkDomain } from '../lib/subreg.js';
 const ALLOWED_TLDS = ['cz', 'com', 'eu', 'sk', 'net', 'org'];
 
 // Klientská cena za rok registrace (incl. marže pro studio).
-// Po stabilizaci přesunout do D1 tabulky `domain_prices` a Fakan upravuje
-// přímo přes DB query.
+// Po stabilizaci přesunout do D1 tabulky `domain_prices` a upravovat přímo
+// přes DB query.
 const CLIENT_PRICES_CZK = {
   cz: 299, com: 399, eu: 349, sk: 499, net: 449, org: 449,
 };

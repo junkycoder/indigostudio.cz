@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#F9F6F0">
-<title>Audit webu — fakan.cz</title>
+<meta name="theme-color" content="#F8F6F2">
+<title>Audit webu — Indigo Studio</title>
 <style>
   :root{
-    --bg:#F9F6F0;
-    --ink:#1F1B16;
-    --muted:#8A7E6E;
-    --line:#E5E0D6;
-    --accent:#C84B31;
+    --bg:#F8F6F2;
+    --ink:#1E1B4B;
+    --muted:#6B7280;
+    --line:#DDD9E8;
+    --accent:#4F46E5;
     --good:#84A98C;
-    --warn:#D4783A;
-    --bad:#C84B31;
+    --warn:#F59E0B;
+    --bad:#4F46E5;
     --critical:#7B1E1E;
     --card:#FFFFFF;
   }
@@ -77,7 +77,7 @@
   .screenshot{margin:0 0 48px;text-align:center}
   .screenshot img{
     max-width:280px;width:100%;border:1px solid var(--line);border-radius:6px;
-    box-shadow:0 4px 24px rgba(31,27,22,.06);
+    box-shadow:0 4px 24px rgba(30,27,75,.06);
   }
   .screenshot p{font-size:12px;color:var(--muted);margin:8px 0 0}
 
@@ -93,9 +93,9 @@
   .gallery-item figure{margin:0}
   .gallery-item img{
     max-width:100%;width:100%;border:1px solid var(--line);border-radius:4px;
-    background:#fff;box-shadow:0 2px 12px rgba(31,27,22,.04);
+    background:#fff;box-shadow:0 2px 12px rgba(30,27,75,.04);
   }
-  .gallery-item.dark img{background:#1F1B16}
+  .gallery-item.dark img{background:#1E1B4B}
   .gallery-item figcaption{font-size:12px;color:var(--muted);margin:8px 0 0}
 
   /* SEO PREVIEW (SERP + OG + Twitter + JSON-LD + robots/sitemap) */
@@ -230,7 +230,7 @@
     display:inline-block;background:var(--accent);color:#fff;padding:14px 28px;
     text-decoration:none;border-radius:4px;font-weight:bold;font-family:inherit;
   }
-  .btn:hover{background:#A93D27}
+  .btn:hover{background:#3730A3}
   .cta-alt{display:block;color:#fff;opacity:.7;margin-top:16px;font-size:14px;text-decoration:none}
 
   /* LOADING */
@@ -255,7 +255,7 @@
 <body>
 
 <header>
-  <a href="https://fakan.cz">fakan.cz</a>
+  <a href="https://indigostudio.cz">indigostudio.cz</a>
   <span class="phase">audit</span>
 </header>
 
@@ -268,11 +268,11 @@
 
 <footer>
   © 2026 · provozuje Indigo Studio s.r.o. ·
-  <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>
+  <a href="mailto:daniel@indigostudio.cz">daniel@indigostudio.cz</a>
 </footer>
 
 <script type="module">
-// Frontend i API jedou na fakan.cz (jeden Worker, same-origin).
+// Frontend i API jedou na indigostudio.cz (jeden Worker, same-origin).
 // Audit data: GET /api/audit/{token}/data, screenshot: GET /api/screenshot/{auditId}.
 
 const root = document.getElementById('root');
@@ -334,7 +334,7 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function showMissing() {
   root.innerHTML = `<div class="loading"><p>Tento report neexistuje nebo vypršel.</p>
-    <p><a href="https://fakan.cz">Zpět na fakan.cz</a></p></div>`;
+    <p><a href="https://indigostudio.cz">Zpět na indigostudio.cz</a></p></div>`;
 }
 
 function renderRunning(audit) {
@@ -422,7 +422,7 @@ function render(audit, findings, strat, shots, aiSummary, seoPreview) {
     <section class="cta">
       <h2>Chcete, abychom to vyřešili?</h2>
       <p>Pevná cena. Žádné kecy. Hotovo do tří týdnů.</p>
-      <a class="btn" href="mailto:jsem@fakan.cz?subject=${encodeURIComponent('Web ' + audit.domain)}">Napište nám</a>
+      <a class="btn" href="mailto:daniel@indigostudio.cz?subject=${encodeURIComponent('Web ' + audit.domain)}">Napište nám</a>
       <a class="cta-alt" href="tel:+420604690539">Nebo zavolejte: +420 604 690 539</a>
     </section>
   `;

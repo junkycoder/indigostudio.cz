@@ -1,4 +1,4 @@
-# CLAUDE.md — fakan repo
+# CLAUDE.md — Indigo Studio repo
 
 Tenhle soubor Claude Code automaticky načte na začátku každého sezení.
 Drž se ho. Pokud něco není zde, koukni do `PROMPT.md` (původní zadání auditoru)
@@ -8,7 +8,7 @@ a `roadmap.md` (post-MVP fáze).
 
 ## Co je v tomhle repu
 
-Jeden Cloudflare Worker (`fakan`) servuje **celý fakan.cz**. Autonomní webové
+Jeden Cloudflare Worker (`indigo-studio`) servuje **celé indigostudio.cz** (a po dobu cutoffu i fakan.cz). Autonomní webové
 studio — vše end-to-end přes API:
 
 - **Audit webů** (zdarma) — form → 5 min → mail s reportem → 4-mail drip.
@@ -64,27 +64,36 @@ Adresářová struktura (klasický Workers layout v rootu):
 
 ## Stav (aktuální commit; vždy ověř `git log` pro skutečnost)
 
-Worker `fakan` běží na fakan.cz (deployed 2026-05-09). Sjednocení tří
-původních deploymentů (`fakan-cz` Worker, `fakan-auditor` Worker na
-api.fakan.cz, Pages na audit.fakan.cz) je hotové, code i deploy.
+**Rebrand Fakan → Indigo Studio (commit 2026-05-11):** Worker přejmenovaný na
+`indigo-studio`, všechny public-facing texty a barvy přepsané na novou paletu
+(indigo + warm paper). Doména `indigostudio.cz` se kupuje přes vlastní
+`/api/domain/order` flow. Worker původně `fakan` (deployed 2026-05-09) drží
+zatím i `fakan.cz`; po DNS + Apple Pay verifikaci pro novou doménu se přidá
+druhá route `indigostudio.cz`.
 
 **Studio funkčnost (commit 2026-05-09):** suggestion + domain register +
-domain transfer flows kompletní v kódu, neotestované live (čeká na
-Fakanovy Stripe + Subreg secrety + Apple Pay domain verifikační soubor —
-viz Deploy checklist níž).
+domain transfer flows kompletní v kódu, neotestované live (čeká na Apple Pay
+domain verifikační soubor — viz Deploy checklist níž).
 
-Cleanup, který Fakan dělá ručně až bude jistá stabilita:
+Cleanup, který je třeba udělat ručně až bude jistá stabilita:
 
 1. CF dashboard → smazat starý Worker `fakan-cz` (už nedrží route).
 2. CF dashboard → smazat starý Worker `fakan-auditor` (po rename na `fakan`
    už nedrží route, jen existuje v účtu).
 3. CF dashboard → smazat Pages projekt `fakan-audit-page`.
-4. (Volitelně) CF dashboard → Bulk Redirects:
-   - `audit.fakan.cz/*` → `https://fakan.cz/$1` (301)
-   - `api.fakan.cz/*` → `https://fakan.cz/$1` (301)
-   Drž 3 měsíce, pak zruš.
-5. CF dashboard → smazat D1 `fakan_leads` (bývalý LEGACY_DB) — kód i binding
-   už ho nepoužívá. Když chce mít Fakan zálohu, předtím export.
+4. CF dashboard → po deployi nového Workeru pod jménem `indigo-studio` smazat
+   starý Worker `fakan` (jeho route `fakan.cz` se přesune na nový).
+5. CF dashboard → po cutoffu na `indigostudio.cz` přidat Bulk Redirect:
+   - `fakan.cz/*` → `https://indigostudio.cz/$1` (301)
+   - `audit.fakan.cz/*` → `https://indigostudio.cz/$1` (301)
+   - `api.fakan.cz/*` → `https://indigostudio.cz/$1` (301)
+   Drž 3 měsíce, pak zruš a fakan.cz nech expirovat.
+6. CF dashboard → smazat D1 `fakan_leads` (bývalý LEGACY_DB) — kód i binding
+   už ho nepoužívá. Když je potřeba zálohu, předtím export.
+7. (Volitelně) přejmenovat v CF dashboardu D1 `fakan_auditor` → `indigo_studio`,
+   R2 `fakan-reports` → `indigo-reports`. Queue rename nepodporován; nechat.
+   Worker je vázán na database_id / binding name, takže rename je bez dopadu
+   na deploy — jen sjednotí dashboard s brandem.
 
 ## Pravidla práce
 
@@ -98,16 +107,16 @@ Cleanup, který Fakan dělá ručně až bude jistá stabilita:
   uživatel je vyplní lokálně. (Existující ID v repu zůstávají.)
 - **Tajemství** přes `wrangler secret put`, nikdy do `wrangler.toml` ani kódu.
 - **Když se zasekneš** — napiš `BLOCKERS.md` s "Co jsem zkusil / Proč to nefunguje /
-  Co potřebuju od Fakana", commit dosavadní práci a STOP.
+  Co potřebuju od Daniela", commit dosavadní práci a STOP.
 - **Žádný observability stack** — `console.log` je OK, Workers Logs v dashboardu stačí.
 
 ## Tonalita zákaznických textů (důležité — paměť to obsahuje, opakuju zde)
 
 Pro **veškeré texty směřující na klienta** (mailové šablony, audit-page, validační hlášky,
-SYSTEM prompt strategistovi, copy na fakan.cz):
+SYSTEM prompt strategistovi, copy na indigostudio.cz):
 
 - **Vykání**, malé v/v textech (kromě nově psaných pasáží, kde mám velké V/Vám/Vás —
-  Fakan zatím nesjednotil, drž konzistenci s okolním souborem). NIKDY tykání.
+  není to zatím sjednoceno, drž konzistenci s okolním souborem). NIKDY tykání.
 - **Minimální technické znalosti klienta.** Žargon (HSTS, CSP, FCP, EAA, CMS, CDN,
   WebP, lazy-loading…) buď nepoužívat, nebo vysvětlit v jedné větě lidsky.
 - **Asertivní > defenzivní.** Krátké věty, konkrétní čísla z findings, jasná
@@ -160,7 +169,7 @@ SYSTEM prompt strategistovi, copy na fakan.cz):
   → domain/register.js  Subreg Make_Order (Create_Domain | Transfer_Domain)
                         → completed: Domain_Info → orders.status='done' → mail
                         → in_progress (transfer): orders.status='processing',
-                          čekáme na Subreg callback (mimo MVP — Fakan ručně)
+                          čekáme na Subreg callback (mimo MVP — dispatcheme ručně)
 
 [Cron */15 min]
   → email/dispatcher.js   D1 vyzvedne queued mail se send_at <= now
@@ -178,7 +187,7 @@ SYSTEM prompt strategistovi, copy na fakan.cz):
 ```
 
 Doménová mapa:
-- `fakan.cz` — Worker `fakan` (vše)
+- `indigostudio.cz` (primární po cutoffu), `fakan.cz` (legacy během přechodu) — Worker `indigo-studio` (vše)
 - `api.fakan.cz`, `audit.fakan.cz` — zaniklé (volitelně 301 přes Bulk Redirect)
 
 ## Co NEdělej
@@ -205,7 +214,7 @@ Doménová mapa:
   vyžaduje deploy do staging environmentu.
 - Strategist few-shoty bez prompt cachingu — po stabilizaci promptu (po ~50 reálných
   auditech) zapnout `cache_control: { type: 'ephemeral' }`.
-- Žádný admin UI / kanban — Fakan přes D1 query přímo.
+- Žádný admin UI / kanban — sahám do D1 query přímo.
 
 ## Klíčové soubory
 
@@ -250,7 +259,7 @@ echo "whsec_…"          | npx wrangler secret put STRIPE_WEBHOOK_SECRET
 echo "<subreg-login>"   | npx wrangler secret put SUBREG_LOGIN
 echo "<subreg-pwd>"     | npx wrangler secret put SUBREG_PASSWORD
 # Existující (zkontrolovat):
-#   RESEND_API_KEY, ANTHROPIC_API_KEY, PUBLIC_HOST=fakan.cz
+#   RESEND_API_KEY, ANTHROPIC_API_KEY, PUBLIC_HOST=indigostudio.cz
 ```
 
 **3. Vars v `wrangler.toml`:**
@@ -258,11 +267,11 @@ echo "<subreg-pwd>"     | npx wrangler secret put SUBREG_PASSWORD
 
 **4. Stripe Dashboard:**
 - Settings → Payment methods → enable card / Apple Pay / Google Pay.
-- Apple Pay → Add new domain `fakan.cz` → stáhnout
+- Apple Pay → Add new domain `indigostudio.cz` (po cutoffu) / `fakan.cz` (legacy) → stáhnout
   `apple-developer-merchantid-domain-association` →
   uložit do `public/.well-known/apple-developer-merchantid-domain-association`
   (bez přípony!) → deploy → Stripe Dashboard "Verify".
-- Developers → Webhooks → Add endpoint `https://fakan.cz/api/stripe/webhook`,
+- Developers → Webhooks → Add endpoint `https://indigostudio.cz/api/stripe/webhook`,
   events: `payment_intent.succeeded`, `payment_intent.payment_failed`,
   `payment_intent.canceled`, `charge.refunded`. Signing secret → step 2.
 
@@ -289,5 +298,5 @@ npx wrangler deploy
 ---
 
 **Začátek nového sezení:** zjisti aktuální stav (`git status`, `git log -5`),
-porovnej s tímhle souborem, a zeptej se Fakana, na čem pracovat. Nepouštěj se
+porovnej s tímhle souborem, a zeptej se Daniela, na čem pracovat. Nepouštěj se
 do akce bez kontextu.

@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Váš návrh — fakan.cz</title>
-<meta name="theme-color" content="#F9F6F0">
+<title>Váš návrh — Indigo Studio</title>
+<meta name="theme-color" content="#F8F6F2">
 <meta name="robots" content="noindex, nofollow">
 <style>
 :root {
-  --bg: #F9F6F0;
-  --ink: #1F1B16;
-  --muted: #8A7E6E;
-  --line: #E5E0D6;
+  --bg: #F8F6F2;
+  --ink: #1E1B4B;
+  --muted: #6B7280;
+  --line: #DDD9E8;
   --card: #FFFFFF;
-  --accent: #C84B31;
+  --accent: #4F46E5;
   --good: #84A98C;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -78,7 +78,7 @@ h1 { font-weight: normal; font-size: clamp(28px, 4vw, 40px); margin: 0 0 8px; }
   border: none; cursor: pointer; font: inherit;
   font-weight: bold;
 }
-.btn:hover { background: #A93D27; }
+.btn:hover { background: #3730A3; }
 .btn-secondary {
   background: transparent; color: var(--ink);
   border: 1px solid var(--line);
@@ -103,7 +103,7 @@ footer a { color: var(--muted); }
 
 <header>
   <div class="wrap header-inner">
-    <a class="brand" href="/">fakan.cz</a>
+    <a class="brand" href="/">indigostudio.cz</a>
   </div>
 </header>
 
@@ -138,7 +138,7 @@ footer a { color: var(--muted); }
 
 <footer>
   <div class="wrap">
-    <span>&copy; 2026 fakan.cz · provozuje Indigo Studio s.r.o. · <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a></span>
+    <span>&copy; 2026 Indigo Studio s.r.o. · provozuje Indigo Studio s.r.o. · <a href="mailto:daniel@indigostudio.cz">daniel@indigostudio.cz</a></span>
   </div>
 </footer>
 
@@ -218,7 +218,7 @@ async function poll(orderId) {
     if (!data || data.ok !== true) {
       consecutiveErrors++;
       if (consecutiveErrors >= 5) {
-        showStatusCard('error', 'Zatím se nedaří se nás dovolat', 'Zkuste prosím obnovit stránku, nebo nám napište na jsem@fakan.cz s číslem objednávky ' + orderId + '.');
+        showStatusCard('error', 'Zatím se nedaří se nás dovolat', 'Zkuste prosím obnovit stránku, nebo nám napište na daniel@indigostudio.cz s číslem objednávky ' + orderId + '.');
         return;
       }
     } else {
@@ -230,11 +230,11 @@ async function poll(orderId) {
         return;
       }
       if (data.status === 'failed') {
-        showStatusCard('error', 'Něco se pokazilo', data.errorMessage || 'Vrátíme Vám peníze a ozveme se mailem. Pokud se neozveme do 24 hodin, prosím napište na jsem@fakan.cz.');
+        showStatusCard('error', 'Něco se pokazilo', data.errorMessage || 'Vrátíme Vám peníze a ozveme se mailem. Pokud se neozveme do 24 hodin, prosím napište na daniel@indigostudio.cz.');
         return;
       }
       if (data.status === 'canceled' || data.status === 'refunded') {
-        showStatusCard('error', 'Objednávka byla zrušená', 'Pokud jste zrušení nezadali, ozvěte se prosím na jsem@fakan.cz.');
+        showStatusCard('error', 'Objednávka byla zrušená', 'Pokud jste zrušení nezadali, ozvěte se prosím na daniel@indigostudio.cz.');
         return;
       }
     }
@@ -246,7 +246,7 @@ async function poll(orderId) {
 (function init() {
   const orderId = getOrderId();
   if (!orderId) {
-    showStatusCard('error', 'Neplatný odkaz', 'V URL chybí ID objednávky. Pokud jste sem dorazili z mailu, napište prosím na jsem@fakan.cz.');
+    showStatusCard('error', 'Neplatný odkaz', 'V URL chybí ID objednávky. Pokud jste sem dorazili z mailu, napište prosím na daniel@indigostudio.cz.');
     return;
   }
   applyPaintFromStatus('paid'); // optimistic — pokud webhook už doběhl

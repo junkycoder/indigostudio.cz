@@ -1,10 +1,10 @@
-# fakan.cz
+# Indigo Studio
 
 **Autonomní webové studio — vše end-to-end přes API.**
 
-Jeden Cloudflare Worker (`fakan`) servuje celý fakan.cz: audit webů zdarma, AI
-návrhy úprav (přes Stripe ApplePay/GooglePay), nákup a převod domén (přes
-Subreg). Žádné microservices, žádné frameworky, žádný build step.
+Jeden Cloudflare Worker (`indigo-studio`) servuje celé indigostudio.cz: audit
+webů zdarma, AI návrhy úprav (přes Stripe ApplePay/GooglePay), nákup a převod
+domén (přes Subreg). Žádné microservices, žádné frameworky, žádný build step.
 
 > **Než cokoliv změníš v repu, přečti si [CLAUDE.md](CLAUDE.md).** Tam jsou
 > pravidla práce, tonalita, architektura, deploy checklist a omezení. Tenhle
@@ -23,7 +23,7 @@ Subreg). Žádné microservices, žádné frameworky, žádný build step.
 
 Drip a transakční maily teče přes Resend, scheduling přes D1 + cron `*/15 min`.
 
-**Identita:** anonymní `fakan_device` cookie (httpOnly, 1 rok) — klient vidí
+**Identita:** anonymní `indigo_device` cookie (httpOnly, 1 rok) — klient vidí
 svoje journeys hned bez registrace. Opt-in účet přes magic link (žádné heslo,
 žádný registrační formulář), který sjednotí journeys napříč všemi device tokeny
 podle emailu lead.
@@ -32,9 +32,9 @@ podle emailu lead.
 
 - **Runtime:** Cloudflare Workers (`compatibility_date = "2025-04-01"`,
   `nodejs_compat`)
-- **Storage:** D1 (`fakan_auditor`), KV (cache + rate limit), R2 (screenshoty,
-  hotové návrhy)
-- **Async:** Queues (`fakan-audit-jobs`), cron trigger
+- **Storage:** D1 (`fakan_auditor` — legacy interní jméno, binding `DB`),
+  KV (cache + rate limit), R2 (screenshoty, hotové návrhy)
+- **Async:** Queues (`fakan-audit-jobs` — legacy interní jméno), cron trigger
 - **Browser Rendering:** `@cloudflare/puppeteer` (audit screenshoty, preview
   návrhů)
 - **AI:** Claude Sonnet 4.5 (strategist + Vision pro AI návrhy)
@@ -131,7 +131,7 @@ Tajné proměnné přes `wrangler secret put` (nikdy do `wrangler.toml` ani kód
 ```
 RESEND_API_KEY
 ANTHROPIC_API_KEY
-PUBLIC_HOST              # "fakan.cz"
+PUBLIC_HOST              # "indigostudio.cz"
 STRIPE_SECRET_KEY        # sk_live_… / sk_test_…
 STRIPE_WEBHOOK_SECRET    # whsec_…
 SUBREG_LOGIN
@@ -203,7 +203,7 @@ Plné schéma datových toků v [CLAUDE.md — Architektura](CLAUDE.md#architekt
 ## Tonalita zákaznických textů
 
 Pro **veškeré texty směřující na klienta** (mailové šablony, audit-page,
-validační hlášky, copy na fakan.cz) platí přísná pravidla — vykání, minimum
+validační hlášky, copy na indigostudio.cz) platí přísná pravidla — vykání, minimum
 technického žargonu, krátké věty, žádné emoji ani vykřičníky, „hned" mentalita
 s konkrétními termíny. Detail v
 [CLAUDE.md — Tonalita zákaznických textů](CLAUDE.md#tonalita-zákaznických-textů-důležité--paměť-to-obsahuje-opakuju-zde).
@@ -213,6 +213,7 @@ code komentáře) tahle pravidla NEDODRŽUJÍ — můžeš tykat a být úsečn�
 
 ## Kontakt
 
-- **Daniel Hromada (Fakan)** — [jsem@fakan.cz](mailto:jsem@fakan.cz),
+- **Indigo Studio s.r.o.**, IČO 14389096
+- **Daniel Hromada** — [daniel@indigostudio.cz](mailto:daniel@indigostudio.cz),
   +420 604 690 539
 - **GitHub** — [github.com/junkycoder](https://github.com/junkycoder)

@@ -13,7 +13,7 @@
 //
 // Idempotence: pokud orders.status už je 'processing'/'done', skip.
 // Při chybě: orders.status='failed', error_message, mail klientovi že vrátíme peníze
-// (refund flow řeší Fakan ručně přes Stripe Dashboard).
+// (refund flow řešíme ručně přes Stripe Dashboard).
 
 import puppeteer from '@cloudflare/puppeteer';
 import { callVision, bufferToBase64 } from '../lib/claude-vision.js';
@@ -133,7 +133,7 @@ export async function processSuggestionRender({ orderId }, env, ctx) {
     ]);
 
     // 9) Mail — best-effort, fail by neměl rollbacknout render
-    const host = env.PUBLIC_HOST || 'fakan.cz';
+    const host = env.PUBLIC_HOST || 'indigostudio.cz';
     const previewPublicUrl = `https://${host}/api/suggestion/${orderId}/preview`;
     const outputPublicUrl  = `https://${host}/api/suggestion/${orderId}/output`;
     const tpl = tplSuggestionDone(env, {
@@ -160,7 +160,7 @@ export async function processSuggestionRender({ orderId }, env, ctx) {
     await env.DB.prepare(
       `UPDATE orders SET status='failed', error_message=?, updated_at=? WHERE id=?`
     ).bind(msg, now(), orderId).run();
-    throw err; // queue retry — po max_retries skončí v DLQ a Fakan ručně
+    throw err; // queue retry — po max_retries skončí v DLQ, řešíme ručně
   } finally {
     if (browser) await browser.close().catch(() => {});
   }
@@ -184,7 +184,7 @@ async function loadOrCaptureBaseline(env, row) {
     browser = await puppeteer.launch(env.MYBROWSER);
     const page = await browser.newPage();
     await page.setViewport({ width: 390, height: 844, isMobile: true });
-    await page.setUserAgent('FakanAuditor/1.0 (+https://fakan.cz)');
+    await page.setUserAgent('IndigoStudioAuditor/1.0 (+https://indigostudio.cz)');
     await page.goto(row.url, { waitUntil: 'networkidle2', timeout: 25000 });
     const buf = await page.screenshot({ type: 'jpeg', quality: 75 });
     return { mimeType: 'image/jpeg', base64: bufferToBase64(buf.buffer || buf) };

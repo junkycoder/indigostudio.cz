@@ -59,7 +59,7 @@ function renderDonePage()      { return new Response(DONE_HTML,       { status: 
 function renderTempErrorPage() { return new Response(TEMP_ERROR_HTML, { status: 503, headers: HTML_HEADERS }); }
 
 const SHARED_CSS = `
-  :root { --bg:#F9F6F0; --ink:#1F1B16; --muted:#8A7E6E; --line:#E5E0D6; --card:#FFFFFF; --accent:#C84B31; }
+  :root { --bg:#F8F6F2; --ink:#1E1B4B; --muted:#6B7280; --line:#DDD9E8; --card:#FFFFFF; --accent:#4F46E5; }
   *, *::before, *::after { box-sizing: border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font-family:Georgia,'Times New Roman',serif; font-size:17px; line-height:1.65; min-height:100vh; display:flex; flex-direction:column; }
   a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--line); text-underline-offset:3px; }
@@ -86,19 +86,19 @@ const DONE_HTML = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#F9F6F0">
-<title>Odhlášeno — fakan.cz</title>
+<meta name="theme-color" content="#F8F6F2">
+<title>Odhlášeno — Indigo Studio</title>
 <style>${SHARED_CSS}</style>
 </head>
 <body>
-<header><div class="header-inner"><a class="brand" href="/">fakan.cz</a><a class="back" href="/">← Zpět na fakan.cz</a></div></header>
+<header><div class="header-inner"><a class="brand" href="/">Indigo Studio</a><a class="back" href="/">← Zpět na indigostudio.cz</a></div></header>
 <main>
   <div class="card">
     <h1>Odhlásili jsme Vás z e-mailů.</h1>
-    <p>Z naší strany už žádný e-mail nepřijde. Pokud byste cokoliv potřeboval(a), ozvěte se nám na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a>.</p>
+    <p>Z naší strany už žádný e-mail nepřijde. Pokud byste cokoliv potřeboval(a), ozvěte se nám na <a href="mailto:daniel@indigostudio.cz">daniel@indigostudio.cz</a>.</p>
   </div>
 </main>
-<footer><div class="footer-inner">© 2026 fakan.cz · provozuje Indigo Studio s.r.o.</div></footer>
+<footer><div class="footer-inner">© 2026 Indigo Studio s.r.o., IČO 14389096</div></footer>
 </body>
 </html>`;
 
@@ -108,18 +108,18 @@ const TEMP_ERROR_HTML = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#F9F6F0">
-<title>Dočasná chyba — fakan.cz</title>
+<meta name="theme-color" content="#F8F6F2">
+<title>Dočasná chyba — Indigo Studio</title>
 <style>${SHARED_CSS}</style>
 </head>
 <body>
-<header><div class="header-inner"><a class="brand" href="/">fakan.cz</a><a class="back" href="/">← Zpět na fakan.cz</a></div></header>
+<header><div class="header-inner"><a class="brand" href="/">Indigo Studio</a><a class="back" href="/">← Zpět na indigostudio.cz</a></div></header>
 <main>
   <div class="card">
     <h1>Dočasná chyba.</h1>
-    <p>Zkuste to prosím znovu za pár minut. Pokud to nepůjde, napište nám na <a href="mailto:jsem@fakan.cz">jsem@fakan.cz</a> a odhlásíme Vás ručně.</p>
+    <p>Zkuste to prosím znovu za pár minut. Pokud to nepůjde, napište nám na <a href="mailto:daniel@indigostudio.cz">daniel@indigostudio.cz</a> a odhlásíme Vás ručně.</p>
   </div>
 </main>
-<footer><div class="footer-inner">© 2026 fakan.cz · provozuje Indigo Studio s.r.o.</div></footer>
+<footer><div class="footer-inner">© 2026 Indigo Studio s.r.o., IČO 14389096</div></footer>
 </body>
 </html>`;

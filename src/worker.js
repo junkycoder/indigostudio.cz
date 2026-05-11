@@ -1,5 +1,5 @@
 // src/worker.js
-// Jeden Worker servuje celý fakan.cz: landing + audit-page + API + opt-out.
+// Jeden Worker servuje celé indigostudio.cz: landing + audit-page + API + opt-out.
 // Statiku obsluhuje binding ASSETS (auditor-worker/public/), dynamiku Worker.
 
 import { handleAudit }         from './handlers/audit.js';

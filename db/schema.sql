@@ -1,4 +1,4 @@
--- fakan auditor DB schema
+-- Indigo Studio auditor DB schema
 
 CREATE TABLE IF NOT EXISTS leads (
   id          TEXT PRIMARY KEY,
@@ -124,7 +124,7 @@ CREATE INDEX IF NOT EXISTS idx_orders_status_created ON orders(status, created_a
 CREATE INDEX IF NOT EXISTS idx_orders_pi             ON orders(stripe_payment_intent_id);
 CREATE INDEX IF NOT EXISTS idx_orders_kind_status    ON orders(kind, status);
 
--- Detail AI suggestion orderu. R2 keys odkazují na fakan-reports bucket.
+-- Detail AI suggestion orderu. R2 keys odkazují na REPORTS R2 bucket.
 CREATE TABLE IF NOT EXISTS suggestions (
   order_id              TEXT PRIMARY KEY,
   audit_id              TEXT,              -- z čeho bereme baseline screenshot
@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS domain_orders (
   registrant_dic      TEXT,
   registrar_order_id  TEXT,                 -- ID vrácené registrátorem
   registrar_status    TEXT,                 -- raw status z registrátora
-  ns_records_json     TEXT,                 -- po dokončení: ["ns1.fakan.cz", …]
+  ns_records_json     TEXT,                 -- po dokončení: ["ns1.<host>", …]
   period_years        INTEGER NOT NULL DEFAULT 1,
   expires_at          INTEGER,              -- unix epoch, doplněno po registraci
   FOREIGN KEY (order_id) REFERENCES orders(id)

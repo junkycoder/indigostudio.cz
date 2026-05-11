@@ -1,16 +1,18 @@
 // src/lib/cors.js
-// Po sjednocení do jednoho Workeru je všechno same-origin (fakan.cz),
+// Po sjednocení do jednoho Workeru je všechno same-origin (indigostudio.cz),
 // takže CORS prakticky netřeba. Ponecháno defenzivně pro lokální dev origin
-// a krátkodobý 301 redirect z audit.fakan.cz (Bulk Redirect, ~3 měsíce po cutoffu).
+// a 301 redirect z legacy fakan.cz / audit.fakan.cz (Bulk Redirect).
 
 const ALLOWED_ORIGINS = new Set([
+  'https://indigostudio.cz',
+  'https://www.indigostudio.cz',
   'https://fakan.cz',
   'https://www.fakan.cz',
 ]);
 
 export function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '';
-  const allow  = ALLOWED_ORIGINS.has(origin) ? origin : 'https://fakan.cz';
+  const allow  = ALLOWED_ORIGINS.has(origin) ? origin : 'https://indigostudio.cz';
   return {
     'Access-Control-Allow-Origin':  allow,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',

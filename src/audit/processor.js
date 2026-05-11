@@ -31,7 +31,7 @@ export async function processAuditJob(job, env, ctx) {
     browser = await puppeteer.launch(env.MYBROWSER);
     const page = await browser.newPage();
     await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true });
-    await page.setUserAgent('FakanAuditor/1.0 (+https://fakan.cz)');
+    await page.setUserAgent('IndigoStudioAuditor/1.0 (+https://indigostudio.cz)');
 
     const cookieLog = [];
     page.on('response', (resp) => {

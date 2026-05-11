@@ -22,7 +22,7 @@ export async function sendTransactional(env, { to, subject, html, text, listUnsu
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Fakan <jsem@fakan.cz>',
+      from: 'Indigo Studio <daniel@indigostudio.cz>',
       to,
       subject,
       html,

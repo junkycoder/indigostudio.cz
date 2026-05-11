@@ -1,4 +1,4 @@
-name = "fakan"
+name = "indigo-studio"
 main = "src/worker.js"
 compatibility_date = "2025-04-01"
 compatibility_flags = ["nodejs_compat"]
@@ -9,8 +9,13 @@ compatibility_flags = ["nodejs_compat"]
 browser = { binding = "MYBROWSER" }
 
 # ----- Routing -----
-# Worker drží celý fakan.cz: landing, audit pipeline, audit report SPA,
-# opt-out, plus budoucí featury (placené návrhy, nákup domény).
+# Worker drží celou primary doménu: landing, audit pipeline, audit report SPA,
+# opt-out, placené návrhy, nákup/převod domén.
+#
+# Aktuálně na fakan.cz (legacy). Po nákupu indigostudio.cz a DNS propagaci
+# přidáme druhý [[routes]] block s `pattern = "indigostudio.cz"`. fakan.cz
+# pak prvních ~3 měsíce zůstane ko-existovat (301 redirect na worker úrovni
+# nebo přes Cloudflare Bulk Redirect), pak ho odebereme.
 [[routes]]
 pattern = "fakan.cz"
 zone_name = "fakan.cz"
@@ -43,6 +48,8 @@ run_worker_first = [
 ]
 
 # ----- D1 -----
+# database_name a binding ID zůstávají (po rebrandu lze přejmenovat v CF dashboardu,
+# Worker se k DB váže přes database_id, takže rename je bez dopadu na deploy).
 [[d1_databases]]
 binding = "DB"
 database_name = "fakan_auditor"
@@ -60,11 +67,16 @@ binding = "RATELIMIT"
 id = "4735d070d7534677a653cf190de4911b"
 
 # ----- R2 (uložené reporty + screenshoty) -----
+# bucket_name zůstává (po rebrandu lze přejmenovat v CF dashboardu — Worker
+# binding ID zůstává platný).
 [[r2_buckets]]
 binding = "REPORTS"
 bucket_name = "fakan-reports"
 
 # ----- Queues -----
+# queue name `fakan-audit-jobs` zůstává — Cloudflare queues nepodporují rename,
+# přejmenování by vyžadovalo migrate (vytvořit novou queue + draining staré).
+# Mimo MVP rozsah.
 [[queues.producers]]
 binding = "AUDIT_QUEUE"
 queue = "fakan-audit-jobs"
@@ -86,11 +98,13 @@ crons = ["*/15 * * * *"]   # každých 15 min — vyhodnotit naplánované maily
 [vars]
 # Stripe publishable key — pošle ho frontend k Payment Elementu. Není citlivý
 # (sám Stripe ho čeká v JS bundlu klienta). Pro dev override .dev.vars.
-STRIPE_PUBLISHABLE_KEY = "pk_test_51TVBCXL1rnp3BMhw3l80YGl6bLD8RGAtm9kcqUQ5qD6fBgbrn7ktLGrr2EecQktpuvfe5ufxb8nKT6xKYHO4Ln8l00Aw8FlKjG"   # Fakan vyplní 'pk_live_…' (test 'pk_test_…')
+STRIPE_PUBLISHABLE_KEY = "pk_test_51TVBCXL1rnp3BMhw3l80YGl6bLD8RGAtm9kcqUQ5qD6fBgbrn7ktLGrr2EecQktpuvfe5ufxb8nKT6xKYHO4Ln8l00Aw8FlKjG"   # produkce: 'pk_live_…' (test: 'pk_test_…')
 
 # ----- Tajemství (wrangler secret put …) -----
 # RESEND_API_KEY
 # ANTHROPIC_API_KEY
-# PUBLIC_HOST           = "fakan.cz"   (jen jeden hostname po sjednocení)
+# PUBLIC_HOST           = "indigostudio.cz"   (po cutoffu z fakan.cz)
 # STRIPE_SECRET_KEY     = sk_live_… (test: sk_test_…)
-# STRIPE_WEBHOOK_SECRET = whsec_…   (z Dashboard → Webhooks → fakan.cz endpoint)
+# STRIPE_WEBHOOK_SECRET = whsec_…   (z Dashboard → Webhooks → indigostudio.cz endpoint)
+# SUBREG_LOGIN          = subreg účet (živý / sandbox.subreg.cz)
+# SUBREG_PASSWORD       = API heslo (Subreg → Settings → API access, NE webové heslo)

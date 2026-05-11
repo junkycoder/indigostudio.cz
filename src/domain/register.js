@@ -13,7 +13,7 @@
 //   6) Pro 'in_progress': status zůstává 'processing', polling cron checkuje stav
 //      (a Queue retry s delaySeconds — ale max_retries=3 je málo, takže přes
 //      `domain_status_poll` event_type ručně). Tady jednoduše: vrátíme bez
-//      throw, ack zprávu, spoleháme na Subreg notifikační mail Fakanovi.
+//      throw, ack zprávu, spoléháme na Subreg notifikační mail.
 //
 // Při kritické chybě Make_Order: status='failed', mail klientovi že vrátíme peníze.
 
@@ -73,7 +73,7 @@ export async function processDomainOperation({ orderId }, env, ctx) {
       period: row.period_years,
       authInfo: row.auth_info || undefined,
       // NS necháme default Subreg — klient si je může změnit po registraci.
-      // Pokud bude potřeba, doplníme `ns: ['ns1.fakan.cz', 'ns2.fakan.cz']`.
+      // Pokud bude potřeba, doplníme vlastní `ns: ['ns1.<host>', 'ns2.<host>']`.
       ns: [],
     });
 
@@ -110,7 +110,7 @@ export async function processDomainOperation({ orderId }, env, ctx) {
     // Subreg vrátil in_progress — typicky transfer (5 dní lhůta) nebo
     // pomalá registrace (autorita zatím neodpověděla). Order zůstává
     // 'processing' v naší DB, polling řeší cron job (mimo MVP scope —
-    // Subreg pošle Fakanovi notifikaci a ten dispatchne ručně).
+    // Subreg pošle notifikaci a dispatchujeme ručně).
     console.log(`domain-${row.op_kind} ${row.fqdn} subreg status=${subregStatus}, čekáme na callback`);
 
   } catch (err) {
@@ -128,7 +128,7 @@ export async function processDomainOperation({ orderId }, env, ctx) {
 // ---- mails ----------------------------------------------------------------
 
 async function sendDoneMail(env, row, info) {
-  const host = env.PUBLIC_HOST || 'fakan.cz';
+  const host = env.PUBLIC_HOST || 'indigostudio.cz';
   const tpl = tplDomainOperationDone(env, {
     fqdn: row.fqdn,
     opKind: row.op_kind,
@@ -147,7 +147,7 @@ async function sendDoneMail(env, row, info) {
 }
 
 async function sendFailMail(env, row, errorMessage) {
-  const host = env.PUBLIC_HOST || 'fakan.cz';
+  const host = env.PUBLIC_HOST || 'indigostudio.cz';
   const tpl = tplDomainOperationFailed(env, {
     fqdn: row.fqdn,
     opKind: row.op_kind,

@@ -3,7 +3,7 @@
 
 import { scheduleEmail } from '../email/dispatcher.js';
 
-const SYSTEM_PROMPT = `Jsi obchodní stratég webového studia fakan.cz.
+const SYSTEM_PROMPT = `Jsi obchodní stratég webového studia Indigo Studio.
 Z výsledků auditu vytvoříš 3 varianty nabídky pro českého malého klienta.
 
 Tonalita textu (důležité, klient ho uvidí v mailu i v reportu):
