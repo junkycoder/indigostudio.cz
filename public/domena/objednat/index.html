@@ -217,6 +217,32 @@ if (!fqdn || !FQDN_RX.test(fqdn)) {
   } else {
     summary.innerHTML = `Doména <strong>${fqdn}</strong>. Po zaplacení ji u oficiálního registrátora (Subreg.cz) zaregistrujeme — typicky do pár minut.`;
   }
+
+  // Prefill registrant fields z URL fragmentu (fragment se neposílá serveru ani
+  // do referer / access logu — bezpečné pro telefon, e-mail, IČO).
+  // Formát: #name=...&email=...&phone=...&street=...&city=...&zip=...&country=CZ&ico=...&dic=...&periodYears=1
+  try {
+    const frag2 = new URLSearchParams(window.location.hash.slice(1));
+    const map = { name:'regName', email:'regEmail', phone:'regPhone',
+                  street:'regStreet', city:'regCity', zip:'regZip',
+                  country:'regCountry', ico:'regIco', dic:'regDic' };
+    let touched = false;
+    for (const [param, id] of Object.entries(map)) {
+      const v = frag2.get(param);
+      if (v != null) {
+        const el = document.getElementById(id);
+        if (el) { el.value = v; touched = true; }
+      }
+    }
+    const py = frag2.get('periodYears');
+    if (py) {
+      const sel = document.getElementById('periodYears');
+      if (sel) { sel.value = py; touched = true; }
+    }
+    if (touched) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  } catch { /* ignore malformed fragment */ }
 }
 
 let stripeJsPromise = null;
