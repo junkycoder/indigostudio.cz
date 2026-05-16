@@ -12,14 +12,24 @@ browser = { binding = "MYBROWSER" }
 # Worker drží celou primary doménu: landing, audit pipeline, audit report SPA,
 # opt-out, placené návrhy, nákup/převod domén.
 #
-# Aktuálně na fakan.cz (legacy). Po nákupu indigostudio.cz a DNS propagaci
-# přidáme druhý [[routes]] block s `pattern = "indigostudio.cz"`. fakan.cz
-# pak prvních ~3 měsíce zůstane ko-existovat (301 redirect na worker úrovni
-# nebo přes Cloudflare Bulk Redirect), pak ho odebereme.
-[[routes]]
-pattern = "fakan.cz"
-zone_name = "fakan.cz"
-custom_domain = true
+# Cíl: po nákupu indigostudio.cz a DNS propagaci přidat:
+#
+#   [[routes]]
+#   pattern = "indigostudio.cz"
+#   zone_name = "indigostudio.cz"
+#   custom_domain = true
+#
+# Zatím deployujeme bez routes — Worker poběží jen na vlastní
+# `indigo-studio.<account>.workers.dev` subdoméně, ať si během transition
+# nešlapeme na route `fakan.cz` (kterou drží legacy `fakan` Worker).
+#
+# `fakan.cz` zůstane bydlištěm fakan Workeru, dokud:
+#   1) nasadíme indigostudio.cz (ETAPA 5)
+#   2) odebereme audit/suggestion/domain pipeline z fakan Workeru (cutoff)
+#   3) na fakan.cz nasadíme samostatný personal-site Worker (Daniel CV +
+#      odkaz na indigostudio.cz)
+#
+# Routes záměrně prázdné — žádný [[routes]] block tu zatím nepatří.
 
 # ----- Static assets -----
 # public/ obsahuje landing (index.html, ochrana-udaju, …) + audit-page (audit/index.html).
@@ -77,22 +87,28 @@ bucket_name = "fakan-reports"
 # queue name `fakan-audit-jobs` zůstává — Cloudflare queues nepodporují rename,
 # přejmenování by vyžadovalo migrate (vytvořit novou queue + draining staré).
 # Mimo MVP rozsah.
+#
+# Producer zůstává — i idle indigo-studio Worker by mohl v budoucnu enqueue
+# úkoly (např. ze CLI testů, scheduled deploy hooks).
+#
+# Consumer + cron zatím NEpřidáváme — dokud `fakan` Worker servuje produkční
+# traffic, drží si konzumenta i dispatcher mailů on. Po cutoffu (ETAPA 7):
+#
+#   [[queues.consumers]]
+#   queue = "fakan-audit-jobs"
+#   max_batch_size = 2
+#   max_batch_timeout = 5
+#   max_retries = 3
+#   dead_letter_queue = "fakan-audit-dlq"
+#
+#   [triggers]
+#   crons = ["*/15 * * * *"]
+#
+# Současně odebereme z `fakan` Workeru, ať nevznikne race condition
+# (dvě instance dispatcheru = duplicitní maily).
 [[queues.producers]]
 binding = "AUDIT_QUEUE"
 queue = "fakan-audit-jobs"
-
-[[queues.consumers]]
-queue = "fakan-audit-jobs"
-# @cloudflare/puppeteer má per-account concurrency limit (default 2).
-# max_batch_size > 2 = 503 z Browser Renderingu při souběhu auditů.
-max_batch_size = 2
-max_batch_timeout = 5
-max_retries = 3
-dead_letter_queue = "fakan-audit-dlq"
-
-# ----- Cron pro follow-upy -----
-[triggers]
-crons = ["*/15 * * * *"]   # každých 15 min — vyhodnotit naplánované maily
 
 # ----- Veřejné proměnné (lze do repa, nejsou tajné) -----
 [vars]
