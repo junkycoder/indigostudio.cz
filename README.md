@@ -12,6 +12,71 @@ domén (přes Subreg). Žádné microservices, žádné frameworky, žádný bui
 
 ---
 
+## Plán rebrandu (Fakan → Indigo Studio)
+
+Repo se v květnu 2026 přejmenovává z `fakan.cz` na `indigostudio.cz`. Cloudflare
+Workers neumí rename, takže přechod jde po etapách bez downtimu. Aktuální stav
+níže — odškrtni, jak postupuje.
+
+- [x] **ETAPA 1 — Příprava `indigo-studio` Workeru pro paralelní existenci**
+  - `wrangler.toml` na branchi `rebrand-indigo-studio` má `name = "indigo-studio"`,
+    žádné `[[routes]]`, žádný consumer, žádný cron — Worker poběží jen na
+    `indigo-studio.<account>.workers.dev`, neperem se s fakan Workerem o route.
+  - D1 / R2 / KV / queue producer sdílené — race conditions ošetřené přes
+    idempotency keys.
+
+- [ ] **ETAPA 2 — Stripe LIVE keys + Apple Pay verifikace pro `fakan.cz`** _(přeskočeno, čeká na redefinici zadání)_
+  - Aktuálně Stripe běží v **test mode** (`pk_test_…` ve `wrangler.toml`, `sk_test_…`
+    jako secret). Doménové objednávky přes prefill URL projdou Stripe Payment
+    Element, ale webhook nedoručí real `payment_intent.succeeded` event →
+    Subreg registraci nespustí.
+  - Apple Pay button na `fakan.cz` chybí, protože `/.well-known/apple-developer-merchantid-domain-association`
+    vrací 404 (doménu jsme ve Stripe Apple Pay nikdy nepřidali).
+  - **Stav:** přeskočeno, zadání bude redefinováno.
+
+- [ ] **ETAPA 3 — Zaplatit doménu `indigostudio.cz`**
+  - Prefill URL (s registrant daty) připravený, čeká na Live mode Stripe
+    (ETAPA 2) nebo na alternativní cestu nákupu (ruční přes Subreg dashboard).
+  - Cena: 299 Kč / rok, registrant: Indigo Studio s.r.o., IČO 14389096.
+
+- [ ] **ETAPA 4 — Cloudflare zóna + DNS NS swap**
+  - Přidat `indigostudio.cz` jako zónu do CF dashboardu.
+  - V Subreg dashboardu změnit NS records na CF nameservery.
+  - Vyčkat DNS propagaci (minuty až 24 h).
+
+- [ ] **ETAPA 5 — Deploy `indigo-studio` Worker + secrety + route**
+  - `npx wrangler deploy` z branche `rebrand-indigo-studio` → vznikne nový
+    Worker na `indigo-studio.<account>.workers.dev`.
+  - Per-Worker secrety: `RESEND_API_KEY`, `ANTHROPIC_API_KEY`, `PUBLIC_HOST`,
+    `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUBREG_LOGIN`, `SUBREG_PASSWORD`
+    nasadit přes `wrangler secret put X --name indigo-studio` (každý zvlášť,
+    Cloudflare hodnoty nesdílí mezi Workery).
+  - Smoke test brand + audit + suggestion + doménový check.
+  - Přidat `[[routes]]` pro `indigostudio.cz` do `wrangler.toml`, redeploy.
+
+- [ ] **ETAPA 6 — Apple Pay verifikace pro `indigostudio.cz`**
+  - Stripe Dashboard → Settings → Payment methods → Apple Pay → Add new domain
+    `indigostudio.cz`.
+  - Stáhnout verifikační soubor, uložit do `public/.well-known/apple-developer-merchantid-domain-association`,
+    deploy `indigo-studio` Workeru, ve Stripe Dashboardu klikneš Verify.
+
+- [ ] **ETAPA 7 — Cutoff: consumer + cron z `fakan` → `indigo-studio`**
+  - V `indigo-studio` `wrangler.toml` přidat `[[queues.consumers]]`
+    pro `fakan-audit-jobs` a `[triggers] crons = ["*/15 * * * *"]`.
+  - Současně z `fakan` Workeru obě sekce **odebrat** (race condition by
+    znamenala duplicitní mailové dispatcher cykly).
+  - Postupné odebírání audit/suggestion/domain handlerů z `fakan` Workeru,
+    až zůstane jen redirect / personal-site logika.
+
+- [ ] **ETAPA 8 — Personal web `fakan.cz`**
+  - `fakan.cz` přebudovat na osobní web Daniela Hromady (CV / projekty / blog),
+    s odkazem na Indigo Studio.
+  - Samostatný Worker (jméno např. `fakan-personal`), separátní `wrangler.toml`
+    v samostatném repu (nebo subdirectory tohoto repa).
+  - Mimo scope tohoto rebrandu — vlastní zadání, vlastní timeline.
+
+---
+
 ## Co Worker dělá
 
 | Flow | Vstup | Výstup | Cena |
