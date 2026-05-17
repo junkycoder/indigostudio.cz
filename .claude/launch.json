@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["-y", "http-server", "public", "-p", "8080", "-e", "html", "-c-1", "--silent"],
       "port": 8080
+    },
+    {
+      "name": "mblue",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd /Users/junkycoder/mblue && exec bin/rails server -p 3000"],
+      "port": 3000
     }
   ]
 }
