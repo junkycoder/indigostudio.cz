@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- ať iOS nedělá tel: odkazy z IČO a čísla účtu -->
+<meta name="format-detection" content="telephone=no">
 <title>Indigo Studio — webové studio &amp; AI integrace</title>
 <meta name="description" content="Indigo Studio s.r.o. — webové studio. Od jednoduchého webu po AI integrace do firem.">
 <meta name="theme-color" content="#0b0b12" media="(prefers-color-scheme: dark)">
@@ -208,6 +210,7 @@
     object-fit: cover;
   }
   .card .name { font-weight: 550; font-size: 0.97rem; }
+  .card .role { color: var(--fg-faint); font-size: 0.8rem; margin-bottom: 0.15rem; }
   .card .email { color: var(--fg-muted); font-size: 0.85rem; word-break: break-word; }
   .card .phone { color: var(--fg-muted); font-size: 0.85rem; }
   .card:hover .email, .card:hover .phone { color: var(--indigo-2); }
@@ -296,7 +299,8 @@
     <a class="card" href="mailto:info@indigostudio.cz">
       <span class="avatar"><img src="/team/info.jpg" alt="" loading="lazy" onerror="this.remove()"><span>IS</span></span>
       <span class="meta">
-        <span class="name">Obecné dotazy</span>
+        <span class="name">Office</span>
+        <span class="role">Obecné dotazy a opravy</span>
         <span class="email">info@indigostudio.cz</span>
         <!-- <span class="phone">+420 XXX XXX XXX</span> -->
       </span>
@@ -305,6 +309,7 @@
       <span class="avatar"><img src="/team/veronika.jpg" alt="" loading="lazy" onerror="this.remove()"><span>VH</span></span>
       <span class="meta">
         <span class="name">Veronika</span>
+        <span class="role">Fakturace a podpora</span>
         <span class="email">veronika@indigostudio.cz</span>
       </span>
     </a>
@@ -312,6 +317,7 @@
       <span class="avatar"><img src="/team/daniel.jpg" alt="" loading="lazy" onerror="this.remove()"><span>DH</span></span>
       <span class="meta">
         <span class="name">Daniel</span>
+        <span class="role">Vývoj a DevOps</span>
         <span class="email">daniel@indigostudio.cz</span>
       </span>
     </a>
