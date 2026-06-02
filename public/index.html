@@ -239,17 +239,18 @@
   /* ---- Tisk = vizitka 90×50 mm ---- */
   .business-card { display: none; }
   @media print {
-    /* Stránka je o 4 mm větší než vizitka → vznikne okraj na ořezové značky */
-    @page { size: 98mm 58mm; margin: 0; }
+    /* Všechny tři vizitky na jeden list A4, pod sebou, vystřihnout podle značek */
+    @page { size: A4; margin: 12mm; }
     html, body { background: #ffffff !important; min-height: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .glow, main { display: none !important; }
     .business-card {
       display: grid !important;
       place-items: center;
       width: 98mm; height: 58mm; box-sizing: border-box;
-      break-after: page;
+      margin: 0 auto 8mm;        /* vycentrovat + mezera mezi vizitkami */
+      break-inside: avoid;       /* vizitku nikdy nezalomit přes stránky */
     }
-    .business-card:last-of-type { break-after: auto; }
+    .business-card:last-of-type { margin-bottom: 0; }
     /* Vlastní vizitka 90×50 mm, vycentrovaná v okraji */
     .business-card .bc-trim {
       position: relative;
