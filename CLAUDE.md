@@ -17,9 +17,9 @@ Jedna stránka, žádný build step, žádné frameworky.
 - `public/index.html` — celá stránka (inline CSS + JS)
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
-- `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky
-- `wrangler.toml` — Worker config (route `indigostudio.cz`, custom_domain)
-- `.github/workflows/deploy.yml` — auto-deploy na push do main
+- `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`
+- `wrangler.toml` — Worker config (route `indigostudio.cz`, custom_domain, `send_email` binding)
+- auto-deploy: Cloudflare Workers Builds (git push → CF nasadí, bez tokenu)
 
 ## Firemní údaje (zdroj pravdy pro texty na webu)
 
@@ -35,15 +35,17 @@ Jedna stránka, žádný build step, žádné frameworky.
   závislosti mimo `wrangler` (dev). Komentáře česky, identifikátory anglicky.
 - **Texty na klienta:** vykání, stručně, asertivně, bez emoji a vykřičníků, bez žargonu.
 - Po změně smoke test: `npx wrangler deploy --dry-run`.
-- Deploy: push do main (Action) nebo `npm run deploy`.
+- Deploy: push do main (Cloudflare Workers Builds) nebo `npm run deploy`.
 - OG po úpravě `scripts/og.svg` přegenerovat (návod v README).
 
 ## TODO od zadavatele
 
 - Dodat fotky do `public/team/` (info/veronika/daniel.jpg).
 - Doplnit telefon na info (v `index.html` připravený zakomentovaný `.phone` řádek).
-- V Cloudflare nastavit Email Routing a DNS (návod v README).
-- V GitHubu přidat secret `CLOUDFLARE_API_TOKEN` pro auto-deploy.
+- Email Routing: ověřit destinace `indigostudio.cz@gmail.com` a
+  `veronika.hallerova@gmail.com` (mail od Cloudflare), pak dotvořit pravidla
+  info@/veronika@ + catch-all. daniel@ → hromada.dan@gmail.com už běží.
+- Propojit repo s Workerem přes Cloudflare Workers Builds (auto-deploy).
 
 ## Záloha
 

@@ -1,7 +1,8 @@
 # indigostudio.cz
 
-Statická vizitka studia **Indigo Studio s.r.o.** — jedna stránka, dark/light,
-mobile-friendly, OG share preview. Servíruje ji jeden Cloudflare Worker.
+Statická vizitka studia **Indigo Studio s.r.o.** — jedna stránka, dark/light
+(podle systému), mobile-friendly, OG share preview, poptávkový formulář.
+Servíruje ji jeden Cloudflare Worker.
 
 ## Struktura
 
@@ -13,10 +14,9 @@ public/            statika (servíruje asset binding)
   apple-touch-icon.png
   robots.txt, sitemap.xml
   team/            fotky týmu (info.jpg / veronika.jpg / daniel.jpg) — viz team/README.txt
-src/worker.js      Worker: servíruje public/ + bezpečnostní hlavičky
+src/worker.js      Worker: servíruje public/ + bezpečnostní hlavičky + POST /api/poptavka
 scripts/og.svg     zdroj pro og.png (regenerace viz níž)
-wrangler.toml      Worker config
-.github/workflows/deploy.yml   auto-deploy na push do main
+wrangler.toml      Worker config (route, send_email binding)
 ```
 
 Stack: vanilla HTML/CSS/JS, žádný build step, žádné frameworky.
@@ -30,13 +30,25 @@ npm run dev        # wrangler dev — lokální náhled
 
 ## Deploy
 
-**Automaticky:** push do `main` → GitHub Action nasadí (potřebuje secret
-`CLOUDFLARE_API_TOKEN`, viz `.github/workflows/deploy.yml`).
+**Automaticky (Cloudflare Workers Builds):** push do `main` → Cloudflare sám
+nasadí. Bez tokenu a bez secretů. Jednorázové propojení v dashboardu:
+
+1. CF dashboard → **Workers & Pages** → Worker `indigostudio` → **Settings** → **Builds**.
+2. **Connect** → GitHub → repo `junkycoder/indigostudio.cz`, branch `main`.
+3. Deploy command: `npx wrangler deploy` (build command nech prázdný, root `/`).
+4. Save. Každý push do `main` se od teď nasadí automaticky.
 
 **Ručně:**
 ```bash
 npm run deploy     # wrangler deploy
 ```
+
+## Poptávkový formulář
+
+`POST /api/poptavka` ({name, email, message}) → Worker pošle e-mail přes
+`send_email` binding na ověřenou destinaci v Email Routingu (`hromada.dan@gmail.com`).
+Honeypot pole `company` + validace proti spamu. Cílovou adresu lze změnit
+v `wrangler.toml` (`[[send_email]]`) a `src/worker.js` (`MAIL_TO`).
 
 ### Regenerace OG obrázku
 
