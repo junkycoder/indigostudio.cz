@@ -232,6 +232,42 @@
     * { transition: none !important; }
     .glow { display: none; }
   }
+
+  /* ---- Tisk = vizitka 90×50 mm ---- */
+  .business-card { display: none; }
+
+  @media print {
+    @page { size: 90mm 50mm; margin: 0; }
+    html, body {
+      background: #ffffff !important;
+      min-height: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .glow, .theme-toggle, main { display: none !important; }
+
+    .business-card {
+      display: grid !important;
+      grid-template-rows: auto 1fr auto;
+      width: 90mm; height: 50mm;
+      padding: 6mm 7mm;
+      box-sizing: border-box;
+      color: #15161d;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .business-card .bc-brand { display: flex; align-items: center; gap: 2.4mm; }
+    .business-card .bc-mark {
+      width: 7mm; height: 7mm; border-radius: 2mm;
+      background: linear-gradient(135deg, #6366f1, #818cf8);
+    }
+    .business-card .bc-name { font-size: 4.6mm; font-weight: 700; letter-spacing: -0.02em; }
+    .business-card .bc-name .accent { color: #6366f1; }
+    .business-card .bc-tagline { font-size: 2.7mm; color: #5a5b6a; align-self: center; }
+    .business-card .bc-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 4mm; }
+    .business-card .bc-contact { font-size: 2.7mm; line-height: 1.5; }
+    .business-card .bc-contact b { color: #6366f1; font-weight: 600; }
+    .business-card .bc-legal { font-size: 2.1mm; color: #9a9ba8; text-align: right; line-height: 1.45; }
+  }
 </style>
 </head>
 <body>
@@ -286,6 +322,27 @@
     Chudenická 1059/30, Hostivař, 102 00 Praha<span class="sep">·</span>č. ú. 2802169026/2010 (Fio)
   </p>
 </main>
+
+<!-- Vytiskne se jen při tisku (Ctrl/Cmd+P) — vizitka 90×50 mm -->
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-brand">
+    <span class="bc-mark"></span>
+    <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+  </div>
+  <div class="bc-tagline">Webové studio · AI integrace do firem</div>
+  <div class="bc-foot">
+    <div class="bc-contact">
+      <b>indigostudio.cz</b><br>
+      info@indigostudio.cz
+      <!-- <br>+420 XXX XXX XXX -->
+    </div>
+    <div class="bc-legal">
+      Indigo Studio s.r.o.<br>
+      IČO 14389096<br>
+      2802169026/2010
+    </div>
+  </div>
+</aside>
 
 <script>
   (function () {
