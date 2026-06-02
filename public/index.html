@@ -239,13 +239,23 @@
   /* ---- Tisk = vizitka 90×50 mm ---- */
   .business-card { display: none; }
   @media print {
-    @page { size: 90mm 50mm; margin: 0; }
+    /* Stránka je o 4 mm větší než vizitka → vznikne okraj na ořezové značky */
+    @page { size: 98mm 58mm; margin: 0; }
     html, body { background: #ffffff !important; min-height: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .glow, main { display: none !important; }
     .business-card {
       display: grid !important;
-      grid-template-rows: auto 1fr auto;
-      width: 90mm; height: 50mm; padding: 6mm 7mm; box-sizing: border-box;
+      place-items: center;
+      width: 98mm; height: 58mm; box-sizing: border-box;
+      break-after: page;
+    }
+    .business-card:last-of-type { break-after: auto; }
+    /* Vlastní vizitka 90×50 mm, vycentrovaná v okraji */
+    .business-card .bc-trim {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      width: 90mm; height: 50mm; padding: 5mm 6mm; box-sizing: border-box;
       color: #15161d;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
@@ -253,11 +263,20 @@
     .business-card .bc-mark { width: 7mm; height: 7mm; border-radius: 2mm; background: linear-gradient(135deg, #6366f1, #818cf8); }
     .business-card .bc-name { font-size: 4.6mm; font-weight: 700; letter-spacing: -0.02em; }
     .business-card .bc-name .accent { color: #6366f1; }
-    .business-card .bc-tagline { font-size: 2.7mm; color: #5a5b6a; align-self: center; }
-    .business-card .bc-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 4mm; }
-    .business-card .bc-contact { font-size: 2.7mm; line-height: 1.5; }
-    .business-card .bc-contact b { color: #6366f1; font-weight: 600; }
-    .business-card .bc-legal { font-size: 2.1mm; color: #9a9ba8; text-align: right; line-height: 1.45; }
+    .business-card .bc-tagline { font-size: 2.7mm; color: #5a5b6a; margin-top: 1mm; }
+    .business-card .bc-foot { align-self: end; display: flex; justify-content: space-between; align-items: flex-end; gap: 5mm; }
+    .business-card .bc-contacts { line-height: 1.4; }
+    .business-card .bc-contacts .bc-web { font-size: 2.7mm; font-weight: 700; color: #15161d; }
+    .business-card .bc-contacts .bc-person { margin-top: 1.4mm; font-size: 3.2mm; font-weight: 700; color: #6366f1; letter-spacing: -0.01em; }
+    .business-card .bc-contacts .bc-role { font-size: 2.4mm; color: #5a5b6a; }
+    .business-card .bc-contacts .bc-mail { font-size: 2.7mm; color: #15161d; }
+    .business-card .bc-legal { font-size: 2.1mm; color: #9a9ba8; text-align: right; line-height: 1.45; white-space: nowrap; }
+    /* Ořezové značky v rozích — leží v okraji mimo vizitku, ať se snadno stříhá */
+    .business-card .crop { position: absolute; width: 3mm; height: 3mm; }
+    .business-card .crop.tl { top: -3mm; left: -3mm; border-right: 0.2mm solid #15161d; border-bottom: 0.2mm solid #15161d; }
+    .business-card .crop.tr { top: -3mm; right: -3mm; border-left: 0.2mm solid #15161d; border-bottom: 0.2mm solid #15161d; }
+    .business-card .crop.bl { bottom: -3mm; left: -3mm; border-right: 0.2mm solid #15161d; border-top: 0.2mm solid #15161d; }
+    .business-card .crop.br { bottom: -3mm; right: -3mm; border-left: 0.2mm solid #15161d; border-top: 0.2mm solid #15161d; }
   }
 </style>
 </head>
@@ -318,24 +337,77 @@
   </p>
 </main>
 
-<!-- Vytiskne se jen při tisku (Ctrl/Cmd+P) — vizitka 90×50 mm -->
+<!-- Vytiskne se jen při tisku (Ctrl/Cmd+P) — 3 vizitky 90×50 mm, každá na své stránce -->
 <aside class="business-card" aria-hidden="true">
-  <div class="bc-brand">
-    <span class="bc-mark"></span>
-    <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+    </div>
+    <div class="bc-tagline">Webové studio · AI integrace do firem</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Office</div>
+        <div class="bc-role">Obecné dotazy a opravy</div>
+        <div class="bc-mail">info@indigostudio.cz</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        IČO 14389096<br>
+        2802169026/2010
+      </div>
+    </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
   </div>
-  <div class="bc-tagline">Webové studio · AI integrace do firem</div>
-  <div class="bc-foot">
-    <div class="bc-contact">
-      <b>indigostudio.cz</b><br>
-      info@indigostudio.cz
-      <!-- <br>+420 XXX XXX XXX -->
+</aside>
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
     </div>
-    <div class="bc-legal">
-      Indigo Studio s.r.o.<br>
-      IČO 14389096<br>
-      2802169026/2010
+    <div class="bc-tagline">Webové studio · AI integrace do firem</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Veronika</div>
+        <div class="bc-role">Fakturace a podpora</div>
+        <div class="bc-mail">veronika@indigostudio.cz</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        IČO 14389096<br>
+        2802169026/2010
+      </div>
     </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
+  </div>
+</aside>
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+    </div>
+    <div class="bc-tagline">Webové studio · AI integrace do firem</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Daniel</div>
+        <div class="bc-role">Vývoj a DevOps</div>
+        <div class="bc-mail">daniel@indigostudio.cz</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        IČO 14389096<br>
+        2802169026/2010
+      </div>
+    </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
   </div>
 </aside>
 
