@@ -1,0 +1,27 @@
+name: Deploy
+
+# Auto-deploy na Cloudflare Workers při každém pushi do main.
+# Vyžaduje v repu (Settings → Secrets and variables → Actions) secret:
+#   CLOUDFLARE_API_TOKEN  — token s oprávněním "Edit Cloudflare Workers"
+# (account_id si wrangler odvodí z tokenu; pokud máš víc účtů, přidej i
+#  CLOUDFLARE_ACCOUNT_ID jako secret a odkomentuj řádek níž.)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci || npm install
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

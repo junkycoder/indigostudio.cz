@@ -1,218 +1,84 @@
-# fakan.cz
+# indigostudio.cz
 
-**Autonomní webové studio — vše end-to-end přes API.**
+Statická vizitka studia **Indigo Studio s.r.o.** — jedna stránka, dark/light,
+mobile-friendly, OG share preview. Servíruje ji jeden Cloudflare Worker.
 
-Jeden Cloudflare Worker (`fakan`) servuje celý fakan.cz: audit webů zdarma, AI
-návrhy úprav (přes Stripe ApplePay/GooglePay), nákup a převod domén (přes
-Subreg). Žádné microservices, žádné frameworky, žádný build step.
-
-> **Než cokoliv změníš v repu, přečti si [CLAUDE.md](CLAUDE.md).** Tam jsou
-> pravidla práce, tonalita, architektura, deploy checklist a omezení. Tenhle
-> soubor je krátký rozcestník — CLAUDE.md je zdroj pravdy.
-
----
-
-## Co Worker dělá
-
-| Flow | Vstup | Výstup | Cena |
-|------|-------|--------|------|
-| **Audit webu** | URL + email | Mail s reportem do 5 min + 4-mailový drip | zdarma |
-| **AI návrh úprav** | URL + brief + uploady | HTML/CSS varianta + preview PNG mailem | 500 Kč |
-| **Nákup domény** | fqdn + registrant data | Registrace u Subreg, NS + expiry mail | 299–999 Kč/rok |
-| **Převod domény** | fqdn + AuthInfo | Transfer u Subreg + CZ.NIC, mail po dokončení | 299–999 Kč/rok |
-
-Drip a transakční maily teče přes Resend, scheduling přes D1 + cron `*/15 min`.
-
-**Identita:** anonymní `fakan_device` cookie (httpOnly, 1 rok) — klient vidí
-svoje journeys hned bez registrace. Opt-in účet přes magic link (žádné heslo,
-žádný registrační formulář), který sjednotí journeys napříč všemi device tokeny
-podle emailu lead.
-
-## Stack
-
-- **Runtime:** Cloudflare Workers (`compatibility_date = "2025-04-01"`,
-  `nodejs_compat`)
-- **Storage:** D1 (`fakan_auditor`), KV (cache + rate limit), R2 (screenshoty,
-  hotové návrhy)
-- **Async:** Queues (`fakan-audit-jobs`), cron trigger
-- **Browser Rendering:** `@cloudflare/puppeteer` (audit screenshoty, preview
-  návrhů)
-- **AI:** Claude Sonnet 4.5 (strategist + Vision pro AI návrhy)
-- **Mail:** Resend (transakční + drip)
-- **Platby:** Stripe Payment Element (ApplePay / GooglePay / karta)
-- **Domény:** Subreg SOAP API (registrace + transfer + ceník přes Pricelist)
-- **Frontend:** vanilla HTML/CSS/JS, žádný build, žádné npm závislosti mimo
-  Cloudflare ekosystém
-
-## Struktura repa
+## Struktura
 
 ```
-.
-├── CLAUDE.md                  # pravidla, brand, architektura — povinná četba
-├── roadmap.md                 # post-MVP fáze 6+
-├── strategist-prompt.md       # zdroj pro JS konstantu strategistu
-├── wrangler.toml              # config Workeru
-├── package.json               # dev scripty (wrangler)
-├── db/
-│   └── schema.sql             # D1 schéma (idempotentní)
-├── src/
-│   ├── worker.js              # entry — routing + queue dispatch
-│   ├── handlers/              # HTTP endpointy
-│   │   ├── audit.js           # POST /api/audit + GET /audit/{token}/data
-│   │   ├── report.js          # data pro audit-page SPA
-│   │   ├── screenshot.js      # mobilní screenshot z R2
-│   │   ├── suggestion.js      # POST /api/suggestion (multipart + Stripe PI)
-│   │   ├── suggestion-status.js
-│   │   ├── domain-check.js    # /api/domain/check (6 TLD)
-│   │   ├── domain-order.js    # registrace + převod
-│   │   ├── stripe-webhook.js  # HMAC verified Stripe lifecycle
-│   │   ├── me.js              # GET /api/me — device + account + journeys
-│   │   ├── account.js         # POST /start (magic link), GET /verify
-│   │   └── optout.js          # /odhlasit/{token}, /unsubscribe
-│   ├── audit/                 # processor + strategist + scoring
-│   │   ├── processor.js       # puppeteer + axe + cookies + seo + cms
-│   │   ├── strategist.js      # Claude API + few-shoty
-│   │   ├── scoring.js
-│   │   └── checks/
-│   ├── suggestion/
-│   │   └── render.js          # Claude Vision → HTML/CSS → preview screenshot
-│   ├── domain/
-│   │   └── register.js        # Subreg orchestrace (Make_Order + Domain_Info)
-│   ├── email/
-│   │   ├── send.js            # transakční přes Resend
-│   │   ├── dispatcher.js      # cron drip
-│   │   └── templates.js
-│   └── lib/                   # cors, stripe, subreg, claude-vision,
-│                              # html-sanitize, idempotency, files, identity
-└── public/                    # statika přes ASSETS binding
-    ├── index.html             # landing
-    ├── prehled.html
-    ├── ochrana-udaju.html
-    ├── odhlasit-hotovo.html
-    ├── audit/                 # audit-page SPA
-    ├── navrh/                 # AI návrh status SPA
-    ├── domena/                # objednat + stav SPA
-    ├── akvizice-podklady/     # marketingový materiál (unlisted)
-    └── .well-known/           # Apple Pay domain verification
+public/            statika (servíruje asset binding)
+  index.html       vizitka — celá stránka (inline CSS + JS, žádný build)
+  og.png           share preview 1200×630
+  favicon.svg      ikona
+  apple-touch-icon.png
+  robots.txt, sitemap.xml
+  team/            fotky týmu (info.jpg / veronika.jpg / daniel.jpg) — viz team/README.txt
+src/worker.js      Worker: servíruje public/ + bezpečnostní hlavičky
+scripts/og.svg     zdroj pro og.png (regenerace viz níž)
+wrangler.toml      Worker config
+.github/workflows/deploy.yml   auto-deploy na push do main
 ```
 
-## Endpointy (zkrácený přehled)
+Stack: vanilla HTML/CSS/JS, žádný build step, žádné frameworky.
 
-| Method | Path | Účel |
-|--------|------|------|
-| POST | `/api/audit` | spustit audit (zdarma) |
-| GET | `/api/audit/{token}/data` | data pro audit-page SPA |
-| GET | `/api/screenshot/{auditId}` | mobilní screenshot z R2 |
-| POST | `/api/suggestion` | AI návrh — order + Stripe PI |
-| GET | `/api/suggestion/{orderId}/{status,preview,output}` | polling + výstup |
-| GET | `/api/domain/check?base=…` | dostupnost + cena pro 6 TLD |
-| POST | `/api/domain/order` | registrace / převod — order + PI |
-| GET | `/api/domain/{orderId}/status` | polling stavu doménové operace |
-| POST | `/api/stripe/webhook` | Stripe lifecycle (HMAC verified) |
-| GET | `/api/me` | device + account + journeys (anonymní vidí svoje, ověřený všechny) |
-| POST | `/api/account/start` | pošle magic link na email (rate-limit 3 / 10 min) |
-| GET | `/api/account/verify?t=…` | ověří token, sváže device s účtem |
-| GET | `/odhlasit{,/{token}}`, `/unsubscribe` | opt-out |
-
-Plný přehled vč. statiky a SPA cest je v [CLAUDE.md](CLAUDE.md#endpointy-přehled).
-
-## Lokální vývoj
+## Vývoj
 
 ```bash
-npm install                  # nainstaluje wrangler + @cloudflare/puppeteer
-npm run dev                  # wrangler dev na http://localhost:8787
-npm run deploy               # nasadit (vyžaduje wrangler login)
-npm run db:init              # spustí db/schema.sql lokálně
-npm run db:init:remote       # spustí db/schema.sql na produkční D1
+npm install
+npm run dev        # wrangler dev — lokální náhled
 ```
-
-Tajné proměnné přes `wrangler secret put` (nikdy do `wrangler.toml` ani kódu):
-
-```
-RESEND_API_KEY
-ANTHROPIC_API_KEY
-PUBLIC_HOST              # "fakan.cz"
-STRIPE_SECRET_KEY        # sk_live_… / sk_test_…
-STRIPE_WEBHOOK_SECRET    # whsec_…
-SUBREG_LOGIN
-SUBREG_PASSWORD
-```
-
-`STRIPE_PUBLISHABLE_KEY` jde do `[vars]` v `wrangler.toml` (není citlivý).
-
-**Pozor:** `wrangler dev` queue jen mockuje a Browser Rendering lokálně neběží.
-Reálný E2E test vyžaduje deploy do staging environmentu. Detail v
-[CLAUDE.md — Známá omezení](CLAUDE.md#známá-omezení).
 
 ## Deploy
 
-Plný checklist (D1 migrace, Stripe Dashboard, Apple Pay verifikace,
-Subreg sandbox, smoke test) je v
-[CLAUDE.md — Deploy checklist](CLAUDE.md#deploy-checklist-poprvé--nové-secrety).
+**Automaticky:** push do `main` → GitHub Action nasadí (potřebuje secret
+`CLOUDFLARE_API_TOKEN`, viz `.github/workflows/deploy.yml`).
 
-Pro běžný re-deploy:
-
+**Ručně:**
 ```bash
-npx wrangler deploy --dry-run    # bundle prochází
-npx wrangler deploy              # publikace
-npx wrangler tail                # live logs
+npm run deploy     # wrangler deploy
 ```
 
-## Architektura ve zkratce
+### Regenerace OG obrázku
 
-```
-[Audit zdarma]
-  POST /api/audit
-    → D1 + Queue
-    → audit/processor.js (puppeteer + axe + cookies + seo + cms + headers)
-    → R2 screenshot, D1 findings + score
-    → Queue { kind: 'strategist' }
-    → audit/strategist.js (Claude Sonnet 4.5)
-    → drip 4 mailů (#1 hned, #2 +2d, #3 +5d, #4 +30d)
-
-[AI návrh — placený]
-  POST /api/suggestion (multipart + Stripe PI)
-    → Stripe webhook payment_intent.succeeded
-    → Queue { kind: 'suggestion-render' }
-    → suggestion/render.js (Claude Vision → HTML/CSS → sanitize → Browser
-      Rendering screenshot)
-    → R2 (output.html + preview.png) → mail
-
-[Doména — placená]
-  POST /api/domain/order (Subreg checkDomain znova kvůli race)
-    → Stripe webhook
-    → Queue { kind: 'domain-register' | 'domain-transfer' }
-    → domain/register.js (Subreg Make_Order → Domain_Info → mail)
-
-[Cron */15 min]
-  email/dispatcher.js → vyzvedne queued mail → Resend
+Po úpravě `scripts/og.svg`:
+```bash
+node -e "const s=require('sharp');s(require('fs').readFileSync('scripts/og.svg')).png().toFile('public/og.png')"
 ```
 
-Plné schéma datových toků v [CLAUDE.md — Architektura](CLAUDE.md#architektura--minimum-pro-orientaci).
+## Doména + DNS (Cloudflare)
 
-## Klíčové dokumenty
+1. Doménu `indigostudio.cz` přidat do Cloudflare účtu (Add site) a u registrátora
+   přepsat nameservery na Cloudflare. Web naběhne, až se DNS rozšíří (typicky do hodin).
+2. Route na Worker drží `wrangler.toml` (`custom_domain = true`) — po prvním
+   `wrangler deploy` se v zóně vytvoří automaticky.
 
-| Co | Kde |
-|----|-----|
-| Pravidla, brand, deploy, omezení | [CLAUDE.md](CLAUDE.md) |
-| Post-MVP fáze 6–10 (vč. developer ekosystému) | [roadmap.md](roadmap.md) |
-| Strategist prompt — zdroj pro JS konstantu | [strategist-prompt.md](strategist-prompt.md) |
-| D1 schéma | [db/schema.sql](db/schema.sql) |
-| Worker config | [wrangler.toml](wrangler.toml) |
+## Email forwarding (Cloudflare Email Routing)
 
-## Tonalita zákaznických textů
+Cíl: `info@`, `veronika@`, `daniel@` přeposílat na gmaily. Odpovídá se z gmailu.
 
-Pro **veškeré texty směřující na klienta** (mailové šablony, audit-page,
-validační hlášky, copy na fakan.cz) platí přísná pravidla — vykání, minimum
-technického žargonu, krátké věty, žádné emoji ani vykřičníky, „hned" mentalita
-s konkrétními termíny. Detail v
-[CLAUDE.md — Tonalita zákaznických textů](CLAUDE.md#tonalita-zákaznických-textů-důležité--paměť-to-obsahuje-opakuju-zde).
+Cloudflare dashboard → zóna `indigostudio.cz` → **Email** → **Email Routing**:
 
-Tenhle README, commity, kód a interní dokumenty (PR description, BLOCKERS.md,
-code komentáře) tahle pravidla NEDODRŽUJÍ — můžeš tykat a být úsečný.
+1. **Enable Email Routing** — CF samo přidá MX + TXT (SPF) záznamy do DNS.
+2. **Destination addresses** — přidat a ověřit (CF pošle ověřovací mail):
+   - `indigostudio.cz@gmail.com`
+   - `veronika.hallerova@gmail.com`
+   - `hromada.dan@gmail.com`
+3. **Routing rules** — custom addresses:
+   | Adresa                     | Přeposlat na                  |
+   |----------------------------|-------------------------------|
+   | `info@indigostudio.cz`     | `indigostudio.cz@gmail.com`   |
+   | `veronika@indigostudio.cz` | `veronika.hallerova@gmail.com`|
+   | `daniel@indigostudio.cz`   | `hromada.dan@gmail.com`       |
+4. (Volitelně) **Catch-all** → `indigostudio.cz@gmail.com`, ať nic nezapadne.
 
-## Kontakt
+**Odpovídání z gmailu vlastní adresou** (volitelné, aby odpověď chodila z `@indigostudio.cz`):
+Gmail → Nastavení → Účty → „Odeslat e-mail jako" → přidat adresu →
+SMTP `smtp.gmail.com` nepůjde (forwarding není mailbox). Pro odesílání z
+`@indigostudio.cz` je potřeba reálná SMTP schránka (např. přes poskytovatele),
+nebo se odpovídá z gmailu napřímo. Pro vizitku stačí příjem přes forwarding.
 
-- **Daniel Hromada (Fakan)** — [jsem@fakan.cz](mailto:jsem@fakan.cz),
-  +420 604 690 539
-- **GitHub** — [github.com/junkycoder](https://github.com/junkycoder)
+## Záloha původního projektu
+
+Repo dřív obsahovalo projekt **fakan**. Je zazálohovaný:
+- větev `archive/fakan`
+- tag `archive-fakan-2026-06-02`

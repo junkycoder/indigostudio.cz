@@ -1,18 +1,14 @@
 {
-  "name": "fakan-auditor",
-  "version": "0.1.0",
+  "name": "indigostudio.cz",
+  "version": "1.0.0",
   "private": true,
+  "description": "indigostudio.cz — statická vizitka na Cloudflare Workers",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "db:init": "wrangler d1 execute fakan_auditor --file=./db/schema.sql",
-    "db:init:remote": "wrangler d1 execute fakan_auditor --remote --file=./db/schema.sql"
+    "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "wrangler": "^4.0.0"
-  },
-  "dependencies": {
-    "@cloudflare/puppeteer": "^1.1.0"
+    "wrangler": "^4.90.0"
   }
 }

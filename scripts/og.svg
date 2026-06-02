@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#818cf8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="32%" cy="34%" r="55%">
+      <stop offset="0" stop-color="#6366f1" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0b0b12"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- mark -->
+  <g transform="translate(140, 232)">
+    <rect width="72" height="72" rx="20" fill="url(#mark)"/>
+    <rect x="30" y="16" width="11" height="48" rx="3" fill="#fff" opacity="0.95"/>
+    <circle cx="52" cy="24" r="7" fill="#fff" opacity="0.95"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="236" y="290" font-family="Helvetica, Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="-2" fill="#f4f4f6">Indigo<tspan dx="22" fill="#818cf8">Studio</tspan></text>
+
+  <!-- tagline -->
+  <text x="140" y="392" font-family="Helvetica, Arial, sans-serif" font-size="38" font-weight="400" fill="#a1a1ad">Od jednoduchého webu po AI integrace do firem.</text>
+
+  <!-- footer line -->
+  <text x="140" y="540" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="400" fill="#6b6b78">indigostudio.cz</text>
+</svg>
