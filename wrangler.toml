@@ -14,6 +14,12 @@ pattern = "www.indigostudio.cz"
 zone_name = "indigostudio.cz"
 custom_domain = true
 
+# ----- Email Sending (poptávkový formulář) -----
+# Worker posílá poptávky na ověřenou destinaci v Email Routingu.
+[[send_email]]
+name = "SEB"
+destination_address = "hromada.dan@gmail.com"
+
 # ----- Static assets -----
 # public/ obsahuje vizitku (index.html), og.png, favicon, robots, sitemap.
 # run_worker_first = true → Worker běží i pro statiku, aby stihl doplnit

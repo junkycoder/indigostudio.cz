@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs" data-theme="dark">
+<html lang="cs">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -50,35 +50,40 @@
 </script>
 
 <style>
+  /* ---- Téma: čistě podle systému (prefers-color-scheme), bez přepínače ---- */
   :root {
     --indigo: #6366f1;
     --indigo-2: #818cf8;
     --indigo-soft: rgba(99, 102, 241, 0.14);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  html[data-theme="dark"] {
+
+    /* dark = výchozí */
     --bg: #0b0b12;
     --bg-elev: rgba(255, 255, 255, 0.035);
+    --field-bg: rgba(255, 255, 255, 0.04);
     --border: rgba(255, 255, 255, 0.09);
     --border-hover: rgba(129, 140, 248, 0.45);
     --fg: #f4f4f6;
     --fg-muted: #a1a1ad;
     --fg-faint: #6b6b78;
     --glow: rgba(99, 102, 241, 0.16);
+    --on-indigo: #ffffff;
   }
-  html[data-theme="light"] {
-    --bg: #ffffff;
-    --bg-elev: rgba(15, 18, 40, 0.025);
-    --border: rgba(15, 18, 40, 0.10);
-    --border-hover: rgba(99, 102, 241, 0.5);
-    --fg: #15161d;
-    --fg-muted: #5a5b6a;
-    --fg-faint: #9a9ba8;
-    --glow: rgba(99, 102, 241, 0.10);
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #ffffff;
+      --bg-elev: rgba(15, 18, 40, 0.025);
+      --field-bg: rgba(15, 18, 40, 0.025);
+      --border: rgba(15, 18, 40, 0.10);
+      --border-hover: rgba(99, 102, 241, 0.5);
+      --fg: #15161d;
+      --fg-muted: #5a5b6a;
+      --fg-faint: #9a9ba8;
+      --glow: rgba(99, 102, 241, 0.10);
+    }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   html, body { height: 100%; }
 
   body {
@@ -92,59 +97,31 @@
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
-    transition: background 0.4s var(--ease), color 0.4s var(--ease);
   }
 
-  /* pointer-reactive glow */
   .glow {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    background:
-      radial-gradient(420px circle at var(--mx, 50%) var(--my, 28%), var(--glow), transparent 70%);
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 22%), var(--glow), transparent 70%);
     transition: background 0.2s linear;
   }
-
-  .theme-toggle {
-    position: fixed;
-    top: max(1rem, env(safe-area-inset-top));
-    right: max(1rem, env(safe-area-inset-right));
-    z-index: 3;
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--bg-elev);
-    color: var(--fg-muted);
-    cursor: pointer;
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    transition: border-color 0.25s var(--ease), color 0.25s var(--ease), transform 0.25s var(--ease);
-  }
-  .theme-toggle:hover { border-color: var(--border-hover); color: var(--fg); transform: translateY(-1px); }
-  .theme-toggle svg { width: 20px; height: 20px; }
-  html[data-theme="dark"] .theme-toggle .sun { display: block; }
-  html[data-theme="dark"] .theme-toggle .moon { display: none; }
-  html[data-theme="light"] .theme-toggle .sun { display: none; }
-  html[data-theme="light"] .theme-toggle .moon { display: block; }
 
   main {
     position: relative;
     z-index: 1;
     flex: 1;
     width: 100%;
-    max-width: 780px;
+    max-width: 680px;
     margin: 0 auto;
-    padding: clamp(2.5rem, 6vh, 5rem) 1.5rem;
+    padding: clamp(2.5rem, 6vh, 4.5rem) 1.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    gap: clamp(1.75rem, 4vh, 2.75rem);
+    gap: clamp(1.6rem, 3.5vh, 2.4rem);
   }
 
   .brand { display: flex; align-items: center; gap: 0.7rem; }
@@ -153,81 +130,104 @@
     background: linear-gradient(135deg, var(--indigo), var(--indigo-2));
     box-shadow: 0 6px 24px -6px var(--indigo);
   }
-  .brand h1 {
-    font-size: clamp(1.5rem, 4.5vw, 2rem);
-    font-weight: 650;
-    letter-spacing: -0.02em;
-  }
+  .brand h1 { font-size: clamp(1.5rem, 4.5vw, 2rem); font-weight: 650; letter-spacing: -0.02em; }
   .brand h1 .accent { color: var(--indigo-2); }
 
   .lead {
-    font-size: clamp(1.05rem, 3.2vw, 1.45rem);
+    font-size: clamp(1.05rem, 3.2vw, 1.4rem);
     font-weight: 400;
-    color: var(--fg);
     max-width: 30ch;
     letter-spacing: -0.01em;
   }
   .lead .muted { color: var(--fg-muted); }
 
-  .contacts {
+  /* ---- Poptávkový formulář ---- */
+  .form {
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-  }
-  .card {
+    max-width: 520px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 1.4rem 1rem;
+    gap: 0.7rem;
+    padding: 1.5rem;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    text-align: left;
+  }
+  .form h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
+  .form .form-sub { font-size: 0.88rem; color: var(--fg-muted); margin-bottom: 0.3rem; }
+  .form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .form input, .form textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--fg);
+    background: var(--field-bg);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 0.7rem 0.85rem;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .form textarea { resize: vertical; min-height: 96px; }
+  .form input::placeholder, .form textarea::placeholder { color: var(--fg-faint); }
+  .form input:focus, .form textarea:focus {
+    outline: none;
+    border-color: var(--indigo);
+    box-shadow: 0 0 0 3px var(--indigo-soft);
+  }
+  .form .submit {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--on-indigo);
+    background: linear-gradient(135deg, var(--indigo), var(--indigo-2));
+    border: none;
+    border-radius: 11px;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    margin-top: 0.2rem;
+    transition: transform 0.2s var(--ease), opacity 0.2s var(--ease), filter 0.2s var(--ease);
+  }
+  .form .submit:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .form .submit:disabled { opacity: 0.55; cursor: default; transform: none; filter: none; }
+  .form .form-status { font-size: 0.88rem; min-height: 1.2em; }
+  .form .form-status.ok { color: var(--indigo-2); }
+  .form .form-status.err { color: #ef6f6f; }
+
+  /* ---- Kontakty ---- */
+  .contacts { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+  .card {
+    display: flex; flex-direction: column; align-items: center; gap: 0.55rem;
+    padding: 1.2rem 1rem;
     border-radius: 16px;
     border: 1px solid var(--border);
     background: var(--bg-elev);
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease), background 0.25s var(--ease);
+    text-decoration: none; color: inherit;
+    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
   }
   .card:hover { border-color: var(--border-hover); transform: translateY(-3px); }
-
   .avatar {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-    display: grid;
-    place-items: center;
+    width: 56px; height: 56px; border-radius: 50%;
+    position: relative; overflow: hidden;
+    display: grid; place-items: center;
     background: linear-gradient(135deg, var(--indigo-soft), transparent);
     border: 1px solid var(--border);
-    color: var(--indigo-2);
-    font-weight: 600;
-    font-size: 1.1rem;
-    letter-spacing: 0.02em;
+    color: var(--indigo-2); font-weight: 600; font-size: 1rem; letter-spacing: 0.02em;
   }
-  .avatar img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-  .card .name { font-weight: 550; font-size: 0.97rem; }
-  .card .role { color: var(--fg-faint); font-size: 0.8rem; margin-bottom: 0.15rem; }
-  .card .email { color: var(--fg-muted); font-size: 0.85rem; word-break: break-word; }
-  .card .phone { color: var(--fg-muted); font-size: 0.85rem; }
-  .card:hover .email, .card:hover .phone { color: var(--indigo-2); }
+  .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .card .name { display: block; font-weight: 550; font-size: 0.95rem; }
+  .card .role { display: block; color: var(--fg-faint); font-size: 0.78rem; margin-bottom: 0.1rem; }
+  .card .email { display: block; color: var(--fg-muted); font-size: 0.82rem; overflow-wrap: break-word; }
+  .card:hover .email { color: var(--indigo-2); }
 
-  .company {
-    color: var(--fg-faint);
-    font-size: 0.8rem;
-    line-height: 1.7;
-    max-width: 46ch;
-  }
+  .company { color: var(--fg-faint); font-size: 0.8rem; line-height: 1.7; max-width: 46ch; }
   .company strong { color: var(--fg-muted); font-weight: 550; }
   .company .sep { opacity: 0.4; padding: 0 0.4rem; }
 
   @media (max-width: 560px) {
-    .contacts { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; }
-    .card { flex-direction: row; text-align: left; gap: 1rem; padding: 1rem 1.2rem; }
-    .card .avatar { width: 52px; height: 52px; flex: 0 0 auto; }
+    .contacts { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
+    .card { flex-direction: row; text-align: left; gap: 1rem; padding: 0.9rem 1.1rem; }
+    .card .avatar { width: 48px; height: 48px; flex: 0 0 auto; }
     .card .meta { display: flex; flex-direction: column; }
   }
 
@@ -238,31 +238,19 @@
 
   /* ---- Tisk = vizitka 90×50 mm ---- */
   .business-card { display: none; }
-
   @media print {
     @page { size: 90mm 50mm; margin: 0; }
-    html, body {
-      background: #ffffff !important;
-      min-height: 0;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    .glow, .theme-toggle, main { display: none !important; }
-
+    html, body { background: #ffffff !important; min-height: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .glow, main { display: none !important; }
     .business-card {
       display: grid !important;
       grid-template-rows: auto 1fr auto;
-      width: 90mm; height: 50mm;
-      padding: 6mm 7mm;
-      box-sizing: border-box;
+      width: 90mm; height: 50mm; padding: 6mm 7mm; box-sizing: border-box;
       color: #15161d;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     .business-card .bc-brand { display: flex; align-items: center; gap: 2.4mm; }
-    .business-card .bc-mark {
-      width: 7mm; height: 7mm; border-radius: 2mm;
-      background: linear-gradient(135deg, #6366f1, #818cf8);
-    }
+    .business-card .bc-mark { width: 7mm; height: 7mm; border-radius: 2mm; background: linear-gradient(135deg, #6366f1, #818cf8); }
     .business-card .bc-name { font-size: 4.6mm; font-weight: 700; letter-spacing: -0.02em; }
     .business-card .bc-name .accent { color: #6366f1; }
     .business-card .bc-tagline { font-size: 2.7mm; color: #5a5b6a; align-self: center; }
@@ -276,16 +264,6 @@
 <body>
 <div class="glow" aria-hidden="true"></div>
 
-<button class="theme-toggle" id="themeToggle" type="button" aria-label="Přepnout světlý/tmavý režim" title="Přepnout režim">
-  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="4"></circle>
-    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
-  </svg>
-  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
-  </svg>
-</button>
-
 <main>
   <div class="brand">
     <span class="mark" aria-hidden="true"></span>
@@ -294,8 +272,19 @@
 
   <p class="lead">Webové studio. <span class="muted">Od jednoduchého webu po AI integrace do firem.</span></p>
 
+  <form class="form" id="poptavka" novalidate>
+    <h2>Poptávka</h2>
+    <p class="form-sub">Napište nám, co potřebujete. Ozveme se do 2 pracovních dnů.</p>
+    <!-- honeypot proti botům — člověk nevyplní -->
+    <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <input id="f-name" name="name" type="text" required maxlength="100" placeholder="Jméno" autocomplete="name">
+    <input id="f-email" name="email" type="email" required maxlength="200" placeholder="E-mail" autocomplete="email">
+    <textarea id="f-msg" name="message" required maxlength="5000" placeholder="S čím můžeme pomoct?"></textarea>
+    <button class="submit" type="submit">Odeslat poptávku</button>
+    <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+  </form>
+
   <nav class="contacts" aria-label="Kontakty">
-    <!-- Obecný kontakt. Telefon doplňte odkomentováním řádku .phone, až bude číslo. -->
     <a class="card" href="mailto:info@indigostudio.cz">
       <span class="avatar"><img src="/team/info.jpg" alt="" loading="lazy" onerror="this.remove()"><span>IS</span></span>
       <span class="meta">
@@ -351,30 +340,61 @@
 </aside>
 
 <script>
+  // jemný glow za kurzorem / dotykem
+  if (!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var glow = document.querySelector(".glow");
+    window.addEventListener("pointermove", function (e) {
+      glow.style.setProperty("--mx", e.clientX + "px");
+      glow.style.setProperty("--my", e.clientY + "px");
+    }, { passive: true });
+  }
+
+  // poptávkový formulář
   (function () {
-    var root = document.documentElement;
-    var stored = null;
-    try { stored = localStorage.getItem("theme"); } catch (e) {}
-    if (stored === "light" || stored === "dark") {
-      root.setAttribute("data-theme", stored);
-    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
-      root.setAttribute("data-theme", "light");
+    var form = document.getElementById("poptavka");
+    var status = document.getElementById("formStatus");
+    var btn = form.querySelector(".submit");
+
+    function setStatus(msg, kind) {
+      status.textContent = msg;
+      status.className = "form-status" + (kind ? " " + kind : "");
     }
 
-    document.getElementById("themeToggle").addEventListener("click", function () {
-      var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      try { localStorage.setItem("theme", next); } catch (e) {}
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        message: form.message.value.trim(),
+        company: form.company.value, // honeypot
+      };
+      if (!data.name || !data.email || !data.message) {
+        setStatus("Vyplňte prosím jméno, e-mail i zprávu.", "err");
+        return;
+      }
+      btn.disabled = true;
+      setStatus("Odesíláme…", "");
+
+      fetch("/api/poptavka", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (res.ok) {
+            form.reset();
+            setStatus("Děkujeme, ozveme se do 2 pracovních dnů.", "ok");
+          } else {
+            setStatus(res.j.error || "Odeslání se nezdařilo. Zkuste to prosím znovu nebo napište na info@indigostudio.cz.", "err");
+            btn.disabled = false;
+          }
+        })
+        .catch(function () {
+          setStatus("Odeslání se nezdařilo. Zkuste to prosím znovu nebo napište na info@indigostudio.cz.", "err");
+          btn.disabled = false;
+        });
     });
-
-    // jemný glow za kurzorem / dotykem
-    if (!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      var glow = document.querySelector(".glow");
-      window.addEventListener("pointermove", function (e) {
-        glow.style.setProperty("--mx", e.clientX + "px");
-        glow.style.setProperty("--my", e.clientY + "px");
-      }, { passive: true });
-    }
   })();
 </script>
 </body>
