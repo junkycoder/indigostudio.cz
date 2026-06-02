@@ -26,8 +26,9 @@ Jedna stránka, žádný build step, žádné frameworky.
 - Indigo Studio s.r.o., IČO 14389096
 - Sídlo: Chudenická 1059/30, Hostivař, 102 00 Praha
 - BÚ: 2802169026/2010 (Fio)
-- Kontakty: info@ → indigostudio.cz@gmail.com, veronika@ → veronika.hallerova@gmail.com,
-  daniel@ → hromada.dan@gmail.com (přes Cloudflare Email Routing)
+- Kontakty: info@ / veronika@ / daniel@ — reálné schránky v Zoho Mail (EU DC, free).
+  Webmail mail.zoho.eu, IMAP/SMTP smtp.zoho.eu. (Dřív forwarding přes CF Email
+  Routing — nahrazeno, viz README „Email".)
 
 ## Pravidla
 
@@ -42,10 +43,12 @@ Jedna stránka, žádný build step, žádné frameworky.
 
 - Dodat fotky do `public/team/` (info/veronika/daniel.jpg).
 - Doplnit telefon na info (v `index.html` připravený zakomentovaný `.phone` řádek).
-- Email Routing: ověřit destinace `indigostudio.cz@gmail.com` a
-  `veronika.hallerova@gmail.com` (mail od Cloudflare), pak dotvořit pravidla
-  info@/veronika@ + catch-all. daniel@ → hromada.dan@gmail.com už běží.
-- Propojit repo s Workerem přes Cloudflare Workers Builds (auto-deploy).
+- Mail (Zoho + Resend) — runbook v README „Email (Zoho Mail + Resend)":
+  1. Zoho Mail (EU DC, free): ověřit doménu, založit schránky info@/veronika@/daniel@.
+  2. Vypnout CF Email Routing → nastavit MX na Zoho (mx*.zoho.eu) + SPF/DKIM/DMARC.
+  3. Resend: ověřit doménu (DKIM CNAME na subdoméně) + `wrangler secret put RESEND_API_KEY`.
+  Worker už je připraven: s RESEND_API_KEY posílá poptávku přes Resend, jinak
+  fallback na CF send_email (bez výpadku během migrace).
 
 ## Záloha
 
