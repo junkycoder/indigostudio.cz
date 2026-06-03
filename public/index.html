@@ -255,7 +255,9 @@
   .cap-search input {
     flex: 1; min-width: 0;
     background: none; border: 0; outline: none;
-    color: var(--fg); font: inherit; font-size: 0.95rem;
+    color: var(--fg); font: inherit;
+    /* min. 16px, jinak iOS Safari při fokusu auto-zoomne („cukne") stránku */
+    font-size: 16px;
     padding: 0.85rem 0.7rem;
   }
   .cap-search input::placeholder { color: var(--fg-faint); }
