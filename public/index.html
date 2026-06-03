@@ -615,8 +615,20 @@
       }
     }
 
-    input.addEventListener("input", run);
-    renderChips();
+    // Sekce je sbalená; výpis schopností se ukáže až při fokusu (nebo když je něco napsané)
+    var block = document.querySelector(".cap-block");
+    function sync() {
+      var open = block.contains(document.activeElement) || input.value.trim() !== "";
+      if (!open) { list.hidden = true; answer.hidden = true; return; }
+      list.hidden = false;
+      run();
+    }
+    input.addEventListener("input", sync);
+    block.addEventListener("focusin", sync);
+    // po blur necháme activeElement ustálit, pak vyhodnotíme (klik na chip drží fokus uvnitř)
+    block.addEventListener("focusout", function () { setTimeout(sync, 0); });
+    list.hidden = true;
+    answer.hidden = true;
   })();
 </script>
 </body>
