@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:;Daniel;;;
+FN:Daniel – Indigo Studio
+ORG:Indigo Studio s.r.o.
+TITLE:Vývoj a DevOps
+EMAIL;TYPE=INTERNET,WORK:daniel@indigostudio.cz
+URL:https://indigostudio.cz
+ADR;TYPE=WORK:;;Chudenická 1059/30, Hostivař;Praha;;102 00;Česká republika
+NOTE:IČO 14389096
+END:VCARD
