@@ -14,8 +14,10 @@ pattern = "www.indigostudio.cz"
 zone_name = "indigostudio.cz"
 custom_domain = true
 
-# ----- Email Sending (poptávkový formulář) -----
-# Worker posílá poptávky na ověřenou destinaci v Email Routingu.
+# ----- Email Sending (fallback pro poptávkový formulář) -----
+# Primárně poptávky jdou přes Resend (HTTP API, secret RESEND_API_KEY).
+# Tohle je fallback, když RESEND_API_KEY není nastaven — posílá na ověřenou
+# destinaci v Email Routingu. Pozn.: po přesunu MX na Zoho nemusí fungovat.
 [[send_email]]
 name = "SEB"
 destination_address = "hromada.dan@gmail.com"

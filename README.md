@@ -46,9 +46,10 @@ npm run deploy     # wrangler deploy
 ## Poptávkový formulář
 
 `POST /api/poptavka` ({name, email, message}) → Worker pošle e-mail přes
-`send_email` binding na ověřenou destinaci v Email Routingu (`hromada.dan@gmail.com`).
-Honeypot pole `company` + validace proti spamu. Cílovou adresu lze změnit
-v `wrangler.toml` (`[[send_email]]`) a `src/worker.js` (`MAIL_TO`).
+**Resend** (HTTP API) na `info@indigostudio.cz`. Bez nastaveného `RESEND_API_KEY`
+spadne na Cloudflare `send_email` fallback (`hromada.dan@gmail.com`). Honeypot
+pole `company` + validace proti spamu. Adresy se mění v `src/worker.js`
+(`MAIL_FROM` / `MAIL_TO` / `MAIL_TO_FALLBACK`). Nastavení mailu viz níž.
 
 ### Regenerace OG obrázku
 
@@ -64,30 +65,58 @@ node -e "const s=require('sharp');s(require('fs').readFileSync('scripts/og.svg')
 2. Route na Worker drží `wrangler.toml` (`custom_domain = true`) — po prvním
    `wrangler deploy` se v zóně vytvoří automaticky.
 
-## Email forwarding (Cloudflare Email Routing)
+## Email (Zoho Mail + Resend)
 
-Cíl: `info@`, `veronika@`, `daniel@` přeposílat na gmaily. Odpovídá se z gmailu.
+Cíl: reálné schránky `info@` / `veronika@` / `daniel@` s webmailem, příjmem
+i **odesíláním z pravé adresy** (IMAP/SMTP). Poštu drží **Zoho Mail (EU DC,
+free tier)**, poptávkový formulář posílá přes **Resend** (HTTP API, zdarma).
 
-Cloudflare dashboard → zóna `indigostudio.cz` → **Email** → **Email Routing**:
+> **Důležité:** Cloudflare Email Routing a Zoho si nemůžou vládnout MX zároveň.
+> Zapnutí Email Routingu přepíše MX na Cloudflare; pro Zoho je nutné Email
+> Routing **vypnout** a nastavit MX na Zoho. Proto poptávka už nejede přes
+> CF `send_email` (závisí na Email Routingu), ale přes Resend — nezávislé na MX.
 
-1. **Enable Email Routing** — CF samo přidá MX + TXT (SPF) záznamy do DNS.
-2. **Destination addresses** — přidat a ověřit (CF pošle ověřovací mail):
-   - `indigostudio.cz@gmail.com`
-   - `veronika.hallerova@gmail.com`
-   - `hromada.dan@gmail.com`
-3. **Routing rules** — custom addresses:
-   | Adresa                     | Přeposlat na                  |
-   |----------------------------|-------------------------------|
-   | `info@indigostudio.cz`     | `indigostudio.cz@gmail.com`   |
-   | `veronika@indigostudio.cz` | `veronika.hallerova@gmail.com`|
-   | `daniel@indigostudio.cz`   | `hromada.dan@gmail.com`       |
-4. (Volitelně) **Catch-all** → `indigostudio.cz@gmail.com`, ať nic nezapadne.
+### 1) Zoho Mail — schránky a webmail
 
-**Odpovídání z gmailu vlastní adresou** (volitelné, aby odpověď chodila z `@indigostudio.cz`):
-Gmail → Nastavení → Účty → „Odeslat e-mail jako" → přidat adresu →
-SMTP `smtp.gmail.com` nepůjde (forwarding není mailbox). Pro odesílání z
-`@indigostudio.cz` je potřeba reálná SMTP schránka (např. přes poskytovatele),
-nebo se odpovídá z gmailu napřímo. Pro vizitku stačí příjem přes forwarding.
+1. Registrace na **zoho.com/mail** → Mail Free Plan → **EU data center**
+   (DC se po registraci nemění; EU kvůli GDPR).
+2. Add domain `indigostudio.cz` → ověření domény (TXT `zoho-verification=…`,
+   přesnou hodnotu dá Zoho admin) v Cloudflare DNS.
+3. Vytvořit schránky: `info@`, `veronika@`, `daniel@` (free tier: až 5 schránek).
+4. Webmail: **mail.zoho.eu**. IMAP/SMTP (`imap.zoho.eu` / `smtp.zoho.eu`,
+   port 465 SSL) pro připojení do Gmailu/Apple Mail/Outlooku přes app-specific
+   heslo.
+
+### 2) DNS v Cloudflare (po vypnutí Email Routingu)
+
+Nejdřív v dashboardu → **Email** → **Email Routing** → **Disable** (uvolní MX).
+Pak v **DNS** přidat (přesné hodnoty vždy ověř v Zoho adminu → *Tools & Config*):
+
+| Typ | Name | Hodnota | Pozn. |
+|-----|------|---------|-------|
+| MX  | `@`  | `mx.zoho.eu`  | priorita 10 |
+| MX  | `@`  | `mx2.zoho.eu` | priorita 20 |
+| MX  | `@`  | `mx3.zoho.eu` | priorita 50 |
+| TXT | `@`  | `v=spf1 include:zoho.eu ~all` | SPF |
+| TXT | `zmail._domainkey` | (DKIM klíč z Zoho adminu) | DKIM |
+| TXT | `_dmarc` | `v=DMARC1; p=quarantine; rua=mailto:dmarc@indigostudio.cz` | DMARC |
+
+MX nech **DNS only** (šedý mráček). Pozor: pokud v zóně zůstaly staré MX od
+Email Routingu (`*.mx.cloudflare.net`), smazat je.
+
+### 3) Resend — poptávkový formulář
+
+1. Účet na **resend.com** → **Domains** → add `indigostudio.cz`.
+2. Resend dá DKIM/SPF záznamy (typicky na subdoménu `send.` / `resend._domainkey`)
+   — přidat do Cloudflare DNS. **Nekoliduje** se Zoho DKIM (jiné selektory).
+3. API klíč → uložit jako secret Workeru:
+   ```bash
+   npx wrangler secret put RESEND_API_KEY
+   ```
+   (V Cloudflare Workers Builds nastavit tentýž secret v dashboardu Workeru.)
+4. Hotovo: `src/worker.js` pošle poptávku přes Resend na `info@indigostudio.cz`.
+   Bez nastaveného `RESEND_API_KEY` spadne na CF `send_email` fallback
+   (`hromada.dan@gmail.com`) — žádný výpadek během migrace.
 
 ## Záloha původního projektu
 

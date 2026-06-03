@@ -11,9 +11,12 @@ const SECURITY_HEADERS = {
   "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
 };
 
-// odesílatel (adresa v naší zóně) a příjemce (ověřená destinace v Email Routingu)
+// odesílatel — adresa v naší doméně, ověřená v Resendu (DKIM)
 const MAIL_FROM = "poptavka@indigostudio.cz";
-const MAIL_TO = "hromada.dan@gmail.com";
+// příjemce poptávek přes Resend — reálná schránka v Zoho
+const MAIL_TO = "info@indigostudio.cz";
+// fallback příjemce pro Cloudflare send_email — musí být ověřená destinace v Email Routingu
+const MAIL_TO_FALLBACK = "hromada.dan@gmail.com";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const json = (obj, status = 200) =>
@@ -60,31 +63,69 @@ async function handlePoptavka(request, env) {
   if (!EMAIL_RE.test(email)) return json({ error: "Zadejte prosím platný e-mail." }, 400);
 
   const ip = request.headers.get("CF-Connecting-IP") || "neznámá";
-  const raw = buildEmail({ name, email, message, ip });
 
   try {
-    await env.SEB.send(new EmailMessage(MAIL_FROM, MAIL_TO, raw));
+    // primární cesta: Resend HTTP API (nezávislé na MX → funguje i když poštu drží Zoho)
+    if (env.RESEND_API_KEY) {
+      await sendViaResend(env.RESEND_API_KEY, { name, email, message, ip });
+    } else {
+      // fallback: Cloudflare send_email binding na ověřenou destinaci v Email Routingu
+      const raw = buildEmail({ name, email, message, ip, to: MAIL_TO_FALLBACK });
+      await env.SEB.send(new EmailMessage(MAIL_FROM, MAIL_TO_FALLBACK, raw));
+    }
   } catch (err) {
-    console.log("send_email error:", err && err.message);
+    console.log("poptavka send error:", err && err.message);
     return json({ error: "Odeslání se nezdařilo. Napište prosím na info@indigostudio.cz." }, 502);
   }
 
   return json({ ok: true });
 }
 
-// --- sestavení RFC822 zprávy (UTF-8 bezpečně přes base64) ---
-function buildEmail({ name, email, message, ip }) {
-  const subject = `Poptávka z webu — ${name}`;
-  const text =
+// --- odeslání přes Resend (https://resend.com) ---
+async function sendViaResend(apiKey, { name, email, message, ip }) {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: `Indigo Studio <${MAIL_FROM}>`,
+      to: [MAIL_TO],
+      reply_to: `${name.replace(/[\r\n]/g, "")} <${email}>`,
+      subject: buildSubject(name),
+      text: buildText({ name, email, message, ip }),
+    }),
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(`Resend ${res.status}: ${detail.slice(0, 300)}`);
+  }
+}
+
+// --- text zprávy (sdílí Resend i CF fallback) ---
+function buildSubject(name) {
+  return `Poptávka z webu — ${name}`;
+}
+
+function buildText({ name, email, message, ip }) {
+  return (
     `Nová poptávka z indigostudio.cz\n\n` +
     `Jméno:  ${name}\n` +
     `E-mail: ${email}\n\n` +
     `Zpráva:\n${message}\n\n` +
-    `—\nOdesláno z webového formuláře, IP: ${ip}\n`;
+    `—\nOdesláno z webového formuláře, IP: ${ip}\n`
+  );
+}
+
+// --- sestavení RFC822 zprávy pro CF send_email (UTF-8 bezpečně přes base64) ---
+function buildEmail({ name, email, message, ip, to }) {
+  const subject = buildSubject(name);
+  const text = buildText({ name, email, message, ip });
 
   const headers = [
     `From: Indigo Studio <${MAIL_FROM}>`,
-    `To: ${MAIL_TO}`,
+    `To: ${to}`,
     `Reply-To: ${name.replace(/[\r\n]/g, "")} <${email}>`,
     `Subject: =?UTF-8?B?${b64Utf8(subject)}?=`,
     `Message-ID: <${crypto.randomUUID()}@indigostudio.cz>`,
