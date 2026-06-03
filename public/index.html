@@ -230,6 +230,65 @@
   .cta.alt .cta-ico { background: var(--bg-elev); color: var(--fg-muted); border: 1px solid var(--border); }
   .cta-note { font-size: 0.84rem; color: var(--fg-faint); margin-top: 1rem; line-height: 1.55; }
 
+  /* ---- Co umíme (živé vyhledávání schopností) ---- */
+  .cap-block {
+    width: 100%;
+    max-width: 520px;
+    padding: 1.6rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    text-align: left;
+  }
+  .cap-block h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
+  .cap-sub { font-size: 0.88rem; color: var(--fg-muted); margin: 0.25rem 0 1rem; line-height: 1.5; }
+  .cap-search {
+    display: flex; align-items: center; gap: 0.1rem;
+    background: var(--field-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0 0.95rem;
+    transition: border-color 0.2s var(--ease);
+  }
+  .cap-search:focus-within { border-color: var(--border-hover); }
+  .cap-search svg { width: 18px; height: 18px; color: var(--fg-faint); flex: 0 0 auto; }
+  .cap-search input {
+    flex: 1; min-width: 0;
+    background: none; border: 0; outline: none;
+    color: var(--fg); font: inherit; font-size: 0.95rem;
+    padding: 0.85rem 0.7rem;
+  }
+  .cap-search input::placeholder { color: var(--fg-faint); }
+  .cap-search input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+  .cap-answer {
+    display: flex; align-items: baseline; gap: 0.45rem;
+    margin-top: 0.9rem;
+    font-size: 0.9rem; line-height: 1.5; color: var(--fg-muted);
+  }
+  .cap-answer .cap-verdict { flex: 0 0 auto; font-weight: 650; letter-spacing: -0.01em; color: var(--indigo-2); }
+  .cap-answer a { color: var(--indigo-2); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+  .cap-list { list-style: none; margin: 0.9rem 0 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  /* výchozí stav = kompaktní „chipy" se schopnostmi */
+  .cap-list.chips { flex-direction: row; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
+  .cap-chip {
+    font: inherit; font-size: 0.82rem; color: var(--fg-muted);
+    background: var(--field-bg); border: 1px solid var(--border);
+    border-radius: 999px; padding: 0.4rem 0.8rem; cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .cap-chip:hover { border-color: var(--border-hover); color: var(--fg); transform: translateY(-1px); }
+  .cap-row {
+    display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.7rem 0.9rem; border-radius: 12px;
+    border: 1px solid var(--border); background: var(--field-bg);
+  }
+  .cap-row .cap-title { font-weight: 600; font-size: 0.92rem; letter-spacing: -0.01em; }
+  .cap-row .cap-desc { color: var(--fg-muted); font-size: 0.82rem; line-height: 1.45; }
+  .cap-row mark { background: var(--indigo-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .cap-empty { font-size: 0.86rem; color: var(--fg-faint); padding: 0.3rem 0; }
+
   /* ---- Kontakty ---- */
   .contacts { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
   .card {
@@ -326,7 +385,18 @@
     <h1>Indigo<span class="accent"> Studio</span></h1>
   </div>
 
-  <p class="lead">Tvoříme weby, aplikace a AI na míru. <span class="muted">Mobilní aplikace, interní systémy i školení — pro firmy i začátečníky.</span></p>
+  <p class="lead">Tvoříme weby, aplikace a AI na míru. <span class="muted">Mobilní i interní systémy, automatizace, analýzu dat i rozšíření stávajících nástrojů — pro firmy i začátečníky.</span></p>
+
+  <section class="cap-block" aria-label="Co umíme">
+    <h2>Co pro vás umíme?</h2>
+    <p class="cap-sub">Napište, co řešíte. Když to v seznamu nenajdete, skoro jistě to zvládneme taky.</p>
+    <div class="cap-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="capQ" type="search" autocomplete="off" placeholder="web, mobilní appka, automatizace, AI…" aria-label="Co potřebujete">
+    </div>
+    <p id="capAnswer" class="cap-answer" aria-live="polite" hidden></p>
+    <ul id="capList" class="cap-list chips"></ul>
+  </section>
 
   <section class="cta-block" aria-label="Poptávka">
     <h2>Poptávka</h2>
@@ -472,6 +542,80 @@
       glow.style.setProperty("--my", e.clientY + "px");
     }, { passive: true });
   }
+
+  // „Co umíme" — živé vyhledávání schopností + asertivní odpověď ano/ne
+  (function () {
+    var CAPS = [
+      { t: "Weby a webové aplikace", d: "Prezentace, e-shopy, portály, landing pages.", k: "web weby webovka stranky eshop e-shop prezentace landing portal wordpress aplikace" },
+      { t: "Mobilní aplikace", d: "iOS i Android, nativně i multiplatformně.", k: "mobilni mobil aplikace appka app ios android iphone telefon" },
+      { t: "Interní systémy na míru", d: "CRM, CSM, evidence, sklady, rezervace, admin.", k: "interni system systemy crm csm evidence sklad rezervace agenda databaze admin" },
+      { t: "AI agenty a workflows", d: "Agenti, chatboti, asistenti a zpracování dokumentů.", k: "ai umela inteligence chatbot agent agenti asistent workflow workflows llm gpt automatizace dokumenty" },
+      { t: "Automatizace procesů", d: "Propojení nástrojů přes API, integrace, makra.", k: "automatizace automat integrace api propojeni makro workflow zapier n8n" },
+      { t: "Integrace do ostatních služeb", d: "Napojení na Slack, Stripe, Google, ERP a další přes API.", k: "integrace integrace napojeni propojeni sluzba sluzby slack stripe google erp api webhook" },
+      { t: "Analýza a vizualizace dat", d: "Dashboardy, reporty, scraping a čištění dat.", k: "data analyza dashboard report statistika vizualizace scraping excel bi" },
+      { t: "Rozšíření do prohlížeče", d: "Doplňky a pluginy pro Chrome, Edge i Firefox.", k: "rozsireni plugin doplnek extension addon prohlizec browser chrome edge firefox" },
+      { t: "Školení a konzultace", d: "Workshopy a konzultace pro firmy i začátečníky.", k: "skoleni konzultace workshop kurz vyuka mentoring zacatecnik" },
+      { t: "Údržba a provoz", d: "Hosting, DevOps, opravy a dlouhodobá podpora.", k: "udrzba provoz hosting devops podpora oprava sprava server" }
+    ];
+    var MAIL = "mailto:info@indigostudio.cz?subject=Popt%C3%A1vka";
+    var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+
+    var input = document.getElementById("capQ");
+    var list = document.getElementById("capList");
+    var answer = document.getElementById("capAnswer");
+    if (!input || !list || !answer) return;
+
+    function hl(text, q) {
+      var i = norm(text).indexOf(q);
+      if (!q || i < 0) return text;
+      return text.slice(0, i) + "<mark>" + text.slice(i, i + q.length) + "</mark>" + text.slice(i + q.length);
+    }
+
+    function renderChips() {
+      answer.hidden = true;
+      list.className = "cap-list chips";
+      list.innerHTML = "";
+      CAPS.forEach(function (c) {
+        var li = document.createElement("li");
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cap-chip";
+        b.textContent = c.t;
+        b.addEventListener("click", function () { input.value = c.t; run(); input.focus(); });
+        li.appendChild(b);
+        list.appendChild(li);
+      });
+    }
+
+    function run() {
+      var q = norm(input.value.trim());
+      if (!q) { renderChips(); return; }
+      var hits = CAPS.filter(function (c) {
+        return norm(c.t).indexOf(q) >= 0 || norm(c.d).indexOf(q) >= 0 || c.k.indexOf(q) >= 0;
+      });
+      list.className = "cap-list";
+      list.innerHTML = "";
+      answer.hidden = false;
+      if (hits.length) {
+        answer.innerHTML = '<span class="cap-verdict">Ano.</span><span>Tohle děláme — napište nám zadání a ozveme se.</span>';
+        hits.forEach(function (c) {
+          var li = document.createElement("li");
+          li.className = "cap-row";
+          li.innerHTML = '<span class="cap-title">' + hl(c.t, q) + '</span><span class="cap-desc">' + c.d + '</span>';
+          list.appendChild(li);
+        });
+      } else {
+        answer.innerHTML = '<span class="cap-verdict">Nejspíš ano.</span><span>V seznamu to není, ale software řešíme napříč obory. <a href="' + MAIL + '">Napište nám</a> a upřesníme to.</span>';
+        var li = document.createElement("li");
+        li.className = "cap-empty";
+        li.textContent = "Tip: zkuste obecnější slovo — web, appka, systém, automatizace, data, AI.";
+        list.appendChild(li);
+      }
+    }
+
+    input.addEventListener("input", run);
+    renderChips();
+  })();
 </script>
 </body>
 </html>
