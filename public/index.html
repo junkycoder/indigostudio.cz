@@ -328,15 +328,31 @@
   /* ---- Kontakty ---- */
   .contacts { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
   .card {
-    display: flex; flex-direction: column; align-items: center; gap: 0.55rem;
-    padding: 1.2rem 1rem;
+    display: flex; flex-direction: column;
     border-radius: 16px;
     border: 1px solid var(--border);
     background: var(--bg-elev);
-    text-decoration: none; color: inherit;
+    overflow: hidden;
     transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
   }
   .card:hover { border-color: var(--border-hover); transform: translateY(-3px); }
+  .card-main {
+    display: flex; flex-direction: column; align-items: center; gap: 0.55rem;
+    padding: 1.2rem 1rem;
+    text-decoration: none; color: inherit;
+  }
+  /* „Uložit kontakt" — stažení vCard (.vcf), funguje i bez JS */
+  .vcf {
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    margin-top: auto;
+    padding: 0.55rem 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--fg-faint); font-size: 0.76rem; letter-spacing: 0.01em;
+    text-decoration: none;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .vcf svg { width: 13px; height: 13px; flex: 0 0 auto; }
+  .vcf:hover { color: var(--indigo-2); background: var(--indigo-soft); }
   .avatar {
     width: 56px; height: 56px; border-radius: 50%;
     position: relative; overflow: hidden;
@@ -357,7 +373,7 @@
 
   @media (max-width: 560px) {
     .contacts { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
-    .card { flex-direction: row; text-align: left; gap: 1rem; padding: 0.9rem 1.1rem; }
+    .card-main { flex-direction: row; text-align: left; gap: 1rem; padding: 0.9rem 1.1rem; }
     .card .avatar { width: 48px; height: 48px; flex: 0 0 auto; }
     .card .meta { display: flex; flex-direction: column; }
   }
@@ -467,31 +483,40 @@
   </section>
 
   <nav class="contacts" aria-label="Kontakty">
-    <a class="card" href="mailto:info@indigostudio.cz">
-      <span class="avatar"><img src="/team/info.jpg" alt="" loading="lazy" onerror="this.remove()"><span>IS</span></span>
-      <span class="meta">
-        <span class="name">Office</span>
-        <span class="role">Obecné dotazy a opravy</span>
-        <span class="email">info@indigostudio.cz</span>
-        <!-- <span class="phone">+420 XXX XXX XXX</span> -->
-      </span>
-    </a>
-    <a class="card" href="mailto:veronika@indigostudio.cz">
-      <span class="avatar"><img src="/team/veronika.jpg" alt="" loading="lazy" onerror="this.remove()"><span>VH</span></span>
-      <span class="meta">
-        <span class="name">Veronika</span>
-        <span class="role">Fakturace a podpora</span>
-        <span class="email">veronika@indigostudio.cz</span>
-      </span>
-    </a>
-    <a class="card" href="mailto:daniel@indigostudio.cz">
-      <span class="avatar"><img src="/team/daniel.jpg" alt="" loading="lazy" onerror="this.remove()"><span>DH</span></span>
-      <span class="meta">
-        <span class="name">Daniel</span>
-        <span class="role">Vývoj a DevOps</span>
-        <span class="email">daniel@indigostudio.cz</span>
-      </span>
-    </a>
+    <div class="card">
+      <a class="card-main" href="mailto:info@indigostudio.cz">
+        <span class="avatar"><img src="/team/info.jpg" alt="" loading="lazy" onerror="this.remove()"><span>IS</span></span>
+        <span class="meta">
+          <span class="name">Office</span>
+          <span class="role">Obecné dotazy a opravy</span>
+          <span class="email">info@indigostudio.cz</span>
+          <!-- <span class="phone">+420 XXX XXX XXX</span> -->
+        </span>
+      </a>
+      <a class="vcf" href="/team/info.vcf" download="Indigo Studio – Office.vcf" aria-label="Uložit kontakt Office"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Uložit kontakt</a>
+    </div>
+    <div class="card">
+      <a class="card-main" href="mailto:veronika@indigostudio.cz">
+        <span class="avatar"><img src="/team/veronika.jpg" alt="" loading="lazy" onerror="this.remove()"><span>VH</span></span>
+        <span class="meta">
+          <span class="name">Veronika</span>
+          <span class="role">Fakturace a podpora</span>
+          <span class="email">veronika@indigostudio.cz</span>
+        </span>
+      </a>
+      <a class="vcf" href="/team/veronika.vcf" download="Indigo Studio – Veronika Hallerová.vcf" aria-label="Uložit kontakt na Veroniku"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Uložit kontakt</a>
+    </div>
+    <div class="card">
+      <a class="card-main" href="mailto:daniel@indigostudio.cz">
+        <span class="avatar"><img src="/team/daniel.jpg" alt="" loading="lazy" onerror="this.remove()"><span>DH</span></span>
+        <span class="meta">
+          <span class="name">Daniel</span>
+          <span class="role">Vývoj a DevOps</span>
+          <span class="email">daniel@indigostudio.cz</span>
+        </span>
+      </a>
+      <a class="vcf" href="/team/daniel.vcf" download="Indigo Studio – Daniel Hromada.vcf" aria-label="Uložit kontakt na Daniela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Uložit kontakt</a>
+    </div>
   </nav>
 
   <p class="company">
@@ -535,7 +560,7 @@
     <div class="bc-foot">
       <div class="bc-contacts">
         <div class="bc-web">indigostudio.cz</div>
-        <div class="bc-person">Veronika</div>
+        <div class="bc-person">Veronika Hallerová</div>
         <div class="bc-role">Fakturace a podpora</div>
         <div class="bc-mail">veronika@indigostudio.cz</div>
       </div>
@@ -559,7 +584,7 @@
     <div class="bc-foot">
       <div class="bc-contacts">
         <div class="bc-web">indigostudio.cz</div>
-        <div class="bc-person">Daniel</div>
+        <div class="bc-person">Daniel Hromada</div>
         <div class="bc-role">Vývoj a DevOps</div>
         <div class="bc-mail">daniel@indigostudio.cz</div>
       </div>
