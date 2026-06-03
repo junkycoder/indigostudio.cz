@@ -7,8 +7,9 @@
 <meta name="format-detection" content="telephone=no">
 <title>Indigo Studio — weby, aplikace a AI na míru</title>
 <meta name="description" content="Indigo Studio s.r.o. — weby, mobilní aplikace, agentic AI workflows, AI školení a interní aplikace na míru (CRM, CSM).">
-<meta name="theme-color" content="#0b0b12" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<!-- theme-color = barva horního tintu pozadí, ať status bar splývá se stránkou -->
+<meta name="theme-color" content="#16162d" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6fe" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/">
 
 <!-- Open Graph / share preview -->
@@ -90,6 +91,7 @@
 
     /* dark = výchozí */
     --bg: #0b0b12;
+    --bg-top: rgba(99, 102, 241, 0.12);  /* jemný horní tint, bleedne pod status bar */
     --bg-elev: rgba(255, 255, 255, 0.035);
     --field-bg: rgba(255, 255, 255, 0.04);
     --border: rgba(255, 255, 255, 0.09);
@@ -109,6 +111,7 @@
   @media (prefers-color-scheme: light) {
     :root {
       --bg: #ffffff;
+      --bg-top: rgba(99, 102, 241, 0.06);
       --bg-elev: rgba(15, 18, 40, 0.025);
       --field-bg: rgba(15, 18, 40, 0.025);
       --border: rgba(15, 18, 40, 0.10);
@@ -128,7 +131,10 @@
   html, body { height: 100%; }
 
   body {
-    background: var(--bg);
+    /* horní tint sahá k samému kraji = pozadí teče i pod status bar (viewport-fit=cover) */
+    background:
+      linear-gradient(180deg, var(--bg-top), transparent 280px) no-repeat,
+      var(--bg);
     color: var(--fg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -156,7 +162,12 @@
     width: 100%;
     max-width: 680px;
     margin: 0 auto;
-    padding: clamp(2.5rem, 6vh, 4.5rem) 1.5rem;
+    /* respektovat notch / home indicator, ať obsah nezaleze pod status bar */
+    padding:
+      max(clamp(2.5rem, 6vh, 4.5rem), env(safe-area-inset-top) + 1rem)
+      max(1.5rem, env(safe-area-inset-right))
+      max(clamp(2.5rem, 6vh, 4.5rem), env(safe-area-inset-bottom) + 1rem)
+      max(1.5rem, env(safe-area-inset-left));
     display: flex;
     flex-direction: column;
     justify-content: center;
