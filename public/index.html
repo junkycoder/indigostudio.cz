@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- ať iOS nedělá tel: odkazy z IČO a čísla účtu -->
 <meta name="format-detection" content="telephone=no">
-<title>Indigo Studio — webové studio &amp; AI integrace</title>
-<meta name="description" content="Indigo Studio s.r.o. — webové studio. Od jednoduchého webu po AI integrace do firem.">
+<title>Indigo Studio — weby, aplikace a AI na míru</title>
+<meta name="description" content="Indigo Studio s.r.o. — weby, mobilní aplikace, agentic AI workflows, AI školení a interní aplikace na míru (CRM, CSM).">
 <meta name="theme-color" content="#0b0b12" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/">
@@ -14,8 +14,8 @@
 <!-- Open Graph / share preview -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Indigo Studio">
-<meta property="og:title" content="Indigo Studio — webové studio &amp; AI integrace">
-<meta property="og:description" content="Od jednoduchého webu po AI integrace do firem.">
+<meta property="og:title" content="Indigo Studio — weby, aplikace a AI na míru">
+<meta property="og:description" content="Weby, mobilní aplikace, AI workflows, školení a interní systémy na míru.">
 <meta property="og:url" content="https://indigostudio.cz/">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:image" content="https://indigostudio.cz/og.png">
@@ -23,8 +23,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Indigo Studio — webové studio a AI integrace">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Indigo Studio — webové studio &amp; AI integrace">
-<meta name="twitter:description" content="Od jednoduchého webu po AI integrace do firem.">
+<meta name="twitter:title" content="Indigo Studio — weby, aplikace a AI na míru">
+<meta name="twitter:description" content="Weby, mobilní aplikace, AI workflows, školení a interní systémy na míru.">
 <meta name="twitter:image" content="https://indigostudio.cz/og.png">
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -34,17 +34,48 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Indigo Studio s.r.o.",
+  "@type": ["Organization", "ProfessionalService"],
+  "name": "Indigo Studio",
+  "legalName": "Indigo Studio s.r.o.",
   "url": "https://indigostudio.cz",
+  "logo": "https://indigostudio.cz/apple-touch-icon.png",
+  "image": "https://indigostudio.cz/og.png",
   "email": "info@indigostudio.cz",
   "description": "Webové studio. Od jednoduchého webu po AI integrace do firem.",
+  "taxID": "14389096",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Chudenická 1059/30, Hostivař",
     "addressLocality": "Praha",
+    "addressRegion": "Praha",
     "postalCode": "102 00",
     "addressCountry": "CZ"
+  },
+  "areaServed": "CZ",
+  "knowsAbout": [
+    "Tvorba webových stránek",
+    "Vývoj mobilních aplikací",
+    "Agentic AI workflows",
+    "AI školení pro firmy a začátečníky",
+    "Interní aplikace na míru (CRM, CSM)"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Služby",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Webové stránky" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobilní aplikace" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agentic AI workflows" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "AI školení pro začátečníky i firmy" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Interní aplikace na míru (CRM, CSM)" } }
+    ]
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "info@indigostudio.cz",
+    "areaServed": "CZ",
+    "availableLanguage": ["cs"]
   }
 }
 </script>
@@ -141,58 +172,41 @@
   }
   .lead .muted { color: var(--fg-muted); }
 
-  /* ---- Poptávkový formulář ---- */
-  .form {
+  /* ---- Poptávka (rychlé kontaktní cesty) ---- */
+  .cta-block {
     width: 100%;
     max-width: 520px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
     padding: 1.5rem;
     border-radius: 18px;
     border: 1px solid var(--border);
     background: var(--bg-elev);
     text-align: left;
   }
-  .form h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
-  .form .form-sub { font-size: 0.88rem; color: var(--fg-muted); margin-bottom: 0.3rem; }
-  .form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-  .form input, .form textarea {
-    width: 100%;
-    font: inherit;
-    font-size: 0.95rem;
-    color: var(--fg);
-    background: var(--field-bg);
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    padding: 0.7rem 0.85rem;
-    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
-  }
-  .form textarea { resize: vertical; min-height: 96px; }
-  .form input::placeholder, .form textarea::placeholder { color: var(--fg-faint); }
-  .form input:focus, .form textarea:focus {
-    outline: none;
-    border-color: var(--indigo);
-    box-shadow: 0 0 0 3px var(--indigo-soft);
-  }
-  .form .submit {
+  .cta-block h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
+  .cta-block .cta-sub { font-size: 0.88rem; color: var(--fg-muted); margin-bottom: 1rem; }
+  .cta-group { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+  .cta {
+    flex: 1 1 0;
+    text-align: center;
+    text-decoration: none;
     font: inherit;
     font-weight: 600;
     font-size: 0.95rem;
     color: var(--on-indigo);
     background: linear-gradient(135deg, var(--indigo), var(--indigo-2));
-    border: none;
+    border: 1px solid transparent;
     border-radius: 11px;
     padding: 0.8rem 1rem;
-    cursor: pointer;
-    margin-top: 0.2rem;
-    transition: transform 0.2s var(--ease), opacity 0.2s var(--ease), filter 0.2s var(--ease);
+    white-space: nowrap;
+    transition: transform 0.2s var(--ease), filter 0.2s var(--ease), border-color 0.2s var(--ease);
   }
-  .form .submit:hover { filter: brightness(1.06); transform: translateY(-1px); }
-  .form .submit:disabled { opacity: 0.55; cursor: default; transform: none; filter: none; }
-  .form .form-status { font-size: 0.88rem; min-height: 1.2em; }
-  .form .form-status.ok { color: var(--indigo-2); }
-  .form .form-status.err { color: #ef6f6f; }
+  .cta:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .cta.alt {
+    color: var(--fg);
+    background: var(--field-bg);
+    border-color: var(--border);
+  }
+  .cta.alt:hover { filter: none; border-color: var(--border-hover); }
 
   /* ---- Kontakty ---- */
   .contacts { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
@@ -290,19 +304,17 @@
     <h1>Indigo<span class="accent"> Studio</span></h1>
   </div>
 
-  <p class="lead">Webové studio. <span class="muted">Od jednoduchého webu po AI integrace do firem.</span></p>
+  <p class="lead">Tvoříme weby, aplikace a AI na míru. <span class="muted">Mobilní aplikace, interní systémy i školení — pro firmy i začátečníky.</span></p>
 
-  <form class="form" id="poptavka" novalidate>
+  <section class="cta-block" aria-label="Poptávka">
     <h2>Poptávka</h2>
-    <p class="form-sub">Napište nám, co potřebujete. Ozveme se do 2 pracovních dnů.</p>
-    <!-- honeypot proti botům — člověk nevyplní -->
-    <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <input id="f-name" name="name" type="text" required maxlength="100" placeholder="Jméno" autocomplete="name">
-    <input id="f-email" name="email" type="email" required maxlength="200" placeholder="E-mail" autocomplete="email">
-    <textarea id="f-msg" name="message" required maxlength="5000" placeholder="S čím můžeme pomoct?"></textarea>
-    <button class="submit" type="submit">Odeslat poptávku</button>
-    <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-  </form>
+    <p class="cta-sub">Napište nám, co potřebujete. Ozveme se do pár hodin.</p>
+    <div class="cta-group">
+      <a class="cta" href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">Napsat e-mail</a>
+      <!-- TODO: doplnit reálné WhatsApp číslo — mezinárodní formát bez +, mezer a 0 na začátku (např. 420777123456) -->
+      <a class="cta alt" href="https://wa.me/420XXXXXXXXX" target="_blank" rel="noopener">Napsat přes WhatsApp</a>
+    </div>
+  </section>
 
   <nav class="contacts" aria-label="Kontakty">
     <a class="card" href="mailto:info@indigostudio.cz">
@@ -421,54 +433,6 @@
       glow.style.setProperty("--my", e.clientY + "px");
     }, { passive: true });
   }
-
-  // poptávkový formulář
-  (function () {
-    var form = document.getElementById("poptavka");
-    var status = document.getElementById("formStatus");
-    var btn = form.querySelector(".submit");
-
-    function setStatus(msg, kind) {
-      status.textContent = msg;
-      status.className = "form-status" + (kind ? " " + kind : "");
-    }
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var data = {
-        name: form.name.value.trim(),
-        email: form.email.value.trim(),
-        message: form.message.value.trim(),
-        company: form.company.value, // honeypot
-      };
-      if (!data.name || !data.email || !data.message) {
-        setStatus("Vyplňte prosím jméno, e-mail i zprávu.", "err");
-        return;
-      }
-      btn.disabled = true;
-      setStatus("Odesíláme…", "");
-
-      fetch("/api/poptavka", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      })
-        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
-        .then(function (res) {
-          if (res.ok) {
-            form.reset();
-            setStatus("Děkujeme, ozveme se do 2 pracovních dnů.", "ok");
-          } else {
-            setStatus(res.j.error || "Odeslání se nezdařilo. Zkuste to prosím znovu nebo napište na info@indigostudio.cz.", "err");
-            btn.disabled = false;
-          }
-        })
-        .catch(function () {
-          setStatus("Odeslání se nezdařilo. Zkuste to prosím znovu nebo napište na info@indigostudio.cz.", "err");
-          btn.disabled = false;
-        });
-    });
-  })();
 </script>
 </body>
 </html>
