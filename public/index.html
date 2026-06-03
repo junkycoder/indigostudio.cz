@@ -57,6 +57,9 @@
     "Tvorba webových stránek",
     "Vývoj mobilních aplikací",
     "Agentic AI workflows",
+    "Firemní e-maily (schránky, webmail, SMTP, přeposílání)",
+    "Newslettery a hromadné rozesílky",
+    "Automatické a AI e-maily (zákaznická podpora)",
     "AI školení pro firmy a začátečníky",
     "Interní aplikace na míru (CRM, CSM)"
   ],
@@ -67,6 +70,8 @@
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Webové stránky" } },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobilní aplikace" } },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agentic AI workflows" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Firemní e-maily (schránky, webmail, SMTP)" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Newslettery a automatické e-maily" } },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "AI školení pro začátečníky i firmy" } },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Interní aplikace na míru (CRM, CSM)" } }
     ]
@@ -154,6 +159,24 @@
     background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 22%), var(--glow), transparent 70%);
     transition: background 0.2s linear;
   }
+
+  /* nenápadný odkaz na zdrojový kód, vlevo dole v rohu */
+  .repo-link {
+    position: fixed;
+    left: max(0.9rem, env(safe-area-inset-left));
+    bottom: max(0.9rem, env(safe-area-inset-bottom));
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--fg-faint);
+    text-decoration: none;
+    opacity: 0.65;
+    transition: opacity 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .repo-link:hover { opacity: 1; color: var(--fg-muted); }
+  .repo-link svg { width: 15px; height: 15px; }
 
   main {
     position: relative;
@@ -392,6 +415,11 @@
 <body>
 <div class="glow" aria-hidden="true"></div>
 
+<a class="repo-link" href="https://github.com/junkycoder/indigostudio.cz" target="_blank" rel="noopener" aria-label="Zdrojový kód na GitHubu">
+  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+  <span>GitHub</span>
+</a>
+
 <main>
   <div class="brand">
     <span class="mark" aria-hidden="true"></span>
@@ -400,8 +428,8 @@
 
   <p class="lead">Tvoříme weby, aplikace a AI na míru. <span class="muted">Mobilní i interní systémy, automatizace, analýzu dat i rozšíření stávajících nástrojů — pro firmy i začátečníky.</span></p>
 
-  <section class="cap-block" aria-label="Co umíme">
-    <h2>Co pro vás umíme?</h2>
+  <section class="cap-block" aria-label="Co pro vás můžeme udělat">
+    <h2>Co pro vás můžeme udělat?</h2>
     <p class="cap-sub">Napište, co řešíte. Když to v seznamu nenajdete, skoro jistě to zvládneme taky.</p>
     <div class="cap-search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
@@ -565,6 +593,7 @@
       { t: "AI agenty a workflows", d: "Agenti, chatboti, asistenti a zpracování dokumentů.", k: "ai umela inteligence chatbot agent agenti asistent workflow workflows llm gpt automatizace dokumenty" },
       { t: "Automatizace procesů", d: "Propojení nástrojů přes API, integrace, makra.", k: "automatizace automat integrace api propojeni makro workflow zapier n8n" },
       { t: "Integrace do ostatních služeb", d: "Napojení na Slack, Stripe, Google, ERP a další přes API.", k: "integrace integrace napojeni propojeni sluzba sluzby slack stripe google erp api webhook" },
+      { t: "Firemní e-maily a newslettery", d: "Schránky, webmail, SMTP, přeposílání, newslettery i automatické a AI e-maily (podpora).", k: "email e-mail mail maily posta schranka schranky webmail smtp imap forwarding preposilani presmerovani newsletter newslettery rozesilka hromadne transakcni automaticky autoresponder ai podpora notifikace zoho resend dkim spf" },
       { t: "Analýza a vizualizace dat", d: "Dashboardy, reporty, scraping a čištění dat.", k: "data analyza dashboard report statistika vizualizace scraping excel bi" },
       { t: "Rozšíření do prohlížeče", d: "Doplňky a pluginy pro Chrome, Edge i Firefox.", k: "rozsireni plugin doplnek extension addon prohlizec browser chrome edge firefox" },
       { t: "Školení a konzultace", d: "Workshopy a konzultace pro firmy i začátečníky.", k: "skoleni konzultace workshop kurz vyuka mentoring zacatecnik" },
