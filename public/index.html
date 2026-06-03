@@ -99,6 +99,12 @@
     --fg-faint: #6b6b78;
     --glow: rgba(99, 102, 241, 0.16);
     --on-indigo: #ffffff;
+
+    /* barevný akcent hero sekce Poptávka */
+    --cta-tint-1: rgba(99, 102, 241, 0.14);
+    --cta-tint-2: rgba(129, 140, 248, 0.05);
+    --cta-border: rgba(129, 140, 248, 0.32);
+    --cta-glow: rgba(99, 102, 241, 0.32);
   }
   @media (prefers-color-scheme: light) {
     :root {
@@ -111,6 +117,10 @@
       --fg-muted: #5a5b6a;
       --fg-faint: #9a9ba8;
       --glow: rgba(99, 102, 241, 0.10);
+      --cta-tint-1: rgba(99, 102, 241, 0.09);
+      --cta-tint-2: rgba(129, 140, 248, 0.04);
+      --cta-border: rgba(99, 102, 241, 0.28);
+      --cta-glow: rgba(99, 102, 241, 0.20);
     }
   }
 
@@ -174,12 +184,17 @@
 
   /* ---- Poptávka (rychlé kontaktní cesty) ---- */
   .cta-block {
+    position: relative;
     width: 100%;
     max-width: 520px;
-    padding: 1.5rem;
-    border-radius: 18px;
-    border: 1px solid var(--border);
-    background: var(--bg-elev);
+    padding: 1.6rem;
+    border-radius: 20px;
+    border: 1px solid var(--cta-border);
+    background:
+      radial-gradient(130% 110% at 0% 0%, var(--cta-tint-1), transparent 55%),
+      linear-gradient(160deg, var(--cta-tint-2), transparent 60%),
+      var(--bg-elev);
+    box-shadow: 0 20px 55px -25px var(--cta-glow);
     text-align: left;
   }
   .cta-block h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
