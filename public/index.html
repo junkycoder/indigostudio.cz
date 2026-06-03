@@ -184,29 +184,36 @@
   }
   .cta-block h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
   .cta-block .cta-sub { font-size: 0.88rem; color: var(--fg-muted); margin-bottom: 1rem; }
-  .cta-group { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+  .cta-group { display: flex; flex-direction: column; gap: 0.7rem; }
   .cta {
-    flex: 1 1 0;
-    text-align: center;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.95rem;
+    text-align: left;
     text-decoration: none;
+    color: inherit;
     font: inherit;
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--on-indigo);
-    background: linear-gradient(135deg, var(--indigo), var(--indigo-2));
-    border: 1px solid transparent;
-    border-radius: 11px;
-    padding: 0.8rem 1rem;
-    white-space: nowrap;
-    transition: transform 0.2s var(--ease), filter 0.2s var(--ease), border-color 0.2s var(--ease);
-  }
-  .cta:hover { filter: brightness(1.06); transform: translateY(-1px); }
-  .cta.alt {
-    color: var(--fg);
     background: var(--field-bg);
-    border-color: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.15rem 1.3rem;
+    transition: transform 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
   }
-  .cta.alt:hover { filter: none; border-color: var(--border-hover); }
+  .cta:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .cta-ico {
+    flex: 0 0 auto;
+    width: 38px; height: 38px;
+    display: grid; place-items: center;
+    border-radius: 10px;
+    background: var(--indigo-soft);
+    color: var(--indigo-2);
+  }
+  .cta-ico svg { width: 20px; height: 20px; }
+  .cta-text { display: flex; flex-direction: column; gap: 0.25rem; }
+  .cta-title { font-weight: 600; font-size: 1rem; letter-spacing: -0.01em; }
+  .cta-desc { color: var(--fg-muted); font-size: 0.86rem; line-height: 1.5; }
+  .cta.alt .cta-ico { background: var(--bg-elev); color: var(--fg-muted); border: 1px solid var(--border); }
+  .cta-note { font-size: 0.84rem; color: var(--fg-faint); margin-top: 1rem; line-height: 1.55; }
 
   /* ---- Kontakty ---- */
   .contacts { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
@@ -308,12 +315,29 @@
 
   <section class="cta-block" aria-label="Poptávka">
     <h2>Poptávka</h2>
-    <p class="cta-sub">Napište nám, co potřebujete. Ozveme se obratem.</p>
+    <p class="cta-sub">Zvolte si způsob komunikace, který vám nejvíce vyhovuje:</p>
     <div class="cta-group">
-      <a class="cta" href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">Napsat e-mail</a>
+      <a class="cta" href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">
+        <span class="cta-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        </span>
+        <span class="cta-text">
+          <span class="cta-title">Napsat e-mail</span>
+          <span class="cta-desc">Kliknutím otevřete zprávu s předpřipraveným předmětem, stačí jen stručně uvést vaše zadání.</span>
+        </span>
+      </a>
       <!-- TODO: doplnit reálné WhatsApp číslo — mezinárodní formát bez +, mezer a 0 na začátku (např. 420777123456) -->
-      <a class="cta alt" href="https://wa.me/420XXXXXXXXX" target="_blank" rel="noopener">Napsat přes WhatsApp</a>
+      <a class="cta alt" href="https://wa.me/420XXXXXXXXX" target="_blank" rel="noopener">
+        <span class="cta-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+        </span>
+        <span class="cta-text">
+          <span class="cta-title">Napsat přes WhatsApp</span>
+          <span class="cta-desc">Rychlá cesta pro operativní zadání nebo v případě, že web prohlížíte z mobilního telefonu.</span>
+        </span>
+      </a>
     </div>
+    <p class="cta-note">Na vaši zprávu odpovím nebo vás telefonicky kontaktuji nejpozději do několika hodin.</p>
   </section>
 
   <nav class="contacts" aria-label="Kontakty">
