@@ -371,6 +371,11 @@
   .company strong { color: var(--fg-muted); font-weight: 550; }
   .company .sep { opacity: 0.4; padding: 0 0.4rem; }
 
+  /* nenápadná reference na veřejný projekt */
+  .project-ref { font-size: 0.8rem; color: var(--fg-faint); margin-top: -0.6rem; }
+  .project-ref a { color: var(--fg-muted); text-decoration: none; border-bottom: 1px solid transparent; transition: color 0.2s var(--ease), border-color 0.2s var(--ease); }
+  .project-ref a:hover { color: var(--indigo-2); border-color: currentColor; }
+
   @media (max-width: 560px) {
     .contacts { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
     .card-main { flex-direction: row; text-align: left; gap: 1rem; padding: 0.9rem 1.1rem; }
@@ -523,6 +528,8 @@
     <strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>
     Chudenická 1059/30, Hostivař, 102 00 Praha<span class="sep">·</span><br>č. ú. 2802169026/2010 (Fio)
   </p>
+
+  <p class="project-ref">Veřejný projekt: <a href="/rampa">Rampa — audit přístupnosti obecních webů</a></p>
 </main>
 
 <!-- Vytiskne se jen při tisku (Ctrl/Cmd+P) — 3 vizitky 90×50 mm, každá na své stránce -->
