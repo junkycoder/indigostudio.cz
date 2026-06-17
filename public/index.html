@@ -366,6 +366,9 @@
   .card .role { display: block; color: var(--fg-faint); font-size: 0.78rem; margin-bottom: 0.1rem; }
   .card .email { display: block; color: var(--fg-muted); font-size: 0.82rem; overflow-wrap: break-word; }
   .card:hover .email { color: var(--indigo-2); }
+  .card .databox { display: block; color: var(--fg-faint); font-size: 0.76rem; margin-top: 0.15rem; overflow-wrap: break-word; }
+  /* datová schránka: jen kód, vysvětlení v tooltipu (lidi ten formát znají) */
+  abbr[title] { text-decoration: underline dotted; text-underline-offset: 0.18em; cursor: help; }
 
   .company { color: var(--fg-faint); font-size: 0.8rem; line-height: 1.7; max-width: 46ch; }
   .company strong { color: var(--fg-muted); font-weight: 550; }
@@ -473,8 +476,8 @@
           <span class="cta-desc">Kliknutím otevřete zprávu s předpřipraveným předmětem, stačí jen stručně uvést vaše zadání.</span>
         </span>
       </a>
-      <!-- TODO: doplnit reálné WhatsApp číslo — mezinárodní formát bez +, mezer a 0 na začátku (např. 420777123456) -->
-      <a class="cta alt" href="https://wa.me/420XXXXXXXXX" target="_blank" rel="noopener">
+      <!-- WhatsApp: mezinárodní formát bez +, mezer a 0 na začátku -->
+      <a class="cta alt" href="https://wa.me/420770371535" target="_blank" rel="noopener">
         <span class="cta-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5Z"/></svg>
         </span>
@@ -496,6 +499,7 @@
           <span class="role">Obecné dotazy a opravy</span>
           <span class="email">info@indigostudio.cz</span>
           <!-- <span class="phone">+420 XXX XXX XXX</span> -->
+          <span class="databox"><abbr title="Datová schránka">fi4uxhj</abbr></span>
         </span>
       </a>
       <a class="vcf" href="/team/info.vcf" download="Indigo Studio – Office.vcf" aria-label="Uložit kontakt Office"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Uložit kontakt</a>
@@ -525,7 +529,7 @@
   </nav>
 
   <p class="company">
-    <strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>
+    <strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<span class="sep">·</span><abbr title="Datová schránka">fi4uxhj</abbr><br>
     Chudenická 1059/30, Hostivař, 102 00 Praha<span class="sep">·</span><br>č. ú. 2802169026/2010 (Fio)
   </p>
 
@@ -550,6 +554,7 @@
       <div class="bc-legal">
         Indigo Studio s.r.o.<br>
         IČO 14389096<br>
+        DS fi4uxhj<br>
         2802169026/2010
       </div>
     </div>
@@ -574,6 +579,7 @@
       <div class="bc-legal">
         Indigo Studio s.r.o.<br>
         IČO 14389096<br>
+        DS fi4uxhj<br>
         2802169026/2010
       </div>
     </div>
@@ -598,6 +604,7 @@
       <div class="bc-legal">
         Indigo Studio s.r.o.<br>
         IČO 14389096<br>
+        DS fi4uxhj<br>
         2802169026/2010
       </div>
     </div>
