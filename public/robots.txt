@@ -1,4 +1,6 @@
 User-agent: *
+Disallow: /contact-list
+Disallow: /contact-list.html
 Allow: /
 
 Sitemap: https://indigostudio.cz/sitemap.xml
