@@ -30,3 +30,5 @@ destination_address = "hromada.dan@gmail.com"
 directory = "public"
 binding = "ASSETS"
 run_worker_first = true
+# neexistující cesty → vlastní hezká 404 (public/404.html) se stavem 404
+not_found_handling = "404-page"

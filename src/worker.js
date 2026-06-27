@@ -34,6 +34,12 @@ export default {
       return handlePoptavka(request, env);
     }
 
+    // /rampa byla nahrazena článkem /cookies — starý odkaz (i z rozeslaného mailu)
+    // trvale přesměruj na aktuální obsah.
+    if (url.pathname === "/rampa" || url.pathname === "/rampa/" || url.pathname === "/rampa.html") {
+      return Response.redirect(new URL("/cookies", url.origin), 301);
+    }
+
     // statika + bezpečnostní hlavičky
     const res = await env.ASSETS.fetch(request);
     const headers = new Headers(res.headers);
