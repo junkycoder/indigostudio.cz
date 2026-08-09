@@ -40,10 +40,25 @@ export default {
       return Response.redirect(new URL("/cookies", url.origin), 301);
     }
 
+    // Klientský PoC má vlastní stránku; HTML asset se servíruje interně jako TXT,
+    // aby ho automatická kanonizace Cloudflare neposílala zpět do smyčky.
+    if (url.pathname === "/lada-poc") {
+      return Response.redirect(new URL("/lada-poc/", url.origin), 307);
+    }
+
+    let assetRequest = request;
+    const isLadaPoc = url.pathname === "/lada-poc/";
+    if (isLadaPoc) {
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = "/lada-poc/page.txt";
+      assetRequest = new Request(assetUrl, request);
+    }
+
     // statika + bezpečnostní hlavičky
-    const res = await env.ASSETS.fetch(request);
+    const res = await env.ASSETS.fetch(assetRequest);
     const headers = new Headers(res.headers);
     for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+    if (isLadaPoc) headers.set("Content-Type", "text/html; charset=utf-8");
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
   },
 };

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#11131a">
+  <title>Signal Collector — klientský PoC</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0c10;
+      --card: #15171f;
+      --border: #2b2e3a;
+      --text: #f3f4f6;
+      --muted: #a8acb8;
+      --accent: #818cf8;
+      --accent-strong: #6366f1;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #1b1e2b 0, var(--bg) 34rem);
+      color: var(--text);
+      font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(760px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    h1, h2 { line-height: 1.15; }
+    h1 { margin: 0 0 12px; font-size: clamp(2rem, 7vw, 3.3rem); letter-spacing: -.04em; }
+    h2 { margin: 0 0 18px; font-size: 1.25rem; }
+    p { color: var(--muted); }
+    code { color: var(--text); }
+
+    .label {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .lead { max-width: 58ch; margin: 0 0 32px; font-size: 1.08rem; }
+
+    .version {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 4px 9px;
+      border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--border));
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    .card {
+      margin-top: 20px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--card) 94%, transparent);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+      color: white;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .button:hover { filter: brightness(1.08); }
+
+    ol { margin: 22px 0 0; padding-left: 22px; color: var(--muted); }
+    ul { padding-left: 22px; color: var(--muted); }
+    li + li { margin-top: 8px; }
+
+    .files { display: grid; gap: 10px; }
+    .file {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .file:hover { border-color: var(--accent); }
+    .file span:last-child { color: var(--muted); white-space: nowrap; }
+
+    figure { margin: 20px 0 0; }
+    img { display: block; width: 100%; border-radius: 14px; }
+    figcaption { margin-top: 8px; color: var(--muted); font-size: .85rem; }
+
+    .note { margin-bottom: 0; font-size: .9rem; }
+
+    @media (max-width: 520px) {
+      main { padding: 40px 0; }
+      .card { padding: 19px; }
+      .file { align-items: flex-start; flex-direction: column; gap: 2px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="label">Indigo Studio · klientský náhled</p>
+    <h1>Signal Collector</h1>
+    <p class="lead">Android PoC pro offline sběr dat ze senzorů telefonu. Data se ukládají pouze lokálně a lze je exportovat do TXT.</p>
+
+    <section class="card" aria-labelledby="instalace">
+      <h2 id="instalace">Instalace aplikace</h2>
+      <span class="version">Nová verze · 0.2.0</span><br>
+      <a class="button" href="SignalCollector-PoC-0.2.0.apk" download>Stáhnout Signal Collector 0.2.0</a>
+      <ul>
+        <li>podrobný LTE/5G/3G/2G scan pro každou aktivní SIM včetně sousedních buněk,</li>
+        <li>RSRP, RSRQ, SINR, CQI, Timing Advance, PCI, TAC, pásma a další raw údaje,</li>
+        <li>jednotlivé GNSS satelity a přesnější 1Hz GPS,</li>
+        <li>rozšířená Wi-Fi včetně aktuálního spojení a Wi-Fi 7 MLO.</li>
+      </ul>
+      <ol>
+        <li>Otevřete stažený soubor v telefonu s Androidem.</li>
+        <li>Pokud se zobrazí výzva, povolte prohlížeči instalaci z tohoto zdroje.</li>
+        <li>Nainstalujte aplikaci a při prvním spuštění povolte požadované senzory.</li>
+      </ol>
+      <p class="note">Jde o testovací verzi instalovanou mimo Google Play. Android proto zobrazí standardní bezpečnostní upozornění.</p>
+    </section>
+
+    <section class="card" aria-labelledby="podklady">
+      <h2 id="podklady">Dokumentace a naměřená data</h2>
+      <div class="files">
+        <a class="file" href="SignalCollector-Release-0.2.0.md" download><span>Co je nového ve verzi 0.2.0</span><span>MD</span></a>
+        <a class="file" href="SignalCollector-Instalace.md" download><span>Instalační návod</span><span>MD</span></a>
+        <a class="file" href="SignalCollector-Specifikace.md" download><span>Specifikace PoC</span><span>MD</span></a>
+        <a class="file" href="signal-collector-20260805-101942.txt" download><span>Měření 10:19 · 893 záznamů</span><span>TXT</span></a>
+        <a class="file" href="signal-collector-20260805-102043.txt" download><span>Měření 10:20 · 535 záznamů</span><span>TXT</span></a>
+        <a class="file" href="signal-collector-20260805-102241.txt" download><span>Měření 10:22 · 954 záznamů</span><span>TXT</span></a>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="archiv">
+      <h2 id="archiv">Předchozí verze</h2>
+      <p>Pro porovnání a případný návrat zůstává dostupná původní testovací verze.</p>
+      <div class="files">
+        <a class="file" href="SignalCollector-PoC-0.1.0.apk" download><span>Signal Collector 0.1.0</span><span>APK</span></a>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="zarizeni">
+      <h2 id="zarizeni">Testovací zařízení</h2>
+      <p>Verze 0.2.0 byla nainstalována a ověřena na telefonu Google Pixel 10a s Androidem 16. Původní verze 0.1.0 zůstává níže ke stažení.</p>
+      <figure>
+        <img src="Pixel-10a.jpg" alt="Signal Collector spuštěný na telefonu Google Pixel 10a" width="4032" height="3024" loading="lazy">
+        <figcaption>Google Pixel 10a s nainstalovanou testovací aplikací.</figcaption>
+      </figure>
+    </section>
+  </main>
+</body>
+</html>
