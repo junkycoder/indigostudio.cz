@@ -131,6 +131,7 @@
     .change-header h3 { margin: 0; font-size: 1.05rem; }
     .change-header time { color: var(--muted); font-size: .85rem; white-space: nowrap; }
     .change ul { margin-bottom: 0; }
+    .more { color: var(--accent); font-size: .9rem; font-weight: 700; }
 
     @media (max-width: 520px) {
       main { padding: 40px 0; }
@@ -166,7 +167,6 @@
     <section class="card" aria-labelledby="podklady">
       <h2 id="podklady">Dokumentace</h2>
       <div class="files">
-        <a class="file" href="SignalCollector-Release-0.5.0.md" download><span>Co je nového ve verzi 0.5.0</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Instalace.md" download><span>Instalační návod</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Specifikace.md" download><span>Specifikace PoC</span><span>MD</span></a>
       </div>
@@ -203,6 +203,7 @@
           <li>oprávnění se žádají při zapnutí technologie a měření pokračuje na pozadí,</li>
           <li>zjednodušené rozhraní nabízí stažení nebo sdílení TXT/GZIP s automatickou volbou komprese.</li>
         </ul>
+        <a class="more" href="SignalCollector-Release-0.5.0.md">Více o verzi 0.5.0</a>
       </article>
       <article class="change" id="verze-0-4-0">
         <div class="change-header">
