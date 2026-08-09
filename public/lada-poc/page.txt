@@ -217,6 +217,7 @@
           <li>Bluetooth Classic discovery události a rozšířený GNSS quality summary,</li>
           <li>ZIP export dělený po 50 MB a nový GZIP export bez odstranění dosavadních zdrojů.</li>
         </ul>
+        <a class="more" href="SignalCollector-Release-0.4.0.md">Více o verzi 0.4.0</a>
       </article>
       <article class="change" id="verze-0-3-1">
         <div class="change-header">
@@ -230,8 +231,9 @@
           <li>varování před nahrazením předchozího výsledku novým měřením,</li>
           <li>ověřeno na Pixelu 10a i s jediným aktivním zdrojem.</li>
         </ul>
+        <a class="more" href="SignalCollector-Release-0.3.1.md">Více o verzi 0.3.1</a>
       </article>
-      <article class="change">
+      <article class="change" id="verze-0-3-0">
         <div class="change-header">
           <h3>0.3.0</h3>
           <time datetime="2026-08-09">9. 8. 2026</time>
@@ -243,8 +245,9 @@
           <li>podrobný síťový kontext a změny konektivity,</li>
           <li>na Pixelu 10a ověřeno 4 328 záznamy během 24sekundového testu.</li>
         </ul>
+        <a class="more" href="SignalCollector-Release-0.3.0.md">Více o verzi 0.3.0</a>
       </article>
-      <article class="change">
+      <article class="change" id="verze-0-2-0">
         <div class="change-header">
           <h3>0.2.0</h3>
           <time datetime="2026-08-09">9. 8. 2026</time>
@@ -256,6 +259,7 @@
           <li>nový TXT formát V2 s UTC časem, ID měření a pořadovým číslem záznamu,</li>
           <li>ověřeno na Google Pixel 10a s Androidem 16.</li>
         </ul>
+        <a class="more" href="SignalCollector-Release-0.2.0.md">Více o verzi 0.2.0</a>
       </article>
       <article class="change">
         <div class="change-header">
