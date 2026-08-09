@@ -133,13 +133,13 @@
 
     <section class="card" aria-labelledby="instalace">
       <h2 id="instalace">Instalace aplikace</h2>
-      <span class="version">Nová verze · 0.3.0</span><br>
-      <a class="button" href="SignalCollector-PoC-0.3.0.apk" download>Stáhnout Signal Collector 0.3.0</a>
+      <span class="version">Nová verze · 0.3.1</span><br>
+      <a class="button" href="SignalCollector-PoC-0.3.1.apk" download>Stáhnout Signal Collector 0.3.1</a>
       <ul>
-        <li>full-tracking raw GNSS, navigační zprávy, NMEA a AGC,</li>
-        <li>Wi-Fi RTT/FTM měření vzdálenosti k podporovaným access pointům,</li>
-        <li>kompletní BLE advertising payload včetně raw bytes, PHY a manufacturer dat,</li>
-        <li>síťový kontext: IP adresy, DNS, routy, MTU, transporty a změnové události.</li>
+        <li>volba jednotlivých měřených zdrojů; výchozí stav měří vše,</li>
+        <li>fajfky ukazují vybrané zdroje a během měření jen skutečně aktivní zdroje,</li>
+        <li>nativní sdílení dokončeného TXT přes aplikace v telefonu,</li>
+        <li>upozornění před novým měřením, aby se předchozí výsledek neztratil.</li>
       </ul>
       <ol>
         <li>Otevřete stažený soubor v telefonu s Androidem.</li>
@@ -152,6 +152,7 @@
     <section class="card" aria-labelledby="podklady">
       <h2 id="podklady">Dokumentace a naměřená data</h2>
       <div class="files">
+        <a class="file" href="SignalCollector-Release-0.3.1.md" download><span>Co je nového ve verzi 0.3.1</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Release-0.3.0.md" download><span>Co je nového ve verzi 0.3.0</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Release-0.2.0.md" download><span>Co je nového ve verzi 0.2.0</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Instalace.md" download><span>Instalační návod</span><span>MD</span></a>
@@ -162,8 +163,38 @@
       </div>
     </section>
 
+    <section class="card" aria-labelledby="dokumentace-api">
+      <h2 id="dokumentace-api">Oficiální dokumentace měřených technologií</h2>
+      <p>Odkazy vedou přímo do dokumentace platformy Android, ze které aplikace čte raw data.</p>
+      <div class="files">
+        <a class="file" href="https://developer.android.com/develop/sensors-and-location/sensors/sensors_overview" target="_blank" rel="noopener"><span>Fyzikální senzory telefonu</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/reference/android/location/LocationManager" target="_blank" rel="noopener"><span>GPS poloha a stav satelitů</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/develop/sensors-and-location/sensors/gnss" target="_blank" rel="noopener"><span>Raw GNSS měření</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/reference/android/telephony/TelephonyManager" target="_blank" rel="noopener"><span>Mobilní síť a okolní buňky</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/develop/connectivity/wifi/wifi-scan" target="_blank" rel="noopener"><span>Wi-Fi scanning</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/develop/connectivity/wifi/wifi-rtt" target="_blank" rel="noopener"><span>Wi-Fi RTT / FTM ranging</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/develop/connectivity/bluetooth" target="_blank" rel="noopener"><span>Bluetooth Classic</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview" target="_blank" rel="noopener"><span>Bluetooth Low Energy</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/reference/android/net/ConnectivityManager.NetworkCallback" target="_blank" rel="noopener"><span>Síťový kontext a změny připojení</span><span>Android</span></a>
+        <a class="file" href="https://developer.android.com/reference/android/media/AudioRecord" target="_blank" rel="noopener"><span>Mikrofon a orientační hluk</span><span>Android</span></a>
+      </div>
+    </section>
+
     <section class="card" aria-labelledby="changelog">
       <h2 id="changelog">Changelog</h2>
+      <article class="change">
+        <div class="change-header">
+          <h3>0.3.1</h3>
+          <time datetime="2026-08-09">9. 8. 2026</time>
+        </div>
+        <ul>
+          <li>výběr 20 měřených zdrojů s výchozím nastavením „vše“,</li>
+          <li>viditelné fajfky a zvýraznění skutečně aktivních zdrojů,</li>
+          <li>nativní sdílení dokončených TXT dat,</li>
+          <li>varování před nahrazením předchozího výsledku novým měřením,</li>
+          <li>ověřeno na Pixelu 10a i s jediným aktivním zdrojem.</li>
+        </ul>
+      </article>
       <article class="change">
         <div class="change-header">
           <h3>0.3.0</h3>
@@ -206,6 +237,7 @@
       <h2 id="archiv">Předchozí verze</h2>
       <p>Pro porovnání a případný návrat zůstává dostupná původní testovací verze.</p>
       <div class="files">
+        <a class="file" href="SignalCollector-PoC-0.3.0.apk" download><span>Signal Collector 0.3.0</span><span>APK</span></a>
         <a class="file" href="SignalCollector-PoC-0.2.0.apk" download><span>Signal Collector 0.2.0</span><span>APK</span></a>
         <a class="file" href="SignalCollector-PoC-0.1.0.apk" download><span>Signal Collector 0.1.0</span><span>APK</span></a>
       </div>
@@ -213,10 +245,10 @@
 
     <section class="card" aria-labelledby="zarizeni">
       <h2 id="zarizeni">Testovací zařízení</h2>
-      <p>Verze 0.3.0 byla nainstalována a ověřena na telefonu Google Pixel 10a s Androidem 16. Verze 0.2.0 a 0.1.0 zůstávají ke stažení v archivu.</p>
+      <p>Verze 0.3.1 byla nainstalována a ověřena na telefonu Google Pixel 10a s Androidem 16. Starší verze zůstávají ke stažení v archivu.</p>
       <figure>
-        <img src="SignalCollector-0.3.0.png" alt="Signal Collector 0.3.0 spuštěný na telefonu Google Pixel 10a" width="1080" height="2424" loading="lazy">
-        <figcaption>Aktuální obrazovka verze 0.3.0 s novými zdroji dat.</figcaption>
+        <img src="SignalCollector-0.3.1.png" alt="Signal Collector 0.3.1 spuštěný na telefonu Google Pixel 10a" width="1080" height="2424" loading="lazy">
+        <figcaption>Verze 0.3.1 s výběrem měřených zdrojů a viditelnými fajfkami.</figcaption>
       </figure>
     </section>
   </main>
