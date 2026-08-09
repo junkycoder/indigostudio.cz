@@ -164,18 +164,11 @@
     </section>
 
     <section class="card" aria-labelledby="podklady">
-      <h2 id="podklady">Dokumentace a naměřená data</h2>
+      <h2 id="podklady">Dokumentace</h2>
       <div class="files">
         <a class="file" href="SignalCollector-Release-0.5.0.md" download><span>Co je nového ve verzi 0.5.0</span><span>MD</span></a>
-        <a class="file" href="SignalCollector-Release-0.4.0.md" download><span>Co je nového ve verzi 0.4.0</span><span>MD</span></a>
-        <a class="file" href="SignalCollector-Release-0.3.1.md" download><span>Co je nového ve verzi 0.3.1</span><span>MD</span></a>
-        <a class="file" href="SignalCollector-Release-0.3.0.md" download><span>Co je nového ve verzi 0.3.0</span><span>MD</span></a>
-        <a class="file" href="SignalCollector-Release-0.2.0.md" download><span>Co je nového ve verzi 0.2.0</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Instalace.md" download><span>Instalační návod</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Specifikace.md" download><span>Specifikace PoC</span><span>MD</span></a>
-        <a class="file" href="signal-collector-20260805-101942.txt" download><span>Měření 10:19 · 893 záznamů</span><span>TXT</span></a>
-        <a class="file" href="signal-collector-20260805-102043.txt" download><span>Měření 10:20 · 535 záznamů</span><span>TXT</span></a>
-        <a class="file" href="signal-collector-20260805-102241.txt" download><span>Měření 10:22 · 954 záznamů</span><span>TXT</span></a>
       </div>
     </section>
 
