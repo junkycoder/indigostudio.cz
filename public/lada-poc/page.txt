@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow, noarchive">
   <meta name="theme-color" content="#11131a">
+  <meta name="description" content="Android PoC pro lokální sběr dat ze senzorů, rádiových rozhraní a volitelné měření kvality internetu.">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="cs_CZ">
+  <meta property="og:site_name" content="Indigo Studio">
+  <meta property="og:title" content="Signal Collector — klientský PoC">
+  <meta property="og:description" content="Android PoC pro lokální sběr dat ze senzorů, rádiových rozhraní a volitelné měření kvality internetu.">
+  <meta property="og:url" content="https://indigostudio.cz/lada-poc/">
+  <meta property="og:image" content="https://indigostudio.cz/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Indigo Studio">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Signal Collector — klientský PoC">
+  <meta name="twitter:description" content="Android PoC pro lokální sběr dat ze senzorů, rádiových rozhraní a volitelné měření kvality internetu.">
+  <meta name="twitter:image" content="https://indigostudio.cz/og.png">
+  <link rel="canonical" href="https://indigostudio.cz/lada-poc/">
   <title>Signal Collector — klientský PoC</title>
   <style>
     :root {
@@ -102,10 +120,6 @@
     .file:hover { border-color: var(--accent); }
     .file span:last-child { color: var(--muted); white-space: nowrap; }
 
-    figure { margin: 20px 0 0; }
-    img { display: block; width: 100%; border-radius: 14px; }
-    figcaption { margin-top: 8px; color: var(--muted); font-size: .85rem; }
-
     .note { margin-bottom: 0; font-size: .9rem; }
 
     .change + .change {
@@ -129,22 +143,22 @@
   <main>
     <p class="label">Indigo Studio · klientský náhled</p>
     <h1>Signal Collector</h1>
-    <p class="lead">Android PoC pro offline sběr dat ze senzorů telefonu. Data se ukládají pouze lokálně a lze je exportovat do TXT.</p>
+    <p class="lead">Android PoC pro lokální sběr dat ze senzorů a rádiových rozhraní telefonu. Výsledky lze stáhnout nebo sdílet jako TXT či GZIP.</p>
 
     <section class="card" aria-labelledby="instalace">
       <h2 id="instalace">Instalace aplikace</h2>
-      <span class="version">Nová verze · 0.3.1</span><br>
-      <a class="button" href="SignalCollector-PoC-0.3.1.apk" download>Stáhnout Signal Collector 0.3.1</a>
+      <span class="version">Nová verze · 0.5.0</span><br>
+      <a class="button" href="SignalCollector-PoC-0.5.0.apk" download>Stáhnout Signal Collector 0.5.0</a>
       <ul>
-        <li>volba jednotlivých měřených zdrojů; výchozí stav měří vše,</li>
-        <li>fajfky ukazují vybrané zdroje a během měření jen skutečně aktivní zdroje,</li>
-        <li>nativní sdílení dokončeného TXT přes aplikace v telefonu,</li>
-        <li>upozornění před novým měřením, aby se předchozí výsledek neztratil.</li>
+        <li>stabilní rozhraní se Startem, Resetem, červeným Stopem a živým stavem sběru,</li>
+        <li>skutečný speedtest přes dostupnou mobilní síť, Wi-Fi nebo obě sítě,</li>
+        <li>trvalé předvolby, měření na pozadí a uchování posledních dat do Resetu,</li>
+        <li>stažení nebo nativní sdílení TXT; u velkých měření se předvolí GZIP.</li>
       </ul>
       <ol>
         <li>Otevřete stažený soubor v telefonu s Androidem.</li>
         <li>Pokud se zobrazí výzva, povolte prohlížeči instalaci z tohoto zdroje.</li>
-        <li>Nainstalujte aplikaci a při prvním spuštění povolte požadované senzory.</li>
+        <li>Nainstalujte aplikaci; oprávnění se zobrazí při zapnutí příslušné technologie.</li>
       </ol>
       <p class="note">Jde o testovací verzi instalovanou mimo Google Play. Android proto zobrazí standardní bezpečnostní upozornění.</p>
     </section>
@@ -152,6 +166,8 @@
     <section class="card" aria-labelledby="podklady">
       <h2 id="podklady">Dokumentace a naměřená data</h2>
       <div class="files">
+        <a class="file" href="SignalCollector-Release-0.5.0.md" download><span>Co je nového ve verzi 0.5.0</span><span>MD</span></a>
+        <a class="file" href="SignalCollector-Release-0.4.0.md" download><span>Co je nového ve verzi 0.4.0</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Release-0.3.1.md" download><span>Co je nového ve verzi 0.3.1</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Release-0.3.0.md" download><span>Co je nového ve verzi 0.3.0</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Release-0.2.0.md" download><span>Co je nového ve verzi 0.2.0</span><span>MD</span></a>
@@ -182,7 +198,33 @@
 
     <section class="card" aria-labelledby="changelog">
       <h2 id="changelog">Changelog</h2>
-      <article class="change">
+      <article class="change" id="verze-0-5-0">
+        <div class="change-header">
+          <h3>0.5.0</h3>
+          <time datetime="2026-08-09">9. 8. 2026</time>
+        </div>
+        <ul>
+          <li>experimentální aktivní mobilní scan ukládá přesný průběh a důvod případného odmítnutí Androidem,</li>
+          <li>speedtest lze vynutit přes dostupnou mobilní síť, Wi-Fi nebo sekvenčně přes obě sítě,</li>
+          <li>předvolby měření se zachovají po restartu aplikace a poslední výsledek zůstává do Resetu,</li>
+          <li>oprávnění se žádají při zapnutí technologie a měření pokračuje na pozadí,</li>
+          <li>zjednodušené rozhraní nabízí stažení nebo sdílení TXT/GZIP s automatickou volbou komprese.</li>
+        </ul>
+      </article>
+      <article class="change" id="verze-0-4-0">
+        <div class="change-header">
+          <h3>0.4.0</h3>
+          <time datetime="2026-08-09">9. 8. 2026</time>
+        </div>
+        <ul>
+          <li>samostatná událost <code>SERVING_CELL_CHANGED</code> a přesné stavy aktivního network scanu,</li>
+          <li>volitelný skutečný HTTPS RTT, jitter, loss, download a upload test,</li>
+          <li>živý stav hlavních sběrných modulů přímo na obrazovce,</li>
+          <li>Bluetooth Classic discovery události a rozšířený GNSS quality summary,</li>
+          <li>ZIP export dělený po 50 MB a nový GZIP export bez odstranění dosavadních zdrojů.</li>
+        </ul>
+      </article>
+      <article class="change" id="verze-0-3-1">
         <div class="change-header">
           <h3>0.3.1</h3>
           <time datetime="2026-08-09">9. 8. 2026</time>
@@ -237,6 +279,8 @@
       <h2 id="archiv">Předchozí verze</h2>
       <p>Pro porovnání a případný návrat zůstává dostupná původní testovací verze.</p>
       <div class="files">
+        <a class="file" href="SignalCollector-PoC-0.4.0.apk" download><span>Signal Collector 0.4.0</span><span>APK</span></a>
+        <a class="file" href="SignalCollector-PoC-0.3.1.apk" download><span>Signal Collector 0.3.1</span><span>APK</span></a>
         <a class="file" href="SignalCollector-PoC-0.3.0.apk" download><span>Signal Collector 0.3.0</span><span>APK</span></a>
         <a class="file" href="SignalCollector-PoC-0.2.0.apk" download><span>Signal Collector 0.2.0</span><span>APK</span></a>
         <a class="file" href="SignalCollector-PoC-0.1.0.apk" download><span>Signal Collector 0.1.0</span><span>APK</span></a>
@@ -245,11 +289,7 @@
 
     <section class="card" aria-labelledby="zarizeni">
       <h2 id="zarizeni">Testovací zařízení</h2>
-      <p>Verze 0.3.1 byla nainstalována a ověřena na telefonu Google Pixel 10a s Androidem 16. Starší verze zůstávají ke stažení v archivu.</p>
-      <figure>
-        <img src="SignalCollector-0.3.1.png" alt="Signal Collector 0.3.1 spuštěný na telefonu Google Pixel 10a" width="1080" height="2424" loading="lazy">
-        <figcaption>Verze 0.3.1 s výběrem měřených zdrojů a viditelnými fajfkami.</figcaption>
-      </figure>
+      <p>Verze 0.5.0 byla nainstalována a ověřena na telefonu Google Pixel 10a s Androidem 16. Wi-Fi speedtest dokončil download i upload a experimentální aktivní scan správně zaznamenal systémové odmítnutí kvůli chybějícím carrier privileges. Starší verze zůstávají ke stažení v archivu.</p>
     </section>
   </main>
 </body>

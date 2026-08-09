@@ -30,4 +30,4 @@ Pro spolehlivé dlouhé měření ponechte aplikaci bez omezení baterie v **Nas
 2. Zamkněte obrazovku alespoň na 30 sekund.
 3. Telefon odemkněte a měření zastavte.
 4. Zkontrolujte, že počet záznamů narostl.
-5. Použijte **Export TXT** a soubor otevřete.
+5. Použijte **Stáhnout** nebo **Sdílet**; výchozí formát je TXT a pro velká měření se předvolí GZIP.
