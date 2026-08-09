@@ -108,6 +108,16 @@
 
     .note { margin-bottom: 0; font-size: .9rem; }
 
+    .change + .change {
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+    }
+    .change-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+    .change-header h3 { margin: 0; font-size: 1.05rem; }
+    .change-header time { color: var(--muted); font-size: .85rem; white-space: nowrap; }
+    .change ul { margin-bottom: 0; }
+
     @media (max-width: 520px) {
       main { padding: 40px 0; }
       .card { padding: 19px; }
@@ -151,6 +161,33 @@
       </div>
     </section>
 
+    <section class="card" aria-labelledby="changelog">
+      <h2 id="changelog">Changelog</h2>
+      <article class="change">
+        <div class="change-header">
+          <h3>0.2.0</h3>
+          <time datetime="2026-08-09">9. 8. 2026</time>
+        </div>
+        <ul>
+          <li>podrobný pasivní scan mobilních sítí a sousedních buněk pro všechny aktivní SIM,</li>
+          <li>LTE/5G/3G/2G parametry signálu, identifikace buněk a telephony události,</li>
+          <li>jednotlivé GNSS satelity, přesnější 1Hz poloha a rozšířené údaje Wi-Fi,</li>
+          <li>nový TXT formát V2 s UTC časem, ID měření a pořadovým číslem záznamu,</li>
+          <li>ověřeno na Google Pixel 10a s Androidem 16.</li>
+        </ul>
+      </article>
+      <article class="change">
+        <div class="change-header">
+          <h3>0.1.0</h3>
+          <time datetime="2026-08-05">5. 8. 2026</time>
+        </div>
+        <ul>
+          <li>první testovací verze offline sběru mobilní sítě, Wi-Fi, polohy a senzorů,</li>
+          <li>lokální záznam měření a export dat do TXT.</li>
+        </ul>
+      </article>
+    </section>
+
     <section class="card" aria-labelledby="archiv">
       <h2 id="archiv">Předchozí verze</h2>
       <p>Pro porovnání a případný návrat zůstává dostupná původní testovací verze.</p>
@@ -163,8 +200,8 @@
       <h2 id="zarizeni">Testovací zařízení</h2>
       <p>Verze 0.2.0 byla nainstalována a ověřena na telefonu Google Pixel 10a s Androidem 16. Původní verze 0.1.0 zůstává níže ke stažení.</p>
       <figure>
-        <img src="Pixel-10a.jpg" alt="Signal Collector spuštěný na telefonu Google Pixel 10a" width="4032" height="3024" loading="lazy">
-        <figcaption>Google Pixel 10a s nainstalovanou testovací aplikací.</figcaption>
+        <img src="SignalCollector-0.2.0.png" alt="Signal Collector 0.2.0 spuštěný na telefonu Google Pixel 10a" width="1080" height="2424" loading="lazy">
+        <figcaption>Aktuální obrazovka verze 0.2.0 na Google Pixel 10a.</figcaption>
       </figure>
     </section>
   </main>
