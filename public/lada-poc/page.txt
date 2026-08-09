@@ -133,13 +133,13 @@
 
     <section class="card" aria-labelledby="instalace">
       <h2 id="instalace">Instalace aplikace</h2>
-      <span class="version">Nová verze · 0.2.0</span><br>
-      <a class="button" href="SignalCollector-PoC-0.2.0.apk" download>Stáhnout Signal Collector 0.2.0</a>
+      <span class="version">Nová verze · 0.3.0</span><br>
+      <a class="button" href="SignalCollector-PoC-0.3.0.apk" download>Stáhnout Signal Collector 0.3.0</a>
       <ul>
-        <li>podrobný LTE/5G/3G/2G scan pro každou aktivní SIM včetně sousedních buněk,</li>
-        <li>RSRP, RSRQ, SINR, CQI, Timing Advance, PCI, TAC, pásma a další raw údaje,</li>
-        <li>jednotlivé GNSS satelity a přesnější 1Hz GPS,</li>
-        <li>rozšířená Wi-Fi včetně aktuálního spojení a Wi-Fi 7 MLO.</li>
+        <li>full-tracking raw GNSS, navigační zprávy, NMEA a AGC,</li>
+        <li>Wi-Fi RTT/FTM měření vzdálenosti k podporovaným access pointům,</li>
+        <li>kompletní BLE advertising payload včetně raw bytes, PHY a manufacturer dat,</li>
+        <li>síťový kontext: IP adresy, DNS, routy, MTU, transporty a změnové události.</li>
       </ul>
       <ol>
         <li>Otevřete stažený soubor v telefonu s Androidem.</li>
@@ -152,6 +152,7 @@
     <section class="card" aria-labelledby="podklady">
       <h2 id="podklady">Dokumentace a naměřená data</h2>
       <div class="files">
+        <a class="file" href="SignalCollector-Release-0.3.0.md" download><span>Co je nového ve verzi 0.3.0</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Release-0.2.0.md" download><span>Co je nového ve verzi 0.2.0</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Instalace.md" download><span>Instalační návod</span><span>MD</span></a>
         <a class="file" href="SignalCollector-Specifikace.md" download><span>Specifikace PoC</span><span>MD</span></a>
@@ -163,6 +164,19 @@
 
     <section class="card" aria-labelledby="changelog">
       <h2 id="changelog">Changelog</h2>
+      <article class="change">
+        <div class="change-header">
+          <h3>0.3.0</h3>
+          <time datetime="2026-08-09">9. 8. 2026</time>
+        </div>
+        <ul>
+          <li>raw GNSS clock a měření, AGC, navigační zprávy a NMEA,</li>
+          <li>Wi-Fi RTT/FTM ranging s úplnými výsledky i stavem dostupnosti,</li>
+          <li>kompletní BLE advertising payload a low-latency scan,</li>
+          <li>podrobný síťový kontext a změny konektivity,</li>
+          <li>na Pixelu 10a ověřeno 4 328 záznamy během 24sekundového testu.</li>
+        </ul>
+      </article>
       <article class="change">
         <div class="change-header">
           <h3>0.2.0</h3>
@@ -192,16 +206,17 @@
       <h2 id="archiv">Předchozí verze</h2>
       <p>Pro porovnání a případný návrat zůstává dostupná původní testovací verze.</p>
       <div class="files">
+        <a class="file" href="SignalCollector-PoC-0.2.0.apk" download><span>Signal Collector 0.2.0</span><span>APK</span></a>
         <a class="file" href="SignalCollector-PoC-0.1.0.apk" download><span>Signal Collector 0.1.0</span><span>APK</span></a>
       </div>
     </section>
 
     <section class="card" aria-labelledby="zarizeni">
       <h2 id="zarizeni">Testovací zařízení</h2>
-      <p>Verze 0.2.0 byla nainstalována a ověřena na telefonu Google Pixel 10a s Androidem 16. Původní verze 0.1.0 zůstává níže ke stažení.</p>
+      <p>Verze 0.3.0 byla nainstalována a ověřena na telefonu Google Pixel 10a s Androidem 16. Verze 0.2.0 a 0.1.0 zůstávají ke stažení v archivu.</p>
       <figure>
-        <img src="SignalCollector-0.2.0.png" alt="Signal Collector 0.2.0 spuštěný na telefonu Google Pixel 10a" width="1080" height="2424" loading="lazy">
-        <figcaption>Aktuální obrazovka verze 0.2.0 na Google Pixel 10a.</figcaption>
+        <img src="SignalCollector-0.3.0.png" alt="Signal Collector 0.3.0 spuštěný na telefonu Google Pixel 10a" width="1080" height="2424" loading="lazy">
+        <figcaption>Aktuální obrazovka verze 0.3.0 s novými zdroji dat.</figcaption>
       </figure>
     </section>
   </main>
