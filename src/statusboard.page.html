@@ -189,6 +189,10 @@
   .btn--ghost { background: transparent; border-color: transparent; color: var(--muted); }
   .btn--ghost:hover { color: var(--ink); background: var(--surface-2); border-color: var(--line); }
 
+  /* Odhlášení je destruktivní — návrat stojí nový magic link. */
+  .btn--danger { color: var(--s-missing); text-decoration: none; }
+  .btn--danger:hover { color: #fff; background: var(--s-missing); border-color: var(--s-missing); }
+
   .toolbar__spacer { flex: 1 1 2rem; }
   .saved-state { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
   .saved-state.is-error { color: var(--s-missing); }
@@ -344,44 +348,58 @@
   .footnote { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem 3rem; color: var(--muted); font-size: var(--fs-sm); }
   .footnote code { font-family: var(--font-mono); font-size: var(--fs-xs); background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: .05rem .3rem; }
 
-  /* ── Podklady a bot ─────────────────────────────────────── */
+  /* ── Historie změn ──────────────────────────────────────── */
 
-  .drop {
-    border: 1px dashed var(--line-strong);
-    border-radius: var(--radius);
-    padding: 1rem;
-    text-align: center;
-    color: var(--muted);
+  .hist { list-style: none; margin: .6rem 0 0; padding: 0; display: flex; flex-direction: column; }
+
+  .hist li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: .5rem .7rem;
+    align-items: baseline;
+    padding: .35rem 0;
+    border-top: 1px solid var(--line);
     font-size: var(--fs-sm);
-    cursor: pointer;
-    background: var(--surface-2);
   }
 
-  .drop.is-over { border-color: var(--accent); color: var(--ink); background: var(--accent-soft); }
+  .hist li:first-child { border-top: 0; }
 
-  .files { list-style: none; margin: .7rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
-
-  .files li {
-    display: flex; align-items: center; gap: .6rem;
-    border: 1px solid var(--line); border-radius: 6px;
-    padding: .3rem .5rem; font-size: var(--fs-sm);
+  .hist__who {
+    display: inline-flex; align-items: center; gap: .35rem;
+    font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); white-space: nowrap;
   }
 
-  .files__name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .files__meta { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+  .hist__ini {
+    width: 1.1rem; height: 1.1rem; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: .55rem; font-weight: 600; color: #fff;
+  }
 
-  .ai-progress { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
+  .hist__what { min-width: 0; }
+  .hist__item { color: var(--ink); }
+  .hist__change { color: var(--muted); }
+  .hist__arrow { color: var(--muted); padding: 0 .15rem; }
+  .hist__val { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--ink-2); }
+  .hist__when { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+  .hist__empty { color: var(--muted); font-size: var(--fs-sm); }
 
-  .row__ai {
+  .row__hist {
+    background: transparent; border: 1px solid transparent; border-radius: 6px;
+    font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted);
+    padding: .15rem .35rem; cursor: pointer; white-space: nowrap;
+  }
+
+  .row__hist:hover { color: var(--ink); border-color: var(--line-strong); }
+  .row__hist[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
+
+  .row__log {
     grid-column: 3;
-    font-size: var(--fs-sm);
-    color: var(--s-extra);
-    border-left: 2px solid var(--s-extra);
-    padding-left: .5rem;
-    margin-top: .25rem;
+    margin-top: .3rem;
+    border-left: 2px solid var(--line-strong);
+    padding-left: .6rem;
   }
 
-  .row__ai[hidden] { display: none; }
+  .row__log[hidden] { display: none; }
 
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
@@ -390,7 +408,7 @@
   <div class="wrap">
     <div class="masthead__grid">
       <div>
-        <p class="eyebrow">2. 4. – 25. 8. 2026 · větev development · commit 4687ef3</p>
+        <p class="eyebrow">2. 4. – 25. 8. 2026 · větev staging · stav k 25. 8. odpoledne</p>
         <h1>Statusboard mBlue</h1>
         <p class="masthead__sub">
           Stav přečtený z kódu postavený proti původnímu zadání na 1 200 hodin. Každý z týmu má
@@ -498,7 +516,7 @@
     <button class="btn" type="button" id="pick-visible">Označit viditelné</button>
     <button class="btn btn--ghost" type="button" id="theme-toggle" title="Přepnout motiv">Motiv</button>
     <span class="saved-state" id="saved">načítám…</span>
-    <a class="btn btn--ghost" href="/statusboard/odhlasit" id="logout">Odhlásit</a>
+    <a class="btn btn--ghost btn--danger" href="/statusboard/odhlasit" id="logout">Odhlásit</a>
   </div>
 </div>
 
@@ -638,35 +656,20 @@
     </div>
 
     <div class="panel">
-      <h2>Podklady a bot</h2>
-      <div class="cols">
-        <div>
-          <h3>Podklady pro rozhodování</h3>
-          <p>
-            Nahraj sem nabídku, zápis z callu, tabulku odhadů — cokoli, co má tým i bot vzít v úvahu.
-            Textové soubory (md, txt, csv, json) bot čte rovnou; ostatní si stáhnou lidé.
-          </p>
-          <div class="drop" id="drop" tabindex="0" role="button">
-            Přetáhni sem soubory, nebo klikni a vyber je
-            <input type="file" id="file-input" multiple hidden>
-          </div>
-          <ul class="files" id="files"></ul>
+      <h2>Historie změn</h2>
+      <p>
+        Kdo kdy co přehodnotil. Zápis, který nic nemění, se sem nepíše — jen skutečné změny
+        fáze, váhy nebo příznaku „nad rámec". Historii jedné položky rozbalíš tlačítkem
+        s počtem změn přímo v jejím řádku.
+      </p>
+      <div class="io-actions" style="margin-bottom: .3rem">
+        <div class="field">
+          <label for="h-who">Kdo</label>
+          <select id="h-who"><option value="">kdokoli</option></select>
         </div>
-        <div>
-          <h3>Bot jako další hlas</h3>
-          <p>
-            Bot dostane <strong>jen</strong> tenhle seznam funkcí a nahrané podklady — žádný kód,
-            komentáře ani interní dokumentaci. Má říct vlastní názor na to, co patří do jádra první
-            fáze, a u každé položky připsat důvod.
-          </p>
-          <div class="io-actions">
-            <button class="btn btn--primary" type="button" id="ai-run">Nechat bota posoudit vše</button>
-            <button class="btn" type="button" id="ai-run-open">Jen otevřené položky</button>
-            <button class="btn btn--ghost" type="button" id="ai-toggle">Skrýt jeho důvody</button>
-          </div>
-          <p class="ai-progress" id="ai-progress"></p>
-        </div>
+        <button class="btn" type="button" id="h-refresh">Načíst znovu</button>
       </div>
+      <ul class="hist" id="hist"></ul>
     </div>
 
     <div class="panel">
@@ -684,7 +687,7 @@
 </div>
 
 <p class="footnote">
-  Stav je čtený z větve <code>development</code> (commit <code>4687ef3</code>, 25. 8. 2026), z otevřených issues v Gitei
+  Stav odpovídá větvi <code>staging</code> (25. 8. 2026, včetně zkušební doby u nástupu — balík z developmentu se na staging přesouvá týž den), otevřeným issues v Gitei
   a z pracovních dokumentů projektu. Odhad 900 z 1 200 hodin je vstup ze zadání, ne měření z repozitáře.
   Stránka je neveřejná — přístup má jen tým s magic linkem.
 </p>
@@ -715,7 +718,7 @@
         { id: 'KAN-16', t: 'Hromadné akce nad kandidáty', d: 'Zaškrtávátka a lišta fungují, ale hromadné mazání a tagování jsou vypnuté („Brzy“). Chybí i výběr „všech odpovídajících“.', s: 'castecne', ref: 'T-052' },
         { id: 'KAN-17', t: 'Import kandidátů z Teamio / Jobs.cz', d: 'V původním zadání jako must-have; v kódu není nic. Čeká na rozhodnutí o rozsahu a na API Alma Career.', s: 'chybi', ref: 'T-003' },
         { id: 'KAN-18', t: 'GDPR souhlas kandidáta se zpracováním', d: 'Automatický souhlas e-mailem při prvním kontaktu je v zadání; v kódu je zatím jen audit výmazů.', s: 'chybi', ref: 'T-039 · #155' },
-        { id: 'KAN-19', t: 'Zkušební doba kandidáta po nástupu', d: 'Default 3 měsíce a navazující automatizace; vlastní pole na kandidatuře neexistuje. Nezaměňovat s garancí z KOPS.', s: 'chybi', ref: 'E5', x: true },
+        { id: 'KAN-19', t: 'Zkušební doba kandidáta po nástupu', d: 'Vlastní pole na kandidatuře (default 3 měsíce), z něj se počítá konec zkušební doby. Stojí v UI vedle garance z KOPS a nikdy se s ní neslučuje — je to lhůta ve smlouvě kandidáta, ne obchodní podmínka vůči klientovi. Hotovo 25. 8. 2026.', ref: 'E5', x: true },
         { id: 'KAN-20', t: 'M-kandidáti — měsíční kampaň neumístěných', d: 'Medailonky a direct mailing; zadání od klienta bez rozhodnutí.', s: 'chybi', ref: 'T-147', x: true },
         { id: 'KAN-21', t: 'AI vyhledávání kandidátů', d: 'Vyžádala Tereza S.; chybí i odhad nákladů na tokeny.', s: 'chybi', ref: 'T-154', x: true }
       ]
@@ -763,9 +766,9 @@
         { id: 'NAB-07', t: 'Trychtýř s podílem na vrcholu a drag & drop', d: 'Přetažení i tlačítka nahoru/dolů/prošel/neprošel.' },
         { id: 'NAB-08', t: 'Modal kandidatury s formulářem kroku', d: 'Datum, forma pohovoru, poznámka; otevře se odkudkoli.' },
         { id: 'NAB-09', t: 'Dopočet přeskočených fází a vracení zpět', d: 'Historie průchodu zůstává pro reporty.' },
-        { id: 'NAB-10', t: 'Nástup a zamítnutí s důvodem', d: 'Datum a mzda povinné, důvod zamítnutí z číselníku, automatická aktivita.' },
+        { id: 'NAB-10', t: 'Nástup a zamítnutí s důvodem', d: 'Nástup si vyžádá datum, mzdu a zkušební dobu v měsících; zamítnutí důvod z číselníku. Obojí zapíše automatickou aktivitu.', ref: 'E5' },
         { id: 'NAB-11', t: 'Longlist do PDF pro klienta', d: 'Jedním klikem přehled všech kandidátů v řízení.' },
-        { id: 'NAB-12', t: 'Automatické úkoly po nástupu', d: 'Dva dny a měsíc po nástupu; job je napsaný, ale worker musí na provozu běžet.', s: 'castecne', ref: '#237' },
+        { id: 'NAB-12', t: 'Automatické úkoly kolem nástupu', d: 'Pět úkolů: týden před nástupem, v den nástupu, dva dny po, měsíc po a čtrnáct dní před koncem zkušební doby. Zakládají se v den splatnosti a nemailují. Job je napsaný, ale worker musí na provozu běžet.', s: 'castecne', ref: '#237 · E5' },
         { id: 'NAB-13', t: 'Velký modál kandidatury: víc informací nahoře', d: 'Datum nástupu, mzda a garance jsou dnes na dně tabulky; nahoře je prázdno.', s: 'castecne', ref: 'N3' },
         { id: 'NAB-14', t: 'Změna podmínek zakázky v průběhu', d: 'Přecenění s historií původní ceny — nejspíš verzování KOPS. Odloženo kvůli obchodní schůzce.', s: 'chybi', ref: 'E6 · #252', x: true },
         { id: 'NAB-15', t: 'KOPS má navrhnout fáze výběrového řízení', d: 'Provazba „co je zaškrtnuto → jaké fáze“ chybí; kvůli tomu se odmítlo i podmíněné okno komentáře.', s: 'chybi', ref: 'T-130', x: true },
@@ -942,9 +945,8 @@
   var mine = {};      // item_id -> {p, w, x}
   var others = {};    // item_id -> [{email, name, p, w, x}]
   var members = [];
-  var aiNotes = {};
-  var files = [];
-  var showAiReasons = true;
+  var history = [];
+  var histCounts = {};
   var selection = new Set();
   var lastClicked = null;
   var ALL = [];
@@ -1027,6 +1029,7 @@
     }).then(function () {
       note('uloženo ' + new Date().toLocaleTimeString('cs-CZ'));
       refreshOthers();
+      loadHistory();
     }).catch(function () {
       note('uložení selhalo — zkus to znovu', true);
     });
@@ -1046,10 +1049,7 @@
 
   function applyState(data) {
     members = data.members || [];
-    aiNotes = {};
-    (data.ai_notes || []).forEach(function (n) { aiNotes[n.item_id] = n.reason; });
-    files = data.files || [];
-    renderFiles();
+
     mine = {};
     others = {};
     (data.ratings || []).forEach(function (r) {
@@ -1062,6 +1062,7 @@
       }
     });
     renderPeople();
+    fillHistoryPeople();
   }
 
   function renderPeople() {
@@ -1274,10 +1275,41 @@
     team.className = 'team';
     row.appendChild(team);
 
-    var ai = document.createElement('div');
-    ai.className = 'row__ai';
-    ai.hidden = true;
-    row.appendChild(ai);
+    var histBtn = document.createElement('button');
+    histBtn.type = 'button';
+    histBtn.className = 'row__hist';
+    histBtn.textContent = '⟲ 0';
+    histBtn.title = 'Historie změn této položky';
+    histBtn.setAttribute('aria-expanded', 'false');
+    row.appendChild(histBtn);
+
+    var log = document.createElement('div');
+    log.className = 'row__log';
+    log.hidden = true;
+    row.appendChild(log);
+
+    histBtn.addEventListener('click', function () {
+      var open = histBtn.getAttribute('aria-expanded') === 'true';
+      if (open) {
+        histBtn.setAttribute('aria-expanded', 'false');
+        log.hidden = true;
+        return;
+      }
+      histBtn.setAttribute('aria-expanded', 'true');
+      log.hidden = false;
+      log.innerHTML = '<p class="hist__empty">Načítám…</p>';
+      fetch('/api/statusboard/history?item=' + encodeURIComponent(item.id))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          log.innerHTML = '';
+          if (!data.history.length) {
+            log.innerHTML = '<p class="hist__empty">Tuhle položku zatím nikdo neměnil.</p>';
+            return;
+          }
+          log.appendChild(historyList(data.history, { hideItem: true }));
+        })
+        .catch(function () { log.innerHTML = '<p class="hist__empty">Historii se nepodařilo načíst.</p>'; });
+    });
 
     return row;
   }
@@ -1316,13 +1348,10 @@
     });
     row.classList.toggle('is-split', verdict(id) === 'split');
 
-    var ai = row.querySelector('.row__ai');
-    if (aiNotes[id] && showAiReasons) {
-      ai.textContent = 'Bot: ' + aiNotes[id];
-      ai.hidden = false;
-    } else {
-      ai.hidden = true;
-    }
+    var histBtn = row.querySelector('.row__hist');
+    var n = histCounts[id] || 0;
+    histBtn.textContent = '⟲ ' + n;
+    histBtn.style.visibility = n ? 'visible' : 'hidden';
   }
 
   function renderTeamAll() { ALL.forEach(function (it) { paint(it.id); }); }
@@ -1598,137 +1627,129 @@
     document.getElementById(id).addEventListener('input', applyFilters);
   });
 
-  // ── Podklady ──────────────────────────────────────────────
+  // ── Historie změn ─────────────────────────────────────────
 
-  function renderFiles() {
-    var list = document.getElementById('files');
-    list.innerHTML = '';
-    if (!files.length) {
-      var empty = document.createElement('li');
-      empty.className = 'files__meta';
-      empty.textContent = 'Zatím nic nahraného.';
-      list.appendChild(empty);
+  var PHASE_LABEL = { jadro: 'jádro', pak: 'hned po', pozdeji: 'později', skrt: 'škrtnout' };
+
+  function whenLabel(iso) {
+    // Server ukládá čas v UTC bez značky, prohlížeč by ho bral jako místní.
+    var t = new Date(iso.replace(' ', 'T') + 'Z');
+    var diff = (Date.now() - t.getTime()) / 1000;
+    if (diff < 60) return 'teď';
+    if (diff < 3600) return Math.floor(diff / 60) + ' min';
+    if (diff < 86400) return Math.floor(diff / 3600) + ' h';
+    return t.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }) + ' ' +
+           t.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function changeText(h) {
+    var parts = [];
+    if ((h.phase_from || null) !== (h.phase_to || null)) {
+      parts.push('fáze ' + (PHASE_LABEL[h.phase_from] || '–') + ' → ' + (PHASE_LABEL[h.phase_to] || '–'));
+    }
+    if ((h.weight_from === null ? null : h.weight_from) !== (h.weight_to === null ? null : h.weight_to)) {
+      parts.push('váha ' + (h.weight_from === null ? '–' : h.weight_from) + ' → ' + (h.weight_to === null ? '–' : h.weight_to));
+    }
+    if ((h.scope_from ? 1 : 0) !== (h.scope_to ? 1 : 0)) {
+      parts.push(h.scope_to ? 'označeno nad rámec' : 'zrušeno nad rámec');
+    }
+    return parts.join(' · ') || 'beze změny';
+  }
+
+  function historyList(rows, opts) {
+    opts = opts || {};
+    var ul = document.createElement('ul');
+    ul.className = 'hist';
+    rows.forEach(function (h) {
+      var li = document.createElement('li');
+
+      var who = document.createElement('span');
+      who.className = 'hist__who';
+      var ini = document.createElement('span');
+      ini.className = 'hist__ini';
+      ini.style.background = color(h.email);
+      ini.textContent = initials(h.name || h.email);
+      who.appendChild(ini);
+      who.appendChild(document.createTextNode((h.name || h.email).split(' ')[0]));
+      li.appendChild(who);
+
+      var what = document.createElement('span');
+      what.className = 'hist__what';
+      if (!opts.hideItem) {
+        var item = byId[h.item_id];
+        var name = document.createElement('span');
+        name.className = 'hist__item';
+        name.textContent = item ? item.t : h.item_id;
+        what.appendChild(name);
+        what.appendChild(document.createTextNode(' — '));
+      }
+      var ch = document.createElement('span');
+      ch.className = 'hist__change';
+      ch.textContent = changeText(h);
+      what.appendChild(ch);
+      li.appendChild(what);
+
+      var when = document.createElement('span');
+      when.className = 'hist__when';
+      when.textContent = whenLabel(h.changed_at);
+      when.title = h.changed_at + ' UTC';
+      li.appendChild(when);
+
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  function renderHistory() {
+    var box = document.getElementById('hist');
+    box.innerHTML = '';
+    if (!history.length) {
+      var p = document.createElement('p');
+      p.className = 'hist__empty';
+      p.textContent = 'Zatím nikdo nic nezměnil.';
+      box.appendChild(p);
       return;
     }
-    files.forEach(function (f) {
-      var li = document.createElement('li');
-      var a = document.createElement('a');
-      a.className = 'files__name';
-      a.href = '/statusboard/soubor/' + f.id;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.textContent = f.name;
-      li.appendChild(a);
-
-      var meta = document.createElement('span');
-      meta.className = 'files__meta';
-      meta.textContent = Math.max(1, Math.round(f.size / 1024)) + ' kB · ' + (f.uploaded_by || '').split('@')[0];
-      li.appendChild(meta);
-
-      var del = document.createElement('button');
-      del.type = 'button';
-      del.className = 'btn btn--ghost';
-      del.textContent = 'Smazat';
-      del.addEventListener('click', function () {
-        if (!confirm('Smazat podklad „' + f.name + '“?')) return;
-        fetch('/api/statusboard/files/' + f.id, { method: 'DELETE' })
-          .then(function () { refreshOthers(); });
-      });
-      li.appendChild(del);
-      list.appendChild(li);
-    });
+    var list = historyList(history, {});
+    while (list.firstChild) box.appendChild(list.firstChild);
   }
 
-  function uploadFiles(fileList) {
-    var pending = Array.prototype.slice.call(fileList);
-    if (!pending.length) return;
-    note('nahrávám ' + pending.length + ' souborů…');
-    var chain = Promise.resolve();
-    pending.forEach(function (file) {
-      chain = chain.then(function () {
-        var fd = new FormData();
-        fd.append('file', file);
-        return fetch('/api/statusboard/files', { method: 'POST', body: fd })
-          .then(function (r) { return r.json(); })
-          .then(function (res) { if (res.error) throw new Error(res.error); });
-      });
-    });
-    chain.then(function () {
-      note('podklady nahrány');
-      refreshOthers();
-    }).catch(function (err) {
-      note(err.message || 'nahrání selhalo', true);
-    });
-  }
-
-  var drop = document.getElementById('drop');
-  var fileInput = document.getElementById('file-input');
-
-  drop.addEventListener('click', function () { fileInput.click(); });
-  drop.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
-  });
-  fileInput.addEventListener('change', function () { uploadFiles(fileInput.files); fileInput.value = ''; });
-
-  ['dragenter', 'dragover'].forEach(function (ev) {
-    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('is-over'); });
-  });
-  ['dragleave', 'drop'].forEach(function (ev) {
-    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('is-over'); });
-  });
-  drop.addEventListener('drop', function (e) {
-    if (e.dataTransfer && e.dataTransfer.files) uploadFiles(e.dataTransfer.files);
-  });
-
-  // ── Bot ───────────────────────────────────────────────────
-
-  var aiProgress = document.getElementById('ai-progress');
-
-  function runAi(onlyOpen) {
-    var pool = ALL.filter(function (it) { return onlyOpen ? it.s !== 'hotovo' : true; });
-    if (!pool.length) return;
-
-    var batches = [];
-    for (var i = 0; i < pool.length; i += 20) batches.push(pool.slice(i, i + 20));
-
-    var doneCount = 0;
-    aiProgress.textContent = 'bot přemýšlí… 0 / ' + pool.length;
-
-    var chain = Promise.resolve();
-    batches.forEach(function (batch) {
-      chain = chain.then(function () {
-        return fetch('/api/statusboard/ai', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            items: batch.map(function (it) {
-              return { id: it.id, title: it.t, desc: it.d, state: it.s, block: it.module.name };
-            })
-          })
-        }).then(function (r) { return r.json(); }).then(function (res) {
-          if (res.error) throw new Error(res.error);
-          doneCount += batch.length;
-          aiProgress.textContent = 'bot přemýšlí… ' + doneCount + ' / ' + pool.length;
-          refreshOthers();
+  function loadHistory() {
+    var who = document.getElementById('h-who').value;
+    return fetch('/api/statusboard/history?limit=200' + (who ? '&email=' + encodeURIComponent(who) : ''))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        history = data.history || [];
+        histCounts = {};
+        history.forEach(function (h) { histCounts[h.item_id] = (histCounts[h.item_id] || 0) + 1; });
+        renderHistory();
+        ALL.forEach(function (it) {
+          var row = rowEl(it.id);
+          if (!row) return;
+          var btn = row.querySelector('.row__hist');
+          var n = histCounts[it.id] || 0;
+          btn.textContent = '⟲ ' + n;
+          btn.style.visibility = n ? 'visible' : 'hidden';
         });
-      });
-    });
-
-    chain.then(function () {
-      aiProgress.textContent = 'bot posoudil ' + doneCount + ' položek';
-      refreshOthers();
-    }).catch(function (err) {
-      aiProgress.textContent = err.message || 'bot neodpověděl';
-    });
+      })
+      .catch(function () { /* historie je doplněk, výpadek nesmí shodit stránku */ });
   }
 
-  document.getElementById('ai-run').addEventListener('click', function () { runAi(false); });
-  document.getElementById('ai-run-open').addEventListener('click', function () { runAi(true); });
-  document.getElementById('ai-toggle').addEventListener('click', function (e) {
-    showAiReasons = !showAiReasons;
-    e.target.textContent = showAiReasons ? 'Skrýt jeho důvody' : 'Zobrazit jeho důvody';
-    renderTeamAll();
-  });
+  function fillHistoryPeople() {
+    var sel = document.getElementById('h-who');
+    var current = sel.value;
+    sel.innerHTML = '<option value="">kdokoli</option>';
+    members.forEach(function (m) {
+      var o = document.createElement('option');
+      o.value = m.email;
+      o.textContent = m.name;
+      sel.appendChild(o);
+    });
+    sel.value = current;
+  }
+
+  document.getElementById('h-who').addEventListener('change', loadHistory);
+  document.getElementById('h-refresh').addEventListener('click', loadHistory);
 
   // ── Start ─────────────────────────────────────────────────
 
@@ -1740,6 +1761,7 @@
       stats();
       applyFilters();
       syncSelection();
+      loadHistory();
       note('přihlášen jako ' + ME.name);
     })
     .catch(function () {

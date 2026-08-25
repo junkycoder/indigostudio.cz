@@ -3,12 +3,6 @@
 //
 // Přihlášení je magic link (jednorázový odkaz s tokenem), oprávnění drží
 // allowlist v `sb_members` — kdo v tabulce není, nedostane ani odkaz, ani obsah.
-//
-// Bot (`AI_EMAIL`) je členem týmu jako každý jiný: má vlastní hlasy v `sb_ratings`.
-// ⚠️ Kontext, který dostane, je ZÁMĚRNĚ ÚZKÝ (zadání Dana 25. 8. 2026): checklist
-// funkcí + soubory, které mu tým nahraje na stránce. Repozitářové markdowny,
-// komentáře v kódu ani issues mu neposíláme — má se vyjádřit k tomu, co je vidět
-// z produktu, ne převzít názor dev týmu.
 
 import { EmailMessage } from "cloudflare:email";
 
@@ -16,16 +10,9 @@ import PAGE from "./statusboard.page.html";
 
 const MAIL_FROM = "poptavka@indigostudio.cz";
 
-const AI_EMAIL = "bot@statusboard";
-const AI_NAME = "Bot";
-const AI_MODEL = "claude-sonnet-5";
-
 const SESSION_COOKIE = "sb_session";
 const SESSION_DAYS = 30;
 const MAGIC_MINUTES = 60;
-const MAX_FILE_BYTES = 8 * 1024 * 1024;
-
-const TEXTUAL = /^(text\/|application\/json|application\/xml)/;
 
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj), {
@@ -219,7 +206,7 @@ async function requestMagic(request, env, url) {
   if (!email || !email.includes("@")) return json({ message: NEUTRAL });
 
   const member = await env.DB.prepare(`SELECT email, name FROM sb_members WHERE email = ?1`).bind(email).first();
-  if (!member || member.email === AI_EMAIL) return json({ message: NEUTRAL });
+  if (!member) return json({ message: NEUTRAL });
 
   // Brzda proti opakovanému rozesílání na tutéž adresu.
   const recent = await env.DB.prepare(
@@ -300,17 +287,42 @@ async function stateResponse(env) {
     `SELECT r.email, m.name, r.item_id, r.phase, r.weight, r.scope, r.updated_at
        FROM sb_ratings r LEFT JOIN sb_members m ON m.email = r.email`
   ).all();
-  const notes = await env.DB.prepare(`SELECT item_id, reason FROM sb_ai_notes`).all();
-  const files = await env.DB.prepare(
-    `SELECT id, name, mime, size, uploaded_by, created_at FROM sb_files ORDER BY created_at DESC`
-  ).all();
-
   return json({
     members: members.results || [],
     ratings: ratings.results || [],
-    ai_notes: notes.results || [],
-    files: files.results || [],
   });
+}
+
+// Historie změn — buď posledních N napříč týmem (panel), nebo celá historie
+// jedné položky (rozbalení v řádku).
+async function historyResponse(env, url) {
+  const item = url.searchParams.get("item");
+  const email = url.searchParams.get("email");
+  const limit = Math.min(Number(url.searchParams.get("limit")) || 200, 500);
+
+  const where = [];
+  const binds = [];
+  if (item) {
+    where.push(`h.item_id = ?${binds.length + 1}`);
+    binds.push(item);
+  }
+  if (email) {
+    where.push(`h.email = ?${binds.length + 1}`);
+    binds.push(email);
+  }
+
+  const rows = await env.DB.prepare(
+    `SELECT h.id, h.email, m.name, h.item_id, h.phase_from, h.phase_to,
+            h.weight_from, h.weight_to, h.scope_from, h.scope_to, h.changed_at
+       FROM sb_history h LEFT JOIN sb_members m ON m.email = h.email
+      ${where.length ? "WHERE " + where.join(" AND ") : ""}
+      ORDER BY h.changed_at DESC, h.id DESC
+      LIMIT ?${binds.length + 1}`
+  )
+    .bind(...binds, limit)
+    .all();
+
+  return json({ history: rows.results || [] });
 }
 
 async function saveRatings(request, env, user) {
@@ -321,175 +333,34 @@ async function saveRatings(request, env, user) {
     return json({ error: "Neplatný požadavek." }, 400);
   }
 
-  const rows = Array.isArray(body?.ratings) ? body.ratings.slice(0, 500) : [];
+  const rows = (Array.isArray(body?.ratings) ? body.ratings.slice(0, 500) : []).filter(
+    (r) => typeof r?.item === "string" && r.item.length <= 40
+  );
   if (!rows.length) return json({ error: "Nepřišlo nic k uložení." }, 400);
 
-  const stmts = rows
-    .filter((r) => typeof r?.item === "string" && r.item.length <= 40)
-    .map((r) =>
-      env.DB.prepare(
-        `INSERT INTO sb_ratings (email, item_id, phase, weight, scope, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, datetime('now'))
-         ON CONFLICT(email, item_id) DO UPDATE
-            SET phase = excluded.phase, weight = excluded.weight,
-                scope = excluded.scope, updated_at = datetime('now')`
-      ).bind(
-        user.email,
-        r.item,
-        r.phase ?? null,
-        Number.isInteger(r.weight) ? r.weight : null,
-        r.scope === null || r.scope === undefined ? null : r.scope ? 1 : 0
-      )
-    );
-
-  if (!stmts.length) return json({ error: "Nepřišlo nic platného." }, 400);
-
-  await env.DB.batch(stmts);
-  return json({ ok: true, saved: stmts.length });
-}
-
-// ── podklady ───────────────────────────────────────────────────────────────
-
-async function uploadFile(request, env, user) {
-  const form = await request.formData();
-  const file = form.get("file");
-  if (!file || typeof file === "string") return json({ error: "Chybí soubor." }, 400);
-  if (file.size > MAX_FILE_BYTES) return json({ error: "Soubor je větší než 8 MB." }, 413);
-
-  const id = randomToken().slice(0, 24);
-  const key = `podklady/${id}`;
-  const buffer = await file.arrayBuffer();
-
-  await env.FILES.put(key, buffer, { httpMetadata: { contentType: file.type || "application/octet-stream" } });
-
-  // Textové formáty si rovnou uložíme jako text — bot pak nemusí sahat do R2.
-  let text = null;
-  const mime = file.type || "";
-  if (TEXTUAL.test(mime) || /\.(md|txt|csv|json)$/i.test(file.name)) {
-    text = new TextDecoder().decode(buffer).slice(0, 120000);
-  }
-
-  await env.DB.prepare(
-    `INSERT INTO sb_files (id, name, mime, size, r2_key, text, uploaded_by) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)`
+  // Stav před zápisem — z něj se skládá řádek historie. Jeden dotaz na celou
+  // dávku, ne dotaz na položku: bulk akce jich posílá klidně sto najednou.
+  const ids = rows.map((r) => r.item);
+  const placeholders = ids.map((_, i) => `?${i + 2}`).join(", ");
+  const before = await env.DB.prepare(
+    `SELECT item_id, phase, weight, scope FROM sb_ratings WHERE email = ?1 AND item_id IN (${placeholders})`
   )
-    .bind(id, file.name.slice(0, 200), mime, file.size, key, text, user.email)
-    .run();
+    .bind(user.email, ...ids)
+    .all();
 
-  return json({ ok: true, id, name: file.name, size: file.size, mime, uploaded_by: user.email });
-}
-
-async function deleteFile(env, id) {
-  const row = await env.DB.prepare(`SELECT r2_key FROM sb_files WHERE id = ?1`).bind(id).first();
-  if (!row) return json({ error: "Soubor neexistuje." }, 404);
-  await env.FILES.delete(row.r2_key);
-  await env.DB.prepare(`DELETE FROM sb_files WHERE id = ?1`).bind(id).run();
-  return json({ ok: true });
-}
-
-async function downloadFile(env, id) {
-  const row = await env.DB.prepare(`SELECT name, mime, r2_key FROM sb_files WHERE id = ?1`).bind(id).first();
-  if (!row) return new Response("Nenalezeno", { status: 404 });
-  const obj = await env.FILES.get(row.r2_key);
-  if (!obj) return new Response("Soubor už v úložišti není", { status: 404 });
-  return new Response(obj.body, {
-    headers: {
-      "Content-Type": row.mime || "application/octet-stream",
-      "Content-Disposition": `inline; filename*=UTF-8''${encodeURIComponent(row.name)}`,
-      "Cache-Control": "no-store",
-    },
+  const prev = {};
+  (before.results || []).forEach((row) => {
+    prev[row.item_id] = row;
   });
-}
-
-// ── bot ────────────────────────────────────────────────────────────────────
-
-const AI_SYSTEM = `Jsi člen týmu, který posuzuje rozsah softwarového projektu mBlue —
-custom CRM/ATS, který nahrazuje patnáct let starý systém Atollon u české HR agentury.
-
-Tvoje role: řekni vlastní názor na to, co patří do první fáze, aby šel starý systém co
-nejdřív vypnout, a co se má odložit. Původní odhad byl 1 200 hodin, odpracováno je 900.
-
-Dostaneš seznam funkcí se zjištěným stavem (hotovo / rozdělané / chybí) a případně
-podklady, které tým nahrál. NEDOSTÁVÁŠ zdrojový kód, komentáře ani interní dokumentaci —
-je to záměr. Posuzuj z pohledu člověka, který se dívá na produkt a na to, co dává
-obchodní smysl, ne z pohledu vývojáře.
-
-Ke každé položce vrať:
-- phase: "jadro" (musí být hotové před vypnutím Atollonu), "pak" (hned po nasazení),
-  "pozdeji" (další fáze), nebo "skrt" (nedělat vůbec)
-- weight: 0-9, kde 0 = nemá hodnotu, 9 = jádro produktu
-- scope: true, pokud to podle tebe je práce nad rámec náhrady původního systému
-- reason: jedna věta česky, proč sis to takhle zařadil. Bez omáčky, konkrétně.
-
-Buď přísný. Cílem je nejmenší možné jádro, se kterým firma může fungovat.`;
-
-async function askAi(request, env, user) {
-  if (!env.ANTHROPIC_API_KEY) {
-    return json({ error: "Bot zatím nemá klíč k Anthropic API. Nastav secret ANTHROPIC_API_KEY." }, 503);
-  }
-
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return json({ error: "Neplatný požadavek." }, 400);
-  }
-
-  const items = Array.isArray(body?.items) ? body.items.slice(0, 40) : [];
-  if (!items.length) return json({ error: "Nepřišly žádné položky k posouzení." }, 400);
-
-  const files = await env.DB.prepare(
-    `SELECT name, text FROM sb_files WHERE text IS NOT NULL ORDER BY created_at DESC LIMIT 6`
-  ).all();
-
-  const podklady = (files.results || [])
-    .map((f) => `--- ${f.name} ---\n${String(f.text).slice(0, 20000)}`)
-    .join("\n\n");
-
-  const seznam = items
-    .map((i) => `${i.id} | ${i.title} | stav: ${i.state} | blok: ${i.block}${i.desc ? ` | ${i.desc}` : ""}`)
-    .join("\n");
-
-  const prompt =
-    (podklady ? `Podklady od týmu:\n\n${podklady}\n\n` : "") +
-    `Posuď těchto ${items.length} položek. Vrať POUZE JSON pole, každý prvek ` +
-    `{"id":"…","phase":"jadro|pak|pozdeji|skrt","weight":0-9,"scope":true|false,"reason":"…"}.\n\n` +
-    seznam;
-
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": env.ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: AI_MODEL,
-      max_tokens: 8000,
-      system: AI_SYSTEM,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    return json({ error: `Anthropic API vrátilo ${res.status}`, detail: detail.slice(0, 400) }, 502);
-  }
-
-  const data = await res.json();
-  const text = (data.content || []).map((c) => c.text || "").join("");
-  const match = text.match(/\[[\s\S]*\]/);
-  if (!match) return json({ error: "Bot neodpověděl ve formátu, který umíme uložit." }, 502);
-
-  let verdicts;
-  try {
-    verdicts = JSON.parse(match[0]);
-  } catch {
-    return json({ error: "Odpověď bota se nepodařilo přečíst." }, 502);
-  }
 
   const stmts = [];
-  for (const v of verdicts) {
-    if (!v || typeof v.id !== "string") continue;
+
+  for (const r of rows) {
+    const phase = r.phase ?? null;
+    const weight = Number.isInteger(r.weight) ? r.weight : null;
+    const scope = r.scope === null || r.scope === undefined ? null : r.scope ? 1 : 0;
+    const was = prev[r.item] || { phase: null, weight: null, scope: null };
+
     stmts.push(
       env.DB.prepare(
         `INSERT INTO sb_ratings (email, item_id, phase, weight, scope, updated_at)
@@ -497,22 +368,27 @@ async function askAi(request, env, user) {
          ON CONFLICT(email, item_id) DO UPDATE
             SET phase = excluded.phase, weight = excluded.weight,
                 scope = excluded.scope, updated_at = datetime('now')`
-      ).bind(AI_EMAIL, v.id, v.phase || null, Number.isInteger(v.weight) ? v.weight : null, v.scope ? 1 : 0)
+      ).bind(user.email, r.item, phase, weight, scope)
     );
-    if (v.reason) {
-      stmts.push(
-        env.DB.prepare(
-          `INSERT INTO sb_ai_notes (item_id, reason, model, created_at)
-           VALUES (?1, ?2, ?3, datetime('now'))
-           ON CONFLICT(item_id) DO UPDATE SET reason = excluded.reason, model = excluded.model, created_at = datetime('now')`
-        ).bind(v.id, String(v.reason).slice(0, 600), AI_MODEL)
-      );
-    }
+
+    // Zápis, který nic nemění (druhý klik na tutéž hodnotu, autosave beze změny),
+    // do historie nepatří — jinak by ji zaplavil šum.
+    const same =
+      (was.phase ?? null) === phase &&
+      (was.weight ?? null) === weight &&
+      (was.scope ?? null) === scope;
+    if (same) continue;
+
+    stmts.push(
+      env.DB.prepare(
+        `INSERT INTO sb_history (email, item_id, phase_from, phase_to, weight_from, weight_to, scope_from, scope_to)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)`
+      ).bind(user.email, r.item, was.phase ?? null, phase, was.weight ?? null, weight, was.scope ?? null, scope)
+    );
   }
 
-  if (stmts.length) await env.DB.batch(stmts);
-
-  return json({ ok: true, judged: verdicts.length, by: user.email });
+  await env.DB.batch(stmts);
+  return json({ ok: true, saved: rows.length });
 }
 
 // ── správa členů (jen admin) ───────────────────────────────────────────────
@@ -551,7 +427,6 @@ async function adminInvite(request, env, url) {
   const stmts = [];
 
   for (const m of rows.results || []) {
-    if (m.email === AI_EMAIL) continue;
     const token = randomToken();
     stmts.push(
       env.DB.prepare(`INSERT INTO sb_magic (token, email, expires_at) VALUES (?1, ?2, ?3)`).bind(
@@ -609,13 +484,7 @@ export async function handleStatusboard(request, env, url) {
 
   if (path === "/api/statusboard/state") return stateResponse(env);
   if (path === "/api/statusboard/rate" && request.method === "POST") return saveRatings(request, env, user);
-  if (path === "/api/statusboard/files" && request.method === "POST") return uploadFile(request, env, user);
-  if (path.startsWith("/api/statusboard/files/") && request.method === "DELETE") {
-    return deleteFile(env, path.split("/").pop());
-  }
-  if (path.startsWith("/statusboard/soubor/")) return downloadFile(env, path.split("/").pop());
-  if (path === "/api/statusboard/ai" && request.method === "POST") return askAi(request, env, user);
-
+  if (path === "/api/statusboard/history") return historyResponse(env, url);
   if (path === "/statusboard" || path === "/statusboard/") {
     const me = JSON.stringify({ email: user.email, name: user.name, role: user.role });
     return html(`<script>window.SB_ME = ${me};</script>\n${PAGE}`);
@@ -623,6 +492,3 @@ export async function handleStatusboard(request, env, url) {
 
   return new Response("Nenalezeno", { status: 404 });
 }
-
-export const STATUSBOARD_AI_EMAIL = AI_EMAIL;
-export const STATUSBOARD_AI_NAME = AI_NAME;

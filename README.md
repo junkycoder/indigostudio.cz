@@ -150,14 +150,14 @@ curl -X POST -H "X-Admin-Token: $STATUSBOARD_ADMIN_TOKEN" \
      https://mblue.indigostudio.cz/api/statusboard/admin/members
 ```
 
-**Bot** (`bot@statusboard`) je člen jako každý jiný — má vlastní hlasy a u každé
-položky důvod. Potřebuje `wrangler secret put ANTHROPIC_API_KEY`. Kontext dostává
-**záměrně úzký**: jen seznam funkcí a soubory nahrané na stránce. Repozitářové
-markdowny, komentáře v kódu ani issues mu neposíláme — má posoudit produkt, ne
-převzít názor dev týmu.
+**Historie změn** se píše při každé skutečné změně hodnocení (zápis, který nic
+nemění, se ignoruje) do `sb_history` — řádek nese stav před i po. Panel na stránce
+ukazuje posledních 200 změn s filtrem na člověka, tlačítko `⟲ N` v řádku rozbalí
+historii jedné položky.
 
-**Podklady** se nahrávají přetažením na stránku, leží v R2 (`mblue-statusboard-files`),
-textové formáty se ukládají i jako text, aby z nich mohl číst bot.
+> Bot přes Anthropic API a nahrávání podkladů tu byly 25. 8. 2026 pár hodin a Dan
+> je tentýž den zrušil ve prospěch téhle historie. Tabulky `sb_files` / `sb_ai_notes`
+> i R2 bucket `mblue-statusboard-files` padly s nimi (migrace `0003`).
 
 ## Záloha původního projektu
 
