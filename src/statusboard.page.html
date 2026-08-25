@@ -243,6 +243,7 @@
   /* Hotovost bloku vpravo v hlavičce — u sbaleného bloku je to jediné číslo,
      které z něj zbyde vidět. */
   .section__pct {
+    margin-left: auto;
     font-family: var(--font-mono);
     font-size: var(--fs-xs);
     font-variant-numeric: tabular-nums;
@@ -1367,6 +1368,14 @@
     });
     head.appendChild(pick);
 
+    // Hotovost bloku vpravo v hlavičce — u sbaleného bloku je to jediné číslo,
+    // které z něj zbyde vidět. Plní ji `stats()`, takže tenhle prvek tu musí
+    // být vždycky; bez něj `stats()` spadne a shodí s sebou i načtení dat.
+    var pctBadge = document.createElement('span');
+    pctBadge.className = 'section__pct';
+    pctBadge.title = 'Hotovost bloku — průměr přes jeho položky';
+    head.appendChild(pctBadge);
+
     sec.appendChild(head);
 
     function setCollapsed(on) {
@@ -1828,9 +1837,11 @@
       m.items.forEach(function (it) { sum += pctOf(it.id); });
       var avg = Math.round(sum / m.items.length);
       var badge = document.querySelector('#mod-' + m.id + ' .section__pct');
-      badge.textContent = 'hotovo ' + avg + ' %';
-      badge.style.color =
-        avg >= 100 ? 'var(--s-done)' : avg <= 0 ? 'var(--s-missing)' : 'var(--s-partial)';
+      if (badge) {
+        badge.textContent = 'hotovo ' + avg + ' %';
+        badge.style.color =
+          avg >= 100 ? 'var(--s-done)' : avg <= 0 ? 'var(--s-missing)' : 'var(--s-partial)';
+      }
 
       var link = railEl.querySelector('[data-mod="' + m.id + '"]');
       var openCount = m.items.length - counts.hotovo;
