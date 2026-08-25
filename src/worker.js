@@ -2,6 +2,7 @@
 // a obsluhuje poptávkový formulář (POST /api/poptavka → e-mail přes Email Routing).
 
 import { EmailMessage } from "cloudflare:email";
+import { handleStatusboard } from "./statusboard.js";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -28,6 +29,15 @@ const json = (obj, status = 200) =>
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // Statusboard mBlue žije na vlastní subdoméně a je celý za přihlášením.
+    // Na apexu ho schválně nespouštíme — jedna adresa, jedno místo.
+    if (url.hostname === "mblue.indigostudio.cz") {
+      if (url.pathname === "/" || url.pathname === "") {
+        return Response.redirect(new URL("/statusboard", url.origin), 302);
+      }
+      return handleStatusboard(request, env, url);
+    }
 
     if (url.pathname === "/api/poptavka") {
       if (request.method !== "POST") return json({ error: "Method Not Allowed" }, 405);

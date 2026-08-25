@@ -118,6 +118,47 @@ Email Routingu (`*.mx.cloudflare.net`), smazat je.
    Bez nastaveného `RESEND_API_KEY` spadne na CF `send_email` fallback
    (`hromada.dan@gmail.com`) — žádný výpadek během migrace.
 
+## Statusboard mBlue (mblue.indigostudio.cz)
+
+Neveřejná ministránka pro tým projektu mBlue: seznam funkcí aplikace se zjištěným
+stavem, ke kterému každý přiřazuje fázi, váhu 0–9 a příznak „nad rámec". Všichni
+vidí hlasy všech a stránka počítá míru shody — cíl je dostat ji nad 90 %.
+
+- `src/statusboard.js` — routing, přihlášení, API, bot
+- `src/statusboard.page.html` — stránka; **schválně není v `public/`**, aby se
+  nedala stáhnout mimo přihlášení (assets se servírují bez kontroly session)
+- `migrations/` — schéma D1 (`wrangler d1 execute mblue-statusboard --remote --file=…`)
+
+**Přihlášení** je magic link. Člověk zadá e-mail na `/statusboard`, a když je
+v `sb_members`, přijde mu jednorázový odkaz (platnost hodina). Odpověď formuláře
+je vždy stejná, aby se z ní nedalo vyčíst, kdo v týmu je.
+
+Doručení pošty: s `RESEND_API_KEY` chodí odkaz komukoli z týmu, bez něj jen na
+adresy ověřené v Email Routingu. Zbytku vygeneruje odkazy admin:
+
+```
+curl -H "X-Admin-Token: $STATUSBOARD_ADMIN_TOKEN" \
+     https://mblue.indigostudio.cz/api/statusboard/admin/invite
+```
+
+**Členy** přidává tentýž token:
+
+```
+curl -X POST -H "X-Admin-Token: $STATUSBOARD_ADMIN_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"email":"eva@…","name":"Eva"}' \
+     https://mblue.indigostudio.cz/api/statusboard/admin/members
+```
+
+**Bot** (`bot@statusboard`) je člen jako každý jiný — má vlastní hlasy a u každé
+položky důvod. Potřebuje `wrangler secret put ANTHROPIC_API_KEY`. Kontext dostává
+**záměrně úzký**: jen seznam funkcí a soubory nahrané na stránce. Repozitářové
+markdowny, komentáře v kódu ani issues mu neposíláme — má posoudit produkt, ne
+převzít názor dev týmu.
+
+**Podklady** se nahrávají přetažením na stránku, leží v R2 (`mblue-statusboard-files`),
+textové formáty se ukládají i jako text, aby z nich mohl číst bot.
+
 ## Záloha původního projektu
 
 Repo dřív obsahovalo projekt **fakan**. Je zazálohovaný:

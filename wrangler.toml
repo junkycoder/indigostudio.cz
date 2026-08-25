@@ -22,6 +22,31 @@ custom_domain = true
 name = "SEB"
 destination_address = "hromada.dan@gmail.com"
 
+# ----- Statusboard mBlue (neveřejná ministránka pro tým) -----
+# Vlastní subdoména, aby se vizitka a interní nástroj nemíchaly na jedné adrese.
+[[routes]]
+pattern = "mblue.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
+
+# Hodnocení, členové a přihlášení statusboardu.
+[[d1_databases]]
+binding = "DB"
+database_name = "mblue-statusboard"
+database_id = "29497ae8-5a6d-49bb-8bf5-2921c174f7ea"
+
+# Podklady, které tým nahraje na stránce (čte z nich i bot).
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "mblue-statusboard-files"
+
+# Stránka statusboardu se importuje do Workeru jako text — schválně NENÍ v `public/`,
+# aby ji nešlo stáhnout mimo přihlášení (assets se servírují bez kontroly session).
+[[rules]]
+type = "Text"
+globs = ["**/*.page.html"]
+fallthrough = true
+
 # ----- Static assets -----
 # public/ obsahuje vizitku (index.html), og.png, favicon, robots, sitemap.
 # run_worker_first = true → Worker běží i pro statiku, aby stihl doplnit

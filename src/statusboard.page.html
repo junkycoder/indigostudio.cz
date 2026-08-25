@@ -1,0 +1,1755 @@
+<title>Statusboard mBlue</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;600&display=swap">
+
+<style>
+  :root {
+    --ground: #eef1f6;
+    --surface: #ffffff;
+    --surface-2: #f7f9fc;
+    --ink: #0d1420;
+    --ink-2: #334054;
+    --muted: #64748b;
+    --line: #dbe2ed;
+    --line-strong: #c3ccdb;
+    --accent: #1746c8;
+    --accent-soft: #e5ebfb;
+    --accent-ink: #ffffff;
+    --shadow: 0 1px 2px rgba(13, 20, 32, .06), 0 8px 24px rgba(13, 20, 32, .06);
+
+    --s-done: #0f766e;
+    --s-partial: #b45309;
+    --s-missing: #b3261e;
+    --s-extra: #6d28d9;
+
+    --fs-xs: .74rem;
+    --fs-sm: .82rem;
+    --fs-base: .92rem;
+    --fs-lg: 1.06rem;
+    --radius: 8px;
+
+    --font-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --font-body: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0a0e15;
+      --surface: #121924;
+      --surface-2: #172030;
+      --ink: #e6ecf6;
+      --ink-2: #b7c3d6;
+      --muted: #8695ab;
+      --line: #232e40;
+      --line-strong: #34425a;
+      --accent: #7ba0ff;
+      --accent-soft: #1b2740;
+      --accent-ink: #0a0e15;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px rgba(0, 0, 0, .35);
+      --s-done: #4fd1c5;
+      --s-partial: #f0b429;
+      --s-missing: #ff8a80;
+      --s-extra: #c4b5fd;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0a0e15;
+    --surface: #121924;
+    --surface-2: #172030;
+    --ink: #e6ecf6;
+    --ink-2: #b7c3d6;
+    --muted: #8695ab;
+    --line: #232e40;
+    --line-strong: #34425a;
+    --accent: #7ba0ff;
+    --accent-soft: #1b2740;
+    --accent-ink: #0a0e15;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px rgba(0, 0, 0, .35);
+    --s-done: #4fd1c5;
+    --s-partial: #f0b429;
+    --s-missing: #ff8a80;
+    --s-extra: #c4b5fd;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent); }
+  button, select, input, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
+
+  .masthead { background: var(--surface); border-bottom: 1px solid var(--line); padding: 1.7rem 0 1.3rem; }
+  .masthead__grid { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; align-items: flex-end; justify-content: space-between; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 .35rem;
+  }
+
+  .masthead h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    letter-spacing: -.02em;
+    line-height: 1.05;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .masthead__sub { margin: .5rem 0 0; color: var(--ink-2); max-width: 64ch; font-size: var(--fs-sm); }
+
+  .scoreboard { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+  .score__label { display: block; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .score__value { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .score__value small { font-size: .85rem; font-weight: 500; color: var(--muted); }
+
+  .burn { margin-top: 1.1rem; }
+  .burn__bar { height: 1.35rem; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--line); display: flex; overflow: hidden; }
+  .burn__seg { display: grid; place-items: center; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--accent-ink); white-space: nowrap; }
+  .burn__seg--spent { background: var(--accent); }
+  .burn__seg--left { background: transparent; color: var(--muted); }
+  .burn__legend { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); margin-top: .3rem; }
+
+  /* ── Shoda týmu ─────────────────────────────────────────── */
+
+  .consensus { margin-top: 1.1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .6rem 1.5rem; align-items: center; }
+  @media (max-width: 46rem) { .consensus { grid-template-columns: minmax(0, 1fr); } }
+
+  .consensus__bar { height: .55rem; border-radius: 3px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; display: flex; }
+  .consensus__bar i { display: block; height: 100%; }
+  .consensus__bar i.agree { background: var(--s-done); }
+  .consensus__bar i.split { background: var(--s-partial); }
+  .consensus__bar i.thin { background: var(--line-strong); }
+
+  .consensus__meta { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); display: flex; gap: 1.1rem; flex-wrap: wrap; }
+  .consensus__goal { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+  .people { display: flex; gap: .35rem; flex-wrap: wrap; align-items: center; }
+
+  .who {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    padding: .1rem .5rem .1rem .15rem;
+    font-size: var(--fs-xs);
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+
+  .who__ini {
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-mono);
+    font-size: .6rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .who__n { font-family: var(--font-mono); color: var(--muted); }
+  .who.is-me { border-color: var(--accent); }
+
+  /* ── Ovládací lišta ─────────────────────────────────────── */
+
+  .toolbar { position: sticky; top: 0; z-index: 30; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .toolbar__inner { max-width: 1400px; margin: 0 auto; padding: .6rem 1.5rem; display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; }
+
+  .field { display: flex; align-items: center; gap: .4rem; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: .25rem .5rem; }
+  .field label { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-family: var(--font-mono); }
+  .field input, .field select { background: transparent; border: 0; padding: .2rem 0; min-width: 5.5rem; }
+  .field input:focus, .field select:focus { outline: none; }
+  .field--search input { min-width: 12rem; }
+
+  .btn { background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: .35rem .7rem; font-size: var(--fs-sm); cursor: pointer; white-space: nowrap; }
+  .btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .btn--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn--primary:hover { filter: brightness(1.08); background: var(--accent); }
+  .btn--ghost { background: transparent; border-color: transparent; color: var(--muted); }
+  .btn--ghost:hover { color: var(--ink); background: var(--surface-2); border-color: var(--line); }
+
+  .toolbar__spacer { flex: 1 1 2rem; }
+  .saved-state { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+  .saved-state.is-error { color: var(--s-missing); }
+
+  .bulkbar { background: var(--accent-soft); border-bottom: 1px solid var(--line); }
+  .bulkbar[hidden] { display: none; }
+  .bulkbar__inner { max-width: 1400px; margin: 0 auto; padding: .55rem 1.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .9rem; }
+  .bulkbar__count { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bulkbar__group { display: flex; align-items: center; gap: .3rem; }
+  .bulkbar__group > span { font-family: var(--font-mono); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-right: .1rem; }
+
+  .wchip {
+    width: 1.75rem; height: 1.75rem; border-radius: 50%;
+    border: 1px solid var(--line-strong); background: var(--surface);
+    font-family: var(--font-mono); font-size: var(--fs-sm); font-variant-numeric: tabular-nums;
+    cursor: pointer; padding: 0; display: grid; place-items: center;
+  }
+  .wchip:hover { border-color: var(--accent); }
+
+  /* ── Rozvržení ──────────────────────────────────────────── */
+
+  .layout { max-width: 1400px; margin: 0 auto; padding: 1.5rem; display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  @media (max-width: 66rem) { .layout { grid-template-columns: minmax(0, 1fr); } .rail { position: static; } }
+
+  .rail { position: sticky; top: 4.1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: .7rem; box-shadow: var(--shadow); max-height: calc(100vh - 6rem); overflow: auto; }
+  .rail h2 { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: .2rem .3rem .5rem; font-weight: 500; }
+  .rail__link { display: grid; grid-template-columns: 1fr auto; gap: .35rem; align-items: baseline; padding: .3rem .4rem; border-radius: 6px; text-decoration: none; color: var(--ink-2); font-size: var(--fs-sm); }
+  .rail__link:hover { background: var(--surface-2); color: var(--ink); }
+  .rail__count { font-family: var(--font-mono); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; color: var(--muted); }
+  .rail__bar { grid-column: 1 / -1; height: 3px; border-radius: 2px; background: var(--line); display: flex; overflow: hidden; }
+  .rail__bar i { display: block; height: 100%; }
+  .rail__bar i.done { background: var(--s-done); }
+  .rail__bar i.partial { background: var(--s-partial); }
+  .rail__bar i.missing { background: var(--s-missing); }
+  .rail__phase { margin-top: .8rem; border-top: 1px solid var(--line); padding-top: .6rem; }
+
+  /* ── Sekce a řádky ──────────────────────────────────────── */
+
+  .section { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 1.1rem; overflow: hidden; }
+  .section[hidden] { display: none; }
+  .section__head { display: flex; flex-wrap: wrap; gap: .5rem .9rem; align-items: baseline; padding: .85rem 1rem; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+  .section__head h2 { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); letter-spacing: -.015em; margin: 0; }
+  .section__hint { color: var(--muted); font-size: var(--fs-sm); flex: 1 1 16rem; }
+  .section__pick { background: transparent; border: 1px solid var(--line-strong); border-radius: 6px; font-size: var(--fs-xs); padding: .2rem .5rem; cursor: pointer; color: var(--muted); white-space: nowrap; }
+  .section__pick:hover { color: var(--ink); border-color: var(--accent); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1.5rem 5.4rem minmax(0, 1fr) auto auto auto auto;
+    gap: .3rem .7rem;
+    align-items: center;
+    padding: .5rem 1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .row:first-of-type { border-top: 0; }
+  .row[hidden] { display: none; }
+  .row:hover { background: var(--surface-2); }
+  .row.is-selected { background: var(--accent-soft); }
+  .row.is-split { box-shadow: inset .18rem 0 0 var(--s-partial); }
+
+  .row__check { width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; }
+
+  .row__state { font-family: var(--font-mono); font-size: var(--fs-xs); padding: .1rem .3rem; border-radius: 4px; border: 1px solid currentColor; text-align: center; white-space: nowrap; }
+  .row__state[data-s="hotovo"] { color: var(--s-done); }
+  .row__state[data-s="castecne"] { color: var(--s-partial); }
+  .row__state[data-s="chybi"] { color: var(--s-missing); }
+
+  .row__main { min-width: 0; }
+  .row__title { display: block; font-weight: 450; line-height: 1.35; }
+  .row__desc { display: block; color: var(--muted); font-size: var(--fs-sm); line-height: 1.4; }
+  .row__meta { display: flex; flex-wrap: wrap; gap: .3rem .45rem; align-items: center; margin-top: .18rem; }
+
+  .tag { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: .03em; padding: .05rem .35rem; border-radius: 4px; border: 1px solid var(--line-strong); color: var(--muted); white-space: nowrap; }
+  .tag--ref { border-style: dashed; }
+  .row__path { font-family: var(--font-mono); font-size: var(--fs-xs); text-decoration: none; color: var(--accent); border-bottom: 1px dotted currentColor; white-space: nowrap; }
+
+  .phase { display: flex; border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; }
+  .phase button { background: var(--surface); border: 0; border-left: 1px solid var(--line); padding: .22rem .42rem; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); cursor: pointer; line-height: 1.4; }
+  .phase button:first-child { border-left: 0; }
+  .phase button:hover { background: var(--surface-2); color: var(--ink); }
+  .phase button[aria-pressed="true"] { color: var(--surface); font-weight: 600; }
+  .phase button[data-p="jadro"][aria-pressed="true"] { background: var(--s-missing); color: var(--surface); }
+  .phase button[data-p="pak"][aria-pressed="true"] { background: var(--s-partial); color: var(--surface); }
+  .phase button[data-p="pozdeji"][aria-pressed="true"] { background: var(--s-done); color: var(--surface); }
+  .phase button[data-p="skrt"][aria-pressed="true"] { background: var(--muted); color: var(--surface); }
+
+  .scope {
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    padding: .2rem .55rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .scope:hover { border-color: var(--s-extra); color: var(--ink); }
+  .scope[aria-pressed="true"] { background: var(--s-extra); border-color: var(--s-extra); color: #fff; font-weight: 600; }
+
+  .weight { display: flex; align-items: center; gap: .4rem; }
+  .weight select { border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); padding: .2rem .3rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; cursor: pointer; }
+  .weight__dot { width: .65rem; height: .65rem; border-radius: 50%; background: var(--line-strong); flex: none; }
+
+  .team { display: flex; gap: .2rem; align-items: center; min-width: 4rem; }
+
+  .team__dot {
+    width: 1.25rem; height: 1.25rem; border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: .58rem; font-weight: 600;
+    color: #fff; cursor: default;
+    border: 2px solid transparent;
+  }
+
+  .team__dot[data-phase="jadro"] { box-shadow: 0 0 0 2px var(--s-missing); }
+  .team__dot[data-phase="pak"] { box-shadow: 0 0 0 2px var(--s-partial); }
+  .team__dot[data-phase="pozdeji"] { box-shadow: 0 0 0 2px var(--s-done); }
+  .team__dot[data-phase="skrt"] { box-shadow: 0 0 0 2px var(--muted); }
+
+  @media (max-width: 52rem) {
+    .row { grid-template-columns: 1.5rem minmax(0, 1fr); row-gap: .45rem; }
+    .row__state, .row__main, .phase, .scope, .weight, .team { grid-column: 2; justify-self: start; }
+  }
+
+  /* ── Panely ─────────────────────────────────────────────── */
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem 1.15rem; margin-bottom: 1.1rem; }
+  .panel h2 { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 700; letter-spacing: -.015em; margin: 0 0 .55rem; }
+  .panel h3 { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 1rem 0 .35rem; }
+  .panel p { margin: .35rem 0; color: var(--ink-2); font-size: var(--fs-sm); }
+  .panel ul { margin: .35rem 0; padding-left: 1.1rem; color: var(--ink-2); font-size: var(--fs-sm); }
+  .panel li { margin: .22rem 0; }
+  .panel strong { color: var(--ink); }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 0 1.8rem; }
+
+  .tablewrap { overflow-x: auto; margin: .5rem 0; }
+  table.data { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+  table.data th, table.data td { text-align: left; padding: .35rem .6rem .35rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.data th { font-family: var(--font-mono); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 500; }
+  table.data td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; padding-right: 1rem; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; margin: .6rem 0 0; padding: 0; list-style: none; font-size: var(--fs-sm); }
+  .legend li { display: flex; align-items: center; gap: .4rem; }
+  .legend__swatch { width: .8rem; height: .8rem; border-radius: 3px; flex: none; }
+
+  kbd { font-family: var(--font-mono); font-size: var(--fs-xs); border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 4px; padding: .05rem .3rem; background: var(--surface-2); }
+
+  .io { width: 100%; min-height: 7rem; resize: vertical; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem; font-family: var(--font-mono); font-size: var(--fs-xs); line-height: 1.5; }
+  .io-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
+
+  .footnote { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem 3rem; color: var(--muted); font-size: var(--fs-sm); }
+  .footnote code { font-family: var(--font-mono); font-size: var(--fs-xs); background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: .05rem .3rem; }
+
+  /* ── Podklady a bot ─────────────────────────────────────── */
+
+  .drop {
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    padding: 1rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    background: var(--surface-2);
+  }
+
+  .drop.is-over { border-color: var(--accent); color: var(--ink); background: var(--accent-soft); }
+
+  .files { list-style: none; margin: .7rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
+
+  .files li {
+    display: flex; align-items: center; gap: .6rem;
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: .3rem .5rem; font-size: var(--fs-sm);
+  }
+
+  .files__name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .files__meta { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+
+  .ai-progress { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
+
+  .row__ai {
+    grid-column: 3;
+    font-size: var(--fs-sm);
+    color: var(--s-extra);
+    border-left: 2px solid var(--s-extra);
+    padding-left: .5rem;
+    margin-top: .25rem;
+  }
+
+  .row__ai[hidden] { display: none; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="masthead__grid">
+      <div>
+        <p class="eyebrow">2. 4. – 25. 8. 2026 · větev development · commit 4687ef3</p>
+        <h1>Statusboard mBlue</h1>
+        <p class="masthead__sub">
+          Stav přečtený z kódu postavený proti původnímu zadání na 1 200 hodin. Každý z týmu má
+          vlastní verzi zařazení a vidí verze ostatních. Cíl je dostat shodu nad 90 % — pak je z toho
+          plán první fáze.
+        </p>
+      </div>
+      <div class="scoreboard">
+        <div class="score">
+          <span class="score__label">Položek</span>
+          <span class="score__value" id="stat-total">0</span>
+        </div>
+        <div class="score">
+          <span class="score__label">Hotovo</span>
+          <span class="score__value" id="stat-done" style="color: var(--s-done)">0</span>
+        </div>
+        <div class="score">
+          <span class="score__label">Otevřeno</span>
+          <span class="score__value" id="stat-open" style="color: var(--s-missing)">0</span>
+        </div>
+        <div class="score">
+          <span class="score__label">Moje zařazení</span>
+          <span class="score__value"><span id="stat-rated">0</span><small id="stat-pct"> / 0 %</small></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="burn">
+      <div class="burn__bar" role="img" aria-label="Vyčerpáno 900 z 1200 hodin">
+        <div class="burn__seg burn__seg--spent" style="flex: 900">900 h odpracováno</div>
+        <div class="burn__seg burn__seg--left" style="flex: 300">300 h zbývá</div>
+      </div>
+      <div class="burn__legend">
+        <span>75 % rozpočtu · 5 měsíců · 1 757 commitů · 138 migrací</span>
+        <span>1 200 h</span>
+      </div>
+    </div>
+
+    <div class="consensus">
+      <div>
+        <div class="consensus__bar" role="img" aria-label="Míra shody týmu">
+          <i class="agree" id="cons-agree" style="flex: 0"></i>
+          <i class="split" id="cons-split" style="flex: 0"></i>
+          <i class="thin" id="cons-thin" style="flex: 1"></i>
+        </div>
+        <div class="consensus__meta">
+          <span id="cons-detail">zatím nikdo nehodnotil</span>
+          <span class="people" id="people"></span>
+        </div>
+      </div>
+      <div style="text-align: right">
+        <span class="score__label">Shoda týmu</span>
+        <span class="consensus__goal" id="cons-pct">–</span>
+        <span class="score__label">cíl 90 %</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="toolbar__inner">
+    <div class="field field--search">
+      <label for="q">Hledat</label>
+      <input id="q" type="search" placeholder="název, popis, issue…" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="f-state">Stav</label>
+      <select id="f-state">
+        <option value="all">vše</option>
+        <option value="open">jen otevřené</option>
+        <option value="hotovo">hotovo</option>
+        <option value="castecne">rozdělané</option>
+        <option value="chybi">chybí</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="f-phase">Fáze</label>
+      <select id="f-phase">
+        <option value="all">vše</option>
+        <option value="jadro">jádro</option>
+        <option value="pak">hned po</option>
+        <option value="pozdeji">později</option>
+        <option value="skrt">škrtnout</option>
+        <option value="none">nezařazeno mnou</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="f-scope">Rozsah</label>
+      <select id="f-scope">
+        <option value="all">vše</option>
+        <option value="extra">nad rámec</option>
+        <option value="in">v zadání</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="f-team">Tým</label>
+      <select id="f-team">
+        <option value="all">vše</option>
+        <option value="split">jen sporné</option>
+        <option value="agree">jen shodnuté</option>
+        <option value="missing">nikdo nehodnotil</option>
+      </select>
+    </div>
+    <div class="toolbar__spacer"></div>
+    <button class="btn" type="button" id="pick-visible">Označit viditelné</button>
+    <button class="btn btn--ghost" type="button" id="theme-toggle" title="Přepnout motiv">Motiv</button>
+    <span class="saved-state" id="saved">načítám…</span>
+    <a class="btn btn--ghost" href="/statusboard/odhlasit" id="logout">Odhlásit</a>
+  </div>
+</div>
+
+<div class="bulkbar" id="bulkbar" hidden>
+  <div class="bulkbar__inner">
+    <span class="bulkbar__count"><span id="sel-count">0</span> vybráno</span>
+    <div class="bulkbar__group">
+      <span>fáze</span>
+      <button class="btn" type="button" data-bulk-phase="jadro">jádro</button>
+      <button class="btn" type="button" data-bulk-phase="pak">hned po</button>
+      <button class="btn" type="button" data-bulk-phase="pozdeji">později</button>
+      <button class="btn" type="button" data-bulk-phase="skrt">škrtnout</button>
+      <button class="btn btn--ghost" type="button" data-bulk-phase="">×</button>
+    </div>
+    <div class="bulkbar__group">
+      <span>rozsah</span>
+      <button class="btn" type="button" data-bulk-scope="1">nad rámec</button>
+      <button class="btn" type="button" data-bulk-scope="0">v zadání</button>
+    </div>
+    <div class="bulkbar__group" id="bulk-weights"><span>váha</span></div>
+    <div class="toolbar__spacer"></div>
+    <button class="btn btn--ghost" type="button" id="bulk-clear-values">Vymazat</button>
+    <button class="btn btn--ghost" type="button" id="bulk-deselect">Zrušit výběr</button>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="rail" aria-label="Bloky">
+    <h2>Bloky</h2>
+    <div id="rail-links"></div>
+    <div class="rail__phase">
+      <h2>Moje fáze</h2>
+      <div id="rail-phases"></div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="panel">
+      <h2>Kde jsme</h2>
+      <div class="cols">
+        <div>
+          <h3>Odpracováno</h3>
+          <p>
+            <strong>900 z 1 200 hodin</strong> za pět měsíců (2. 4. – 25. 8. 2026). Zbývá 300 hodin
+            na to, co je níž označené jako <strong>rozdělané</strong> a <strong>chybí</strong> — plus
+            migrace dat a přechod firmy, které v odhadu nebyly vyčíslené samostatně.
+          </p>
+          <h3>Co je v aplikaci hotové</h3>
+          <p>
+            Jádro CRM i ATS stojí a je proklikatelné: kandidáti s fulltextem v CV, firmy s ARES,
+            projekty, nábor s trychtýřem a KOPS, úkoly, výkazy, faktury s PDF, aktivity, čtyři reporty,
+            uživatelé, týmy, číselníky, GDPR audit výmazů.
+          </p>
+        </div>
+        <div>
+          <h3>Co se od odhadu změnilo</h3>
+          <ul>
+            <li><strong>Přibylo:</strong> KOPS kalkulačka a variabilní fáze výběrového řízení.</li>
+            <li><strong>Přibylo:</strong> propracovaná obchodní pipeline, jak byla ukázaná v srpnu.</li>
+            <li><strong>Odloženo:</strong> Merk, Money a inzertní servery až za první fázi.</li>
+            <li><strong>Nezapočítané:</strong> migrace dat z Atollonu a přechod firmy do nového systému.</li>
+          </ul>
+          <h3>Co se tady rozhoduje</h3>
+          <p>
+            Každý zařadí položky do fází a označí, co považuje za práci <strong>nad rámec</strong>
+            původního zadání. Sporné řádky mají oranžový proužek — na těch se domluvme.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Jak to ovládat</h2>
+      <p>
+        Levý štítek je <strong>zjištěný stav z kódu</strong> — needituje se. Vpravo zařazuješ do
+        <strong>fáze</strong>, přepínáš <strong>nad rámec</strong> a dáváš <strong>váhu 0–9</strong>
+        (0 = nechceme, 9 = jádro produktu). Úplně vpravo jsou hlasy ostatních — kolečko s iniciálou,
+        barva kroužku je jejich fáze, číslo je jejich váha.
+        Zaškrtni řádky (<kbd>Shift</kbd> + klik vybere rozsah) a nastav je po dávkách; klávesy
+        <kbd>0</kbd>–<kbd>9</kbd> dají váhu, <kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd> fázi,
+        <kbd>N</kbd> přepne nad rámec, <kbd>Esc</kbd> zruší výběr. Ukládá se rovnou na server.
+      </p>
+      <ul class="legend">
+        <li><span class="legend__swatch" style="background: var(--s-done)"></span>hotovo — funguje v aplikaci</li>
+        <li><span class="legend__swatch" style="background: var(--s-partial)"></span>rozdělané — základ stojí, chybí dodělat</li>
+        <li><span class="legend__swatch" style="background: var(--s-missing)"></span>chybí — v kódu není nic</li>
+        <li><span class="legend__swatch" style="background: var(--s-extra)"></span>nad rámec — mimo původní odhad 1 200 h</li>
+      </ul>
+    </div>
+
+    <div id="sections"></div>
+
+    <div class="panel">
+      <h2>Rizika a co dělat příště jinak</h2>
+      <div class="cols">
+        <div>
+          <h3>Rizika, která můžou sežrat zbytek rozpočtu</h3>
+          <ul>
+            <li><strong>Migrace dokumentů — 83 GB a 280 tisíc souborů za 2020+.</strong> Zatím neběželo nic.</li>
+            <li><strong>Archiv Atollonu je na jedné USB flashce.</strong> Klient se dvakrát ptal, jestli data zůstanou.</li>
+            <li><strong>Nesrovnalost v počtu firem</strong> — 205 131 řádků vs. 36 199 firem vs. 809 se zakázkou za 2020+.</li>
+            <li><strong>Fronta úloh nikde neběží.</strong> Automatické úkoly i úklid konceptů čekají na spuštění workeru.</li>
+            <li><strong>Přechod firmy není nikde napsaný jako plán</strong> — testovací týden je první ostrý kontakt s uživateli.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Co dělat lépe</h3>
+          <ul>
+            <li><strong>Backlog se rozešel s kódem.</strong> Z 35 otevřených issues je nejméně dvanáct podle kódu hotových.</li>
+            <li><strong>Zadání přicházejí mimo backlog</strong> — mailem, na callu, přes Planner. Rozsah roste mimo odhad.</li>
+            <li><strong>33 otevřených otázek a 13 blokací</strong> čeká na rozhodnutí klienta.</li>
+            <li><strong>Rozhodnutí se přebíjejí</strong> — psát a nechat odsouhlasit dřív, než se to začne programovat.</li>
+            <li><strong>Odhad neměl vyčíslenou migraci ani přechod</strong>, u náhrady 15 let starého systému je to vlastní položka.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Migrace: co je v Atollonu za data</h2>
+      <div class="tablewrap">
+        <table class="data">
+          <thead>
+            <tr><th>entita</th><th class="num">celá historie</th><th class="num">2020+</th><th>stav migrace</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>kandidáti</td><td class="num">151 150</td><td class="num">73 082</td><td>1. vlna naimportována</td></tr>
+            <tr><td>kandidatury</td><td class="num">262 709</td><td class="num">123 666</td><td>2. vlna naimportována</td></tr>
+            <tr><td>zakázky (bez běhů VŘ)</td><td class="num">10 387</td><td class="num">3 961</td><td>2. vlna naimportována</td></tr>
+            <tr><td>klientské firmy se zakázkou</td><td class="num">1 559</td><td class="num">809</td><td>1. vlna naimportována</td></tr>
+            <tr><td>dokumenty (83 GB příloh)</td><td class="num">690 407</td><td class="num">280 647</td><td>neběželo nic</td></tr>
+            <tr><td>faktury</td><td class="num">12 102</td><td class="num">6 240</td><td>neběželo nic</td></tr>
+            <tr><td>aktivity</td><td class="num">4 117</td><td class="num">12</td><td>modul v Atollonu mrtvý od 2017</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Podklady a bot</h2>
+      <div class="cols">
+        <div>
+          <h3>Podklady pro rozhodování</h3>
+          <p>
+            Nahraj sem nabídku, zápis z callu, tabulku odhadů — cokoli, co má tým i bot vzít v úvahu.
+            Textové soubory (md, txt, csv, json) bot čte rovnou; ostatní si stáhnou lidé.
+          </p>
+          <div class="drop" id="drop" tabindex="0" role="button">
+            Přetáhni sem soubory, nebo klikni a vyber je
+            <input type="file" id="file-input" multiple hidden>
+          </div>
+          <ul class="files" id="files"></ul>
+        </div>
+        <div>
+          <h3>Bot jako další hlas</h3>
+          <p>
+            Bot dostane <strong>jen</strong> tenhle seznam funkcí a nahrané podklady — žádný kód,
+            komentáře ani interní dokumentaci. Má říct vlastní názor na to, co patří do jádra první
+            fáze, a u každé položky připsat důvod.
+          </p>
+          <div class="io-actions">
+            <button class="btn btn--primary" type="button" id="ai-run">Nechat bota posoudit vše</button>
+            <button class="btn" type="button" id="ai-run-open">Jen otevřené položky</button>
+            <button class="btn btn--ghost" type="button" id="ai-toggle">Skrýt jeho důvody</button>
+          </div>
+          <p class="ai-progress" id="ai-progress"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Výstup</h2>
+      <p>Vypiš, na čem se tým shodl, nebo si stáhni celá data k dalšímu zpracování.</p>
+      <textarea class="io" id="io" spellcheck="false" placeholder="Sem se vypíše výstup."></textarea>
+      <div class="io-actions">
+        <button class="btn btn--primary" type="button" id="export-plan">Vypsat plán podle mého zařazení</button>
+        <button class="btn" type="button" id="export-split">Vypsat sporné položky</button>
+        <button class="btn" type="button" id="export-csv">Export CSV (celý tým)</button>
+        <button class="btn" type="button" id="copy-io">Kopírovat do schránky</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<p class="footnote">
+  Stav je čtený z větve <code>development</code> (commit <code>4687ef3</code>, 25. 8. 2026), z otevřených issues v Gitei
+  a z pracovních dokumentů projektu. Odhad 900 z 1 200 hodin je vstup ze zadání, ne měření z repozitáře.
+  Stránka je neveřejná — přístup má jen tým s magic linkem.
+</p>
+
+<script>
+(function () {
+  'use strict';
+
+  var MODULES = [
+    {
+      id: 'kandidati', name: 'Kandidáti', hint: 'Databáze lidí, CV s fulltextem, karta kandidáta. V odhadu byla.',
+      items: [
+        { id: 'KAN-01', t: 'Seznam s panelem detailu a přepínačem karty/tabulka', d: 'Vlevo seznam, vpravo karta; šířku panelu si člověk přetáhne a zapamatuje se.', p: '/candidates' },
+        { id: 'KAN-02', t: 'Fulltext včetně obsahu nahraných CV', d: 'Hledá v kandidátovi i v textu příloh; „Java“ najde člověka podle životopisu.' },
+        { id: 'KAN-03', t: 'Filtry: tagy, vzdělání, vzdálenost od adresy, archiv', d: 'Multiselect tagů, okruh v kilometrech přes souřadnice z našeptávače.' },
+        { id: 'KAN-04', t: 'Řazení podle příjmení a stránkování', d: 'České řazení s diakritikou, osoby vždy příjmením.' },
+        { id: 'KAN-05', t: 'Export CSV podle filtru i podle zaškrtnutých řádků', d: '' },
+        { id: 'KAN-06', t: 'Rychlé založení v modalu i velký formulář', d: 'Obojí s průběžným ukládáním rozdělaného konceptu.' },
+        { id: 'KAN-07', t: 'Přetažení CV do formuláře a vytěžení textu', d: 'Předvyplní jméno, e-mail, telefon a LinkedIn z textu souboru.' },
+        { id: 'KAN-08', t: 'Rozpoznání pozice a posledního zaměstnavatele z CV', d: 'Neznámou firmu nabídne založit z ARES.' },
+        { id: 'KAN-09', t: 'Kontrola duplicit při psaní', d: 'Shoda e-mailu, telefonu nebo LinkedInu s důvodem shody.' },
+        { id: 'KAN-10', t: 'Jazyky, vzdělání, pohlaví, očekávaná mzda, adresa, LinkedIn', d: 'Plná evidence kandidáta včetně formátovaného popisu.' },
+        { id: 'KAN-11', t: 'Tagy kandidáta ze skupin', d: 'Barva podle skupiny tagů.' },
+        { id: 'KAN-12', t: 'Karta kandidáta se všemi sekcemi', d: 'Výběrová řízení, úkoly, náhled CV, soubory, aktivity, informace.' },
+        { id: 'KAN-13', t: 'Zařazení kandidáta na pozici', d: 'Nabídne jen pozice připravené k náboru.' },
+        { id: 'KAN-14', t: 'Archivace, vrácení z archivu, koncepty', d: 'Archiv i koncepty v patě panelu, hromadné mazání konceptů.' },
+        { id: 'KAN-15', t: 'Trvalé smazání jen správcem s auditním záznamem', d: 'GDPR hard delete zapisuje neměnný záznam o výmazu.' },
+        { id: 'KAN-16', t: 'Hromadné akce nad kandidáty', d: 'Zaškrtávátka a lišta fungují, ale hromadné mazání a tagování jsou vypnuté („Brzy“). Chybí i výběr „všech odpovídajících“.', s: 'castecne', ref: 'T-052' },
+        { id: 'KAN-17', t: 'Import kandidátů z Teamio / Jobs.cz', d: 'V původním zadání jako must-have; v kódu není nic. Čeká na rozhodnutí o rozsahu a na API Alma Career.', s: 'chybi', ref: 'T-003' },
+        { id: 'KAN-18', t: 'GDPR souhlas kandidáta se zpracováním', d: 'Automatický souhlas e-mailem při prvním kontaktu je v zadání; v kódu je zatím jen audit výmazů.', s: 'chybi', ref: 'T-039 · #155' },
+        { id: 'KAN-19', t: 'Zkušební doba kandidáta po nástupu', d: 'Default 3 měsíce a navazující automatizace; vlastní pole na kandidatuře neexistuje. Nezaměňovat s garancí z KOPS.', s: 'chybi', ref: 'E5', x: true },
+        { id: 'KAN-20', t: 'M-kandidáti — měsíční kampaň neumístěných', d: 'Medailonky a direct mailing; zadání od klienta bez rozhodnutí.', s: 'chybi', ref: 'T-147', x: true },
+        { id: 'KAN-21', t: 'AI vyhledávání kandidátů', d: 'Vyžádala Tereza S.; chybí i odhad nákladů na tokeny.', s: 'chybi', ref: 'T-154', x: true }
+      ]
+    },
+    {
+      id: 'firmy', name: 'Firmy a kontakty', hint: 'Firemní karta, kontaktní osoby, holdingy. V odhadu byly.',
+      items: [
+        { id: 'FIR-01', t: 'Seznam firem s panelem, filtry a řazením', d: 'Stav, off-limit, odvětví, zodpovědný HRP; řazení i podle poslední aktivity a počtu projektů.', p: '/companies' },
+        { id: 'FIR-02', t: 'Načtení z ARES podle IČO i podle názvu', d: 'Doplní název, adresu a DIČ; IČO zůstává nepovinné.' },
+        { id: 'FIR-03', t: 'Kontrola duplicit firem', d: 'Podle názvu, IČO a DIČ přímo v modalu.' },
+        { id: 'FIR-04', t: 'Zakládání a úprava v modalu i velký formulář', d: 'Se stavem, zdrojem, zodpovědným HRP a popisem.' },
+        { id: 'FIR-05', t: 'Holding — nadřazená firma a členové', d: '' },
+        { id: 'FIR-06', t: 'Kontaktní osoby firmy', d: 'Zakládání, úprava, mazání, označení hlavního kontaktu.' },
+        { id: 'FIR-07', t: 'Stav firmy a příznak off-limit', d: 'Šest stavů podle klientovy tabulky plus ruční „nelovíme“.' },
+        { id: 'FIR-08', t: 'Karta firmy se všemi sekcemi', d: 'Projekty, kontakty, úkoly, soubory, aktivity, faktury.' },
+        { id: 'FIR-09', t: 'Výpis firem: tabulka jako výchozí, odlehčené karty', d: 'Dnes je výchozí mřížka a pilulka kontaktu překrývá text. Zadáno 24. 8., padlo už 11. 8.', s: 'castecne', ref: 'N1 · #273' },
+        { id: 'FIR-10', t: 'Seznam firem pro cold calling', d: 'Pracovní seznam k obvolání, ne číselník. Čeká na rozhodnutí.', s: 'chybi', ref: 'T-141', x: true },
+        { id: 'FIR-11', t: 'Standard klient bez dlouhodobé zakázky', d: 'Příznak nebo pracovní seznam pro obchod; intervaly si v podkladech odporují.', s: 'chybi', ref: 'T-182', x: true },
+        { id: 'FIR-12', t: 'Důvody neuzavřené spolupráce po nabídce', d: 'Klient poslal dva seznamy důvodů; v modelu není pole ani entita, kam je pověsit.', s: 'chybi', ref: 'podklad 24. 8.', x: true },
+        { id: 'FIR-13', t: 'Status firmy: off limit / open to work / black list', d: 'Klient sám značí „dořešit“; dnes existuje jen off-limit.', s: 'castecne', ref: 'T-137' }
+      ]
+    },
+    {
+      id: 'projekty', name: 'Projekty', hint: 'Obchodní rámec spolupráce. V odhadu byly.',
+      items: [
+        { id: 'PRO-01', t: 'Oddělené evidence klientských a interních projektů', d: 'Seznam vždy ukazuje jednu kategorii, nikdy se nemíchají.', p: '/projects?category=external' },
+        { id: 'PRO-02', t: 'Filtry, fulltext, řazení, archiv', d: 'Stav, firma (multiselect), moje projekty, archivované mimo výchozí výpis.' },
+        { id: 'PRO-03', t: 'Zakládání a úprava v modalu', d: 'Projekt nemá vlastní stránku formuláře.' },
+        { id: 'PRO-04', t: 'Panel projektu jako náborová deska', d: 'U typu Nábor nese trychtýř, KOPS i úkoly každé své pozice.' },
+        { id: 'PRO-05', t: 'Projektový tým a předání vedení', d: 'Spolupracovníci plus právě jeden hlavní zodpovědný.' },
+        { id: 'PRO-06', t: 'Stav projektu odvozený z pozic', d: 'Nejdál postoupený nábor určuje stav projektu; sedm stavů společných s pozicí.' },
+        { id: 'PRO-07', t: 'Archivace a trvalé smazání jen správcem', d: 'Faktury a výkazy se neruší, jen odpojí.' },
+        { id: 'PRO-08', t: 'Pole „Projekt“ u pozice klient nechápe', d: 'Dělba projekt × pozice je pro uživatele nesrozumitelná — zatím bez rozhodnutí, co s tím.', s: 'castecne', ref: 'T-184' }
+      ]
+    },
+    {
+      id: 'nabor', name: 'Nábor: pozice, KOPS, výběrka', hint: 'V odhadu byl nábor; KOPS a volitelné fáze přibyly nad rámec.',
+      items: [
+        { id: 'NAB-01', t: 'Setup náboru jako jeden formulář s autosave', d: 'Pozice, kalkulačka i fáze se ukládají naráz.' },
+        { id: 'NAB-02', t: 'Spuštění náboru s ostrou validací', d: 'Co chybí, se vypíše až po odeslání, ne dopředu.' },
+        { id: 'NAB-03', t: 'Parametry pozice a stav se sedmi hodnotami', d: 'Mzdové rozpětí, počet míst, lokalita, termín, uzavření s důvodem.' },
+        { id: 'NAB-04', t: 'KOPS kalkulačka', d: 'Z mzdy, služeb a podmínek počítá koeficient, doporučenou i minimální cenu a strop k jednání.', x: true },
+        { id: 'NAB-05', t: 'Katalog služeb a variant pro kalkulačku', d: 'Volba varianty přidá koeficient nebo pevný příplatek.', x: true },
+        { id: 'NAB-06', t: 'Variabilní fáze výběrového řízení', d: 'Předlohy flow, vlastní pojmenování a pořadí fází s mapováním na kanonickou osu.', x: true },
+        { id: 'NAB-07', t: 'Trychtýř s podílem na vrcholu a drag & drop', d: 'Přetažení i tlačítka nahoru/dolů/prošel/neprošel.' },
+        { id: 'NAB-08', t: 'Modal kandidatury s formulářem kroku', d: 'Datum, forma pohovoru, poznámka; otevře se odkudkoli.' },
+        { id: 'NAB-09', t: 'Dopočet přeskočených fází a vracení zpět', d: 'Historie průchodu zůstává pro reporty.' },
+        { id: 'NAB-10', t: 'Nástup a zamítnutí s důvodem', d: 'Datum a mzda povinné, důvod zamítnutí z číselníku, automatická aktivita.' },
+        { id: 'NAB-11', t: 'Longlist do PDF pro klienta', d: 'Jedním klikem přehled všech kandidátů v řízení.' },
+        { id: 'NAB-12', t: 'Automatické úkoly po nástupu', d: 'Dva dny a měsíc po nástupu; job je napsaný, ale worker musí na provozu běžet.', s: 'castecne', ref: '#237' },
+        { id: 'NAB-13', t: 'Velký modál kandidatury: víc informací nahoře', d: 'Datum nástupu, mzda a garance jsou dnes na dně tabulky; nahoře je prázdno.', s: 'castecne', ref: 'N3' },
+        { id: 'NAB-14', t: 'Změna podmínek zakázky v průběhu', d: 'Přecenění s historií původní ceny — nejspíš verzování KOPS. Odloženo kvůli obchodní schůzce.', s: 'chybi', ref: 'E6 · #252', x: true },
+        { id: 'NAB-15', t: 'KOPS má navrhnout fáze výběrového řízení', d: 'Provazba „co je zaškrtnuto → jaké fáze“ chybí; kvůli tomu se odmítlo i podmíněné okno komentáře.', s: 'chybi', ref: 'T-130', x: true },
+        { id: 'NAB-16', t: 'Assessment centrum', d: 'Jaký tvar má mít v systému, není rozhodnuto. Mimo první vlnu.', s: 'chybi', ref: 'T-144', x: true },
+        { id: 'NAB-17', t: 'Deadline vs. datum předpokládaného obsazení', d: 'Není jasné, jestli jsou to dvě věci nebo jedna.', s: 'chybi', ref: 'T-156' },
+        { id: 'NAB-18', t: 'Otevřené bugy náboru z testování', d: 'Malý detail výběrového řízení, chybějící data u fází, opakovaná poznámka při vracení.', s: 'castecne', ref: '#262 · #266 · #267' }
+      ]
+    },
+    {
+      id: 'typy', name: 'Ostatní typy projektů', hint: 'HR poradenství, staffing, RPO, interní. V odhadu byly jako čtyři samostatné body.',
+      items: [
+        { id: 'TYP-01', t: 'Typy projektu jako dimenze', d: 'Nábor, HRPo, Staffing, RPO plus kategorie klientský/interní; filtry i nabídka v liště fungují.' },
+        { id: 'TYP-02', t: 'Interní projekty jako vlastní kategorie', d: 'Nábor včetně KOPS jim zůstává; typy nemají.', ref: '#259' },
+        { id: 'TYP-03', t: 'HR poradenství jako plnohodnotný typ', d: 'Vlastní sekce plánované fakturace; zadání je otevřené, v kódu je jen hodnota enumu.', s: 'castecne', ref: 'T-474 · #256' },
+        { id: 'TYP-04', t: 'Agenturní zaměstnávání (staffing)', d: 'Jako HRPo plus náborové flow bez KOPS; v kódu jen hodnota enumu.', s: 'castecne', ref: 'T-475 · #257' },
+        { id: 'TYP-05', t: 'RPO / Interim', d: 'Zatím shodné s HRPo, ale samostatný model; v kódu jen hodnota enumu.', s: 'castecne', ref: 'T-476 · #258' },
+        { id: 'TYP-06', t: 'Fakturace a forecast interních projektů', d: 'Zbytek otázky po rozhodnutí o interních typech.', s: 'chybi', ref: 'T-057' }
+      ]
+    },
+    {
+      id: 'fakturace', name: 'Fakturace', hint: 'V odhadu byla. Jádro stojí, dvě věci se mají překlopit.',
+      items: [
+        { id: 'FAK-01', t: 'Seznam faktur s náhledem PDF a modal faktury', d: 'Položky, DPH rekapitulace, číselná řada, splatnost.', p: '/invoices' },
+        { id: 'FAK-02', t: 'PDF faktury s QR platbou', d: 'Dodavatel mBlue Czech s.r.o., česká sazba, volitelně ke stažení.' },
+        { id: 'FAK-03', t: 'Podíly na faktuře mezi lidi', d: 'Procenta s kontrolou součtu a vizuálním měřičem.' },
+        { id: 'FAK-04', t: 'Předvyplnění success fee z nástupu', d: 'Z KOPS do první položky faktury.' },
+        { id: 'FAK-05', t: 'Ruční stav zaplaceno / nezaplaceno', d: 'Příznak existuje a živí přehled nezaplacených.', ref: '#255' },
+        { id: 'FAK-06', t: 'Faktura se má vázat na projekt, ne na pozici', d: 'Dnes je to obráceně a rozpůlené: faktura visí na pozici, položka na projektu. Je to migrace, ne přejmenování.', s: 'castecne', ref: 'T-480' },
+        { id: 'FAK-07', t: 'Sjednocená sada změn faktur od Terezy K.', d: 'Zadání leží u klienta, u nás nezapsané.', s: 'chybi', ref: 'T-150' },
+        { id: 'FAK-08', t: 'Napojení na Money / Manny S3', d: 'Odloženo za první fázi.', s: 'chybi' }
+      ]
+    },
+    {
+      id: 'aktivity', name: 'Aktivity', hint: 'V odhadu byly. V Atollonu je modul mrtvý od 2017, takže je to nová funkce, ne náhrada.',
+      items: [
+        { id: 'AKT-01', t: 'Ruční záznam komunikace s typem, časem a autorem', d: 'Telefon, schůzka, e-mail; z karty i z globálního dialogu.', p: '/activities' },
+        { id: 'AKT-02', t: 'Aktivity na kandidátovi, firmě, pozici i projektu', d: 'Sekce se překresluje sama, bez načtení stránky.' },
+        { id: 'AKT-03', t: 'Automatické aktivity náboru', d: 'Zařazení do řízení, posun fází, nástup.' },
+        { id: 'AKT-04', t: 'Feed posledních aktivit na dashboardu', d: '' },
+        { id: 'AKT-05', t: 'Aktivity jako systémový feed', d: 'Co se generuje samo, co jde na dashboard a jestli má aktivita vlastní detail — otevřený epic.', s: 'chybi', ref: 'T-221' }
+      ]
+    },
+    {
+      id: 'provoz', name: 'Úkoly, výkazy, dokumenty', hint: 'V odhadu byly jako tři samostatné body. Stojí celé.',
+      items: [
+        { id: 'UKO-01', t: 'Úkoly s termínem, prioritou, řešitelem a vazbami', d: 'Filtry, řazení podle naléhavosti, hromadné dokončení i mazání, export CSV.', p: '/tasks' },
+        { id: 'UKO-02', t: 'Karta úkolů na každé entitě', d: 'Kandidát, firma, projekt, pozice; překresluje se sama.' },
+        { id: 'UKO-03', t: 'Přílohy úkolu a detail úkolu', d: 'Soubory v jedné transakci s úkolem.' },
+        { id: 'UKO-04', t: 'E-mailové notifikace úkolů', d: 'Nový úkol, splněný úkol, změna řešitele. Hromadné dokončení notifikaci neposílá.', s: 'castecne', ref: '#269' },
+        { id: 'UKO-05', t: 'Sync úkolů s Plannerem', d: 'Samostatný nástroj mBlue-sync čeká na oprávnění na straně klienta.', s: 'chybi', ref: 'T-124 · #204', x: true },
+        { id: 'VYK-01', t: 'Zápis času z modalu odkudkoli', d: 'Popis, datum, projekt, tagy, hodiny a minuty.', p: '/time_entries' },
+        { id: 'VYK-02', t: 'Seznam výkazů s filtry a součtem za filtr', d: 'Uživatelé, projekty včetně „bez projektu“, období.' },
+        { id: 'VYK-03', t: 'Předfiltry v liště', d: 'Tento měsíc, moje vše, vše měsíc.' },
+        { id: 'DOK-01', t: 'Přílohy u všech entit s náhledem', d: 'Přetažení souboru, náhled PDF a obrázků, označení CV.' },
+        { id: 'DOK-02', t: 'Extrakce textu ze souborů včetně OCR', d: 'PDF, dokumenty i skeny; text jde rovnou do fulltextu.' },
+        { id: 'DOK-03', t: 'Automatický úklid dat po dvou letech', d: 'Návrh Terezy S., bez rozhodnutí.', s: 'chybi', ref: 'T-151', x: true }
+      ]
+    },
+    {
+      id: 'reporty', name: 'Reporty', hint: 'V odhadu se počítalo se sadou, kterou ukazovala Tereza S. z Atollonu.',
+      items: [
+        { id: 'REP-01', t: 'Forecast náboru', d: 'Otevřené pozice vážené pravděpodobností podle fáze.', p: '/reports/forecast' },
+        { id: 'REP-02', t: 'Funnel', d: 'Kolik kandidatur dosáhlo které kanonické fáze napříč pozicemi.', p: '/reports/funnel' },
+        { id: 'REP-03', t: 'Finanční přehled', d: 'Umístění, čekající na fakturaci, nezaplacené faktury.', p: '/reports/finance' },
+        { id: 'REP-04', t: 'Report výkazů s klientským PDF a ZIP balíkem', d: 'Po projektech a lidech, jedno PDF na projekt.', p: '/reports/timesheet' },
+        { id: 'REP-05', t: 'Sada reportů z Atollonu podle Terezy S.', d: 'Původní odhad počítal s reporty, které ukazovala v Atollonu. Které to jsou a kolik jich je, není v backlogu rozepsané — čtyři hotové reporty jsou náš návrh, ne její seznam.', s: 'chybi' },
+        { id: 'REP-06', t: 'Čím se váží forecast', d: 'Číslo na dashboardu je, ale pravděpodobnosti fází nejsou odsouhlasené.', s: 'castecne' },
+        { id: 'REP-07', t: 'Vliv mazání na zpětné reporty', d: 'Smazání kandidáta i projektu mění čísla zpětně; politika mazání napříč systémem chybí.', s: 'chybi', ref: 'T-127 · T-040 · T-125' }
+      ]
+    },
+    {
+      id: 'uzivatele', name: 'Uživatelé, role, týmy, plány', hint: 'V odhadu byly. Stojí celé.',
+      items: [
+        { id: 'UZI-01', t: 'Přihlášení magic linkem bez hesla', d: 'Vlastní implementace, gem odpojen.' },
+        { id: 'UZI-02', t: 'Správa uživatelů, rolí a práv správce', d: 'Seznam a modal; role řídí nabídku akcí i právo na KOPS.', p: '/nastaveni/users' },
+        { id: 'UZI-03', t: 'Týmy', d: '' },
+        { id: 'UZI-04', t: 'Finanční plány uživatelů', d: 'Období a částka na člověka.' },
+        { id: 'UZI-05', t: 'Profil a profilová fotka', d: 'Svůj profil edituje každý, cizí jen správce.' },
+        { id: 'UZI-06', t: 'Deaktivace uživatele ze seznamu', d: 'Akce na serveru existuje, tlačítko v seznamu je zatím vypnuté („Brzy“).', s: 'castecne' },
+        { id: 'UZI-07', t: 'Role bez validace', d: '`User#role` je nullable a bez pravidla — tichý zdroj chyb v oprávněních.', s: 'castecne', ref: 'T-031' }
+      ]
+    },
+    {
+      id: 'migrace', name: 'Migrace dat z Atollonu', hint: 'V odhadu 1 200 h nebyla vyčíslená samostatně.',
+      items: [
+        { id: 'MIG-01', t: 'ETL 1. vlna: uživatelé, firmy, kandidáti, číselník pozic, aktivity', d: 'Import přes modely s validacemi, idempotentní, s reportem odmítnutých řádků.' },
+        { id: 'MIG-02', t: 'ETL 2. vlna: zakázky, pozice, fáze, výběrová řízení, inzeráty', d: 'Včetně textů inzerátů k pozicím.' },
+        { id: 'MIG-03', t: 'ETL dokumentů — 280 tisíc souborů, 83 GB', d: 'Mapování je připravené, ale neběželo nic. Objemem je to největší jednotlivá položka migrace.', s: 'chybi', ref: 'T-094' },
+        { id: 'MIG-04', t: 'ETL faktur a fakturačních položek', d: 'Klient je v produkci reálně používá; mapování připravené, import neběžel.', s: 'chybi', ref: 'T-095' },
+        { id: 'MIG-05', t: 'Vyjasnit rozpor v počtu firem', d: '205 131 řádků vs. 36 199 firem vs. 809 se zakázkou. Bez rozhodnutí hrozí, že se natáhne celý registr.', s: 'chybi' },
+        { id: 'MIG-06', t: 'Zálohovat archiv Atollonu', d: 'Dump je dnes na jediné USB flashce a klient se dvakrát ptal, jestli data zůstanou.', s: 'chybi', ref: 'T-328' },
+        { id: 'MIG-07', t: 'Ostrý běh migrace a kontrola po ní', d: 'Verifikační rake úloha existuje; ostrý běh nad produkčními daty a jeho vyhodnocení zbývá.', s: 'chybi' },
+        { id: 'MIG-08', t: 'Úklid legacy sloupce zdroje kandidatury', d: 'Migrace je napsaná, ale neběžela na stagingu ani produkci; do té doby se nesmí mazat sloupec.', s: 'castecne', ref: 'T-135.3' }
+      ]
+    },
+    {
+      id: 'prechod', name: 'Nasazení a přechod firmy', hint: 'V odhadu 1 200 h nebylo vyčíslené samostatně.',
+      items: [
+        { id: 'PRE-01', t: 'Nasazení na staging a testovací týden', d: 'Testuje se ve čtyřech lidech od 24. 8., dva z nich „nepolíbení“.' },
+        { id: 'PRE-02', t: 'Scénáře pro testery', d: 'Procházení aplikace „z důvodu“, se záznamovým archem.' },
+        { id: 'PRE-03', t: 'Zapnout moduly nábor a pozice v produkci', d: 'Na stagingu zapnuté; v produkci čeká na rozhodnutí.', s: 'chybi', ref: 'T-007' },
+        { id: 'PRE-04', t: 'Spustit frontu úloh na provozu', d: 'Bez běžícího workeru se automatické úkoly a úklid konceptů jen hromadí ve frontě.', s: 'chybi' },
+        { id: 'PRE-05', t: 'Demo data pro testery mají díry', d: 'Ukázková kandidatura má prázdné poznámky ke krokům, takže průběh výběrka vypadá prázdně.', s: 'castecne' },
+        { id: 'PRE-06', t: 'Onboarding a zaškolení nových lidí', d: 'Plán pro převedení celé firmy na nový systém není nikde napsaný.', s: 'chybi' },
+        { id: 'PRE-07', t: 'Odříznutí Atollonu', d: 'Cílový milník: firma běží na novém systému a starý se vypne.', s: 'chybi' },
+        { id: 'PRE-08', t: 'Sjednotit slovník napříč aplikací', d: 'Největší zdroj zmatku u uživatelů (zakázka vs. projekt vs. nábor vs. pozice).', s: 'castecne' }
+      ]
+    },
+    {
+      id: 'obchod', name: 'Obchodní pipeline', hint: 'Nad rámec odhadu — kandidát na odložení do další fáze.',
+      items: [
+        { id: 'OBC-01', t: 'Fáze před náborem jako vlastní trychtýř', d: 'Obchodní trychtýř na úrovni firmy nebo zakázky, jak byl ukázaný na srpnové schůzce.', s: 'chybi', x: true },
+        { id: 'OBC-02', t: 'Nabídka jako vlastní entita', d: 'Aby na ní mohly viset důvody neuzavřené spolupráce a stav vyjednávání.', s: 'chybi', x: true },
+        { id: 'OBC-03', t: 'Pravděpodobnosti a vážení obchodního forecastu', d: 'Hodnota × pravděpodobnost × datum na obchodní části, ne jen na náboru.', s: 'chybi', x: true },
+        { id: 'OBC-04', t: 'Pracovní seznamy pro obchod', d: 'Cold calling, klienti bez zakázky, klienti k oslovení.', s: 'chybi', x: true }
+      ]
+    },
+    {
+      id: 'integrace', name: 'Integrace a pokročilé flows', hint: 'V odhadu byly; část se rozhodnutím odložila.',
+      items: [
+        { id: 'INT-01', t: 'ARES', d: 'Podle IČO i podle názvu, s předvyplněním firmy.' },
+        { id: 'INT-02', t: 'Základní vytěžení CV', d: 'Text z PDF, dokumentů i skenů, prefill polí kandidáta.' },
+        { id: 'INT-03', t: 'Adresní našeptávač Mapy.cz', d: 'Adresa se souřadnicemi pro filtr vzdálenosti.' },
+        { id: 'INT-04', t: 'Recruitment pipeline', d: 'Konfigurovatelné fáze per pozice, trychtýř, kanonické mapování pro reporty.' },
+        { id: 'INT-05', t: 'Merk', d: 'Odloženo za první fázi.', s: 'chybi' },
+        { id: 'INT-06', t: 'Money', d: 'Odloženo za první fázi.', s: 'chybi' },
+        { id: 'INT-07', t: 'Inzertní servery', d: 'Odloženo za první fázi; v kódu je zatím jen text inzerátu u pozice z migrace.', s: 'chybi' },
+        { id: 'INT-08', t: 'Napojení úkolů a termínů na Outlook', d: 'Požadavek z dubna, mimo první vlnu.', s: 'chybi', ref: 'T-133', x: true },
+        { id: 'INT-09', t: 'Veřejné API pro browser extension', d: 'PR, který ho zaváděl, byl zavřený; extension nemá o co se opřít.', s: 'chybi', ref: 'T-013', x: true }
+      ]
+    },
+    {
+      id: 'ui', name: 'UI, design a technický dluh', hint: 'Nebylo v odhadu jako položka, ale spotřebovává čas.',
+      items: [
+        { id: 'UI-01', t: 'Split-view, ostrovy a práce bez načítání stránky', d: 'Jednotný vzor pro všechny sekce, sdílitelné odkazy do panelu, historie navštívených.' },
+        { id: 'UI-02', t: 'Světlý a tmavý motiv, styleguide, nápověda', d: '' },
+        { id: 'UI-03', t: 'Koncepty rozdělané práce a jejich úklid', d: 'Autosave, patka panelu, automatické mazání.' },
+        { id: 'UI-04', t: 'Archiv místo mazání', d: 'Uživatel archivuje, správce maže natvrdo.' },
+        { id: 'UI-05', t: 'Tři poslední navštívené v nabídce sekce', d: 'Historie existuje, ale nabídka v liště ji nečte — půlka práce se dokumentovala jako hotová.', s: 'castecne', ref: 'N2' },
+        { id: 'UI-06', t: 'Přilepený řádek filtrů při scrollování', d: 'Týká se osmi seznamů se split-view.', s: 'chybi', ref: 'N4' },
+        { id: 'UI-07', t: 'Zvýraznění klikatelných prvků při hoveru', d: 'Uživatelé nepoznají, co je odkaz.', s: 'chybi', ref: '#263' },
+        { id: 'UI-08', t: 'Méně barev a klidnější karty', d: 'Zpětná vazba z callu: „spousta barviček, co mě ruší“.', s: 'castecne' },
+        { id: 'UI-09', t: 'Kontrast barev chipů nesplňuje WCAG', d: 'U 12 z 31 barev palety se vybere horší varianta textu.', s: 'castecne', ref: 'T-324' },
+        { id: 'UI-10', t: 'Mobil v terénu', d: 'Co konkrétně má na telefonu fungovat, není rozhodnuté — přitom to bylo označené jako stěžejní.', s: 'chybi', ref: 'T-157' },
+        { id: 'UI-11', t: 'Osobní nástěnka po přihlášení', d: 'Návrhy dashboardů leží na klientově SharePointu, nestažené.', s: 'castecne', ref: 'T-129 · T-238.5' },
+        { id: 'UI-12', t: 'Dvě okna současně', d: 'Nově zadaný kandidát se má objevit i v druhém otevřeném okně.', s: 'chybi', ref: 'T-149', x: true },
+        { id: 'UI-13', t: 'Feature flagy se vynucují jen u náboru', d: 'Zbylých osm modulů se na controlleru nekontroluje — má se to srovnat?', s: 'castecne', ref: 'T-079' }
+      ]
+    },
+    {
+      id: 'rizeni', name: 'Řízení projektu', hint: 'Ne funkce aplikace, ale to, co rozhoduje o dodržení rozpočtu.',
+      items: [
+        { id: 'RIZ-01', t: 'Pročistit backlog v Gitei', d: 'Z 35 otevřených issues je nejméně dvanáct podle kódu hotových. Zavírat při merge.', s: 'chybi' },
+        { id: 'RIZ-02', t: 'Uzavřít 33 otevřených otázek na klienta', d: 'Dokud rozhodnutí nepadnou, práce se buď dělá naslepo, nebo stojí.', s: 'chybi' },
+        { id: 'RIZ-03', t: 'Odblokovat 13 blokací na cizí dodávce', d: 'Návrhy dashboardů, oprávnění pro Planner sync, číselníky od klienta.', s: 'chybi' },
+        { id: 'RIZ-04', t: 'Jeden kanál pro zadání', d: 'Dnes chodí mailem, na callu, přes Planner i do pracovních souborů — rozsah roste mimo odhad.', s: 'chybi' },
+        { id: 'RIZ-05', t: 'Zmrazit rozsah první fáze', d: 'Do odříznutí Atollonu nepřidávat nic nového a zbytek osekat.', s: 'chybi' },
+        { id: 'RIZ-06', t: 'Nové odhady až po nasazení', d: 'Menší celky nad zpětnou vazbou z ostrého provozu se odhadují mnohem přesněji.', s: 'chybi' }
+      ]
+    }
+  ];
+
+  var PHASES = [
+    { id: 'jadro', label: 'jádro', key: 'q' },
+    { id: 'pak', label: 'hned po', key: 'w' },
+    { id: 'pozdeji', label: 'později', key: 'e' },
+    { id: 'skrt', label: 'škrtnout', key: 'r' }
+  ];
+
+  var STATE_LABEL = { hotovo: 'hotovo', castecne: 'rozdělané', chybi: 'chybí' };
+  var THEME_KEY = 'mblue-statusboard-theme';
+
+  var ME = window.SB_ME || { email: '', name: '' };
+  var mine = {};      // item_id -> {p, w, x}
+  var others = {};    // item_id -> [{email, name, p, w, x}]
+  var members = [];
+  var aiNotes = {};
+  var files = [];
+  var showAiReasons = true;
+  var selection = new Set();
+  var lastClicked = null;
+  var ALL = [];
+
+  MODULES.forEach(function (m) {
+    m.items.forEach(function (it) {
+      if (!it.s) it.s = 'hotovo';
+      it.module = m;
+      ALL.push(it);
+    });
+  });
+
+  var byId = {};
+  ALL.forEach(function (it) { byId[it.id] = it; });
+
+  function color(email) {
+    var h = 0;
+    for (var i = 0; i < email.length; i++) h = (h * 31 + email.charCodeAt(i)) % 360;
+    return 'hsl(' + h + ' 52% 42%)';
+  }
+
+  function initials(name) {
+    var parts = String(name || '?').trim().split(/\s+/);
+    return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+  }
+
+  function entry(id) {
+    if (!mine[id]) mine[id] = { p: null, w: null, x: null };
+    return mine[id];
+  }
+
+  // Výchozí příznak „nad rámec“ je návrh z analýzy; hlas člověka ho přebíjí.
+  function scopeOf(id) {
+    var e = mine[id];
+    if (e && e.x !== null && e.x !== undefined) return !!e.x;
+    return !!byId[id].x;
+  }
+
+  function weightColor(w) {
+    if (w === null || w === undefined) return 'var(--line-strong)';
+    var hue = 2 + (w / 9) * 138;
+    var light = 48 - Math.abs(4.5 - w) * 1.2;
+    return 'hsl(' + hue.toFixed(0) + ' 64% ' + light.toFixed(0) + '%)';
+  }
+
+  var sectionsEl = document.getElementById('sections');
+  var railEl = document.getElementById('rail-links');
+  var railPhasesEl = document.getElementById('rail-phases');
+  var savedEl = document.getElementById('saved');
+
+  // ── Ukládání na server ────────────────────────────────────
+
+  var queue = {};
+  var flushTimer = null;
+
+  function note(text, isError) {
+    savedEl.textContent = text;
+    savedEl.classList.toggle('is-error', !!isError);
+  }
+
+  function pushRating(id) {
+    var e = mine[id] || { p: null, w: null, x: null };
+    queue[id] = { item: id, phase: e.p, weight: e.w, scope: e.x === null || e.x === undefined ? null : (e.x ? 1 : 0) };
+    note('ukládám…');
+    clearTimeout(flushTimer);
+    flushTimer = setTimeout(flush, 400);
+  }
+
+  function flush() {
+    var payload = Object.keys(queue).map(function (k) { return queue[k]; });
+    if (!payload.length) return;
+    queue = {};
+    fetch('/api/statusboard/rate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ratings: payload })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function () {
+      note('uloženo ' + new Date().toLocaleTimeString('cs-CZ'));
+      refreshOthers();
+    }).catch(function () {
+      note('uložení selhalo — zkus to znovu', true);
+    });
+  }
+
+  function refreshOthers() {
+    fetch('/api/statusboard/state', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        applyState(data);
+        renderTeamAll();
+        stats();
+        applyFilters();
+      })
+      .catch(function () { /* přehled ostatních není kritický */ });
+  }
+
+  function applyState(data) {
+    members = data.members || [];
+    aiNotes = {};
+    (data.ai_notes || []).forEach(function (n) { aiNotes[n.item_id] = n.reason; });
+    files = data.files || [];
+    renderFiles();
+    mine = {};
+    others = {};
+    (data.ratings || []).forEach(function (r) {
+      if (!byId[r.item_id]) return;
+      var rec = { email: r.email, name: r.name || r.email, p: r.phase, w: r.weight, x: r.scope };
+      if (r.email === ME.email) {
+        mine[r.item_id] = { p: r.phase, w: r.weight, x: r.scope === null || r.scope === undefined ? null : !!r.scope };
+      } else {
+        (others[r.item_id] = others[r.item_id] || []).push(rec);
+      }
+    });
+    renderPeople();
+  }
+
+  function renderPeople() {
+    var el = document.getElementById('people');
+    el.innerHTML = '';
+    members.forEach(function (m) {
+      var n = 0;
+      ALL.forEach(function (it) {
+        if (m.email === ME.email) { if (mine[it.id] && (mine[it.id].p || mine[it.id].w !== null)) n++; }
+        else if ((others[it.id] || []).some(function (o) { return o.email === m.email && (o.p || o.w !== null); })) n++;
+      });
+      var chip = document.createElement('span');
+      chip.className = 'who' + (m.email === ME.email ? ' is-me' : '');
+      chip.title = m.email;
+      var dot = document.createElement('span');
+      dot.className = 'who__ini';
+      dot.style.background = color(m.email);
+      dot.textContent = initials(m.name);
+      chip.appendChild(dot);
+      chip.appendChild(document.createTextNode(m.name.split(' ')[0]));
+      var cnt = document.createElement('span');
+      cnt.className = 'who__n';
+      cnt.textContent = n;
+      chip.appendChild(cnt);
+      el.appendChild(chip);
+    });
+  }
+
+  // ── Vykreslení ────────────────────────────────────────────
+
+  MODULES.forEach(function (mod) {
+    var sec = document.createElement('section');
+    sec.className = 'section';
+    sec.id = 'mod-' + mod.id;
+
+    var head = document.createElement('div');
+    head.className = 'section__head';
+
+    var h2 = document.createElement('h2');
+    h2.textContent = mod.name;
+    head.appendChild(h2);
+
+    var hint = document.createElement('p');
+    hint.className = 'section__hint';
+    hint.textContent = mod.hint;
+    head.appendChild(hint);
+
+    var pick = document.createElement('button');
+    pick.type = 'button';
+    pick.className = 'section__pick';
+    pick.textContent = 'Vybrat blok';
+    pick.addEventListener('click', function () {
+      var rows = sec.querySelectorAll('.row:not([hidden])');
+      var allIn = rows.length > 0 && Array.prototype.every.call(rows, function (r) { return selection.has(r.dataset.id); });
+      Array.prototype.forEach.call(rows, function (r) {
+        if (allIn) selection.delete(r.dataset.id); else selection.add(r.dataset.id);
+      });
+      syncSelection();
+    });
+    head.appendChild(pick);
+    sec.appendChild(head);
+
+    mod.items.forEach(function (item) { sec.appendChild(renderRow(item)); });
+    sectionsEl.appendChild(sec);
+
+    var link = document.createElement('a');
+    link.className = 'rail__link';
+    link.href = '#mod-' + mod.id;
+    link.dataset.mod = mod.id;
+    link.innerHTML = '<span class="rail__name"></span><span class="rail__count"></span>' +
+      '<span class="rail__bar"><i class="done"></i><i class="partial"></i><i class="missing"></i></span>';
+    link.querySelector('.rail__name').textContent = mod.name;
+    railEl.appendChild(link);
+  });
+
+  PHASES.forEach(function (p) {
+    var row = document.createElement('a');
+    row.className = 'rail__link';
+    row.href = '#';
+    row.dataset.phase = p.id;
+    row.innerHTML = '<span class="rail__name"></span><span class="rail__count"></span>';
+    row.querySelector('.rail__name').textContent = p.label;
+    row.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById('f-phase').value = p.id;
+      applyFilters();
+      window.scrollTo({ top: sectionsEl.offsetTop - 80, behavior: 'smooth' });
+    });
+    railPhasesEl.appendChild(row);
+  });
+
+  function tagEl(text, cls) {
+    var s = document.createElement('span');
+    s.className = 'tag' + (cls ? ' ' + cls : '');
+    s.textContent = text;
+    return s;
+  }
+
+  function renderRow(item) {
+    var row = document.createElement('div');
+    row.className = 'row';
+    row.dataset.id = item.id;
+    row.dataset.s = item.s;
+    row.dataset.search = (item.id + ' ' + item.t + ' ' + item.d + ' ' + (item.p || '') + ' ' + (item.ref || '')).toLowerCase();
+
+    var check = document.createElement('input');
+    check.type = 'checkbox';
+    check.className = 'row__check';
+    check.setAttribute('aria-label', 'Vybrat ' + item.t);
+    check.addEventListener('click', function (e) {
+      if (e.shiftKey && lastClicked) selectRange(lastClicked, item.id, check.checked);
+      if (check.checked) selection.add(item.id); else selection.delete(item.id);
+      lastClicked = item.id;
+      syncSelection();
+    });
+    row.appendChild(check);
+
+    var st = document.createElement('span');
+    st.className = 'row__state';
+    st.dataset.s = item.s;
+    st.textContent = STATE_LABEL[item.s];
+    row.appendChild(st);
+
+    var main = document.createElement('div');
+    main.className = 'row__main';
+
+    var title = document.createElement('span');
+    title.className = 'row__title';
+    title.textContent = item.t;
+    main.appendChild(title);
+
+    if (item.d) {
+      var desc = document.createElement('span');
+      desc.className = 'row__desc';
+      desc.textContent = item.d;
+      main.appendChild(desc);
+    }
+
+    var meta = document.createElement('div');
+    meta.className = 'row__meta';
+    meta.appendChild(tagEl(item.id, ''));
+    if (item.ref) meta.appendChild(tagEl(item.ref, 'tag--ref'));
+    main.appendChild(meta);
+    row.appendChild(main);
+
+    var phase = document.createElement('div');
+    phase.className = 'phase';
+    phase.setAttribute('role', 'group');
+    phase.setAttribute('aria-label', 'Fáze: ' + item.t);
+    PHASES.forEach(function (p) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.p = p.id;
+      b.textContent = p.label;
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () {
+        var e = entry(item.id);
+        e.p = (e.p === p.id) ? null : p.id;
+        pushRating(item.id);
+        paint(item.id);
+        stats();
+      });
+      phase.appendChild(b);
+    });
+    row.appendChild(phase);
+
+    var scope = document.createElement('button');
+    scope.type = 'button';
+    scope.className = 'scope';
+    scope.textContent = 'nad rámec';
+    scope.title = 'Práce nad rámec původního zadání na 1 200 h';
+    scope.setAttribute('aria-pressed', 'false');
+    scope.addEventListener('click', function () {
+      var e = entry(item.id);
+      e.x = !scopeOf(item.id);
+      pushRating(item.id);
+      paint(item.id);
+      stats();
+    });
+    row.appendChild(scope);
+
+    var weight = document.createElement('div');
+    weight.className = 'weight';
+    var dot = document.createElement('span');
+    dot.className = 'weight__dot';
+    weight.appendChild(dot);
+    var sel = document.createElement('select');
+    sel.setAttribute('aria-label', 'Váha: ' + item.t);
+    var opt0 = document.createElement('option');
+    opt0.value = '';
+    opt0.textContent = '–';
+    sel.appendChild(opt0);
+    for (var i = 0; i <= 9; i++) {
+      var o = document.createElement('option');
+      o.value = String(i);
+      o.textContent = String(i);
+      sel.appendChild(o);
+    }
+    sel.addEventListener('change', function () {
+      var e = entry(item.id);
+      e.w = sel.value === '' ? null : Number(sel.value);
+      pushRating(item.id);
+      paint(item.id);
+      stats();
+    });
+    weight.appendChild(sel);
+    row.appendChild(weight);
+
+    var team = document.createElement('div');
+    team.className = 'team';
+    row.appendChild(team);
+
+    var ai = document.createElement('div');
+    ai.className = 'row__ai';
+    ai.hidden = true;
+    row.appendChild(ai);
+
+    return row;
+  }
+
+  function rowEl(id) { return sectionsEl.querySelector('.row[data-id="' + id + '"]'); }
+
+  function paint(id) {
+    var row = rowEl(id);
+    if (!row) return;
+    var e = mine[id] || { p: null, w: null, x: null };
+    row.querySelectorAll('.phase button').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.p === e.p ? 'true' : 'false');
+    });
+    var sel = row.querySelector('.weight select');
+    sel.value = (e.w === null || e.w === undefined) ? '' : String(e.w);
+    row.querySelector('.weight__dot').style.background = weightColor(e.w);
+    row.querySelector('.scope').setAttribute('aria-pressed', scopeOf(id) ? 'true' : 'false');
+    renderTeam(id);
+  }
+
+  function renderTeam(id) {
+    var row = rowEl(id);
+    if (!row) return;
+    var box = row.querySelector('.team');
+    box.innerHTML = '';
+    (others[id] || []).forEach(function (o) {
+      if (!o.p && (o.w === null || o.w === undefined)) return;
+      var d = document.createElement('span');
+      d.className = 'team__dot';
+      d.style.background = color(o.email);
+      if (o.p) d.dataset.phase = o.p;
+      d.textContent = (o.w === null || o.w === undefined) ? initials(o.name)[0] : String(o.w);
+      var phaseLabel = o.p ? (PHASES.filter(function (p) { return p.id === o.p; })[0] || {}).label : 'bez fáze';
+      d.title = o.name + ' — ' + phaseLabel + (o.w === null || o.w === undefined ? '' : ', váha ' + o.w) + (o.scope ? ', nad rámec' : '');
+      box.appendChild(d);
+    });
+    row.classList.toggle('is-split', verdict(id) === 'split');
+
+    var ai = row.querySelector('.row__ai');
+    if (aiNotes[id] && showAiReasons) {
+      ai.textContent = 'Bot: ' + aiNotes[id];
+      ai.hidden = false;
+    } else {
+      ai.hidden = true;
+    }
+  }
+
+  function renderTeamAll() { ALL.forEach(function (it) { paint(it.id); }); }
+
+  // Shoda = všichni, kdo položku hodnotili, mají stejnou fázi a rozdíl vah nejvýš 2.
+  function verdict(id) {
+    var votes = [];
+    var e = mine[id];
+    if (e && (e.p || e.w !== null)) votes.push({ p: e.p, w: e.w });
+    (others[id] || []).forEach(function (o) {
+      if (o.p || (o.w !== null && o.w !== undefined)) votes.push({ p: o.p, w: o.w });
+    });
+    if (votes.length < 2) return votes.length ? 'thin' : 'none';
+    var phases = votes.map(function (v) { return v.p || ''; });
+    var samePhase = phases.every(function (p) { return p === phases[0]; });
+    var ws = votes.map(function (v) { return v.w; }).filter(function (w) { return w !== null && w !== undefined; });
+    var spread = ws.length ? Math.max.apply(null, ws) - Math.min.apply(null, ws) : 0;
+    return (samePhase && spread <= 2) ? 'agree' : 'split';
+  }
+
+  function selectRange(fromId, toId, add) {
+    var rows = Array.prototype.slice.call(sectionsEl.querySelectorAll('.row:not([hidden])'));
+    var ids = rows.map(function (r) { return r.dataset.id; });
+    var a = ids.indexOf(fromId), b = ids.indexOf(toId);
+    if (a < 0 || b < 0) return;
+    var lo = Math.min(a, b), hi = Math.max(a, b);
+    for (var i = lo; i <= hi; i++) { if (add) selection.add(ids[i]); else selection.delete(ids[i]); }
+  }
+
+  function syncSelection() {
+    sectionsEl.querySelectorAll('.row').forEach(function (r) {
+      var on = selection.has(r.dataset.id);
+      r.classList.toggle('is-selected', on);
+      r.querySelector('.row__check').checked = on;
+    });
+    document.getElementById('sel-count').textContent = selection.size;
+    document.getElementById('bulkbar').hidden = selection.size === 0;
+  }
+
+  function isRated(id) {
+    var e = mine[id];
+    return !!(e && (e.p || (e.w !== null && e.w !== undefined)));
+  }
+
+  function stats() {
+    var done = 0, open = 0, rated = 0, agree = 0, split = 0, thin = 0;
+    ALL.forEach(function (it) {
+      if (it.s === 'hotovo') done++; else open++;
+      if (isRated(it.id)) rated++;
+      var v = verdict(it.id);
+      if (v === 'agree') agree++;
+      else if (v === 'split') split++;
+      else if (v === 'thin') thin++;
+    });
+
+    document.getElementById('stat-total').textContent = ALL.length;
+    document.getElementById('stat-done').textContent = done;
+    document.getElementById('stat-open').textContent = open;
+    document.getElementById('stat-rated').textContent = rated;
+    document.getElementById('stat-pct').textContent = ' / ' + Math.round(rated / ALL.length * 100) + ' %';
+
+    var judged = agree + split;
+    document.getElementById('cons-agree').style.flex = agree;
+    document.getElementById('cons-split').style.flex = split;
+    document.getElementById('cons-thin').style.flex = Math.max(ALL.length - judged, 0);
+    document.getElementById('cons-pct').textContent = judged ? Math.round(agree / judged * 100) + ' %' : '–';
+    document.getElementById('cons-detail').textContent = judged
+      ? agree + ' shodnutých · ' + split + ' sporných · ' + (ALL.length - judged) + ' bez dvou hlasů'
+      : 'zatím nemá dvojí hlas žádná položka';
+
+    MODULES.forEach(function (m) {
+      var counts = { hotovo: 0, castecne: 0, chybi: 0 };
+      m.items.forEach(function (it) { counts[it.s]++; });
+      var link = railEl.querySelector('[data-mod="' + m.id + '"]');
+      var openCount = m.items.length - counts.hotovo;
+      link.querySelector('.rail__count').textContent = openCount ? openCount + ' otev.' : 'hotovo';
+      var bar = link.querySelector('.rail__bar');
+      bar.querySelector('.done').style.flex = counts.hotovo;
+      bar.querySelector('.partial').style.flex = counts.castecne;
+      bar.querySelector('.missing').style.flex = counts.chybi;
+    });
+
+    PHASES.forEach(function (p) {
+      var n = ALL.filter(function (it) { return (mine[it.id] || {}).p === p.id; }).length;
+      railPhasesEl.querySelector('[data-phase="' + p.id + '"] .rail__count').textContent = n;
+    });
+  }
+
+  function applyFilters() {
+    var q = document.getElementById('q').value.trim().toLowerCase();
+    var fs = document.getElementById('f-state').value;
+    var fp = document.getElementById('f-phase').value;
+    var fx = document.getElementById('f-scope').value;
+    var ft = document.getElementById('f-team').value;
+
+    MODULES.forEach(function (m) {
+      var visible = 0;
+      m.items.forEach(function (it) {
+        var row = rowEl(it.id);
+        var e = mine[it.id] || { p: null, w: null };
+        var ok = true;
+        if (q && row.dataset.search.indexOf(q) === -1) ok = false;
+        if (ok && fs === 'open' && it.s === 'hotovo') ok = false;
+        if (ok && fs !== 'all' && fs !== 'open' && it.s !== fs) ok = false;
+        if (ok && fp !== 'all') ok = (fp === 'none') ? !e.p : e.p === fp;
+        if (ok && fx !== 'all') ok = (fx === 'extra') ? scopeOf(it.id) : !scopeOf(it.id);
+        if (ok && ft !== 'all') {
+          var v = verdict(it.id);
+          if (ft === 'split') ok = v === 'split';
+          else if (ft === 'agree') ok = v === 'agree';
+          else if (ft === 'missing') ok = v === 'none';
+        }
+        row.hidden = !ok;
+        if (ok) visible++;
+      });
+      document.getElementById('mod-' + m.id).hidden = visible === 0;
+    });
+  }
+
+  function bulkPhase(p) {
+    selection.forEach(function (id) { entry(id).p = p || null; pushRating(id); paint(id); });
+    stats(); applyFilters();
+  }
+
+  function bulkWeight(w) {
+    selection.forEach(function (id) { entry(id).w = w; pushRating(id); paint(id); });
+    stats(); applyFilters();
+  }
+
+  function bulkScope(x) {
+    selection.forEach(function (id) { entry(id).x = x; pushRating(id); paint(id); });
+    stats(); applyFilters();
+  }
+
+  var weightsBar = document.getElementById('bulk-weights');
+  for (var w = 0; w <= 9; w++) {
+    (function (val) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'wchip';
+      b.textContent = String(val);
+      b.style.borderColor = weightColor(val);
+      b.addEventListener('click', function () { bulkWeight(val); });
+      weightsBar.appendChild(b);
+    }(w));
+  }
+  var clearW = document.createElement('button');
+  clearW.type = 'button';
+  clearW.className = 'btn btn--ghost';
+  clearW.textContent = '×';
+  clearW.addEventListener('click', function () { bulkWeight(null); });
+  weightsBar.appendChild(clearW);
+
+  document.querySelectorAll('[data-bulk-phase]').forEach(function (b) {
+    b.addEventListener('click', function () { bulkPhase(b.dataset.bulkPhase); });
+  });
+
+  document.querySelectorAll('[data-bulk-scope]').forEach(function (b) {
+    b.addEventListener('click', function () { bulkScope(b.dataset.bulkScope === '1'); });
+  });
+
+  document.getElementById('bulk-clear-values').addEventListener('click', function () {
+    selection.forEach(function (id) { mine[id] = { p: null, w: null, x: null }; pushRating(id); paint(id); });
+    stats(); applyFilters();
+  });
+
+  document.getElementById('bulk-deselect').addEventListener('click', function () {
+    selection.clear();
+    syncSelection();
+  });
+
+  document.getElementById('pick-visible').addEventListener('click', function () {
+    var rows = sectionsEl.querySelectorAll('.row:not([hidden])');
+    var allIn = rows.length > 0 && Array.prototype.every.call(rows, function (r) { return selection.has(r.dataset.id); });
+    Array.prototype.forEach.call(rows, function (r) {
+      if (allIn) selection.delete(r.dataset.id); else selection.add(r.dataset.id);
+    });
+    syncSelection();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return;
+    if (e.key === 'Escape' && selection.size) { selection.clear(); syncSelection(); return; }
+    if (!selection.size) return;
+    if (e.key >= '0' && e.key <= '9') { bulkWeight(Number(e.key)); e.preventDefault(); return; }
+    if (e.key.toLowerCase() === 'n') {
+      var anyOff = Array.from(selection).some(function (id) { return !scopeOf(id); });
+      bulkScope(anyOff);
+      e.preventDefault();
+      return;
+    }
+    var p = PHASES.filter(function (x) { return x.key === e.key.toLowerCase(); })[0];
+    if (p) { bulkPhase(p.id); e.preventDefault(); }
+  });
+
+  var stored = localStorage.getItem(THEME_KEY);
+  if (stored) document.documentElement.dataset.theme = stored;
+  document.getElementById('theme-toggle').addEventListener('click', function () {
+    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  });
+
+  var io = document.getElementById('io');
+
+  document.getElementById('export-plan').addEventListener('click', function () {
+    var out = ['# Plán podle zařazení: ' + ME.name, ''];
+    PHASES.forEach(function (p) {
+      var rows = ALL.filter(function (it) { return (mine[it.id] || {}).p === p.id; })
+                    .sort(function (a, b) { return ((mine[b.id] || {}).w || 0) - ((mine[a.id] || {}).w || 0); });
+      if (!rows.length) return;
+      out.push('## ' + p.label.toUpperCase() + ' (' + rows.length + ')');
+      rows.forEach(function (it) {
+        var e = mine[it.id] || {};
+        out.push('- [' + (e.w === null || e.w === undefined ? '–' : e.w) + '] ' + it.t +
+                 ' — ' + STATE_LABEL[it.s] + (scopeOf(it.id) ? ' · nad rámec' : '') +
+                 ' · ' + it.module.name + (it.ref ? ' · ' + it.ref : ''));
+      });
+      out.push('');
+    });
+    io.value = out.length > 2 ? out.join('\n') : 'Zatím nemáš nic zařazené.';
+    io.focus();
+  });
+
+  document.getElementById('export-split').addEventListener('click', function () {
+    var out = ['# Sporné položky — na těch se tým neshodl', ''];
+    ALL.forEach(function (it) {
+      if (verdict(it.id) !== 'split') return;
+      var votes = [];
+      var e = mine[it.id];
+      if (e && (e.p || e.w !== null)) votes.push(ME.name.split(' ')[0] + ': ' + (e.p || '–') + '/' + (e.w === null ? '–' : e.w));
+      (others[it.id] || []).forEach(function (o) {
+        if (!o.p && (o.w === null || o.w === undefined)) return;
+        votes.push(o.name.split(' ')[0] + ': ' + (o.p || '–') + '/' + (o.w === null ? '–' : o.w));
+      });
+      out.push('- ' + it.t + ' (' + it.module.name + ') — ' + votes.join(' · '));
+    });
+    io.value = out.length > 2 ? out.join('\n') : 'Žádná sporná položka. Buď je shoda, nebo zatím nehodnotili dva lidé.';
+    io.focus();
+  });
+
+  document.getElementById('export-csv').addEventListener('click', function () {
+    var lines = ['id;blok;polozka;stav;kdo;faze;vaha;nad_ramec'];
+    ALL.forEach(function (it) {
+      var rows = [];
+      var e = mine[it.id];
+      if (e && (e.p || e.w !== null || e.x !== null)) rows.push({ name: ME.name, p: e.p, w: e.w, x: scopeOf(it.id) });
+      (others[it.id] || []).forEach(function (o) { rows.push({ name: o.name, p: o.p, w: o.w, x: !!o.x }); });
+      if (!rows.length) rows.push({ name: '', p: '', w: '', x: !!it.x });
+      rows.forEach(function (r) {
+        lines.push([it.id, q(it.module.name), q(it.t), it.s, q(r.name), r.p || '', (r.w === null || r.w === undefined) ? '' : r.w, r.x ? '1' : '0'].join(';'));
+      });
+    });
+    io.value = lines.join('\n');
+    io.focus();
+    function q(s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
+  });
+
+  document.getElementById('copy-io').addEventListener('click', function (ev) {
+    io.select();
+    navigator.clipboard.writeText(io.value).then(function () {
+      ev.target.textContent = 'Zkopírováno';
+      setTimeout(function () { ev.target.textContent = 'Kopírovat do schránky'; }, 1500);
+    }).catch(function () {
+      ev.target.textContent = 'Zkopíruj ručně (Cmd+C)';
+      setTimeout(function () { ev.target.textContent = 'Kopírovat do schránky'; }, 2500);
+    });
+  });
+
+  ['q', 'f-state', 'f-phase', 'f-scope', 'f-team'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', applyFilters);
+  });
+
+  // ── Podklady ──────────────────────────────────────────────
+
+  function renderFiles() {
+    var list = document.getElementById('files');
+    list.innerHTML = '';
+    if (!files.length) {
+      var empty = document.createElement('li');
+      empty.className = 'files__meta';
+      empty.textContent = 'Zatím nic nahraného.';
+      list.appendChild(empty);
+      return;
+    }
+    files.forEach(function (f) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.className = 'files__name';
+      a.href = '/statusboard/soubor/' + f.id;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = f.name;
+      li.appendChild(a);
+
+      var meta = document.createElement('span');
+      meta.className = 'files__meta';
+      meta.textContent = Math.max(1, Math.round(f.size / 1024)) + ' kB · ' + (f.uploaded_by || '').split('@')[0];
+      li.appendChild(meta);
+
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'btn btn--ghost';
+      del.textContent = 'Smazat';
+      del.addEventListener('click', function () {
+        if (!confirm('Smazat podklad „' + f.name + '“?')) return;
+        fetch('/api/statusboard/files/' + f.id, { method: 'DELETE' })
+          .then(function () { refreshOthers(); });
+      });
+      li.appendChild(del);
+      list.appendChild(li);
+    });
+  }
+
+  function uploadFiles(fileList) {
+    var pending = Array.prototype.slice.call(fileList);
+    if (!pending.length) return;
+    note('nahrávám ' + pending.length + ' souborů…');
+    var chain = Promise.resolve();
+    pending.forEach(function (file) {
+      chain = chain.then(function () {
+        var fd = new FormData();
+        fd.append('file', file);
+        return fetch('/api/statusboard/files', { method: 'POST', body: fd })
+          .then(function (r) { return r.json(); })
+          .then(function (res) { if (res.error) throw new Error(res.error); });
+      });
+    });
+    chain.then(function () {
+      note('podklady nahrány');
+      refreshOthers();
+    }).catch(function (err) {
+      note(err.message || 'nahrání selhalo', true);
+    });
+  }
+
+  var drop = document.getElementById('drop');
+  var fileInput = document.getElementById('file-input');
+
+  drop.addEventListener('click', function () { fileInput.click(); });
+  drop.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+  });
+  fileInput.addEventListener('change', function () { uploadFiles(fileInput.files); fileInput.value = ''; });
+
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('is-over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('is-over'); });
+  });
+  drop.addEventListener('drop', function (e) {
+    if (e.dataTransfer && e.dataTransfer.files) uploadFiles(e.dataTransfer.files);
+  });
+
+  // ── Bot ───────────────────────────────────────────────────
+
+  var aiProgress = document.getElementById('ai-progress');
+
+  function runAi(onlyOpen) {
+    var pool = ALL.filter(function (it) { return onlyOpen ? it.s !== 'hotovo' : true; });
+    if (!pool.length) return;
+
+    var batches = [];
+    for (var i = 0; i < pool.length; i += 20) batches.push(pool.slice(i, i + 20));
+
+    var doneCount = 0;
+    aiProgress.textContent = 'bot přemýšlí… 0 / ' + pool.length;
+
+    var chain = Promise.resolve();
+    batches.forEach(function (batch) {
+      chain = chain.then(function () {
+        return fetch('/api/statusboard/ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: batch.map(function (it) {
+              return { id: it.id, title: it.t, desc: it.d, state: it.s, block: it.module.name };
+            })
+          })
+        }).then(function (r) { return r.json(); }).then(function (res) {
+          if (res.error) throw new Error(res.error);
+          doneCount += batch.length;
+          aiProgress.textContent = 'bot přemýšlí… ' + doneCount + ' / ' + pool.length;
+          refreshOthers();
+        });
+      });
+    });
+
+    chain.then(function () {
+      aiProgress.textContent = 'bot posoudil ' + doneCount + ' položek';
+      refreshOthers();
+    }).catch(function (err) {
+      aiProgress.textContent = err.message || 'bot neodpověděl';
+    });
+  }
+
+  document.getElementById('ai-run').addEventListener('click', function () { runAi(false); });
+  document.getElementById('ai-run-open').addEventListener('click', function () { runAi(true); });
+  document.getElementById('ai-toggle').addEventListener('click', function (e) {
+    showAiReasons = !showAiReasons;
+    e.target.textContent = showAiReasons ? 'Skrýt jeho důvody' : 'Zobrazit jeho důvody';
+    renderTeamAll();
+  });
+
+  // ── Start ─────────────────────────────────────────────────
+
+  fetch('/api/statusboard/state', { headers: { 'Accept': 'application/json' } })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      applyState(data);
+      renderTeamAll();
+      stats();
+      applyFilters();
+      syncSelection();
+      note('přihlášen jako ' + ME.name);
+    })
+    .catch(function () {
+      note('data se nepodařilo načíst', true);
+      renderTeamAll();
+      stats();
+      applyFilters();
+    });
+
+  // Ostatní hodnotí souběžně — jednou za minutu si stáhneme jejich stav.
+  setInterval(refreshOthers, 60000);
+}());
+</script>
