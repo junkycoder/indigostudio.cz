@@ -247,19 +247,27 @@ async function sendMagicLink(env, { email, name, link }) {
     `tady je tvůj přihlašovací odkaz na statusboard mBlue:\n\n${link}\n\n` +
     `Platí hodinu a použije se jednou. Když si ho nevyžádal, nic nedělej.\n`;
 
+  // Resend je primární cesta — pošle komukoli, jakmile je doména ověřená.
+  // Dokud není (403 „domain is not verified"), padáme na Cloudflare, které
+  // doručí aspoň na adresy ověřené v Email Routingu.
   if (env.RESEND_API_KEY) {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        from: "Statusboard mBlue <poptavka@indigostudio.cz>",
+        from: `Statusboard mBlue <${MAIL_FROM}>`,
         to: [email],
         subject,
         text,
       }),
     });
-    if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text().catch(() => "")).slice(0, 200)}`);
-    return;
+
+    if (res.ok) return;
+
+    const detail = (await res.text().catch(() => "")).slice(0, 200);
+    console.log(`Resend ${res.status}: ${detail}`);
+
+    if (!env.SEB) throw new Error(`Resend ${res.status}: ${detail}`);
   }
 
   // Bez Resendu zbývá Cloudflare send_email — ten doručí jen na adresy ověřené
