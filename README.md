@@ -150,6 +150,12 @@ curl -X POST -H "X-Admin-Token: $STATUSBOARD_ADMIN_TOKEN" \
      https://mblue.indigostudio.cz/api/statusboard/admin/members
 ```
 
+**Hotovost** je na chipu stavu jako procento se sliderem. Výchozí hodnota se odvodí
+z kódu (100 / 50 / 0 podle zjištěného stavu) a je bledší; jakmile ji člověk posune,
+je to jeho odhad a nálepka se překlopí sama (100 % hotovo, 1–99 % rozdělané, 0 % chybí).
+Rozdíl větší než dvacet bodů mezi dvěma lidmi dělá z položky spornou, stejně jako
+rozdílná fáze.
+
 **Historie změn** se píše při každé skutečné změně hodnocení (zápis, který nic
 nemění, se ignoruje) do `sb_history` — řádek nese stav před i po. Panel na stránce
 ukazuje posledních 200 změn s filtrem na člověka, tlačítko `⟲ N` v řádku rozbalí

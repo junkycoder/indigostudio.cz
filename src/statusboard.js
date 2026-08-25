@@ -284,7 +284,7 @@ async function sendMagicLink(env, { email, name, link }) {
 async function stateResponse(env) {
   const members = await env.DB.prepare(`SELECT email, name, role FROM sb_members ORDER BY name`).all();
   const ratings = await env.DB.prepare(
-    `SELECT r.email, m.name, r.item_id, r.phase, r.weight, r.scope, r.updated_at
+    `SELECT r.email, m.name, r.item_id, r.phase, r.weight, r.scope, r.pct, r.updated_at
        FROM sb_ratings r LEFT JOIN sb_members m ON m.email = r.email`
   ).all();
   return json({
@@ -313,7 +313,8 @@ async function historyResponse(env, url) {
 
   const rows = await env.DB.prepare(
     `SELECT h.id, h.email, m.name, h.item_id, h.phase_from, h.phase_to,
-            h.weight_from, h.weight_to, h.scope_from, h.scope_to, h.changed_at
+            h.weight_from, h.weight_to, h.scope_from, h.scope_to,
+            h.pct_from, h.pct_to, h.changed_at
        FROM sb_history h LEFT JOIN sb_members m ON m.email = h.email
       ${where.length ? "WHERE " + where.join(" AND ") : ""}
       ORDER BY h.changed_at DESC, h.id DESC
@@ -343,7 +344,7 @@ async function saveRatings(request, env, user) {
   const ids = rows.map((r) => r.item);
   const placeholders = ids.map((_, i) => `?${i + 2}`).join(", ");
   const before = await env.DB.prepare(
-    `SELECT item_id, phase, weight, scope FROM sb_ratings WHERE email = ?1 AND item_id IN (${placeholders})`
+    `SELECT item_id, phase, weight, scope, pct FROM sb_ratings WHERE email = ?1 AND item_id IN (${placeholders})`
   )
     .bind(user.email, ...ids)
     .all();
@@ -359,16 +360,21 @@ async function saveRatings(request, env, user) {
     const phase = r.phase ?? null;
     const weight = Number.isInteger(r.weight) ? r.weight : null;
     const scope = r.scope === null || r.scope === undefined ? null : r.scope ? 1 : 0;
-    const was = prev[r.item] || { phase: null, weight: null, scope: null };
+    // Procento drží celé číslo 0–100; cokoli mimo rozsah je chyba klienta, ne
+    // hodnota k uložení.
+    const pct =
+      Number.isInteger(r.pct) && r.pct >= 0 && r.pct <= 100 ? r.pct : null;
+    const was = prev[r.item] || { phase: null, weight: null, scope: null, pct: null };
 
     stmts.push(
       env.DB.prepare(
-        `INSERT INTO sb_ratings (email, item_id, phase, weight, scope, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, datetime('now'))
+        `INSERT INTO sb_ratings (email, item_id, phase, weight, scope, pct, updated_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, datetime('now'))
          ON CONFLICT(email, item_id) DO UPDATE
             SET phase = excluded.phase, weight = excluded.weight,
-                scope = excluded.scope, updated_at = datetime('now')`
-      ).bind(user.email, r.item, phase, weight, scope)
+                scope = excluded.scope, pct = excluded.pct,
+                updated_at = datetime('now')`
+      ).bind(user.email, r.item, phase, weight, scope, pct)
     );
 
     // Zápis, který nic nemění (druhý klik na tutéž hodnotu, autosave beze změny),
@@ -376,14 +382,27 @@ async function saveRatings(request, env, user) {
     const same =
       (was.phase ?? null) === phase &&
       (was.weight ?? null) === weight &&
-      (was.scope ?? null) === scope;
+      (was.scope ?? null) === scope &&
+      (was.pct ?? null) === pct;
     if (same) continue;
 
     stmts.push(
       env.DB.prepare(
-        `INSERT INTO sb_history (email, item_id, phase_from, phase_to, weight_from, weight_to, scope_from, scope_to)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)`
-      ).bind(user.email, r.item, was.phase ?? null, phase, was.weight ?? null, weight, was.scope ?? null, scope)
+        `INSERT INTO sb_history
+           (email, item_id, phase_from, phase_to, weight_from, weight_to, scope_from, scope_to, pct_from, pct_to)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`
+      ).bind(
+        user.email,
+        r.item,
+        was.phase ?? null,
+        phase,
+        was.weight ?? null,
+        weight,
+        was.scope ?? null,
+        scope,
+        was.pct ?? null,
+        pct
+      )
     );
   }
 

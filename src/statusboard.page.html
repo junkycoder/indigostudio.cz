@@ -256,10 +256,73 @@
 
   .row__check { width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; }
 
-  .row__state { font-family: var(--font-mono); font-size: var(--fs-xs); padding: .1rem .3rem; border-radius: 4px; border: 1px solid currentColor; text-align: center; white-space: nowrap; }
+  /* Chip stavu nese procento hotovosti a mění se sliderem — nálepka je jen
+     přečtení toho čísla (100 % hotovo, 1–99 % rozdělané, 0 % chybí). */
+  .row__state {
+    display: flex;
+    flex-direction: column;
+    gap: .12rem;
+    width: 6.2rem;
+    padding: .12rem .3rem .18rem;
+    border-radius: 4px;
+    border: 1px solid currentColor;
+  }
+
   .row__state[data-s="hotovo"] { color: var(--s-done); }
   .row__state[data-s="castecne"] { color: var(--s-partial); }
   .row__state[data-s="chybi"] { color: var(--s-missing); }
+
+  .row__state-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    text-align: center;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .row__state-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: .5rem;
+    background: transparent;
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .row__state-slider::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, currentColor var(--fill, 0%), var(--line-strong) var(--fill, 0%));
+  }
+
+  .row__state-slider::-moz-range-track {
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, currentColor var(--fill, 0%), var(--line-strong) var(--fill, 0%));
+  }
+
+  .row__state-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: .55rem;
+    height: .55rem;
+    border-radius: 50%;
+    background: currentColor;
+    margin-top: -.13rem;
+  }
+
+  .row__state-slider::-moz-range-thumb {
+    width: .55rem;
+    height: .55rem;
+    border: 0;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* Dokud člověk procento nesáhne, drží se hodnoty odvozené z kódu — ať je
+     poznat, co je zjištěný stav a co už něčí odhad. */
+  .row__state.is-default { opacity: .72; }
 
   .row__main { min-width: 0; }
   .row__title { display: block; font-weight: 450; line-height: 1.35; }
@@ -536,6 +599,14 @@
       <button class="btn" type="button" data-bulk-scope="1">nad rámec</button>
       <button class="btn" type="button" data-bulk-scope="0">v zadání</button>
     </div>
+    <div class="bulkbar__group">
+      <span>hotovo</span>
+      <button class="btn" type="button" data-bulk-pct="0">0 %</button>
+      <button class="btn" type="button" data-bulk-pct="25">25 %</button>
+      <button class="btn" type="button" data-bulk-pct="50">50 %</button>
+      <button class="btn" type="button" data-bulk-pct="75">75 %</button>
+      <button class="btn" type="button" data-bulk-pct="100">100 %</button>
+    </div>
     <div class="bulkbar__group" id="bulk-weights"><span>váha</span></div>
     <div class="toolbar__spacer"></div>
     <button class="btn btn--ghost" type="button" id="bulk-clear-values">Vymazat</button>
@@ -591,18 +662,19 @@
     <div class="panel">
       <h2>Jak to ovládat</h2>
       <p>
-        Levý štítek je <strong>zjištěný stav z kódu</strong> — needituje se. Vpravo zařazuješ do
+        Levý chip je <strong>hotovost v procentech</strong>: výchozí hodnota vyšla z kódu (a je proto
+        bledší), sliderem ji přepíšeš na svůj odhad a nálepka se překlopí sama. Vpravo zařazuješ do
         <strong>fáze</strong>, přepínáš <strong>nad rámec</strong> a dáváš <strong>váhu 0–9</strong>
         (0 = nechceme, 9 = jádro produktu). Úplně vpravo jsou hlasy ostatních — kolečko s iniciálou,
         barva kroužku je jejich fáze, číslo je jejich váha.
         Zaškrtni řádky (<kbd>Shift</kbd> + klik vybere rozsah) a nastav je po dávkách; klávesy
         <kbd>0</kbd>–<kbd>9</kbd> dají váhu, <kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd> fázi,
-        <kbd>N</kbd> přepne nad rámec, <kbd>Esc</kbd> zruší výběr. Ukládá se rovnou na server.
+        <kbd>N</kbd> přepne nad rámec, <kbd>Esc</kbd> zruší výběr. Hotovost se táhne sliderem na chipu stavu, hromadně tlačítky v liště. Ukládá se rovnou na server.
       </p>
       <ul class="legend">
-        <li><span class="legend__swatch" style="background: var(--s-done)"></span>hotovo — funguje v aplikaci</li>
-        <li><span class="legend__swatch" style="background: var(--s-partial)"></span>rozdělané — základ stojí, chybí dodělat</li>
-        <li><span class="legend__swatch" style="background: var(--s-missing)"></span>chybí — v kódu není nic</li>
+        <li><span class="legend__swatch" style="background: var(--s-done)"></span>hotovo — 100 %</li>
+        <li><span class="legend__swatch" style="background: var(--s-partial)"></span>rozdělané — 1 až 99 %</li>
+        <li><span class="legend__swatch" style="background: var(--s-missing)"></span>chybí — 0 %</li>
         <li><span class="legend__swatch" style="background: var(--s-extra)"></span>nad rámec — mimo původní odhad 1 200 h</li>
       </ul>
     </div>
@@ -939,6 +1011,20 @@
   ];
 
   var STATE_LABEL = { hotovo: 'hotovo', castecne: 'rozdělané', chybi: 'chybí' };
+  var DEFAULT_PCT = { hotovo: 100, castecne: 50, chybi: 0 };
+
+  // Procento vlastní člověk; dokud ho nenastavil, platí to, co vyšlo z kódu.
+  function pctOf(id) {
+    var e = mine[id];
+    if (e && e.pct !== null && e.pct !== undefined) return e.pct;
+    return DEFAULT_PCT[byId[id].s];
+  }
+
+  function stateOf(pct) {
+    if (pct >= 100) return 'hotovo';
+    if (pct <= 0) return 'chybi';
+    return 'castecne';
+  }
   var THEME_KEY = 'mblue-statusboard-theme';
 
   var ME = window.SB_ME || { email: '', name: '' };
@@ -974,7 +1060,7 @@
   }
 
   function entry(id) {
-    if (!mine[id]) mine[id] = { p: null, w: null, x: null };
+    if (!mine[id]) mine[id] = { p: null, w: null, x: null, pct: null };
     return mine[id];
   }
 
@@ -1009,7 +1095,13 @@
 
   function pushRating(id) {
     var e = mine[id] || { p: null, w: null, x: null };
-    queue[id] = { item: id, phase: e.p, weight: e.w, scope: e.x === null || e.x === undefined ? null : (e.x ? 1 : 0) };
+    queue[id] = {
+      item: id,
+      phase: e.p,
+      weight: e.w,
+      scope: e.x === null || e.x === undefined ? null : e.x ? 1 : 0,
+      pct: e.pct === null || e.pct === undefined ? null : e.pct
+    };
     note('ukládám…');
     clearTimeout(flushTimer);
     flushTimer = setTimeout(flush, 400);
@@ -1054,9 +1146,14 @@
     others = {};
     (data.ratings || []).forEach(function (r) {
       if (!byId[r.item_id]) return;
-      var rec = { email: r.email, name: r.name || r.email, p: r.phase, w: r.weight, x: r.scope };
+      var rec = { email: r.email, name: r.name || r.email, p: r.phase, w: r.weight, x: r.scope, pct: r.pct };
       if (r.email === ME.email) {
-        mine[r.item_id] = { p: r.phase, w: r.weight, x: r.scope === null || r.scope === undefined ? null : !!r.scope };
+        mine[r.item_id] = {
+          p: r.phase,
+          w: r.weight,
+          x: r.scope === null || r.scope === undefined ? null : !!r.scope,
+          pct: r.pct === null || r.pct === undefined ? null : r.pct
+        };
       } else {
         (others[r.item_id] = others[r.item_id] || []).push(rec);
       }
@@ -1180,10 +1277,31 @@
     });
     row.appendChild(check);
 
-    var st = document.createElement('span');
+    var st = document.createElement('div');
     st.className = 'row__state';
     st.dataset.s = item.s;
-    st.textContent = STATE_LABEL[item.s];
+
+    var stLabel = document.createElement('span');
+    stLabel.className = 'row__state-label';
+    st.appendChild(stLabel);
+
+    var stSlider = document.createElement('input');
+    stSlider.type = 'range';
+    stSlider.className = 'row__state-slider';
+    stSlider.min = '0';
+    stSlider.max = '100';
+    stSlider.step = '5';
+    stSlider.setAttribute('aria-label', 'Hotovost: ' + item.t);
+    stSlider.addEventListener('input', function () {
+      var e = entry(item.id);
+      e.pct = Number(stSlider.value);
+      paint(item.id);
+    });
+    stSlider.addEventListener('change', function () {
+      pushRating(item.id);
+      stats();
+    });
+    st.appendChild(stSlider);
     row.appendChild(st);
 
     var main = document.createElement('div');
@@ -1319,7 +1437,18 @@
   function paint(id) {
     var row = rowEl(id);
     if (!row) return;
-    var e = mine[id] || { p: null, w: null, x: null };
+    var e = mine[id] || { p: null, w: null, x: null, pct: null };
+
+    var pct = pctOf(id);
+    var st = row.querySelector('.row__state');
+    var stateKey = stateOf(pct);
+    st.dataset.s = stateKey;
+    st.classList.toggle('is-default', !(e.pct !== null && e.pct !== undefined));
+    st.querySelector('.row__state-label').textContent = STATE_LABEL[stateKey] + ' ' + pct + ' %';
+    var slider = st.querySelector('.row__state-slider');
+    slider.value = String(pct);
+    slider.style.setProperty('--fill', pct + '%');
+    row.dataset.s = stateKey;
     row.querySelectorAll('.phase button').forEach(function (b) {
       b.setAttribute('aria-pressed', b.dataset.p === e.p ? 'true' : 'false');
     });
@@ -1360,16 +1489,28 @@
   function verdict(id) {
     var votes = [];
     var e = mine[id];
-    if (e && (e.p || e.w !== null)) votes.push({ p: e.p, w: e.w });
+    if (e && (e.p || e.w !== null || (e.pct !== null && e.pct !== undefined))) {
+      votes.push({ p: e.p, w: e.w, pct: e.pct });
+    }
     (others[id] || []).forEach(function (o) {
-      if (o.p || (o.w !== null && o.w !== undefined)) votes.push({ p: o.p, w: o.w });
+      if (o.p || (o.w !== null && o.w !== undefined) || (o.pct !== null && o.pct !== undefined)) {
+        votes.push({ p: o.p, w: o.w, pct: o.pct });
+      }
     });
     if (votes.length < 2) return votes.length ? 'thin' : 'none';
+
     var phases = votes.map(function (v) { return v.p || ''; });
     var samePhase = phases.every(function (p) { return p === phases[0]; });
+
     var ws = votes.map(function (v) { return v.w; }).filter(function (w) { return w !== null && w !== undefined; });
     var spread = ws.length ? Math.max.apply(null, ws) - Math.min.apply(null, ws) : 0;
-    return (samePhase && spread <= 2) ? 'agree' : 'split';
+
+    // Odhad hotovosti je vlastní osa sporu: když se dva liší o víc než dvacet
+    // bodů, nebaví se o téže věci, i kdyby ji zařadili do stejné fáze.
+    var ps = votes.map(function (v) { return v.pct; }).filter(function (p) { return p !== null && p !== undefined; });
+    var pctSpread = ps.length ? Math.max.apply(null, ps) - Math.min.apply(null, ps) : 0;
+
+    return (samePhase && spread <= 2 && pctSpread <= 20) ? 'agree' : 'split';
   }
 
   function selectRange(fromId, toId, add) {
@@ -1393,13 +1534,13 @@
 
   function isRated(id) {
     var e = mine[id];
-    return !!(e && (e.p || (e.w !== null && e.w !== undefined)));
+    return !!(e && (e.p || (e.w !== null && e.w !== undefined) || (e.pct !== null && e.pct !== undefined)));
   }
 
   function stats() {
     var done = 0, open = 0, rated = 0, agree = 0, split = 0, thin = 0;
     ALL.forEach(function (it) {
-      if (it.s === 'hotovo') done++; else open++;
+      if (pctOf(it.id) >= 100) done++; else open++;
       if (isRated(it.id)) rated++;
       var v = verdict(it.id);
       if (v === 'agree') agree++;
@@ -1424,7 +1565,7 @@
 
     MODULES.forEach(function (m) {
       var counts = { hotovo: 0, castecne: 0, chybi: 0 };
-      m.items.forEach(function (it) { counts[it.s]++; });
+      m.items.forEach(function (it) { counts[stateOf(pctOf(it.id))]++; });
       var link = railEl.querySelector('[data-mod="' + m.id + '"]');
       var openCount = m.items.length - counts.hotovo;
       link.querySelector('.rail__count').textContent = openCount ? openCount + ' otev.' : 'hotovo';
@@ -1454,8 +1595,9 @@
         var e = mine[it.id] || { p: null, w: null };
         var ok = true;
         if (q && row.dataset.search.indexOf(q) === -1) ok = false;
-        if (ok && fs === 'open' && it.s === 'hotovo') ok = false;
-        if (ok && fs !== 'all' && fs !== 'open' && it.s !== fs) ok = false;
+        var st = stateOf(pctOf(it.id));
+        if (ok && fs === 'open' && st === 'hotovo') ok = false;
+        if (ok && fs !== 'all' && fs !== 'open' && st !== fs) ok = false;
         if (ok && fp !== 'all') ok = (fp === 'none') ? !e.p : e.p === fp;
         if (ok && fx !== 'all') ok = (fx === 'extra') ? scopeOf(it.id) : !scopeOf(it.id);
         if (ok && ft !== 'all') {
@@ -1478,6 +1620,11 @@
 
   function bulkWeight(w) {
     selection.forEach(function (id) { entry(id).w = w; pushRating(id); paint(id); });
+    stats(); applyFilters();
+  }
+
+  function bulkPct(pct) {
+    selection.forEach(function (id) { entry(id).pct = pct; pushRating(id); paint(id); });
     stats(); applyFilters();
   }
 
@@ -1509,12 +1656,16 @@
     b.addEventListener('click', function () { bulkPhase(b.dataset.bulkPhase); });
   });
 
+  document.querySelectorAll('[data-bulk-pct]').forEach(function (b) {
+    b.addEventListener('click', function () { bulkPct(Number(b.dataset.bulkPct)); });
+  });
+
   document.querySelectorAll('[data-bulk-scope]').forEach(function (b) {
     b.addEventListener('click', function () { bulkScope(b.dataset.bulkScope === '1'); });
   });
 
   document.getElementById('bulk-clear-values').addEventListener('click', function () {
-    selection.forEach(function (id) { mine[id] = { p: null, w: null, x: null }; pushRating(id); paint(id); });
+    selection.forEach(function (id) { mine[id] = { p: null, w: null, x: null, pct: null }; pushRating(id); paint(id); });
     stats(); applyFilters();
   });
 
@@ -1652,6 +1803,10 @@
     }
     if ((h.scope_from ? 1 : 0) !== (h.scope_to ? 1 : 0)) {
       parts.push(h.scope_to ? 'označeno nad rámec' : 'zrušeno nad rámec');
+    }
+    if ((h.pct_from === null ? null : h.pct_from) !== (h.pct_to === null ? null : h.pct_to)) {
+      parts.push('hotovost ' + (h.pct_from === null ? '–' : h.pct_from + ' %') + ' → ' +
+                 (h.pct_to === null ? '–' : h.pct_to + ' %'));
     }
     return parts.join(' · ') || 'beze změny';
   }
