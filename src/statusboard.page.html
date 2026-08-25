@@ -444,6 +444,35 @@
 
   .row__flags { display: flex; align-items: center; gap: .5rem; }
 
+  .unsure {
+    width: 1.7rem;
+    height: 1.7rem;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .unsure:hover { border-color: var(--accent); color: var(--ink); }
+
+  .unsure[aria-pressed="true"] {
+    background: var(--s-extra);
+    border-color: var(--s-extra);
+    color: #fff;
+  }
+
+  /* Nejasná položka má svůj proužek jako sporná — obojí znamená „tady se ještě
+     musíme domluvit", jen z jiného důvodu. */
+  .row.is-unsure { box-shadow: inset .18rem 0 0 var(--s-extra); }
+  .row.is-unsure.is-split { box-shadow: inset .18rem 0 0 var(--s-partial), inset .36rem 0 0 var(--s-extra); }
+
   .weight { display: flex; align-items: center; gap: .4rem; }
   .weight select { border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); padding: .2rem .3rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; cursor: pointer; }
   .weight__dot { width: .65rem; height: .65rem; border-radius: 50%; background: var(--line-strong); flex: none; }
@@ -661,6 +690,7 @@
     .nice__text { display: none; }
     .nice { padding: .35rem; }
     .nice input { width: 1.15rem; height: 1.15rem; }
+    .unsure { width: 2rem; height: 2rem; }
     .team { grid-column: 2 / 4; grid-row: 5; }
     .row__log { grid-column: 2 / 4; grid-row: 6; }
     .row__state-label { font-size: var(--fs-xs); }
@@ -721,6 +751,10 @@
           <span class="score__value" id="stat-open" style="color: var(--s-missing)">0</span>
         </div>
         <div class="score">
+          <span class="score__label">Nejasné</span>
+          <span class="score__value" id="stat-unsure" style="color: var(--s-extra)">0</span>
+        </div>
+        <div class="score">
           <span class="score__label">Zbývá práce</span>
           <span class="score__value"><span id="stat-effort">–</span><small id="stat-effort-of"></small></span>
         </div>
@@ -775,6 +809,14 @@
       </select>
     </div>
     <div class="field">
+      <label for="f-unsure">Jasné</label>
+      <select id="f-unsure">
+        <option value="all">vše</option>
+        <option value="yes">jen nejasné</option>
+        <option value="no">bez nejasných</option>
+      </select>
+    </div>
+    <div class="field">
       <label for="f-team">Tým</label>
       <select id="f-team">
         <option value="all">vše</option>
@@ -814,6 +856,11 @@
       <button class="btn" type="button" data-bulk-pct="50">50 %</button>
       <button class="btn" type="button" data-bulk-pct="75">75 %</button>
       <button class="btn" type="button" data-bulk-pct="100">100 %</button>
+    </div>
+    <div class="bulkbar__group">
+      <span>nejasné</span>
+      <button class="btn" type="button" data-bulk-unsure="1">?</button>
+      <button class="btn" type="button" data-bulk-unsure="0">jasné</button>
     </div>
     <div class="bulkbar__group">
       <span>nice to have</span>
@@ -1230,7 +1277,7 @@
   }
 
   function entry(id) {
-    if (!mine[id]) mine[id] = { p: null, w: null, x: null, pct: null, effort: null, nice: null };
+    if (!mine[id]) mine[id] = { p: null, w: null, x: null, pct: null, effort: null, nice: null, unsure: null };
     return mine[id];
   }
 
@@ -1272,7 +1319,8 @@
       scope: e.x === null || e.x === undefined ? null : e.x ? 1 : 0,
       pct: e.pct === null || e.pct === undefined ? null : e.pct,
       effort: e.effort === null || e.effort === undefined ? null : e.effort,
-      nice: e.nice === null || e.nice === undefined ? null : e.nice ? 1 : 0
+      nice: e.nice === null || e.nice === undefined ? null : e.nice ? 1 : 0,
+      unsure: e.unsure === null || e.unsure === undefined ? null : e.unsure ? 1 : 0
     };
     note('ukládám…');
     clearTimeout(flushTimer);
@@ -1323,7 +1371,7 @@
 
     (data.ratings || []).forEach(function (r) {
       if (!byId[r.item_id]) return;
-      var rec = { email: r.email, name: r.name || r.email, p: r.phase, w: r.weight, x: r.scope, pct: r.pct, effort: r.effort, nice: r.nice };
+      var rec = { email: r.email, name: r.name || r.email, p: r.phase, w: r.weight, x: r.scope, pct: r.pct, effort: r.effort, nice: r.nice, unsure: r.unsure };
       if (r.email === ME.email) {
         if (!withMine) return;
         mine[r.item_id] = {
@@ -1332,7 +1380,8 @@
           x: r.scope === null || r.scope === undefined ? null : !!r.scope,
           pct: r.pct === null || r.pct === undefined ? null : r.pct,
           effort: r.effort === null || r.effort === undefined ? null : r.effort,
-          nice: r.nice === null || r.nice === undefined ? null : !!r.nice
+          nice: r.nice === null || r.nice === undefined ? null : !!r.nice,
+          unsure: r.unsure === null || r.unsure === undefined ? null : !!r.unsure
         };
       } else {
         (others[r.item_id] = others[r.item_id] || []).push(rec);
@@ -1658,13 +1707,31 @@
     });
     weight.appendChild(sel);
 
-    // Rozsah, „nice to have" a váha jsou jeden pás: všechny tři odpovídají na
-    // otázku „chceme to a jak moc", takže se čtou zleva doprava naráz.
+    // Otazník stojí až za vahou: rozsah, „nice to have" i váha odpovídají na
+    // „chceme to a jak moc", tohle na „rozumím tomu vůbec". Kdo ho zaškrtne,
+    // říká, že hodnotám vedle nemá cenu věřit.
+    var unsure = document.createElement('button');
+    unsure.type = 'button';
+    unsure.className = 'unsure';
+    unsure.textContent = '?';
+    unsure.title = 'Nevím jistě, co to je a k čemu';
+    unsure.setAttribute('aria-label', 'Nejasné: ' + item.t);
+    unsure.setAttribute('aria-pressed', 'false');
+    unsure.addEventListener('click', function () {
+      var e = entry(item.id);
+      e.unsure = !e.unsure;
+      pushRating(item.id);
+      paint(item.id);
+      applyFilters();
+      stats();
+    });
+
     var flags = document.createElement('div');
     flags.className = 'row__flags';
     flags.appendChild(scope);
     flags.appendChild(nice);
     flags.appendChild(weight);
+    flags.appendChild(unsure);
     row.appendChild(flags);
 
     var team = document.createElement('div');
@@ -1744,6 +1811,10 @@
     sel.value = (e.w === null || e.w === undefined) ? '' : String(e.w);
     row.querySelector('.weight__dot').style.background = weightColor(e.w);
     row.querySelector('.scope').setAttribute('aria-pressed', scopeOf(id) ? 'true' : 'false');
+
+    var unsureEl = row.querySelector('.unsure');
+    unsureEl.setAttribute('aria-pressed', e.unsure ? 'true' : 'false');
+    row.classList.toggle('is-unsure', !!e.unsure);
 
     var niceEl = row.querySelector('.nice');
     var niceOn = !!(e.nice);
@@ -1833,7 +1904,7 @@
   // Čísla nahoře popisují to, co je zrovna VIDĚT. Filtr tím přestává být jen
   // hledání a stává se otázkou: „kolik stojí to, co jsem označil jako jádro?"
   function stats() {
-    var done = 0, open = 0, rated = 0, agree = 0, split = 0, thin = 0;
+    var done = 0, open = 0, rated = 0, agree = 0, split = 0, thin = 0, unsureCount = 0;
     var shown = ALL.filter(function (it) {
       var row = rowEl(it.id);
       return row && !row.hidden;
@@ -1842,6 +1913,7 @@
     shown.forEach(function (it) {
       if (pctOf(it.id) >= 100) done++; else open++;
       if (isRated(it.id)) rated++;
+      if ((mine[it.id] || {}).unsure) unsureCount++;
       var v = verdict(it.id);
       if (v === 'agree') agree++;
       else if (v === 'split') split++;
@@ -1854,6 +1926,7 @@
     document.getElementById('stat-total-of').textContent = filtered ? ' z ' + ALL.length : '';
     document.getElementById('stat-total-label').textContent = filtered ? 'Ve filtru' : 'Položek';
     document.getElementById('stat-done').textContent = done;
+    document.getElementById('stat-unsure').textContent = unsureCount;
     document.getElementById('stat-open').textContent = open;
     var hours = 0;
     shown.forEach(function (it) { hours += effortOf(it.id); });
@@ -1904,6 +1977,7 @@
     var fp = document.getElementById('f-phase').value;
     var fx = document.getElementById('f-scope').value;
     var fn = document.getElementById('f-nice').value;
+    var fu = document.getElementById('f-unsure').value;
     var ft = document.getElementById('f-team').value;
 
     var total = 0;
@@ -1921,6 +1995,7 @@
         if (ok && fp !== 'all') ok = (fp === 'none') ? !e.p : e.p === fp;
         if (ok && fx !== 'all') ok = (fx === 'extra') ? scopeOf(it.id) : !scopeOf(it.id);
         if (ok && fn !== 'all') ok = (fn === 'yes') ? !!e.nice : !e.nice;
+        if (ok && fu !== 'all') ok = (fu === 'yes') ? !!e.unsure : !e.unsure;
         if (ok && ft !== 'all') {
           var v = verdict(it.id);
           if (ft === 'split') ok = v === 'split';
@@ -1949,6 +2024,11 @@
 
   function bulkPct(pct) {
     selection.forEach(function (id) { entry(id).pct = pct; pushRating(id); paint(id); });
+    applyFilters(); stats();
+  }
+
+  function bulkUnsure(on) {
+    selection.forEach(function (id) { entry(id).unsure = on; pushRating(id); paint(id); });
     applyFilters(); stats();
   }
 
@@ -1994,6 +2074,10 @@
     b.addEventListener('click', function () { bulkPct(Number(b.dataset.bulkPct)); });
   });
 
+  document.querySelectorAll('[data-bulk-unsure]').forEach(function (b) {
+    b.addEventListener('click', function () { bulkUnsure(b.dataset.bulkUnsure === '1'); });
+  });
+
   document.querySelectorAll('[data-bulk-nice]').forEach(function (b) {
     b.addEventListener('click', function () { bulkNice(b.dataset.bulkNice === '1'); });
   });
@@ -2007,7 +2091,7 @@
   });
 
   document.getElementById('bulk-clear-values').addEventListener('click', function () {
-    selection.forEach(function (id) { mine[id] = { p: null, w: null, x: null, pct: null, effort: null, nice: null }; pushRating(id); paint(id); });
+    selection.forEach(function (id) { mine[id] = { p: null, w: null, x: null, pct: null, effort: null, nice: null, unsure: null }; pushRating(id); paint(id); });
     applyFilters(); stats();
   });
 
@@ -2032,6 +2116,12 @@
     if (e.key === 'Escape' && selection.size) { selection.clear(); syncSelection(); return; }
     if (!selection.size) return;
     if (e.key >= '0' && e.key <= '9') { bulkWeight(Number(e.key)); e.preventDefault(); return; }
+    if (e.key === '?' || e.key.toLowerCase() === 'u') {
+      var anyClear = Array.from(selection).some(function (id) { return !(mine[id] || {}).unsure; });
+      bulkUnsure(anyClear);
+      e.preventDefault();
+      return;
+    }
     if (e.key.toLowerCase() === 'h') {
       var anyOffNice = Array.from(selection).some(function (id) { return !(mine[id] || {}).nice; });
       bulkNice(anyOffNice);
@@ -2095,18 +2185,18 @@
   });
 
   document.getElementById('export-csv').addEventListener('click', function () {
-    var lines = ['id;blok;polozka;stav;hotovo_pct;zbyva_h;kdo;faze;vaha;nad_ramec;nice_to_have'];
+    var lines = ['id;blok;polozka;stav;hotovo_pct;zbyva_h;kdo;faze;vaha;nad_ramec;nice_to_have;nejasne'];
     ALL.forEach(function (it) {
       var rows = [];
       var e = mine[it.id];
-      if (e && (e.p || e.w !== null || e.x !== null || e.nice !== null)) rows.push({ name: ME.name, p: e.p, w: e.w, x: scopeOf(it.id), nice: e.nice });
-      (others[it.id] || []).forEach(function (o) { rows.push({ name: o.name, p: o.p, w: o.w, x: !!o.x, nice: !!o.nice }); });
-      if (!rows.length) rows.push({ name: '', p: '', w: '', x: !!it.x, nice: false });
+      if (e && (e.p || e.w !== null || e.x !== null || e.nice !== null)) rows.push({ name: ME.name, p: e.p, w: e.w, x: scopeOf(it.id), nice: e.nice, unsure: e.unsure });
+      (others[it.id] || []).forEach(function (o) { rows.push({ name: o.name, p: o.p, w: o.w, x: !!o.x, nice: !!o.nice, unsure: !!o.unsure }); });
+      if (!rows.length) rows.push({ name: '', p: '', w: '', x: !!it.x, nice: false, unsure: false });
       rows.forEach(function (r) {
         lines.push([
           it.id, q(it.module.name), q(it.t), stateOf(pctOf(it.id)), pctOf(it.id), effortOf(it.id),
           q(r.name), r.p || '', (r.w === null || r.w === undefined) ? '' : r.w,
-          r.x ? '1' : '0', r.nice ? '1' : '0'
+          r.x ? '1' : '0', r.nice ? '1' : '0', r.unsure ? '1' : '0'
         ].join(';'));
       });
     });
@@ -2126,7 +2216,7 @@
     });
   });
 
-  ['q', 'f-state', 'f-phase', 'f-scope', 'f-nice', 'f-team'].forEach(function (id) {
+  ['q', 'f-state', 'f-phase', 'f-scope', 'f-nice', 'f-unsure', 'f-team'].forEach(function (id) {
     document.getElementById(id).addEventListener('input', function () { applyFilters(); stats(); });
   });
 
@@ -2155,6 +2245,9 @@
     }
     if ((h.scope_from ? 1 : 0) !== (h.scope_to ? 1 : 0)) {
       parts.push(h.scope_to ? 'označeno nad rámec' : 'zrušeno nad rámec');
+    }
+    if ((h.unsure_from ? 1 : 0) !== (h.unsure_to ? 1 : 0)) {
+      parts.push(h.unsure_to ? 'označeno jako nejasné' : 'nejasnost zrušena');
     }
     if ((h.nice_from ? 1 : 0) !== (h.nice_to ? 1 : 0)) {
       parts.push(h.nice_to ? 'označeno nice to have' : 'zrušeno nice to have');
@@ -2264,7 +2357,7 @@
 
   document.getElementById('clear-filters').addEventListener('click', function () {
     document.getElementById('q').value = '';
-    ['f-state', 'f-phase', 'f-scope', 'f-nice', 'f-team'].forEach(function (id) {
+    ['f-state', 'f-phase', 'f-scope', 'f-nice', 'f-unsure', 'f-team'].forEach(function (id) {
       document.getElementById(id).value = 'all';
     });
     applyFilters();

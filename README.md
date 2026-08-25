@@ -166,6 +166,10 @@ když přeleze 300 h zbývajícího rozpočtu.
 **Nice to have** je samostatná osa mezi rozsahem a vahou: „nad rámec" říká, ODKUD
 položka je, tohle jestli ji vůbec chceme.
 
+**Otazník** za vahou znamená „nevím jistě, co to je a k čemu" — tedy že hodnotám
+vedle nemá cenu věřit. Má vlastní filtr, počítadlo v hlavičce a fialový proužek
+u řádku (sporné položky mají oranžový; když platí obojí, jsou vidět oba).
+
 **Historie změn** se píše při každé skutečné změně hodnocení (zápis, který nic
 nemění, se ignoruje) do `sb_history` — řádek nese stav před i po. Změny téže položky
 od téhož člověka se **do minuty slévají do jednoho záznamu** (`MERGE_WINDOW_SECONDS`);

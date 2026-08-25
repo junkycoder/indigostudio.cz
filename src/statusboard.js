@@ -286,7 +286,7 @@ async function sendMagicLink(env, { email, name, link }) {
 async function stateResponse(env) {
   const members = await env.DB.prepare(`SELECT email, name, role FROM sb_members ORDER BY name`).all();
   const ratings = await env.DB.prepare(
-    `SELECT r.email, m.name, r.item_id, r.phase, r.weight, r.scope, r.pct, r.effort, r.nice, r.updated_at
+    `SELECT r.email, m.name, r.item_id, r.phase, r.weight, r.scope, r.pct, r.effort, r.nice, r.unsure, r.updated_at
        FROM sb_ratings r LEFT JOIN sb_members m ON m.email = r.email`
   ).all();
   return json({
@@ -316,7 +316,7 @@ async function historyResponse(env, url) {
   const rows = await env.DB.prepare(
     `SELECT h.id, h.email, m.name, h.item_id, h.phase_from, h.phase_to,
             h.weight_from, h.weight_to, h.scope_from, h.scope_to,
-            h.pct_from, h.pct_to, h.effort_from, h.effort_to, h.nice_from, h.nice_to, h.changed_at
+            h.pct_from, h.pct_to, h.effort_from, h.effort_to, h.nice_from, h.nice_to, h.unsure_from, h.unsure_to, h.changed_at
        FROM sb_history h LEFT JOIN sb_members m ON m.email = h.email
       ${where.length ? "WHERE " + where.join(" AND ") : ""}
       ORDER BY h.changed_at DESC, h.id DESC
@@ -346,7 +346,7 @@ async function saveRatings(request, env, user) {
   const ids = rows.map((r) => r.item);
   const placeholders = ids.map((_, i) => `?${i + 2}`).join(", ");
   const before = await env.DB.prepare(
-    `SELECT item_id, phase, weight, scope, pct, effort, nice FROM sb_ratings WHERE email = ?1 AND item_id IN (${placeholders})`
+    `SELECT item_id, phase, weight, scope, pct, effort, nice, unsure FROM sb_ratings WHERE email = ?1 AND item_id IN (${placeholders})`
   )
     .bind(user.email, ...ids)
     .all();
@@ -361,7 +361,7 @@ async function saveRatings(request, env, user) {
   // třikrát, má v historii jednu změnu z původní hodnoty na konečnou — a když
   // skončí tam, kde začal, záznam se smaže úplně.
   const recent = await env.DB.prepare(
-    `SELECT id, item_id, phase_from, weight_from, scope_from, pct_from, effort_from, nice_from
+    `SELECT id, item_id, phase_from, weight_from, scope_from, pct_from, effort_from, nice_from, unsure_from
        FROM sb_history
       WHERE email = ?1 AND item_id IN (${placeholders})
         AND changed_at > datetime('now', '-${MERGE_WINDOW_SECONDS} seconds')
@@ -389,20 +389,21 @@ async function saveRatings(request, env, user) {
     const effort =
       Number.isInteger(r.effort) && r.effort >= 0 && r.effort <= 500 ? r.effort : null;
     const nice = r.nice === null || r.nice === undefined ? null : r.nice ? 1 : 0;
+    const unsure = r.unsure === null || r.unsure === undefined ? null : r.unsure ? 1 : 0;
     const was = prev[r.item] || {
-      phase: null, weight: null, scope: null, pct: null, effort: null, nice: null
+      phase: null, weight: null, scope: null, pct: null, effort: null, nice: null, unsure: null
     };
 
     stmts.push(
       env.DB.prepare(
-        `INSERT INTO sb_ratings (email, item_id, phase, weight, scope, pct, effort, nice, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, datetime('now'))
+        `INSERT INTO sb_ratings (email, item_id, phase, weight, scope, pct, effort, nice, unsure, updated_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, datetime('now'))
          ON CONFLICT(email, item_id) DO UPDATE
             SET phase = excluded.phase, weight = excluded.weight,
                 scope = excluded.scope, pct = excluded.pct,
                 effort = excluded.effort, nice = excluded.nice,
-                updated_at = datetime('now')`
-      ).bind(user.email, r.item, phase, weight, scope, pct, effort, nice)
+                unsure = excluded.unsure, updated_at = datetime('now')`
+      ).bind(user.email, r.item, phase, weight, scope, pct, effort, nice, unsure)
     );
 
     // Zápis, který nic nemění (druhý klik na tutéž hodnotu, autosave beze změny),
@@ -413,7 +414,8 @@ async function saveRatings(request, env, user) {
       (was.scope ?? null) === scope &&
       (was.pct ?? null) === pct &&
       (was.effort ?? null) === effort &&
-      (was.nice ?? null) === nice;
+      (was.nice ?? null) === nice &&
+      (was.unsure ?? null) === unsure;
     if (same) continue;
 
     const open = openEntry[r.item];
@@ -426,7 +428,8 @@ async function saveRatings(request, env, user) {
         (open.scope_from ?? null) === scope &&
         (open.pct_from ?? null) === pct &&
         (open.effort_from ?? null) === effort &&
-        (open.nice_from ?? null) === nice;
+        (open.nice_from ?? null) === nice &&
+        (open.unsure_from ?? null) === unsure;
 
       stmts.push(
         backToStart
@@ -434,9 +437,9 @@ async function saveRatings(request, env, user) {
           : env.DB.prepare(
               `UPDATE sb_history
                   SET phase_to = ?2, weight_to = ?3, scope_to = ?4, pct_to = ?5,
-                      effort_to = ?6, nice_to = ?7, changed_at = datetime('now')
+                      effort_to = ?6, nice_to = ?7, unsure_to = ?8, changed_at = datetime('now')
                 WHERE id = ?1`
-            ).bind(open.id, phase, weight, scope, pct, effort, nice)
+            ).bind(open.id, phase, weight, scope, pct, effort, nice, unsure)
       );
       continue;
     }
@@ -445,8 +448,9 @@ async function saveRatings(request, env, user) {
       env.DB.prepare(
         `INSERT INTO sb_history
            (email, item_id, phase_from, phase_to, weight_from, weight_to,
-            scope_from, scope_to, pct_from, pct_to, effort_from, effort_to, nice_from, nice_to)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)`
+            scope_from, scope_to, pct_from, pct_to, effort_from, effort_to,
+            nice_from, nice_to, unsure_from, unsure_to)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)`
       ).bind(
         user.email,
         r.item,
@@ -461,7 +465,9 @@ async function saveRatings(request, env, user) {
         was.effort ?? null,
         effort,
         was.nice ?? null,
-        nice
+        nice,
+        was.unsure ?? null,
+        unsure
       )
     );
   }
