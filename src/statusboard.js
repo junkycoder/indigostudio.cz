@@ -12,7 +12,10 @@ const MAIL_FROM = "poptavka@indigostudio.cz";
 
 const SESSION_COOKIE = "sb_session";
 const SESSION_DAYS = 30;
-const MAGIC_MINUTES = 60;
+// Hodina stačí, když odkaz chodí mailem. Dokud se rozesílá ručně (bez
+// RESEND_API_KEY), musí přežít, než si ho člověk přečte ve Slacku nebo v mailu
+// od Dana — proto dva dny.
+const MAGIC_MINUTES = 60 * 48;
 // Jak dlouho se změny téže položky od téhož člověka slévají do jednoho záznamu.
 const MERGE_WINDOW_SECONDS = 60;
 
