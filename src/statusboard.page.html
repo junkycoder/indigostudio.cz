@@ -262,6 +262,69 @@
   .section.is-collapsed .row { display: none; }
   .section__head h2 { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); letter-spacing: -.015em; margin: 0; }
   .section__hint { color: var(--muted); font-size: var(--fs-sm); flex: 1 1 16rem; }
+  /* Hotovost bloku vpravo v hlavičce — u sbaleného bloku je to jediné číslo,
+     které z něj zbyde vidět. */
+  .section__pct {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    padding: .15rem .45rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    align-self: center;
+  }
+
+  .section__modes { display: flex; margin-left: auto; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
+
+  .section__modes button {
+    background: var(--surface);
+    border: 0;
+    border-left: 1px solid var(--line);
+    padding: .2rem .5rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .section__modes button:first-child { border-left: 0; }
+  .section__modes button:hover { color: var(--ink); background: var(--surface-2); }
+  .section__modes button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+  /* Tabulkový režim: jedna položka = jeden řádek. Popis a odkazy jdou pryč,
+     titulek se ořízne — kdo srovnává čísla přes celý blok, nepotřebuje u toho
+     číst tři řádky vysvětlení. Přepnutí je jen třída, DOM zůstává stejný. */
+  .mode-table .row {
+    grid-template-columns: 1.5rem auto minmax(0, 1fr) auto auto auto auto auto;
+    align-items: center;
+    padding: .3rem 1rem;
+    column-gap: .5rem;
+  }
+
+  .mode-table .row__desc { display: none; }
+  .mode-table .row__meta { margin: 0; }
+  .mode-table .row__meta .tag--ref { display: none; }
+  .mode-table .row__main { display: flex; align-items: baseline; gap: .5rem; }
+
+  .mode-table .row__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .mode-table .row__chips { width: 11rem; }
+  .mode-table .row__state-label { font-size: .68rem; }
+  .mode-table .phase button { padding: .16rem .35rem; }
+  .mode-table .nice { font-size: .68rem; }
+  .mode-table .row__log { grid-column: 1 / -1; }
+
+  @media (max-width: 52rem) {
+    .mode-table .row { grid-template-columns: 1.5rem minmax(0, 1fr); }
+    .mode-table .row__title { white-space: normal; }
+  }
+
   .section__pick { background: transparent; border: 1px solid var(--line-strong); border-radius: 6px; font-size: var(--fs-xs); padding: .2rem .5rem; cursor: pointer; color: var(--muted); white-space: nowrap; }
   .section__pick:hover { color: var(--ink); border-color: var(--accent); }
 
@@ -564,7 +627,10 @@
     #logout { margin-left: auto; }
 
     .section__head { padding: .75rem .85rem; }
-    .section__pick { order: 3; }
+    .section__pick { order: 4; }
+    .section__modes { order: 3; margin-left: 0; }
+    .section__pct { order: 2; margin-left: auto; }
+    .section__hint { flex: 1 1 100%; order: 5; }
 
     /* Řádek: text nahoře přes celou šířku, pod ním ovládání ve třech pásech.
        Bez tohohle skládání zabrala jedna položka 390 px — půl obrazovky na
@@ -877,8 +943,12 @@
         { id: 'KAN-17', t: 'Import kandidátů z Teamio / Jobs.cz', d: 'V původním zadání jako must-have; v kódu není nic. Čeká na rozhodnutí o rozsahu a na API Alma Career.', s: 'chybi', ref: 'T-003' },
         { id: 'KAN-18', t: 'GDPR souhlas kandidáta se zpracováním', d: 'Automatický souhlas e-mailem při prvním kontaktu je v zadání; v kódu je zatím jen audit výmazů.', s: 'chybi', ref: 'T-039 · #155' },
         { id: 'KAN-19', t: 'Zkušební doba kandidáta po nástupu', d: 'Vlastní pole na kandidatuře (default 3 měsíce), z něj se počítá konec zkušební doby. Stojí v UI vedle garance z KOPS a nikdy se s ní neslučuje — je to lhůta ve smlouvě kandidáta, ne obchodní podmínka vůči klientovi. Hotovo 25. 8. 2026.', ref: 'E5', x: true },
-        { id: 'KAN-20', t: 'M-kandidáti — měsíční kampaň neumístěných', d: 'Medailonky a direct mailing; zadání od klienta bez rozhodnutí.', s: 'chybi', ref: 'T-147', x: true },
-        { id: 'KAN-21', t: 'AI vyhledávání kandidátů', d: 'Vyžádala Tereza S.; chybí i odhad nákladů na tokeny.', s: 'chybi', ref: 'T-154', x: true }
+        { id: 'KAN-20', t: 'M-kandidáti — měsíční kampaň neumístěných', d: 'Medailonky a direct mailing; zadání od klienta bez rozhodnutí.', s: 'chybi', ref: 'T-147 · call 6. 2. 05:35' },
+        { id: 'KAN-21', t: 'AI vyhledávání kandidátů', d: 'Vyžádala Tereza S.; chybí i odhad nákladů na tokeny.', s: 'chybi', ref: 'T-154', x: true },
+        { id: 'KAN-22', t: 'Plugin do prohlížeče pro import z LinkedInu a Teamia', d: 'V callu označené jako priorita mezi zdroji. Bez API vrstvy, na kterou by se napojil — PR, který ji zaváděl, byl zavřený.', s: 'chybi', ref: 'call 6. 2. 14:40 · T-013' },
+        { id: 'KAN-23', t: 'Ochrana poznámek u kandidáta', d: 'V Atollonu je kdokoli přepíše nebo smaže; požadavek zněl vědět, kdo co napsal, a nedovolit tiché přepsání.', s: 'chybi', ref: 'call 6. 2. 1:13:45' },
+        { id: 'KAN-24', t: 'Platnost GDPR souhlasu vidět na kartě', d: 'Vzorem je Teamio — u kandidáta má být jasné, do kdy souhlas platí, a expirace se má hlídat.', s: 'chybi', ref: 'call 6. 2. 3:53:12 · 1:26:01' },
+        { id: 'KAN-25', t: 'Self-service profil kandidáta', d: 'Kandidát si spravuje vlastní profil a jde ho otagovat. V callu rovnou odloženo mimo první vlnu.', s: 'chybi', ref: 'call 6. 2. 31:16' }
       ]
     },
     {
@@ -894,9 +964,12 @@
         { id: 'FIR-08', t: 'Karta firmy se všemi sekcemi', d: 'Projekty, kontakty, úkoly, soubory, aktivity, faktury.' },
         { id: 'FIR-09', t: 'Výpis firem: tabulka jako výchozí, odlehčené karty', d: 'Dnes je výchozí mřížka a pilulka kontaktu překrývá text. Zadáno 24. 8., padlo už 11. 8.', s: 'castecne', ref: 'N1 · #273' },
         { id: 'FIR-10', t: 'Seznam firem pro cold calling', d: 'Pracovní seznam k obvolání, ne číselník. Čeká na rozhodnutí.', s: 'chybi', ref: 'T-141', x: true },
-        { id: 'FIR-11', t: 'Standard klient bez dlouhodobé zakázky', d: 'Příznak nebo pracovní seznam pro obchod; intervaly si v podkladech odporují.', s: 'chybi', ref: 'T-182', x: true },
+        { id: 'FIR-11', t: 'Standard klient bez dlouhodobé zakázky', d: 'Příznak nebo pracovní seznam pro obchod; intervaly si v podkladech odporují.', s: 'chybi', ref: 'T-182 · call 6. 2. 3:49:27' },
         { id: 'FIR-12', t: 'Důvody neuzavřené spolupráce po nabídce', d: 'Klient poslal dva seznamy důvodů; v modelu není pole ani entita, kam je pověsit.', s: 'chybi', ref: 'podklad 24. 8.', x: true },
-        { id: 'FIR-13', t: 'Status firmy: off limit / open to work / black list', d: 'Klient sám značí „dořešit“; dnes existuje jen off-limit.', s: 'castecne', ref: 'T-137' }
+        { id: 'FIR-13', t: 'Status firmy: off limit / open to work / black list', d: 'Klient sám značí „dořešit“; dnes existuje jen off-limit.', s: 'castecne', ref: 'T-137' },
+        { id: 'FIR-14', t: 'E-mail z firemní adresy přímo ze systému', d: 'Odeslat a mít o tom záznam u firmy, bez přepisování z Outlooku. Dnes se komunikace zapisuje ručně jako aktivita.', s: 'chybi', ref: 'call 6. 2. 45:00 · 21:05' },
+        { id: 'FIR-15', t: 'Direct mailing evidovaný v CRM', d: 'Vědět, komu co odešlo, bez mezikroku přes Excel. Dnes to kompiluje ručně jedna člověka.', s: 'chybi', ref: 'call 6. 2. 12:50' },
+        { id: 'FIR-16', t: 'Doporučení klientů podle lokality při plánování schůzek', d: 'Když jedu za klientem, ukaž koho dalšího mám poblíž. V callu rovnou označeno jako nice to have.', s: 'chybi', ref: 'call 6. 2. 2:20:07' }
       ]
     },
     {
@@ -909,7 +982,9 @@
         { id: 'PRO-05', t: 'Projektový tým a předání vedení', d: 'Spolupracovníci plus právě jeden hlavní zodpovědný.' },
         { id: 'PRO-06', t: 'Stav projektu odvozený z pozic', d: 'Nejdál postoupený nábor určuje stav projektu; sedm stavů společných s pozicí.' },
         { id: 'PRO-07', t: 'Archivace a trvalé smazání jen správcem', d: 'Faktury a výkazy se neruší, jen odpojí.' },
-        { id: 'PRO-08', t: 'Pole „Projekt“ u pozice klient nechápe', d: 'Dělba projekt × pozice je pro uživatele nesrozumitelná — zatím bez rozhodnutí, co s tím.', s: 'castecne', ref: 'T-184' }
+        { id: 'PRO-08', t: 'Pole „Projekt“ u pozice klient nechápe', d: 'Dělba projekt × pozice je pro uživatele nesrozumitelná — zatím bez rozhodnutí, co s tím.', s: 'castecne', ref: 'T-184' },
+        { id: 'PRO-09', t: 'Upozornění na zakázku bez pohybu', d: 'Otevřená déle než dva měsíce → úkol na revizi. Dnes se na to přijde jen ručním procházením.', s: 'chybi', ref: 'call 6. 2. 3:14:56' },
+        { id: 'PRO-10', t: 'Víc kontaktních osob u projektu', d: 'Dnes se dělení řeší až na faktuře; projekt zná jen jednu osobu.', s: 'chybi', ref: 'call 6. 2. 1:51:11' }
       ]
     },
     {
@@ -932,7 +1007,13 @@
         { id: 'NAB-15', t: 'KOPS má navrhnout fáze výběrového řízení', d: 'Provazba „co je zaškrtnuto → jaké fáze“ chybí; kvůli tomu se odmítlo i podmíněné okno komentáře.', s: 'chybi', ref: 'T-130', x: true },
         { id: 'NAB-16', t: 'Assessment centrum', d: 'Jaký tvar má mít v systému, není rozhodnuto. Mimo první vlnu.', s: 'chybi', ref: 'T-144', x: true },
         { id: 'NAB-17', t: 'Deadline vs. datum předpokládaného obsazení', d: 'Není jasné, jestli jsou to dvě věci nebo jedna.', s: 'chybi', ref: 'T-156' },
-        { id: 'NAB-18', t: 'Otevřené bugy náboru z testování', d: 'Malý detail výběrového řízení, chybějící data u fází, opakovaná poznámka při vracení.', s: 'castecne', ref: '#262 · #266 · #267' }
+        { id: 'NAB-18', t: 'Otevřené bugy náboru z testování', d: 'Malý detail výběrového řízení, chybějící data u fází, opakovaná poznámka při vracení.', s: 'castecne', ref: '#262 · #266 · #267' },
+        { id: 'NAB-19', t: 'Připomínky před pohovorem a po něm', d: 'V pátek odpoledne upozornit na pondělní pohovor; po pohovoru připomenout zavolat kandidátovi i klientovi.', s: 'chybi', ref: 'call 6. 2. 3:22:14' },
+        { id: 'NAB-20', t: 'Stádium „ve fázi nabídky“', d: 'Mezi pohovorem a nástupem chybí stav, kdy se kandidát domlouvá na podmínkách. V kanonické ose je `offered` — ověřit, že sedí na to, co klient popsal.', s: 'castecne', ref: 'call 6. 2. 3:34:08' },
+        { id: 'NAB-21', t: 'Hromadné zamítnutí zbylých kandidátů', d: 'Po obsazení pozice jedním klikem zamítnout ostatní, dnes se klikají po jednom.', s: 'chybi', ref: 'call 6. 2. 3:34:34' },
+        { id: 'NAB-22', t: 'Párování požadavků pozice na kandidáty', d: 'Automatický návrh kandidátů z databáze podle požadavků pozice.', s: 'chybi', ref: 'call 6. 2. 3:38:56' },
+        { id: 'NAB-23', t: 'Počet a typ kol jako údaj na kartě pozice', d: 'Dnes to visí v SharePointu; v systému pro to není strukturované pole.', s: 'castecne', ref: 'call 6. 2. 3:31:36' },
+        { id: 'NAB-24', t: 'Přepis online pohovoru u kandidáta', d: 'Nahrát nebo připojit přepis rovnou ke kandidátovi. V callu odloženo mimo první vlnu.', s: 'chybi', ref: 'call 6. 2. 3:24:38' }
       ]
     },
     {
@@ -956,7 +1037,8 @@
         { id: 'FAK-05', t: 'Ruční stav zaplaceno / nezaplaceno', d: 'Příznak existuje a živí přehled nezaplacených.', ref: '#255' },
         { id: 'FAK-06', t: 'Faktura se má vázat na projekt, ne na pozici', d: 'Dnes je to obráceně a rozpůlené: faktura visí na pozici, položka na projektu. Je to migrace, ne přejmenování.', s: 'castecne', ref: 'T-480' },
         { id: 'FAK-07', t: 'Sjednocená sada změn faktur od Terezy K.', d: 'Zadání leží u klienta, u nás nezapsané.', s: 'chybi', ref: 'T-150' },
-        { id: 'FAK-08', t: 'Napojení na Money / Manny S3', d: 'Odloženo za první fázi.', s: 'chybi' }
+        { id: 'FAK-08', t: 'Napojení na Money / Manny S3', d: 'Odloženo za první fázi.', s: 'chybi' },
+        { id: 'FAK-09', t: 'Forecast fakturace z připravených objednávek', d: 'Kolik je nachystáno k vyfakturování a kdy — dnes se to skládá ručně.', s: 'chybi', ref: 'call 6. 2. 1:02:03' }
       ]
     },
     {
@@ -994,7 +1076,8 @@
         { id: 'REP-04', t: 'Report výkazů s klientským PDF a ZIP balíkem', d: 'Po projektech a lidech, jedno PDF na projekt.', p: '/reports/timesheet' },
         { id: 'REP-05', t: 'Sada reportů z Atollonu podle Terezy S.', d: 'Původní odhad počítal s reporty, které ukazovala v Atollonu. Které to jsou a kolik jich je, není v backlogu rozepsané — čtyři hotové reporty jsou náš návrh, ne její seznam.', s: 'chybi' },
         { id: 'REP-06', t: 'Čím se váží forecast', d: 'Číslo na dashboardu je, ale pravděpodobnosti fází nejsou odsouhlasené.', s: 'castecne' },
-        { id: 'REP-07', t: 'Vliv mazání na zpětné reporty', d: 'Smazání kandidáta i projektu mění čísla zpětně; politika mazání napříč systémem chybí.', s: 'chybi', ref: 'T-127 · T-040 · T-125' }
+        { id: 'REP-07', t: 'Vliv mazání na zpětné reporty', d: 'Smazání kandidáta i projektu mění čísla zpětně; politika mazání napříč systémem chybí.', s: 'chybi', ref: 'T-127 · T-040 · T-125' },
+        { id: 'REP-08', t: 'Finanční report místo ručního VPM Excelu', d: 'Výkon proti plánu se dnes přepisuje do tabulky mimo systém.', s: 'castecne', ref: 'call 6. 2. 19:43' }
       ]
     },
     {
@@ -1036,12 +1119,12 @@
       ]
     },
     {
-      id: 'obchod', hours: 60, name: 'Obchodní pipeline', hint: 'Nad rámec odhadu — kandidát na odložení do další fáze.',
+      id: 'obchod', hours: 60, name: 'Obchodní pipeline', hint: 'V discovery callu 6. 2. padla (1:05:14), v odhadu hodin ale není — proto nad rámec rozpočtu, ne zadání.',
       items: [
-        { id: 'OBC-01', t: 'Fáze před náborem jako vlastní trychtýř', d: 'Obchodní trychtýř na úrovni firmy nebo zakázky, jak byl ukázaný na srpnové schůzce.', s: 'chybi', x: true },
-        { id: 'OBC-02', t: 'Nabídka jako vlastní entita', d: 'Aby na ní mohly viset důvody neuzavřené spolupráce a stav vyjednávání.', s: 'chybi', x: true },
-        { id: 'OBC-03', t: 'Pravděpodobnosti a vážení obchodního forecastu', d: 'Hodnota × pravděpodobnost × datum na obchodní části, ne jen na náboru.', s: 'chybi', x: true },
-        { id: 'OBC-04', t: 'Pracovní seznamy pro obchod', d: 'Cold calling, klienti bez zakázky, klienti k oslovení.', s: 'chybi', x: true }
+        { id: 'OBC-01', t: 'Fáze před náborem jako vlastní trychtýř', d: 'Obchodní trychtýř na úrovni firmy nebo zakázky, jak byl ukázaný na srpnové schůzce.', s: 'chybi', x: true, ref: 'call 6. 2. 1:05:14' },
+        { id: 'OBC-02', t: 'Nabídka jako vlastní entita', d: 'Aby na ní mohly viset důvody neuzavřené spolupráce a stav vyjednávání.', s: 'chybi', x: true, ref: 'call 6. 2. 1:05:14' },
+        { id: 'OBC-03', t: 'Pravděpodobnosti a vážení obchodního forecastu', d: 'Hodnota × pravděpodobnost × datum na obchodní části, ne jen na náboru.', s: 'chybi', x: true, ref: 'call 6. 2. 1:05:14' },
+        { id: 'OBC-04', t: 'Pracovní seznamy pro obchod', d: 'Cold calling, klienti bez zakázky, klienti k oslovení.', s: 'chybi', x: true, ref: 'call 6. 2. 1:05:14' }
       ]
     },
     {
@@ -1054,8 +1137,10 @@
         { id: 'INT-05', t: 'Merk', d: 'Odloženo za první fázi.', s: 'chybi' },
         { id: 'INT-06', t: 'Money', d: 'Odloženo za první fázi.', s: 'chybi' },
         { id: 'INT-07', t: 'Inzertní servery', d: 'Odloženo za první fázi; v kódu je zatím jen text inzerátu u pozice z migrace.', s: 'chybi' },
-        { id: 'INT-08', t: 'Napojení úkolů a termínů na Outlook', d: 'Požadavek z dubna, mimo první vlnu.', s: 'chybi', ref: 'T-133', x: true },
-        { id: 'INT-09', t: 'Veřejné API pro browser extension', d: 'PR, který ho zaváděl, byl zavřený; extension nemá o co se opřít.', s: 'chybi', ref: 'T-013', x: true }
+        { id: 'INT-08', t: 'Napojení úkolů a termínů na Outlook', d: 'Požadavek z dubna, mimo první vlnu.', s: 'chybi', ref: 'T-133 · call 6. 2. 49:25' },
+        { id: 'INT-09', t: 'Veřejné API pro browser extension', d: 'PR, který ho zaváděl, byl zavřený; extension nemá o co se opřít.', s: 'chybi', ref: 'T-013 · call 6. 2. 14:40' },
+        { id: 'INT-10', t: 'Publikace inzerátu na víc portálů z jednoho místa', d: 'Prace.cz, Jobs.cz, web mBlue — dnes se každý plní zvlášť. V Přemkově tabulce nejdražší integrační položka (50 h).', s: 'chybi', ref: 'call 6. 2. 35:43' },
+        { id: 'INT-11', t: 'Import z Teamia i se strukturovanými daty', d: 'Ne jen jméno a telefon — bez zbytku se karta stejně dopisuje ručně a databáze zůstává neúplná.', s: 'chybi', ref: 'call 6. 2. 14:16' }
       ]
     },
     {
@@ -1136,6 +1221,15 @@
   }
   var THEME_KEY = 'mblue-statusboard-theme';
   var COLLAPSE_KEY = 'mblue-statusboard-collapsed';
+  var MODE_KEY = 'mblue-statusboard-mode';
+
+  function setMode(mode) {
+    document.body.classList.toggle('mode-table', mode === 'table');
+    document.querySelectorAll('.section__modes button').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false');
+    });
+    try { localStorage.setItem(MODE_KEY, mode); } catch (e) { /* soukromý režim */ }
+  }
 
   var collapsedAtStart = (function () {
     try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}'); } catch (e) { return {}; }
@@ -1345,6 +1439,31 @@
       syncSelection();
     });
     head.appendChild(pick);
+
+    // Přepínač je v každé hlavičce, ale režim je jeden pro celou stránku —
+    // dva bloky vedle sebe v různém režimu by se nedaly porovnat.
+    var modes = document.createElement('div');
+    modes.className = 'section__modes';
+    modes.setAttribute('role', 'group');
+    modes.setAttribute('aria-label', 'Zobrazení');
+    [['list', 'seznam'], ['table', 'tabulka']].forEach(function (m) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.mode = m[0];
+      b.textContent = m[1];
+      b.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        setMode(m[0]);
+      });
+      modes.appendChild(b);
+    });
+    head.appendChild(modes);
+
+    var pctBadge = document.createElement('span');
+    pctBadge.className = 'section__pct';
+    pctBadge.title = 'Hotovost bloku — průměr přes jeho položky';
+    head.appendChild(pctBadge);
+
     sec.appendChild(head);
 
     function setCollapsed(on) {
@@ -1782,6 +1901,14 @@
     MODULES.forEach(function (m) {
       var counts = { hotovo: 0, castecne: 0, chybi: 0 };
       m.items.forEach(function (it) { counts[stateOf(pctOf(it.id))]++; });
+      var sum = 0;
+      m.items.forEach(function (it) { sum += pctOf(it.id); });
+      var avg = Math.round(sum / m.items.length);
+      var badge = document.querySelector('#mod-' + m.id + ' .section__pct');
+      badge.textContent = 'hotovo ' + avg + ' %';
+      badge.style.color =
+        avg >= 100 ? 'var(--s-done)' : avg <= 0 ? 'var(--s-missing)' : 'var(--s-partial)';
+
       var link = railEl.querySelector('[data-mod="' + m.id + '"]');
       var openCount = m.items.length - counts.hotovo;
       link.querySelector('.rail__count').textContent = openCount ? openCount + ' otev.' : 'hotovo';
