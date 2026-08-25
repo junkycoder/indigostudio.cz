@@ -1,4 +1,5 @@
 <title>Statusboard mBlue</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,6 +141,7 @@
   .consensus__bar i.thin { background: var(--line-strong); }
 
   .consensus__meta { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); display: flex; gap: 1.1rem; flex-wrap: wrap; }
+  .consensus__goalbox { text-align: right; }
   .consensus__goal { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
 
   .people { display: flex; gap: .35rem; flex-wrap: wrap; align-items: center; }
@@ -464,6 +466,98 @@
 
   .row__log[hidden] { display: none; }
 
+  /* ── Mobil ──────────────────────────────────────────────────
+     Telefon není zmenšený desktop: písmo se zvětší (na 390 px je .82rem
+     nečitelných), rail s bloky spadne POD obsah (nahoře jen zabíral první
+     obrazovku) a ovládání řádku se rozloží do plné šířky místo mačkání
+     do sloupců. */
+  @media (max-width: 48rem) {
+    :root {
+      --fs-xs: .8rem;
+      --fs-sm: .92rem;
+      --fs-base: 1rem;
+      --fs-lg: 1.15rem;
+    }
+
+    .wrap, .toolbar__inner, .bulkbar__inner { padding-left: 1rem; padding-right: 1rem; }
+    .layout { padding: 1rem; gap: 1rem; }
+
+    /* Bloky patří pod obsah — na telefonu se scrolluje, nenaviguje. */
+    .rail { order: 2; position: static; max-height: none; overflow: visible; }
+    main { order: 1; }
+
+    .masthead { padding: 1.1rem 0 1rem; }
+    .masthead__grid { gap: 1rem; }
+    .scoreboard { gap: 1.1rem; }
+    .score__value { font-size: 1.25rem; }
+    .consensus { grid-template-columns: minmax(0, 1fr); }
+    .consensus__goalbox { text-align: left; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
+    .burn__legend { flex-direction: column; gap: .15rem; }
+
+    /* Lišta na telefonu NELEPÍ: se čtyřmi filtry, dvěma tlačítky a stavem
+       zabírá přes čtvrtinu obrazovky, takže by z listování zbyl průzor.
+       Odscrolluje pryč a je zpátky jedním tahem nahoru. */
+    .toolbar { position: static; }
+
+    /* Filtry ob dva na řádek, hledání přes celou šířku. */
+    .toolbar__inner { gap: .4rem; }
+    .field { flex: 1 1 8.5rem; }
+    .field--search { flex: 1 1 100%; }
+    .field input, .field select { min-width: 0; width: 100%; }
+    .toolbar__spacer { display: none; }
+    .saved-state { flex: 1 1 100%; font-size: var(--fs-xs); }
+    #logout { margin-left: auto; }
+
+    .section__head { padding: .75rem .85rem; }
+    .section__pick { order: 3; }
+
+    /* Řádek: text nahoře přes celou šířku, pod ním ovládání ve třech pásech.
+       Bez tohohle skládání zabrala jedna položka 390 px — půl obrazovky na
+       telefonu, takže se do ní vešly dvě a scrollování ztratilo smysl. */
+    .row {
+      grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+      row-gap: .45rem;
+      column-gap: .5rem;
+      padding: .65rem .85rem;
+    }
+
+    .row__check { grid-column: 1; grid-row: 1; }
+    .row__main { grid-column: 2 / 4; grid-row: 1; }
+    .row__state { grid-column: 2; grid-row: 2; width: 100%; max-width: 11rem; }
+    .row__hist { grid-column: 3; grid-row: 2; align-self: center; }
+    .phase { grid-column: 2 / 4; grid-row: 3; }
+    .scope { grid-column: 2; grid-row: 4; }
+    .weight { grid-column: 3; grid-row: 4; }
+    .team { grid-column: 2 / 4; grid-row: 5; }
+    .row__log { grid-column: 2 / 4; grid-row: 6; }
+    .row__state-label { font-size: var(--fs-xs); }
+    .row__state-slider { height: 1.6rem; }
+    .row__state-slider::-webkit-slider-thumb { width: 1rem; height: 1rem; margin-top: -.35rem; }
+    .row__state-slider::-moz-range-thumb { width: 1rem; height: 1rem; }
+
+    .row__title { font-size: var(--fs-base); }
+    .row__desc { font-size: var(--fs-sm); }
+
+    .phase { width: 100%; }
+    .phase button { flex: 1 1 0; padding: .5rem .2rem; font-size: var(--fs-xs); }
+
+    .scope { justify-self: start; padding: .4rem .8rem; }
+    .weight select { padding: .4rem .5rem; font-size: var(--fs-base); }
+    .team { min-height: 1.3rem; }
+    .row__hist { justify-self: end; padding: .35rem .5rem; }
+
+    /* Hromadná lišta se na telefonu nesmí rozjet do stran. */
+    .bulkbar__inner { gap: .4rem .5rem; }
+    .bulkbar__group { flex-wrap: wrap; }
+    .bulkbar__group > span { flex: 1 1 100%; margin: 0; }
+    .wchip { width: 2.1rem; height: 2.1rem; }
+
+    .cols { gap: 0; }
+    .panel { padding: .9rem 1rem; }
+    .hist li { grid-template-columns: minmax(0, 1fr) auto; }
+    .hist__who { grid-column: 1 / -1; }
+  }
+
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
@@ -522,7 +616,7 @@
           <span class="people" id="people"></span>
         </div>
       </div>
-      <div style="text-align: right">
+      <div class="consensus__goalbox">
         <span class="score__label">Shoda týmu</span>
         <span class="consensus__goal" id="cons-pct">–</span>
         <span class="score__label">cíl 90 %</span>
