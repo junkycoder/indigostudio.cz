@@ -243,7 +243,7 @@
 
   .row {
     display: grid;
-    grid-template-columns: 1.5rem 5.4rem minmax(0, 1fr) auto auto auto auto;
+    grid-template-columns: 1.5rem auto minmax(0, 1fr) auto auto auto auto auto;
     gap: .3rem .7rem;
     align-items: center;
     padding: .5rem 1rem;
@@ -258,17 +258,28 @@
 
   .row__check { width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; }
 
-  /* Chip stavu nese procento hotovosti a mění se sliderem — nálepka je jen
-     přečtení toho čísla (100 % hotovo, 1–99 % rozdělané, 0 % chybí). */
-  .row__state {
+  /* Dva chipy vedle sebe a stejně široké: vlevo hotovost, vpravo zbývající
+     náročnost. Čtou se jako dvojice („hotovo z 60 %, zbývá 8 h"), takže si
+     nesmí konkurovat velikostí. */
+  .row__chips { display: flex; gap: .35rem; width: 13rem; }
+
+  .row__state,
+  .row__effort {
     display: flex;
     flex-direction: column;
     gap: .12rem;
-    width: 6.2rem;
+    flex: 1 1 0;
+    min-width: 0;
     padding: .12rem .3rem .18rem;
     border-radius: 4px;
     border: 1px solid currentColor;
   }
+
+  /* Náročnost je neutrální — barvou mluví jen stav vlevo. Nula je tichá. */
+  .row__effort { color: var(--ink-2); }
+  .row__effort.is-zero { color: var(--muted); opacity: .55; }
+  .row__effort.is-default { opacity: .72; }
+  .row__effort.is-default.is-zero { opacity: .45; }
 
   .row__state[data-s="hotovo"] { color: var(--s-done); }
   .row__state[data-s="castecne"] { color: var(--s-partial); }
@@ -360,6 +371,26 @@
   .scope:hover { border-color: var(--s-extra); color: var(--ink); }
   .scope[aria-pressed="true"] { background: var(--s-extra); border-color: var(--s-extra); color: #fff; font-weight: 600; }
 
+  /* „Nice to have" stojí mezi rozsahem a vahou schválně: rozsah říká, odkud
+     položka je, tohle jestli ji vůbec chceme, a váha jak moc. */
+  .nice {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    white-space: nowrap;
+    cursor: pointer;
+    padding: .2rem .3rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+  }
+
+  .nice:hover { color: var(--ink); border-color: var(--line-strong); }
+  .nice input { accent-color: var(--accent); width: .9rem; height: .9rem; cursor: pointer; margin: 0; }
+  .nice.is-on { color: var(--accent); border-color: var(--accent); }
+
   .weight { display: flex; align-items: center; gap: .4rem; }
   .weight select { border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); padding: .2rem .3rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; cursor: pointer; }
   .weight__dot { width: .65rem; height: .65rem; border-radius: 50%; background: var(--line-strong); flex: none; }
@@ -381,7 +412,7 @@
 
   @media (max-width: 52rem) {
     .row { grid-template-columns: 1.5rem minmax(0, 1fr); row-gap: .45rem; }
-    .row__state, .row__main, .phase, .scope, .weight, .team { grid-column: 2; justify-self: start; }
+    .row__chips, .row__main, .phase, .scope, .nice, .weight, .team { grid-column: 2; justify-self: start; }
   }
 
   /* ── Panely ─────────────────────────────────────────────── */
@@ -523,13 +554,14 @@
 
     .row__check { grid-column: 1; grid-row: 1; }
     .row__main { grid-column: 2 / 4; grid-row: 1; }
-    .row__state { grid-column: 2; grid-row: 2; width: 100%; max-width: 11rem; }
+    .row__chips { grid-column: 2; grid-row: 2; width: 100%; max-width: 15rem; }
     .row__hist { grid-column: 3; grid-row: 2; align-self: center; }
     .phase { grid-column: 2 / 4; grid-row: 3; }
     .scope { grid-column: 2; grid-row: 4; }
     .weight { grid-column: 3; grid-row: 4; }
-    .team { grid-column: 2 / 4; grid-row: 5; }
-    .row__log { grid-column: 2 / 4; grid-row: 6; }
+    .nice { grid-column: 2 / 4; grid-row: 5; justify-self: start; padding: .35rem .4rem; }
+    .team { grid-column: 2 / 4; grid-row: 6; }
+    .row__log { grid-column: 2 / 4; grid-row: 7; }
     .row__state-label { font-size: var(--fs-xs); }
     .row__state-slider { height: 1.6rem; }
     .row__state-slider::-webkit-slider-thumb { width: 1rem; height: 1rem; margin-top: -.35rem; }
@@ -585,6 +617,10 @@
         <div class="score">
           <span class="score__label">Otevřeno</span>
           <span class="score__value" id="stat-open" style="color: var(--s-missing)">0</span>
+        </div>
+        <div class="score">
+          <span class="score__label">Zbývá práce</span>
+          <span class="score__value" id="stat-effort">–</span>
         </div>
         <div class="score">
           <span class="score__label">Moje zařazení</span>
@@ -701,6 +737,19 @@
       <button class="btn" type="button" data-bulk-pct="75">75 %</button>
       <button class="btn" type="button" data-bulk-pct="100">100 %</button>
     </div>
+    <div class="bulkbar__group">
+      <span>nice to have</span>
+      <button class="btn" type="button" data-bulk-nice="1">ano</button>
+      <button class="btn" type="button" data-bulk-nice="0">ne</button>
+    </div>
+    <div class="bulkbar__group">
+      <span>zbývá</span>
+      <button class="btn" type="button" data-bulk-effort="0">0 h</button>
+      <button class="btn" type="button" data-bulk-effort="5">5 h</button>
+      <button class="btn" type="button" data-bulk-effort="10">10 h</button>
+      <button class="btn" type="button" data-bulk-effort="20">20 h</button>
+      <button class="btn" type="button" data-bulk-effort="40">40 h</button>
+    </div>
     <div class="bulkbar__group" id="bulk-weights"><span>váha</span></div>
     <div class="toolbar__spacer"></div>
     <button class="btn btn--ghost" type="button" id="bulk-clear-values">Vymazat</button>
@@ -756,14 +805,16 @@
     <div class="panel">
       <h2>Jak to ovládat</h2>
       <p>
-        Levý chip je <strong>hotovost v procentech</strong>: výchozí hodnota vyšla z kódu (a je proto
-        bledší), sliderem ji přepíšeš na svůj odhad a nálepka se překlopí sama. Vpravo zařazuješ do
+        Vlevo jsou dva chipy: <strong>hotovost v procentech</strong> (výchozí hodnota vyšla z kódu)
+        a vedle ní <strong>zbývající náročnost v hodinách</strong>, kterou si stránka dopočítá
+        z rozpočtu bloku a zbývajících procent — hotová položka vyjde na nulu sama. Obojí je bledší,
+        dokud na slider nesáhneš; pak platí tvoje číslo. Vpravo zařazuješ do
         <strong>fáze</strong>, přepínáš <strong>nad rámec</strong> a dáváš <strong>váhu 0–9</strong>
         (0 = nechceme, 9 = jádro produktu). Úplně vpravo jsou hlasy ostatních — kolečko s iniciálou,
         barva kroužku je jejich fáze, číslo je jejich váha.
         Zaškrtni řádky (<kbd>Shift</kbd> + klik vybere rozsah) a nastav je po dávkách; klávesy
         <kbd>0</kbd>–<kbd>9</kbd> dají váhu, <kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd> fázi,
-        <kbd>N</kbd> přepne nad rámec, <kbd>Esc</kbd> zruší výběr. Hotovost se táhne sliderem na chipu stavu, hromadně tlačítky v liště. Ukládá se rovnou na server.
+        <kbd>N</kbd> přepne nad rámec, <kbd>H</kbd> nice to have, <kbd>Esc</kbd> zruší výběr. Hotovost se táhne sliderem na chipu stavu, hromadně tlačítky v liště. Ukládá se rovnou na server.
       </p>
       <ul class="legend">
         <li><span class="legend__swatch" style="background: var(--s-done)"></span>hotovo — 100 %</li>
@@ -864,7 +915,7 @@
 
   var MODULES = [
     {
-      id: 'kandidati', name: 'Kandidáti', hint: 'Databáze lidí, CV s fulltextem, karta kandidáta. V odhadu byla.',
+      id: 'kandidati', hours: 120, name: 'Kandidáti', hint: 'Databáze lidí, CV s fulltextem, karta kandidáta. V odhadu byla.',
       items: [
         { id: 'KAN-01', t: 'Seznam s panelem detailu a přepínačem karty/tabulka', d: 'Vlevo seznam, vpravo karta; šířku panelu si člověk přetáhne a zapamatuje se.', p: '/candidates' },
         { id: 'KAN-02', t: 'Fulltext včetně obsahu nahraných CV', d: 'Hledá v kandidátovi i v textu příloh; „Java“ najde člověka podle životopisu.' },
@@ -890,7 +941,7 @@
       ]
     },
     {
-      id: 'firmy', name: 'Firmy a kontakty', hint: 'Firemní karta, kontaktní osoby, holdingy. V odhadu byly.',
+      id: 'firmy', hours: 145, name: 'Firmy a kontakty', hint: 'Firemní karta, kontaktní osoby, holdingy. V odhadu byly.',
       items: [
         { id: 'FIR-01', t: 'Seznam firem s panelem, filtry a řazením', d: 'Stav, off-limit, odvětví, zodpovědný HRP; řazení i podle poslední aktivity a počtu projektů.', p: '/companies' },
         { id: 'FIR-02', t: 'Načtení z ARES podle IČO i podle názvu', d: 'Doplní název, adresu a DIČ; IČO zůstává nepovinné.' },
@@ -908,7 +959,7 @@
       ]
     },
     {
-      id: 'projekty', name: 'Projekty', hint: 'Obchodní rámec spolupráce. V odhadu byly.',
+      id: 'projekty', hours: 40, name: 'Projekty', hint: 'Obchodní rámec spolupráce. V odhadu byly.',
       items: [
         { id: 'PRO-01', t: 'Oddělené evidence klientských a interních projektů', d: 'Seznam vždy ukazuje jednu kategorii, nikdy se nemíchají.', p: '/projects?category=external' },
         { id: 'PRO-02', t: 'Filtry, fulltext, řazení, archiv', d: 'Stav, firma (multiselect), moje projekty, archivované mimo výchozí výpis.' },
@@ -921,7 +972,7 @@
       ]
     },
     {
-      id: 'nabor', name: 'Nábor: pozice, KOPS, výběrka', hint: 'V odhadu byl nábor; KOPS a volitelné fáze přibyly nad rámec.',
+      id: 'nabor', hours: 120, name: 'Nábor: pozice, KOPS, výběrka', hint: 'V odhadu byl nábor; KOPS a volitelné fáze přibyly nad rámec.',
       items: [
         { id: 'NAB-01', t: 'Setup náboru jako jeden formulář s autosave', d: 'Pozice, kalkulačka i fáze se ukládají naráz.' },
         { id: 'NAB-02', t: 'Spuštění náboru s ostrou validací', d: 'Co chybí, se vypíše až po odeslání, ne dopředu.' },
@@ -944,7 +995,7 @@
       ]
     },
     {
-      id: 'typy', name: 'Ostatní typy projektů', hint: 'HR poradenství, staffing, RPO, interní. V odhadu byly jako čtyři samostatné body.',
+      id: 'typy', hours: 40, name: 'Ostatní typy projektů', hint: 'HR poradenství, staffing, RPO, interní. V odhadu byly jako čtyři samostatné body.',
       items: [
         { id: 'TYP-01', t: 'Typy projektu jako dimenze', d: 'Nábor, HRPo, Staffing, RPO plus kategorie klientský/interní; filtry i nabídka v liště fungují.' },
         { id: 'TYP-02', t: 'Interní projekty jako vlastní kategorie', d: 'Nábor včetně KOPS jim zůstává; typy nemají.', ref: '#259' },
@@ -955,7 +1006,7 @@
       ]
     },
     {
-      id: 'fakturace', name: 'Fakturace', hint: 'V odhadu byla. Jádro stojí, dvě věci se mají překlopit.',
+      id: 'fakturace', hours: 85, name: 'Fakturace', hint: 'V odhadu byla. Jádro stojí, dvě věci se mají překlopit.',
       items: [
         { id: 'FAK-01', t: 'Seznam faktur s náhledem PDF a modal faktury', d: 'Položky, DPH rekapitulace, číselná řada, splatnost.', p: '/invoices' },
         { id: 'FAK-02', t: 'PDF faktury s QR platbou', d: 'Dodavatel mBlue Czech s.r.o., česká sazba, volitelně ke stažení.' },
@@ -968,7 +1019,7 @@
       ]
     },
     {
-      id: 'aktivity', name: 'Aktivity', hint: 'V odhadu byly. V Atollonu je modul mrtvý od 2017, takže je to nová funkce, ne náhrada.',
+      id: 'aktivity', hours: 20, name: 'Aktivity', hint: 'V odhadu byly. V Atollonu je modul mrtvý od 2017, takže je to nová funkce, ne náhrada.',
       items: [
         { id: 'AKT-01', t: 'Ruční záznam komunikace s typem, časem a autorem', d: 'Telefon, schůzka, e-mail; z karty i z globálního dialogu.', p: '/activities' },
         { id: 'AKT-02', t: 'Aktivity na kandidátovi, firmě, pozici i projektu', d: 'Sekce se překresluje sama, bez načtení stránky.' },
@@ -978,7 +1029,7 @@
       ]
     },
     {
-      id: 'provoz', name: 'Úkoly, výkazy, dokumenty', hint: 'V odhadu byly jako tři samostatné body. Stojí celé.',
+      id: 'provoz', hours: 35, name: 'Úkoly, výkazy, dokumenty', hint: 'V odhadu byly jako tři samostatné body. Stojí celé.',
       items: [
         { id: 'UKO-01', t: 'Úkoly s termínem, prioritou, řešitelem a vazbami', d: 'Filtry, řazení podle naléhavosti, hromadné dokončení i mazání, export CSV.', p: '/tasks' },
         { id: 'UKO-02', t: 'Karta úkolů na každé entitě', d: 'Kandidát, firma, projekt, pozice; překresluje se sama.' },
@@ -994,7 +1045,7 @@
       ]
     },
     {
-      id: 'reporty', name: 'Reporty', hint: 'V odhadu se počítalo se sadou, kterou ukazovala Tereza S. z Atollonu.',
+      id: 'reporty', hours: 230, name: 'Reporty', hint: 'V odhadu se počítalo se sadou, kterou ukazovala Tereza S. z Atollonu.',
       items: [
         { id: 'REP-01', t: 'Forecast náboru', d: 'Otevřené pozice vážené pravděpodobností podle fáze.', p: '/reports/forecast' },
         { id: 'REP-02', t: 'Funnel', d: 'Kolik kandidatur dosáhlo které kanonické fáze napříč pozicemi.', p: '/reports/funnel' },
@@ -1006,7 +1057,7 @@
       ]
     },
     {
-      id: 'uzivatele', name: 'Uživatelé, role, týmy, plány', hint: 'V odhadu byly. Stojí celé.',
+      id: 'uzivatele', hours: 88, name: 'Uživatelé, role, týmy, plány', hint: 'V odhadu byly. Stojí celé.',
       items: [
         { id: 'UZI-01', t: 'Přihlášení magic linkem bez hesla', d: 'Vlastní implementace, gem odpojen.' },
         { id: 'UZI-02', t: 'Správa uživatelů, rolí a práv správce', d: 'Seznam a modal; role řídí nabídku akcí i právo na KOPS.', p: '/nastaveni/users' },
@@ -1018,7 +1069,7 @@
       ]
     },
     {
-      id: 'migrace', name: 'Migrace dat z Atollonu', hint: 'V odhadu 1 200 h nebyla vyčíslená samostatně.',
+      id: 'migrace', hours: 120, name: 'Migrace dat z Atollonu', hint: 'V odhadu 1 200 h nebyla vyčíslená samostatně.',
       items: [
         { id: 'MIG-01', t: 'ETL 1. vlna: uživatelé, firmy, kandidáti, číselník pozic, aktivity', d: 'Import přes modely s validacemi, idempotentní, s reportem odmítnutých řádků.' },
         { id: 'MIG-02', t: 'ETL 2. vlna: zakázky, pozice, fáze, výběrová řízení, inzeráty', d: 'Včetně textů inzerátů k pozicím.' },
@@ -1031,7 +1082,7 @@
       ]
     },
     {
-      id: 'prechod', name: 'Nasazení a přechod firmy', hint: 'V odhadu 1 200 h nebylo vyčíslené samostatně.',
+      id: 'prechod', hours: 80, name: 'Nasazení a přechod firmy', hint: 'V odhadu 1 200 h nebylo vyčíslené samostatně.',
       items: [
         { id: 'PRE-01', t: 'Nasazení na staging a testovací týden', d: 'Testuje se ve čtyřech lidech od 24. 8., dva z nich „nepolíbení“.' },
         { id: 'PRE-02', t: 'Scénáře pro testery', d: 'Procházení aplikace „z důvodu“, se záznamovým archem.' },
@@ -1044,7 +1095,7 @@
       ]
     },
     {
-      id: 'obchod', name: 'Obchodní pipeline', hint: 'Nad rámec odhadu — kandidát na odložení do další fáze.',
+      id: 'obchod', hours: 60, name: 'Obchodní pipeline', hint: 'Nad rámec odhadu — kandidát na odložení do další fáze.',
       items: [
         { id: 'OBC-01', t: 'Fáze před náborem jako vlastní trychtýř', d: 'Obchodní trychtýř na úrovni firmy nebo zakázky, jak byl ukázaný na srpnové schůzce.', s: 'chybi', x: true },
         { id: 'OBC-02', t: 'Nabídka jako vlastní entita', d: 'Aby na ní mohly viset důvody neuzavřené spolupráce a stav vyjednávání.', s: 'chybi', x: true },
@@ -1053,7 +1104,7 @@
       ]
     },
     {
-      id: 'integrace', name: 'Integrace a pokročilé flows', hint: 'V odhadu byly; část se rozhodnutím odložila.',
+      id: 'integrace', hours: 255, name: 'Integrace a pokročilé flows', hint: 'V odhadu byly; část se rozhodnutím odložila.',
       items: [
         { id: 'INT-01', t: 'ARES', d: 'Podle IČO i podle názvu, s předvyplněním firmy.' },
         { id: 'INT-02', t: 'Základní vytěžení CV', d: 'Text z PDF, dokumentů i skenů, prefill polí kandidáta.' },
@@ -1067,7 +1118,7 @@
       ]
     },
     {
-      id: 'ui', name: 'UI, design a technický dluh', hint: 'Nebylo v odhadu jako položka, ale spotřebovává čas.',
+      id: 'ui', hours: 60, name: 'UI, design a technický dluh', hint: 'Nebylo v odhadu jako položka, ale spotřebovává čas.',
       items: [
         { id: 'UI-01', t: 'Split-view, ostrovy a práce bez načítání stránky', d: 'Jednotný vzor pro všechny sekce, sdílitelné odkazy do panelu, historie navštívených.' },
         { id: 'UI-02', t: 'Světlý a tmavý motiv, styleguide, nápověda', d: '' },
@@ -1085,7 +1136,7 @@
       ]
     },
     {
-      id: 'rizeni', name: 'Řízení projektu', hint: 'Ne funkce aplikace, ale to, co rozhoduje o dodržení rozpočtu.',
+      id: 'rizeni', hours: 20, name: 'Řízení projektu', hint: 'Ne funkce aplikace, ale to, co rozhoduje o dodržení rozpočtu.',
       items: [
         { id: 'RIZ-01', t: 'Pročistit backlog v Gitei', d: 'Z 35 otevřených issues je nejméně dvanáct podle kódu hotových. Zavírat při merge.', s: 'chybi' },
         { id: 'RIZ-02', t: 'Uzavřít 33 otevřených otázek na klienta', d: 'Dokud rozhodnutí nepadnou, práce se buď dělá naslepo, nebo stojí.', s: 'chybi' },
@@ -1112,6 +1163,29 @@
     var e = mine[id];
     if (e && e.pct !== null && e.pct !== undefined) return e.pct;
     return DEFAULT_PCT[byId[id].s];
+  }
+
+  // Náročnost = odhad ZBÝVAJÍCÍ práce v hodinách. Základ je rozpočet bloku
+  // rozpuštěný mezi jeho položky (`hours` u modulu — z Přemkovy tabulky odhadů
+  // tam, kde ji jde namapovat, jinde odhad) a vynásobený tím, kolik ještě
+  // zbývá. Hotová položka tedy vyjde na nulu sama, bez dalšího zásahu.
+  function effortDefault(id) {
+    var it = byId[id];
+    var perItem = (it.module.hours || 0) / it.module.items.length;
+    var remaining = (100 - pctOf(id)) / 100;
+    return Math.round((perItem * remaining) / 5) * 5;
+  }
+
+  function effortOf(id) {
+    var e = mine[id];
+    if (e && e.effort !== null && e.effort !== undefined) return e.effort;
+    return effortDefault(id);
+  }
+
+  function effortMax(id) {
+    var it = byId[id];
+    var perItem = (it.module.hours || 0) / it.module.items.length;
+    return Math.max(40, Math.ceil((perItem * 2) / 10) * 10);
   }
 
   function stateOf(pct) {
@@ -1154,7 +1228,7 @@
   }
 
   function entry(id) {
-    if (!mine[id]) mine[id] = { p: null, w: null, x: null, pct: null };
+    if (!mine[id]) mine[id] = { p: null, w: null, x: null, pct: null, effort: null, nice: null };
     return mine[id];
   }
 
@@ -1194,7 +1268,9 @@
       phase: e.p,
       weight: e.w,
       scope: e.x === null || e.x === undefined ? null : e.x ? 1 : 0,
-      pct: e.pct === null || e.pct === undefined ? null : e.pct
+      pct: e.pct === null || e.pct === undefined ? null : e.pct,
+      effort: e.effort === null || e.effort === undefined ? null : e.effort,
+      nice: e.nice === null || e.nice === undefined ? null : e.nice ? 1 : 0
     };
     note('ukládám…');
     clearTimeout(flushTimer);
@@ -1240,13 +1316,15 @@
     others = {};
     (data.ratings || []).forEach(function (r) {
       if (!byId[r.item_id]) return;
-      var rec = { email: r.email, name: r.name || r.email, p: r.phase, w: r.weight, x: r.scope, pct: r.pct };
+      var rec = { email: r.email, name: r.name || r.email, p: r.phase, w: r.weight, x: r.scope, pct: r.pct, effort: r.effort, nice: r.nice };
       if (r.email === ME.email) {
         mine[r.item_id] = {
           p: r.phase,
           w: r.weight,
           x: r.scope === null || r.scope === undefined ? null : !!r.scope,
-          pct: r.pct === null || r.pct === undefined ? null : r.pct
+          pct: r.pct === null || r.pct === undefined ? null : r.pct,
+          effort: r.effort === null || r.effort === undefined ? null : r.effort,
+          nice: r.nice === null || r.nice === undefined ? null : !!r.nice
         };
       } else {
         (others[r.item_id] = others[r.item_id] || []).push(rec);
@@ -1396,7 +1474,37 @@
       stats();
     });
     st.appendChild(stSlider);
-    row.appendChild(st);
+
+    var ef = document.createElement('div');
+    ef.className = 'row__effort';
+
+    var efLabel = document.createElement('span');
+    efLabel.className = 'row__state-label';
+    ef.appendChild(efLabel);
+
+    var efSlider = document.createElement('input');
+    efSlider.type = 'range';
+    efSlider.className = 'row__state-slider';
+    efSlider.min = '0';
+    efSlider.max = String(effortMax(item.id));
+    efSlider.step = '5';
+    efSlider.setAttribute('aria-label', 'Náročnost: ' + item.t);
+    efSlider.addEventListener('input', function () {
+      var e = entry(item.id);
+      e.effort = Number(efSlider.value);
+      paint(item.id);
+    });
+    efSlider.addEventListener('change', function () {
+      pushRating(item.id);
+      stats();
+    });
+    ef.appendChild(efSlider);
+
+    var chips = document.createElement('div');
+    chips.className = 'row__chips';
+    chips.appendChild(st);
+    chips.appendChild(ef);
+    row.appendChild(chips);
 
     var main = document.createElement('div');
     main.className = 'row__main';
@@ -1455,6 +1563,22 @@
       stats();
     });
     row.appendChild(scope);
+
+    var nice = document.createElement('label');
+    nice.className = 'nice';
+    var niceBox = document.createElement('input');
+    niceBox.type = 'checkbox';
+    niceBox.setAttribute('aria-label', 'Nice to have: ' + item.t);
+    niceBox.addEventListener('change', function () {
+      var e = entry(item.id);
+      e.nice = niceBox.checked;
+      pushRating(item.id);
+      paint(item.id);
+      stats();
+    });
+    nice.appendChild(niceBox);
+    nice.appendChild(document.createTextNode('nice to have'));
+    row.appendChild(nice);
 
     var weight = document.createElement('div');
     weight.className = 'weight';
@@ -1543,6 +1667,16 @@
     slider.value = String(pct);
     slider.style.setProperty('--fill', pct + '%');
     row.dataset.s = stateKey;
+
+    var hrs = effortOf(id);
+    var ef = row.querySelector('.row__effort');
+    ef.classList.toggle('is-default', !(e.effort !== null && e.effort !== undefined));
+    ef.classList.toggle('is-zero', hrs === 0);
+    ef.querySelector('.row__state-label').textContent = hrs === 0 ? 'nic nezbývá' : 'zbývá ' + hrs + ' h';
+    var efSlider = ef.querySelector('.row__state-slider');
+    var max = Number(efSlider.max) || 40;
+    efSlider.value = String(Math.min(hrs, max));
+    efSlider.style.setProperty('--fill', Math.round((Math.min(hrs, max) / max) * 100) + '%');
     row.querySelectorAll('.phase button').forEach(function (b) {
       b.setAttribute('aria-pressed', b.dataset.p === e.p ? 'true' : 'false');
     });
@@ -1550,6 +1684,11 @@
     sel.value = (e.w === null || e.w === undefined) ? '' : String(e.w);
     row.querySelector('.weight__dot').style.background = weightColor(e.w);
     row.querySelector('.scope').setAttribute('aria-pressed', scopeOf(id) ? 'true' : 'false');
+
+    var niceEl = row.querySelector('.nice');
+    var niceOn = !!(e.nice);
+    niceEl.querySelector('input').checked = niceOn;
+    niceEl.classList.toggle('is-on', niceOn);
     renderTeam(id);
   }
 
@@ -1645,6 +1784,13 @@
     document.getElementById('stat-total').textContent = ALL.length;
     document.getElementById('stat-done').textContent = done;
     document.getElementById('stat-open').textContent = open;
+    var hours = 0;
+    ALL.forEach(function (it) { hours += effortOf(it.id); });
+    var effortEl = document.getElementById('stat-effort');
+    effortEl.textContent = hours + ' h';
+    effortEl.style.color = hours > 300 ? 'var(--s-missing)' : 'var(--s-done)';
+    effortEl.title = 'Součet zbývající práce podle tvých odhadů. Rozpočet má do konce 300 h.';
+
     document.getElementById('stat-rated').textContent = rated;
     document.getElementById('stat-pct').textContent = ' / ' + Math.round(rated / ALL.length * 100) + ' %';
 
@@ -1722,6 +1868,16 @@
     stats(); applyFilters();
   }
 
+  function bulkNice(on) {
+    selection.forEach(function (id) { entry(id).nice = on; pushRating(id); paint(id); });
+    stats(); applyFilters();
+  }
+
+  function bulkEffort(h) {
+    selection.forEach(function (id) { entry(id).effort = h; pushRating(id); paint(id); });
+    stats(); applyFilters();
+  }
+
   function bulkScope(x) {
     selection.forEach(function (id) { entry(id).x = x; pushRating(id); paint(id); });
     stats(); applyFilters();
@@ -1754,12 +1910,20 @@
     b.addEventListener('click', function () { bulkPct(Number(b.dataset.bulkPct)); });
   });
 
+  document.querySelectorAll('[data-bulk-nice]').forEach(function (b) {
+    b.addEventListener('click', function () { bulkNice(b.dataset.bulkNice === '1'); });
+  });
+
+  document.querySelectorAll('[data-bulk-effort]').forEach(function (b) {
+    b.addEventListener('click', function () { bulkEffort(Number(b.dataset.bulkEffort)); });
+  });
+
   document.querySelectorAll('[data-bulk-scope]').forEach(function (b) {
     b.addEventListener('click', function () { bulkScope(b.dataset.bulkScope === '1'); });
   });
 
   document.getElementById('bulk-clear-values').addEventListener('click', function () {
-    selection.forEach(function (id) { mine[id] = { p: null, w: null, x: null, pct: null }; pushRating(id); paint(id); });
+    selection.forEach(function (id) { mine[id] = { p: null, w: null, x: null, pct: null, effort: null, nice: null }; pushRating(id); paint(id); });
     stats(); applyFilters();
   });
 
@@ -1784,6 +1948,12 @@
     if (e.key === 'Escape' && selection.size) { selection.clear(); syncSelection(); return; }
     if (!selection.size) return;
     if (e.key >= '0' && e.key <= '9') { bulkWeight(Number(e.key)); e.preventDefault(); return; }
+    if (e.key.toLowerCase() === 'h') {
+      var anyOffNice = Array.from(selection).some(function (id) { return !(mine[id] || {}).nice; });
+      bulkNice(anyOffNice);
+      e.preventDefault();
+      return;
+    }
     if (e.key.toLowerCase() === 'n') {
       var anyOff = Array.from(selection).some(function (id) { return !scopeOf(id); });
       bulkScope(anyOff);
@@ -1841,15 +2011,19 @@
   });
 
   document.getElementById('export-csv').addEventListener('click', function () {
-    var lines = ['id;blok;polozka;stav;kdo;faze;vaha;nad_ramec'];
+    var lines = ['id;blok;polozka;stav;hotovo_pct;zbyva_h;kdo;faze;vaha;nad_ramec;nice_to_have'];
     ALL.forEach(function (it) {
       var rows = [];
       var e = mine[it.id];
-      if (e && (e.p || e.w !== null || e.x !== null)) rows.push({ name: ME.name, p: e.p, w: e.w, x: scopeOf(it.id) });
-      (others[it.id] || []).forEach(function (o) { rows.push({ name: o.name, p: o.p, w: o.w, x: !!o.x }); });
-      if (!rows.length) rows.push({ name: '', p: '', w: '', x: !!it.x });
+      if (e && (e.p || e.w !== null || e.x !== null || e.nice !== null)) rows.push({ name: ME.name, p: e.p, w: e.w, x: scopeOf(it.id), nice: e.nice });
+      (others[it.id] || []).forEach(function (o) { rows.push({ name: o.name, p: o.p, w: o.w, x: !!o.x, nice: !!o.nice }); });
+      if (!rows.length) rows.push({ name: '', p: '', w: '', x: !!it.x, nice: false });
       rows.forEach(function (r) {
-        lines.push([it.id, q(it.module.name), q(it.t), it.s, q(r.name), r.p || '', (r.w === null || r.w === undefined) ? '' : r.w, r.x ? '1' : '0'].join(';'));
+        lines.push([
+          it.id, q(it.module.name), q(it.t), stateOf(pctOf(it.id)), pctOf(it.id), effortOf(it.id),
+          q(r.name), r.p || '', (r.w === null || r.w === undefined) ? '' : r.w,
+          r.x ? '1' : '0', r.nice ? '1' : '0'
+        ].join(';'));
       });
     });
     io.value = lines.join('\n');
@@ -1897,6 +2071,13 @@
     }
     if ((h.scope_from ? 1 : 0) !== (h.scope_to ? 1 : 0)) {
       parts.push(h.scope_to ? 'označeno nad rámec' : 'zrušeno nad rámec');
+    }
+    if ((h.nice_from ? 1 : 0) !== (h.nice_to ? 1 : 0)) {
+      parts.push(h.nice_to ? 'označeno nice to have' : 'zrušeno nice to have');
+    }
+    if ((h.effort_from === null ? null : h.effort_from) !== (h.effort_to === null ? null : h.effort_to)) {
+      parts.push('náročnost ' + (h.effort_from === null ? '–' : h.effort_from + ' h') + ' → ' +
+                 (h.effort_to === null ? '–' : h.effort_to + ' h'));
     }
     if ((h.pct_from === null ? null : h.pct_from) !== (h.pct_to === null ? null : h.pct_to)) {
       parts.push('hotovost ' + (h.pct_from === null ? '–' : h.pct_from + ' %') + ' → ' +

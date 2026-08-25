@@ -156,6 +156,16 @@ je to jeho odhad a nálepka se překlopí sama (100 % hotovo, 1–99 % rozdělan
 Rozdíl větší než dvacet bodů mezi dvěma lidmi dělá z položky spornou, stejně jako
 rozdílná fáze.
 
+**Náročnost** je druhý chip vedle hotovosti (stejně široký, taky se sliderem) a drží
+odhad ZBÝVAJÍCÍ práce v hodinách. Výchozí číslo si stránka spočítá: rozpočet bloku
+(`hours` u modulu — z Přemkovy tabulky odhadů tam, kde ji jde namapovat, jinde odhad)
+rozpustí mezi jeho položky a vynásobí zbývajícími procenty, takže hotová položka vyjde
+na nulu sama. Součet přes všechny položky je v hlavičce („Zbývá práce") a červená,
+když přeleze 300 h zbývajícího rozpočtu.
+
+**Nice to have** je samostatná osa mezi rozsahem a vahou: „nad rámec" říká, ODKUD
+položka je, tohle jestli ji vůbec chceme.
+
 **Historie změn** se píše při každé skutečné změně hodnocení (zápis, který nic
 nemění, se ignoruje) do `sb_history` — řádek nese stav před i po. Panel na stránce
 ukazuje posledních 200 změn s filtrem na člověka, tlačítko `⟲ N` v řádku rozbalí
