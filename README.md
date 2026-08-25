@@ -167,9 +167,15 @@ když přeleze 300 h zbývajícího rozpočtu.
 položka je, tohle jestli ji vůbec chceme.
 
 **Historie změn** se píše při každé skutečné změně hodnocení (zápis, který nic
-nemění, se ignoruje) do `sb_history` — řádek nese stav před i po. Panel na stránce
-ukazuje posledních 200 změn s filtrem na člověka, tlačítko `⟲ N` v řádku rozbalí
-historii jedné položky.
+nemění, se ignoruje) do `sb_history` — řádek nese stav před i po. Změny téže položky
+od téhož člověka se **do minuty slévají do jednoho záznamu** (`MERGE_WINDOW_SECONDS`);
+kdo se proklikáním vrátí na výchozí hodnotu, nezanechá záznam žádný. Panel je sbalený,
+seznam má strop výšky a scrolluje v sobě; tlačítko `⟲ N` v řádku rozbalí historii
+jedné položky.
+
+⚠️ Vlastní hodnocení (`mine`) se ze serveru přebírá **jen při prvním načtení**.
+Periodický refresh tahá cizí hlasy — kdyby přepisoval i vlastní, sebral by rozdělanou
+změnu: klik doběhne dřív než odpověď a další zápis by poslal starou hodnotu zpátky.
 
 > Bot přes Anthropic API a nahrávání podkladů tu byly 25. 8. 2026 pár hodin a Dan
 > je tentýž den zrušil ve prospěch téhle historie. Tabulky `sb_files` / `sb_ai_notes`

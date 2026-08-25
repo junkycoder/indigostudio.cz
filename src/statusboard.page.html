@@ -487,6 +487,31 @@
   .empty-filter[hidden] { display: none; }
 
   .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem 1.15rem; margin-bottom: 1.1rem; }
+  /* Sbalovací panel: zavřený je jeden řádek, otevřený se chová jako ostatní. */
+  .panel--fold { padding: .7rem 1.15rem; }
+  .panel--fold[open] { padding-bottom: 1rem; }
+
+  .panel__summary {
+    display: flex;
+    align-items: baseline;
+    gap: .7rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .panel__summary::-webkit-details-marker { display: none; }
+
+  .panel__summary::before {
+    content: "▸";
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+
+  .panel--fold[open] .panel__summary::before { content: "▾"; }
+  .panel__summary h2 { margin: 0; }
+  .panel__hint { color: var(--muted); font-size: var(--fs-sm); }
+
   .panel h2 { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 700; letter-spacing: -.015em; margin: 0 0 .55rem; }
   .panel h3 { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 1rem 0 .35rem; }
   .panel p { margin: .35rem 0; color: var(--ink-2); font-size: var(--fs-sm); }
@@ -515,7 +540,17 @@
 
   /* ── Historie změn ──────────────────────────────────────── */
 
-  .hist { list-style: none; margin: .6rem 0 0; padding: 0; display: flex; flex-direction: column; }
+  /* Historie roste donekonečna, takže má vlastní strop a scrolluje v sobě —
+     jinak by po pár dnech hodnocení odsunula všechno pod sebou mimo obrazovku. */
+  .hist {
+    list-style: none;
+    margin: .6rem 0 0;
+    padding: 0 .2rem 0 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 18rem;
+    overflow-y: auto;
+  }
 
   .hist li {
     display: grid;
@@ -817,14 +852,13 @@
 
     <div id="sections"></div>
 
-    <div class="panel">
-      <h2>Historie změn</h2>
-      <p>
-        Kdo kdy co přehodnotil. Zápis, který nic nemění, se sem nepíše — jen skutečné změny
-        fáze, váhy nebo příznaku „nad rámec". Historii jedné položky rozbalíš tlačítkem
-        s počtem změn přímo v jejím řádku.
-      </p>
-      <div class="io-actions" style="margin-bottom: .3rem">
+    <details class="panel panel--fold">
+      <summary class="panel__summary">
+        <h2>Historie změn</h2>
+        <span class="panel__hint">kdo kdy co přehodnotil</span>
+      </summary>
+
+      <div class="io-actions" style="margin: .6rem 0 .3rem">
         <div class="field">
           <label for="h-who">Kdo</label>
           <select id="h-who"><option value="">kdokoli</option></select>
@@ -832,7 +866,7 @@
         <button class="btn" type="button" id="h-refresh">Načíst znovu</button>
       </div>
       <ul class="hist" id="hist"></ul>
-    </div>
+    </details>
 
     <div class="panel">
       <h2>Výstup</h2>
@@ -1269,7 +1303,7 @@
     fetch('/api/statusboard/state', { headers: { 'Accept': 'application/json' } })
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        applyState(data);
+        applyState(data, false);
         renderTeamAll();
         stats();
         applyFilters();
@@ -1277,15 +1311,21 @@
       .catch(function () { /* přehled ostatních není kritický */ });
   }
 
-  function applyState(data) {
+  // `mine` se ze serveru přebírá JEN při prvním načtení. Periodický refresh
+  // (a ten po každém uložení) tahá cizí hlasy — kdyby přepisoval i moje, sebral
+  // by mi rozdělanou změnu: klik doběhne dřív než odpověď a další zápis by pak
+  // poslal starou hodnotu zpátky.
+  function applyState(data, withMine) {
     members = data.members || [];
 
-    mine = {};
     others = {};
+    if (withMine) mine = {};
+
     (data.ratings || []).forEach(function (r) {
       if (!byId[r.item_id]) return;
       var rec = { email: r.email, name: r.name || r.email, p: r.phase, w: r.weight, x: r.scope, pct: r.pct, effort: r.effort, nice: r.nice };
       if (r.email === ME.email) {
+        if (!withMine) return;
         mine[r.item_id] = {
           p: r.phase,
           w: r.weight,
@@ -2239,7 +2279,7 @@
   fetch('/api/statusboard/state', { headers: { 'Accept': 'application/json' } })
     .then(function (r) { return r.json(); })
     .then(function (data) {
-      applyState(data);
+      applyState(data, true);
       renderTeamAll();
       applyFilters();
       stats();

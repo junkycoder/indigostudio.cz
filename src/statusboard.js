@@ -13,6 +13,8 @@ const MAIL_FROM = "poptavka@indigostudio.cz";
 const SESSION_COOKIE = "sb_session";
 const SESSION_DAYS = 30;
 const MAGIC_MINUTES = 60;
+// Jak dlouho se změny téže položky od téhož člověka slévají do jednoho záznamu.
+const MERGE_WINDOW_SECONDS = 60;
 
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj), {
@@ -354,6 +356,25 @@ async function saveRatings(request, env, user) {
     prev[row.item_id] = row;
   });
 
+  // Klikání se slévá: dokud je poslední záznam historie mladší než minuta,
+  // přepisuje se místo zakládání nového. Kdo si během půl minuty rozmyslí fázi
+  // třikrát, má v historii jednu změnu z původní hodnoty na konečnou — a když
+  // skončí tam, kde začal, záznam se smaže úplně.
+  const recent = await env.DB.prepare(
+    `SELECT id, item_id, phase_from, weight_from, scope_from, pct_from, effort_from, nice_from
+       FROM sb_history
+      WHERE email = ?1 AND item_id IN (${placeholders})
+        AND changed_at > datetime('now', '-${MERGE_WINDOW_SECONDS} seconds')
+      ORDER BY id DESC`
+  )
+    .bind(user.email, ...ids)
+    .all();
+
+  const openEntry = {};
+  (recent.results || []).forEach((row) => {
+    if (!openEntry[row.item_id]) openEntry[row.item_id] = row;
+  });
+
   const stmts = [];
 
   for (const r of rows) {
@@ -394,6 +415,31 @@ async function saveRatings(request, env, user) {
       (was.effort ?? null) === effort &&
       (was.nice ?? null) === nice;
     if (same) continue;
+
+    const open = openEntry[r.item];
+
+    if (open) {
+      // Vrátil se přesně tam, kde záznam začínal? Pak se nic nestalo.
+      const backToStart =
+        (open.phase_from ?? null) === phase &&
+        (open.weight_from ?? null) === weight &&
+        (open.scope_from ?? null) === scope &&
+        (open.pct_from ?? null) === pct &&
+        (open.effort_from ?? null) === effort &&
+        (open.nice_from ?? null) === nice;
+
+      stmts.push(
+        backToStart
+          ? env.DB.prepare(`DELETE FROM sb_history WHERE id = ?1`).bind(open.id)
+          : env.DB.prepare(
+              `UPDATE sb_history
+                  SET phase_to = ?2, weight_to = ?3, scope_to = ?4, pct_to = ?5,
+                      effort_to = ?6, nice_to = ?7, changed_at = datetime('now')
+                WHERE id = ?1`
+            ).bind(open.id, phase, weight, scope, pct, effort, nice)
+      );
+      continue;
+    }
 
     stmts.push(
       env.DB.prepare(
