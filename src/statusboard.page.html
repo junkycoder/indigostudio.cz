@@ -235,7 +235,31 @@
 
   .section { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 1.1rem; overflow: hidden; }
   .section[hidden] { display: none; }
-  .section__head { display: flex; flex-wrap: wrap; gap: .5rem .9rem; align-items: baseline; padding: .85rem 1rem; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+  .section__head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem .9rem;
+    align-items: baseline;
+    padding: .85rem 1rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+    cursor: pointer;
+  }
+
+  .section__head:hover { background: var(--accent-soft); }
+
+  /* Šipka drží směr podle stavu — sbalený blok ukazuje doprava. */
+  .section__caret {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    width: .9rem;
+    flex: none;
+    align-self: center;
+  }
+
+  .section.is-collapsed .section__head { border-bottom: 0; }
+  .section.is-collapsed .row { display: none; }
   .section__head h2 { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); letter-spacing: -.015em; margin: 0; }
   .section__hint { color: var(--muted); font-size: var(--fs-sm); flex: 1 1 16rem; }
   .section__pick { background: transparent; border: 1px solid var(--line-strong); border-radius: 6px; font-size: var(--fs-xs); padding: .2rem .5rem; cursor: pointer; color: var(--muted); white-space: nowrap; }
@@ -600,7 +624,7 @@
         <p class="eyebrow">2. 4. – 25. 8. 2026 · větev staging · stav k 25. 8. odpoledne</p>
         <h1>Statusboard mBlue</h1>
         <p class="masthead__sub">
-          Stav přečtený z kódu postavený proti původnímu zadání na 1 200 hodin. Každý z týmu má
+          Stav přečtený z kódu postavený proti původnímu zadání. Každý z týmu má
           vlastní verzi zařazení a vidí verze ostatních. Cíl je dostat shodu nad 90 % — pak je z toho
           plán první fáze.
         </p>
@@ -636,7 +660,6 @@
       </div>
       <div class="burn__legend">
         <span>75 % rozpočtu · 5 měsíců · 1 757 commitů · 138 migrací</span>
-        <span>1 200 h</span>
       </div>
     </div>
 
@@ -768,89 +791,7 @@
   </nav>
 
   <main>
-    <div class="panel">
-      <h2>Kde jsme</h2>
-      <div class="cols">
-        <div>
-          <h3>Odpracováno</h3>
-          <p>
-            <strong>900 z 1 200 hodin</strong> za pět měsíců (2. 4. – 25. 8. 2026). Zbývá 300 hodin
-            na to, co je níž označené jako <strong>rozdělané</strong> a <strong>chybí</strong> — plus
-            migrace dat a přechod firmy, které v odhadu nebyly vyčíslené samostatně.
-          </p>
-          <h3>Co je v aplikaci hotové</h3>
-          <p>
-            Jádro CRM i ATS stojí a je proklikatelné: kandidáti s fulltextem v CV, firmy s ARES,
-            projekty, nábor s trychtýřem a KOPS, úkoly, výkazy, faktury s PDF, aktivity, čtyři reporty,
-            uživatelé, týmy, číselníky, GDPR audit výmazů.
-          </p>
-        </div>
-        <div>
-          <h3>Co se od odhadu změnilo</h3>
-          <ul>
-            <li><strong>Přibylo:</strong> KOPS kalkulačka a variabilní fáze výběrového řízení.</li>
-            <li><strong>Přibylo:</strong> propracovaná obchodní pipeline, jak byla ukázaná v srpnu.</li>
-            <li><strong>Odloženo:</strong> Merk, Money a inzertní servery až za první fázi.</li>
-            <li><strong>Nezapočítané:</strong> migrace dat z Atollonu a přechod firmy do nového systému.</li>
-          </ul>
-          <h3>Co se tady rozhoduje</h3>
-          <p>
-            Každý zařadí položky do fází a označí, co považuje za práci <strong>nad rámec</strong>
-            původního zadání. Sporné řádky mají oranžový proužek — na těch se domluvme.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>Jak to ovládat</h2>
-      <p>
-        Vlevo jsou dva chipy: <strong>hotovost v procentech</strong> (výchozí hodnota vyšla z kódu)
-        a vedle ní <strong>zbývající náročnost v hodinách</strong>, kterou si stránka dopočítá
-        z rozpočtu bloku a zbývajících procent — hotová položka vyjde na nulu sama. Obojí je bledší,
-        dokud na slider nesáhneš; pak platí tvoje číslo. Vpravo zařazuješ do
-        <strong>fáze</strong>, přepínáš <strong>nad rámec</strong> a dáváš <strong>váhu 0–9</strong>
-        (0 = nechceme, 9 = jádro produktu). Úplně vpravo jsou hlasy ostatních — kolečko s iniciálou,
-        barva kroužku je jejich fáze, číslo je jejich váha.
-        Zaškrtni řádky (<kbd>Shift</kbd> + klik vybere rozsah) a nastav je po dávkách; klávesy
-        <kbd>0</kbd>–<kbd>9</kbd> dají váhu, <kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd> fázi,
-        <kbd>N</kbd> přepne nad rámec, <kbd>H</kbd> nice to have, <kbd>Esc</kbd> zruší výběr. Hotovost se táhne sliderem na chipu stavu, hromadně tlačítky v liště. Ukládá se rovnou na server.
-      </p>
-      <ul class="legend">
-        <li><span class="legend__swatch" style="background: var(--s-done)"></span>hotovo — 100 %</li>
-        <li><span class="legend__swatch" style="background: var(--s-partial)"></span>rozdělané — 1 až 99 %</li>
-        <li><span class="legend__swatch" style="background: var(--s-missing)"></span>chybí — 0 %</li>
-        <li><span class="legend__swatch" style="background: var(--s-extra)"></span>nad rámec — mimo původní odhad 1 200 h</li>
-      </ul>
-    </div>
-
     <div id="sections"></div>
-
-    <div class="panel">
-      <h2>Rizika a co dělat příště jinak</h2>
-      <div class="cols">
-        <div>
-          <h3>Rizika, která můžou sežrat zbytek rozpočtu</h3>
-          <ul>
-            <li><strong>Migrace dokumentů — 83 GB a 280 tisíc souborů za 2020+.</strong> Zatím neběželo nic.</li>
-            <li><strong>Archiv Atollonu je na jedné USB flashce.</strong> Klient se dvakrát ptal, jestli data zůstanou.</li>
-            <li><strong>Nesrovnalost v počtu firem</strong> — 205 131 řádků vs. 36 199 firem vs. 809 se zakázkou za 2020+.</li>
-            <li><strong>Fronta úloh nikde neběží.</strong> Automatické úkoly i úklid konceptů čekají na spuštění workeru.</li>
-            <li><strong>Přechod firmy není nikde napsaný jako plán</strong> — testovací týden je první ostrý kontakt s uživateli.</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Co dělat lépe</h3>
-          <ul>
-            <li><strong>Backlog se rozešel s kódem.</strong> Z 35 otevřených issues je nejméně dvanáct podle kódu hotových.</li>
-            <li><strong>Zadání přicházejí mimo backlog</strong> — mailem, na callu, přes Planner. Rozsah roste mimo odhad.</li>
-            <li><strong>33 otevřených otázek a 13 blokací</strong> čeká na rozhodnutí klienta.</li>
-            <li><strong>Rozhodnutí se přebíjejí</strong> — psát a nechat odsouhlasit dřív, než se to začne programovat.</li>
-            <li><strong>Odhad neměl vyčíslenou migraci ani přechod</strong>, u náhrady 15 let starého systému je to vlastní položka.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
 
     <div class="panel">
       <h2>Migrace: co je v Atollonu za data</h2>
@@ -1194,6 +1135,11 @@
     return 'castecne';
   }
   var THEME_KEY = 'mblue-statusboard-theme';
+  var COLLAPSE_KEY = 'mblue-statusboard-collapsed';
+
+  var collapsedAtStart = (function () {
+    try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}'); } catch (e) { return {}; }
+  }());
 
   var ME = window.SB_ME || { email: '', name: '' };
   var mine = {};      // item_id -> {p, w, x}
@@ -1369,6 +1315,12 @@
 
     var head = document.createElement('div');
     head.className = 'section__head';
+    head.setAttribute('role', 'button');
+    head.setAttribute('tabindex', '0');
+
+    var caret = document.createElement('span');
+    caret.className = 'section__caret';
+    head.appendChild(caret);
 
     var h2 = document.createElement('h2');
     h2.textContent = mod.name;
@@ -1383,7 +1335,8 @@
     pick.type = 'button';
     pick.className = 'section__pick';
     pick.textContent = 'Vybrat blok';
-    pick.addEventListener('click', function () {
+    pick.addEventListener('click', function (ev) {
+      ev.stopPropagation();
       var rows = sec.querySelectorAll('.row:not([hidden])');
       var allIn = rows.length > 0 && Array.prototype.every.call(rows, function (r) { return selection.has(r.dataset.id); });
       Array.prototype.forEach.call(rows, function (r) {
@@ -1393,6 +1346,29 @@
     });
     head.appendChild(pick);
     sec.appendChild(head);
+
+    function setCollapsed(on) {
+      sec.classList.toggle('is-collapsed', on);
+      head.setAttribute('aria-expanded', on ? 'false' : 'true');
+      caret.textContent = on ? '▸' : '▾';
+      try {
+        var store = JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}');
+        if (on) store[mod.id] = 1; else delete store[mod.id];
+        localStorage.setItem(COLLAPSE_KEY, JSON.stringify(store));
+      } catch (e) { /* soukromý režim — sbalení prostě nepřežije reload */ }
+    }
+
+    head.addEventListener('click', function () {
+      setCollapsed(!sec.classList.contains('is-collapsed'));
+    });
+
+    head.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      ev.preventDefault();
+      setCollapsed(!sec.classList.contains('is-collapsed'));
+    });
+
+    setCollapsed(collapsedAtStart[mod.id] === 1);
 
     mod.items.forEach(function (item) { sec.appendChild(renderRow(item)); });
     sectionsEl.appendChild(sec);
