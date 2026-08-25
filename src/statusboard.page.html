@@ -1108,7 +1108,6 @@
         { id: 'UZI-04', t: 'Finanční plány uživatelů', d: 'Období a částka na člověka.' },
         { id: 'UZI-05', t: 'Profil a profilová fotka', d: 'Svůj profil edituje každý, cizí jen správce.' },
         { id: 'UZI-06', t: 'Deaktivace uživatele ze seznamu', d: 'Akce na serveru existuje, tlačítko v seznamu je zatím vypnuté („Brzy“).', s: 'castecne' },
-        { id: 'UZI-07', t: 'Role bez validace', d: '`User#role` je nullable a bez pravidla — tichý zdroj chyb v oprávněních.', s: 'castecne', ref: 'T-031' }
       ]
     },
     {
@@ -1121,7 +1120,6 @@
         { id: 'MIG-05', t: 'Vyjasnit rozpor v počtu firem', d: '205 131 řádků vs. 36 199 firem vs. 809 se zakázkou. Bez rozhodnutí hrozí, že se natáhne celý registr.', s: 'chybi' },
         { id: 'MIG-06', t: 'Zálohovat archiv Atollonu', d: 'Dump je dnes na jediné USB flashce a klient se dvakrát ptal, jestli data zůstanou.', s: 'chybi', ref: 'T-328' },
         { id: 'MIG-07', t: 'Ostrý běh migrace a kontrola po ní', d: 'Verifikační rake úloha existuje; ostrý běh nad produkčními daty a jeho vyhodnocení zbývá.', s: 'chybi' },
-        { id: 'MIG-08', t: 'Úklid legacy sloupce zdroje kandidatury', d: 'Migrace je napsaná, ale neběžela na stagingu ani produkci; do té doby se nesmí mazat sloupec.', s: 'castecne', ref: 'T-135.3' }
       ]
     },
     {
@@ -1163,7 +1161,7 @@
       ]
     },
     {
-      id: 'ui', hours: 60, name: 'UI, design a technický dluh', hint: 'Nebylo v odhadu jako položka, ale spotřebovává čas.',
+      id: 'ui', hours: 60, name: 'UI a design', hint: 'V odhadu jako položka nebylo, ale spotřebovává čas.',
       items: [
         { id: 'UI-01', t: 'Split-view, ostrovy a práce bez načítání stránky', d: 'Jednotný vzor pro všechny sekce, sdílitelné odkazy do panelu, historie navštívených.' },
         { id: 'UI-02', t: 'Světlý a tmavý motiv, styleguide, nápověda', d: '' },
@@ -1173,24 +1171,11 @@
         { id: 'UI-06', t: 'Přilepený řádek filtrů při scrollování', d: 'Týká se osmi seznamů se split-view.', s: 'chybi', ref: 'N4' },
         { id: 'UI-07', t: 'Zvýraznění klikatelných prvků při hoveru', d: 'Uživatelé nepoznají, co je odkaz.', s: 'chybi', ref: '#263' },
         { id: 'UI-08', t: 'Méně barev a klidnější karty', d: 'Zpětná vazba z callu: „spousta barviček, co mě ruší“.', s: 'castecne' },
-        { id: 'UI-09', t: 'Kontrast barev chipů nesplňuje WCAG', d: 'U 12 z 31 barev palety se vybere horší varianta textu.', s: 'castecne', ref: 'T-324' },
         { id: 'UI-10', t: 'Mobil v terénu', d: 'Co konkrétně má na telefonu fungovat, není rozhodnuté — přitom to bylo označené jako stěžejní.', s: 'chybi', ref: 'T-157' },
         { id: 'UI-11', t: 'Osobní nástěnka po přihlášení', d: 'Návrhy dashboardů leží na klientově SharePointu, nestažené.', s: 'castecne', ref: 'T-129 · T-238.5' },
         { id: 'UI-12', t: 'Dvě okna současně', d: 'Nově zadaný kandidát se má objevit i v druhém otevřeném okně.', s: 'chybi', ref: 'T-149', x: true },
-        { id: 'UI-13', t: 'Feature flagy se vynucují jen u náboru', d: 'Zbylých osm modulů se na controlleru nekontroluje — má se to srovnat?', s: 'castecne', ref: 'T-079' }
       ]
     },
-    {
-      id: 'rizeni', hours: 20, name: 'Řízení projektu', hint: 'Ne funkce aplikace, ale to, co rozhoduje o dodržení rozpočtu.',
-      items: [
-        { id: 'RIZ-01', t: 'Pročistit backlog v Gitei', d: 'Z 35 otevřených issues je nejméně dvanáct podle kódu hotových. Zavírat při merge.', s: 'chybi' },
-        { id: 'RIZ-02', t: 'Uzavřít 33 otevřených otázek na klienta', d: 'Dokud rozhodnutí nepadnou, práce se buď dělá naslepo, nebo stojí.', s: 'chybi' },
-        { id: 'RIZ-03', t: 'Odblokovat 13 blokací na cizí dodávce', d: 'Návrhy dashboardů, oprávnění pro Planner sync, číselníky od klienta.', s: 'chybi' },
-        { id: 'RIZ-04', t: 'Jeden kanál pro zadání', d: 'Dnes chodí mailem, na callu, přes Planner i do pracovních souborů — rozsah roste mimo odhad.', s: 'chybi' },
-        { id: 'RIZ-05', t: 'Zmrazit rozsah první fáze', d: 'Do odříznutí Atollonu nepřidávat nic nového a zbytek osekat.', s: 'chybi' },
-        { id: 'RIZ-06', t: 'Nové odhady až po nasazení', d: 'Menší celky nad zpětnou vazbou z ostrého provozu se odhadují mnohem přesněji.', s: 'chybi' }
-      ]
-    }
   ];
 
   var PHASES = [
