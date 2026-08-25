@@ -253,144 +253,51 @@
     align-self: center;
   }
 
-  .section__modes { display: flex; margin-left: auto; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
 
-  .section__modes button {
-    background: var(--surface);
-    border: 0;
-    border-left: 1px solid var(--line);
-    padding: .2rem .5rem;
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    color: var(--muted);
-    cursor: pointer;
-  }
 
-  .section__modes button:first-child { border-left: 0; }
-  .section__modes button:hover { color: var(--ink); background: var(--surface-2); }
-  .section__modes button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 
   /* Tabulkový režim: jedna položka = jeden řádek. Popis a odkazy jdou pryč,
      titulek se ořízne — kdo srovnává čísla přes celý blok, nepotřebuje u toho
      číst tři řádky vysvětlení. Přepnutí je jen třída, DOM zůstává stejný. */
-  .mode-table .row {
-    grid-template-columns: 1.5rem auto minmax(0, 1fr) auto auto auto;
-    align-items: center;
-    padding: .3rem 1rem;
-    column-gap: .5rem;
-  }
 
-  .mode-table .row__desc { display: none; }
-  .mode-table .row__meta { margin: 0; }
-  .mode-table .row__meta .tag--ref { display: none; }
-  .mode-table .row__main { display: flex; align-items: baseline; gap: .5rem; }
 
-  .mode-table .row__title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-  }
+
 
   /* Tabulka je pohled, ne ovládání: slidery, tlačítka a select zmizí a zůstanou
      po nich jen hodnoty. Řádek tím spadne na jednu výšku textu i na telefonu;
      kdo chce hodnotu změnit, přepne na seznam. */
-  .mode-table .row__chips { width: auto; gap: .3rem; }
-  .mode-table .row__state,
-  .mode-table .row__effort { padding: .05rem .4rem; width: auto; }
-  .mode-table .row__state-slider { display: none; }
-  .mode-table .row__state-label { display: none; }
-  .mode-table .row__state-short { display: block; }
 
-  .mode-table .phase { border: 0; }
-  .mode-table .phase button { display: none; }
 
-  .mode-table .phase button[aria-pressed="true"] {
-    display: block;
-    border-radius: 4px;
-    padding: .05rem .4rem;
-  }
 
-  .mode-table .scope { padding: .05rem .4rem; }
-  .mode-table .scope[aria-pressed="false"] { display: none; }
 
-  .mode-table .nice { display: none; }
-  .mode-table .nice.is-on { display: inline-flex; padding: .05rem .4rem; }
-  .mode-table .nice.is-on input { display: none; }
-  .mode-table .nice.is-on .nice__text { display: inline; font-size: .7rem; }
 
-  .mode-table .weight select { display: none; }
-  .mode-table .weight__val { font-family: var(--font-mono); font-size: .74rem; font-variant-numeric: tabular-nums; }
 
-  .mode-table .row__log { grid-column: 1 / -1; }
 
-  .weight__val { display: none; }
 
-  /* Na telefonu drží tabulka jeden řádek na položku: název, hotovost, hodiny
-     a zvolená fáze. Popis, ID i tlačítko historie jdou pryč — na to je seznam. */
-  @media (max-width: 48rem) {
-    .mode-table .row {
-      grid-template-columns: 1.2rem minmax(0, 1fr) auto;
-      row-gap: .2rem;
-      column-gap: .4rem;
-      padding: .35rem .6rem;
-      align-items: center;
-    }
-
-    .mode-table .row__check { grid-column: 1; grid-row: 1; }
-
-    /* Titulek se musí umět useknout, jinak přeteče přes chipy vedle sebe —
-       `min-width: 0` je u flex/grid položky podmínka, aby ellipsis vůbec platil. */
-    .mode-table .row__main {
-      grid-column: 2;
-      grid-row: 1;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    .mode-table .row__title {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: block;
-    }
-
-    .mode-table .row__chips {
-      grid-column: 3;
-      grid-row: 1;
-      width: auto;
-      max-width: none;
-      flex: none;
-    }
-    .mode-table .row__flags {
-      grid-column: 2 / 4;
-      grid-row: 2;
-      width: auto;
-      justify-content: flex-start;
-      gap: .35rem;
-      min-height: 0;
-    }
-
-    /* Váha bez hodnoty je jen tečka — na řádek se dostane, až něco znamená. */
-    .mode-table .weight { gap: .25rem; }
-    .mode-table .phase { grid-column: 2 / 4; grid-row: 2; width: auto; justify-self: end; }
-    .mode-table .team { display: none; }
-    .mode-table .row__hist { display: none; }
-    .mode-table .row__meta { display: none; }
-    .mode-table .row__title { white-space: nowrap; font-size: var(--fs-sm); }
-    .mode-table .row__state-short { font-size: .66rem; }
-  }
 
   .section__pick { background: transparent; border: 1px solid var(--line-strong); border-radius: 6px; font-size: var(--fs-xs); padding: .2rem .5rem; cursor: pointer; color: var(--muted); white-space: nowrap; }
   .section__pick:hover { color: var(--ink); border-color: var(--accent); }
 
+  /* Seznam čte shora dolů: název a popis přes celou šířku na prvním místě,
+     pod nimi ovládání v jedné řadě. Chipy stály vlevo od textu a ukrajovaly mu
+     třetinu šířky, takže se popis lámal do čtyř řádků vedle poloprázdného pásu. */
   .row {
     display: grid;
-    grid-template-columns: 1.5rem auto minmax(0, 1fr) auto auto auto;
-    gap: .3rem .7rem;
+    grid-template-columns: 1.5rem auto auto auto auto minmax(0, 1fr);
+    gap: .45rem .8rem;
     align-items: center;
-    padding: .5rem 1rem;
+    padding: .6rem 1rem;
     border-top: 1px solid var(--line);
   }
+
+  .row__check { grid-column: 1; grid-row: 1; align-self: start; margin-top: .15rem; }
+  .row__main { grid-column: 2 / -1; grid-row: 1; }
+  .row__chips { grid-column: 2; grid-row: 2; }
+  .row .phase { grid-column: 3; grid-row: 2; }
+  .row__flags { grid-column: 4; grid-row: 2; }
+  .row .team { grid-column: 5; grid-row: 2; }
+  .row__hist { grid-column: 6; grid-row: 2; justify-self: start; }
+  .row__log { grid-column: 2 / -1; grid-row: 3; }
 
   .row:first-of-type { border-top: 0; }
   .row[hidden] { display: none; }
@@ -435,14 +342,6 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .row__state-short {
-    display: none;
-    font-family: var(--font-mono);
-    font-size: .7rem;
-    font-variant-numeric: tabular-nums;
-    text-align: center;
-    white-space: nowrap;
-  }
 
   .row__state-slider {
     -webkit-appearance: none;
@@ -490,7 +389,7 @@
 
   .row__main { min-width: 0; }
   .row__title { display: block; font-weight: 450; line-height: 1.35; }
-  .row__desc { display: block; color: var(--muted); font-size: var(--fs-sm); line-height: 1.4; }
+  .row__desc { display: block; color: var(--muted); font-size: var(--fs-sm); line-height: 1.45; max-width: 80ch; }
   .row__meta { display: flex; flex-wrap: wrap; gap: .3rem .45rem; align-items: center; margin-top: .18rem; }
 
   .tag { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: .03em; padding: .05rem .35rem; border-radius: 4px; border: 1px solid var(--line-strong); color: var(--muted); white-space: nowrap; }
@@ -702,7 +601,6 @@
 
     .section__head { padding: .75rem .85rem; }
     .section__pick { order: 4; }
-    .section__modes { order: 3; margin-left: 0; }
     .section__pct { order: 2; margin-left: auto; }
     .section__hint { flex: 1 1 100%; order: 5; }
 
@@ -730,14 +628,6 @@
     .team { grid-column: 2 / 4; grid-row: 5; }
     .row__log { grid-column: 2 / 4; grid-row: 6; }
     .row__state-label { font-size: var(--fs-xs); }
-    .row__state-short {
-    display: none;
-    font-family: var(--font-mono);
-    font-size: .7rem;
-    font-variant-numeric: tabular-nums;
-    text-align: center;
-    white-space: nowrap;
-  }
 
   .row__state-slider { height: 1.6rem; }
     .row__state-slider::-webkit-slider-thumb { width: 1rem; height: 1rem; margin-top: -.35rem; }
@@ -1268,16 +1158,6 @@
   }
   var THEME_KEY = 'mblue-statusboard-theme';
   var COLLAPSE_KEY = 'mblue-statusboard-collapsed';
-  var MODE_KEY = 'mblue-statusboard-mode';
-
-  function setMode(mode) {
-    document.body.classList.toggle('mode-table', mode === 'table');
-    document.querySelectorAll('.section__modes button').forEach(function (b) {
-      b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false');
-    });
-    try { localStorage.setItem(MODE_KEY, mode); } catch (e) { /* soukromý režim */ }
-  }
-
   var collapsedAtStart = (function () {
     try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}'); } catch (e) { return {}; }
   }());
@@ -1487,30 +1367,6 @@
     });
     head.appendChild(pick);
 
-    // Přepínač je v každé hlavičce, ale režim je jeden pro celou stránku —
-    // dva bloky vedle sebe v různém režimu by se nedaly porovnat.
-    var modes = document.createElement('div');
-    modes.className = 'section__modes';
-    modes.setAttribute('role', 'group');
-    modes.setAttribute('aria-label', 'Zobrazení');
-    [['list', 'seznam'], ['table', 'tabulka']].forEach(function (m) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.dataset.mode = m[0];
-      b.textContent = m[1];
-      b.addEventListener('click', function (ev) {
-        ev.stopPropagation();
-        setMode(m[0]);
-      });
-      modes.appendChild(b);
-    });
-    head.appendChild(modes);
-
-    var pctBadge = document.createElement('span');
-    pctBadge.className = 'section__pct';
-    pctBadge.title = 'Hotovost bloku — průměr přes jeho položky';
-    head.appendChild(pctBadge);
-
     sec.appendChild(head);
 
     function setCollapsed(on) {
@@ -1599,10 +1455,6 @@
     stLabel.className = 'row__state-label';
     st.appendChild(stLabel);
 
-    var stShort = document.createElement('span');
-    stShort.className = 'row__state-short';
-    st.appendChild(stShort);
-
     var stSlider = document.createElement('input');
     stSlider.type = 'range';
     stSlider.className = 'row__state-slider';
@@ -1627,10 +1479,6 @@
     var efLabel = document.createElement('span');
     efLabel.className = 'row__state-label';
     ef.appendChild(efLabel);
-
-    var efShort = document.createElement('span');
-    efShort.className = 'row__state-short';
-    ef.appendChild(efShort);
 
     var efSlider = document.createElement('input');
     efSlider.type = 'range';
@@ -1761,10 +1609,6 @@
     });
     weight.appendChild(sel);
 
-    var weightVal = document.createElement('span');
-    weightVal.className = 'weight__val';
-    weight.appendChild(weightVal);
-
     // Rozsah, „nice to have" a váha jsou jeden pás: všechny tři odpovídají na
     // otázku „chceme to a jak moc", takže se čtou zleva doprava naráz.
     var flags = document.createElement('div');
@@ -1830,7 +1674,6 @@
     st.dataset.s = stateKey;
     st.classList.toggle('is-default', !(e.pct !== null && e.pct !== undefined));
     st.querySelector('.row__state-label').textContent = STATE_LABEL[stateKey] + ' ' + pct + ' %';
-    st.querySelector('.row__state-short').textContent = pct + ' %';
     var slider = st.querySelector('.row__state-slider');
     slider.value = String(pct);
     slider.style.setProperty('--fill', pct + '%');
@@ -1841,7 +1684,6 @@
     ef.classList.toggle('is-default', !(e.effort !== null && e.effort !== undefined));
     ef.classList.toggle('is-zero', hrs === 0);
     ef.querySelector('.row__state-label').textContent = hrs === 0 ? 'nic nezbývá' : 'zbývá ' + hrs + ' h';
-    ef.querySelector('.row__state-short').textContent = hrs + ' h';
     var efSlider = ef.querySelector('.row__state-slider');
     var max = Number(efSlider.max) || 40;
     efSlider.value = String(Math.min(hrs, max));
@@ -1852,7 +1694,6 @@
     var sel = row.querySelector('.weight select');
     sel.value = (e.w === null || e.w === undefined) ? '' : String(e.w);
     row.querySelector('.weight__dot').style.background = weightColor(e.w);
-    row.querySelector('.weight__val').textContent = (e.w === null || e.w === undefined) ? '–' : String(e.w);
     row.querySelector('.scope').setAttribute('aria-pressed', scopeOf(id) ? 'true' : 'false');
 
     var niceEl = row.querySelector('.nice');
