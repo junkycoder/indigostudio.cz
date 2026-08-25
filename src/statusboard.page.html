@@ -296,7 +296,7 @@
      titulek se ořízne — kdo srovnává čísla přes celý blok, nepotřebuje u toho
      číst tři řádky vysvětlení. Přepnutí je jen třída, DOM zůstává stejný. */
   .mode-table .row {
-    grid-template-columns: 1.5rem auto minmax(0, 1fr) auto auto auto auto auto;
+    grid-template-columns: 1.5rem auto minmax(0, 1fr) auto auto auto;
     align-items: center;
     padding: .3rem 1rem;
     column-gap: .5rem;
@@ -330,7 +330,7 @@
 
   .row {
     display: grid;
-    grid-template-columns: 1.5rem auto minmax(0, 1fr) auto auto auto auto auto;
+    grid-template-columns: 1.5rem auto minmax(0, 1fr) auto auto auto;
     gap: .3rem .7rem;
     align-items: center;
     padding: .5rem 1rem;
@@ -478,6 +478,8 @@
   .nice input { accent-color: var(--accent); width: .9rem; height: .9rem; cursor: pointer; margin: 0; }
   .nice.is-on { color: var(--accent); border-color: var(--accent); }
 
+  .row__flags { display: flex; align-items: center; gap: .5rem; }
+
   .weight { display: flex; align-items: center; gap: .4rem; }
   .weight select { border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); padding: .2rem .3rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; cursor: pointer; }
   .weight__dot { width: .65rem; height: .65rem; border-radius: 50%; background: var(--line-strong); flex: none; }
@@ -499,7 +501,7 @@
 
   @media (max-width: 52rem) {
     .row { grid-template-columns: 1.5rem minmax(0, 1fr); row-gap: .45rem; }
-    .row__chips, .row__main, .phase, .scope, .nice, .weight, .team { grid-column: 2; justify-self: start; }
+    .row__chips, .row__main, .phase, .row__flags, .team { grid-column: 2; justify-self: start; }
   }
 
   /* ── Panely ─────────────────────────────────────────────── */
@@ -644,14 +646,17 @@
 
     .row__check { grid-column: 1; grid-row: 1; }
     .row__main { grid-column: 2 / 4; grid-row: 1; }
-    .row__chips { grid-column: 2; grid-row: 2; width: 100%; max-width: 15rem; }
+    .row__chips { grid-column: 2 / 4; grid-row: 2; width: 100%; max-width: none; }
     .row__hist { grid-column: 3; grid-row: 2; align-self: center; }
     .phase { grid-column: 2 / 4; grid-row: 3; }
-    .scope { grid-column: 2; grid-row: 4; }
-    .weight { grid-column: 3; grid-row: 4; }
-    .nice { grid-column: 2 / 4; grid-row: 5; justify-self: start; padding: .35rem .4rem; }
-    .team { grid-column: 2 / 4; grid-row: 6; }
-    .row__log { grid-column: 2 / 4; grid-row: 7; }
+    /* Jeden pás na celou šířku: rozsah vlevo, váha vpravo, „nice to have"
+       mezi nimi zúžené na samotné zaškrtávátko (popisek nese `title`). */
+    .row__flags { grid-column: 2 / 4; grid-row: 4; width: 100%; justify-content: space-between; }
+    .nice__text { display: none; }
+    .nice { padding: .35rem; }
+    .nice input { width: 1.15rem; height: 1.15rem; }
+    .team { grid-column: 2 / 4; grid-row: 5; }
+    .row__log { grid-column: 2 / 4; grid-row: 6; }
     .row__state-label { font-size: var(--fs-xs); }
     .row__state-slider { height: 1.6rem; }
     .row__state-slider::-webkit-slider-thumb { width: 1rem; height: 1rem; margin-top: -.35rem; }
@@ -783,6 +788,14 @@
         <option value="all">vše</option>
         <option value="extra">nad rámec</option>
         <option value="in">v zadání</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="f-nice">Nice</label>
+      <select id="f-nice">
+        <option value="all">vše</option>
+        <option value="yes">jen nice to have</option>
+        <option value="no">bez nice to have</option>
       </select>
     </div>
     <div class="field">
@@ -1657,7 +1670,6 @@
       paint(item.id);
       stats();
     });
-    row.appendChild(scope);
 
     var nice = document.createElement('label');
     nice.className = 'nice';
@@ -1672,8 +1684,11 @@
       stats();
     });
     nice.appendChild(niceBox);
-    nice.appendChild(document.createTextNode('nice to have'));
-    row.appendChild(nice);
+    var niceText = document.createElement('span');
+    niceText.className = 'nice__text';
+    niceText.textContent = 'nice to have';
+    nice.appendChild(niceText);
+    nice.title = 'Nice to have';
 
     var weight = document.createElement('div');
     weight.className = 'weight';
@@ -1700,7 +1715,15 @@
       stats();
     });
     weight.appendChild(sel);
-    row.appendChild(weight);
+
+    // Rozsah, „nice to have" a váha jsou jeden pás: všechny tři odpovídají na
+    // otázku „chceme to a jak moc", takže se čtou zleva doprava naráz.
+    var flags = document.createElement('div');
+    flags.className = 'row__flags';
+    flags.appendChild(scope);
+    flags.appendChild(nice);
+    flags.appendChild(weight);
+    row.appendChild(flags);
 
     var team = document.createElement('div');
     team.className = 'team';
@@ -1929,6 +1952,7 @@
     var fs = document.getElementById('f-state').value;
     var fp = document.getElementById('f-phase').value;
     var fx = document.getElementById('f-scope').value;
+    var fn = document.getElementById('f-nice').value;
     var ft = document.getElementById('f-team').value;
 
     MODULES.forEach(function (m) {
@@ -1943,6 +1967,7 @@
         if (ok && fs !== 'all' && fs !== 'open' && st !== fs) ok = false;
         if (ok && fp !== 'all') ok = (fp === 'none') ? !e.p : e.p === fp;
         if (ok && fx !== 'all') ok = (fx === 'extra') ? scopeOf(it.id) : !scopeOf(it.id);
+        if (ok && fn !== 'all') ok = (fn === 'yes') ? !!e.nice : !e.nice;
         if (ok && ft !== 'all') {
           var v = verdict(it.id);
           if (ft === 'split') ok = v === 'split';
@@ -2145,7 +2170,7 @@
     });
   });
 
-  ['q', 'f-state', 'f-phase', 'f-scope', 'f-team'].forEach(function (id) {
+  ['q', 'f-state', 'f-phase', 'f-scope', 'f-nice', 'f-team'].forEach(function (id) {
     document.getElementById(id).addEventListener('input', applyFilters);
   });
 
