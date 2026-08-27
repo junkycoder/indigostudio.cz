@@ -810,7 +810,7 @@
   <div class="wrap">
     <div class="masthead__grid">
       <div>
-        <p class="eyebrow">2. 4. – 27. 8. 2026 · staging 099c529 · ověřeno 27. 8.</p>
+        <p class="eyebrow">2. 4. – 27. 8. 2026 · staging 099c529 · development ec66994</p>
         <h1>Statusboard mBlue</h1>
         <p class="masthead__sub">
           Stav přečtený z kódu postavený proti původnímu zadání. Každý z týmu má
@@ -1034,7 +1034,8 @@
 
 <p class="footnote">
   Stav byl 27. 8. 2026 znovu porovnán s větví <code>staging</code> (<code>099c529</code>),
-  aktuálním <code>development</code> (<code>71602f2</code>), otevřenými issues v Gitei a pracovními dokumenty projektu.
+  aktuálním <code>development</code> (<code>ec66994</code>), otevřenými issues v Gitei a pracovními dokumenty projektu.
+  Položky s otazníkem mají v komentářích doplněný kontext — odkud požadavek je a jaké rozhodnutí u něj chybí.
   Odhad 900 z 1 200 hodin je vstup ze zadání, ne měření z repozitáře.
   Stránka je neveřejná — přístup má jen tým s magic linkem.
 </p>
@@ -1130,7 +1131,7 @@
         { id: 'NAB-15', t: 'KOPS má navrhnout fáze výběrového řízení', d: 'Provazba „co je zaškrtnuto → jaké fáze“ chybí; kvůli tomu se odmítlo i podmíněné okno komentáře.', s: 'chybi', ref: 'T-130', x: true },
         { id: 'NAB-16', t: 'Assessment centrum', d: 'Jaký tvar má mít v systému, není rozhodnuto. Mimo první vlnu.', s: 'chybi', ref: 'T-144', x: true },
         { id: 'NAB-17', t: 'Deadline vs. datum předpokládaného obsazení', d: 'Není jasné, jestli jsou to dvě věci nebo jedna.', s: 'chybi', ref: 'T-156' },
-        { id: 'NAB-18', t: 'Otevřené bugy náboru z testování', d: 'Velikost modalu a datumy kroků jsou opravené. Zbývá #267: při opakovaném vrácení kandidáta se u fáze drží stará poznámka.', s: 'castecne', ref: '#267 · hotovo #262/#266 · 00f37e3' },
+        { id: 'NAB-18', t: 'Otevřené bugy náboru z testování', d: 'Všechny tři opravené: velikost modalu a datumy kroků (00f37e3), a od 27. 8. i poznámka při opakovaném vrácení — dostala vlastní sloupec, takže nepřepisuje poznámku vstupu do fáze.', ref: 'hotovo #262/#266/#267 · 00f37e3 · bb590f1' },
         { id: 'NAB-19', t: 'Připomínky před pohovorem a po něm', d: 'V pátek odpoledne upozornit na pondělní pohovor; po pohovoru připomenout zavolat kandidátovi i klientovi.', s: 'chybi', ref: 'call 6. 2. 3:22:14' },
         { id: 'NAB-20', t: 'Stádium „ve fázi nabídky“', d: 'Mezi pohovorem a nástupem chybí stav, kdy se kandidát domlouvá na podmínkách. V kanonické ose je `offered` — ověřit, že sedí na to, co klient popsal.', s: 'castecne', ref: 'call 6. 2. 3:34:08' },
         { id: 'NAB-21', t: 'Hromadné zamítnutí zbylých kandidátů', d: 'Po obsazení pozice jedním klikem zamítnout ostatní, dnes se klikají po jednom.', s: 'chybi', ref: 'call 6. 2. 3:34:34' },
@@ -1180,7 +1181,7 @@
         { id: 'UKO-01', t: 'Úkoly s termínem, prioritou, řešitelem a vazbami', d: 'Filtry, řazení podle naléhavosti, hromadné dokončení i mazání, export CSV.', p: '/tasks' },
         { id: 'UKO-02', t: 'Karta úkolů na každé entitě', d: 'Kandidát, firma, projekt, pozice; překresluje se sama.' },
         { id: 'UKO-03', t: 'Přílohy úkolu a detail úkolu', d: 'Soubory v jedné transakci s úkolem.' },
-        { id: 'UKO-04', t: 'E-mailové notifikace úkolů', d: 'Nový úkol, splněný úkol, změna řešitele. Hromadné dokončení notifikaci neposílá.', s: 'castecne', ref: '#269' },
+        { id: 'UKO-04', t: 'E-mailové notifikace úkolů', d: 'Nový úkol, splněný úkol, změna řešitele. Hromadné dokončení od 27. 8. posílá zadavateli tutéž notifikaci jako jednotlivé (#269).', ref: '#269 · f6a1f48' },
         { id: 'UKO-05', t: 'Sync úkolů s Plannerem', d: 'Samostatný nástroj mBlue-sync čeká na oprávnění na straně klienta.', s: 'chybi', ref: 'T-124 · #204', x: true },
         { id: 'VYK-01', t: 'Zápis času z modalu odkudkoli', d: 'Popis, datum, projekt, tagy, hodiny a minuty.', p: '/time_entries' },
         { id: 'VYK-02', t: 'Seznam výkazů s filtry a součtem za filtr', d: 'Uživatelé, projekty včetně „bez projektu“, období.' },
@@ -1211,7 +1212,7 @@
         { id: 'UZI-03', t: 'Týmy', d: '' },
         { id: 'UZI-04', t: 'Finanční plány uživatelů', d: 'Období a částka na člověka.' },
         { id: 'UZI-05', t: 'Profil a profilová fotka', d: 'Svůj profil edituje každý, cizí jen správce.' },
-        { id: 'UZI-06', t: 'Deaktivace uživatele ze seznamu', d: 'Akce na serveru existuje, tlačítko v seznamu je zatím vypnuté („Brzy“).', s: 'castecne' },
+        { id: 'UZI-06', t: 'Deaktivace uživatele ze seznamu', d: 'Od 27. 8. funguje hromadně z bulk lišty seznamu. Sebe si admin nedeaktivuje — deaktivovaný se nepřihlásí, takže „Označit vše“ by jinak vyzamklo celý tým.', ref: 'b03e129' },
       ]
     },
     {
@@ -1233,7 +1234,7 @@
         { id: 'PRE-02', t: 'Scénáře pro testery', d: 'Procházení aplikace „z důvodu“, se záznamovým archem.' },
         { id: 'PRE-03', t: 'Zapnout moduly nábor a pozice v produkci', d: 'Na stagingu zapnuté; v produkci čeká na rozhodnutí.', s: 'chybi', ref: 'T-007' },
         { id: 'PRE-04', t: 'Spustit frontu úloh na provozu', d: 'Na stagingu worker Solid Queue od 25. 8. startuje uvnitř Pumy a hlídá ho guard test (dcb091a). Na provozu ne: větev production je 937 commitů pozadu, oprava v ní není — viz PRE-03.', s: 'castecne', ref: 'dcb091a' },
-        { id: 'PRE-05', t: 'Demo data pro testery mají díry', d: 'Ukázková kandidatura má prázdné poznámky ke krokům, takže průběh výběrka vypadá prázdně.', s: 'castecne' },
+        { id: 'PRE-05', t: 'Demo data pro testery mají díry', d: 'Doplněno 27. 8.: každý krok VŘ nese poznámku, dvě kandidatury vyprávějí příběh odshora dolů a jedna předvádí i vrácení do dřívější fáze s vlastní poznámkou.', ref: 'ec66994' },
         { id: 'PRE-06', t: 'Onboarding a zaškolení nových lidí', d: 'Plán pro převedení celé firmy na nový systém není nikde napsaný.', s: 'chybi' },
         { id: 'PRE-07', t: 'Odříznutí Atollonu', d: 'Cílový milník: firma běží na novém systému a starý se vypne.', s: 'chybi' },
         { id: 'PRE-08', t: 'Sjednotit slovník napříč aplikací', d: 'Největší zdroj zmatku u uživatelů (zakázka vs. projekt vs. nábor vs. pozice).', s: 'castecne' }
