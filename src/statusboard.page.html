@@ -908,6 +908,7 @@
     </div>
     <div class="toolbar__spacer"></div>
     <button class="btn" type="button" id="export-filter">Exportovat filtr</button>
+    <button class="btn" type="button" id="copy-filter-link" title="Zkopíruje adresu stránky i s tím, co je zrovna nastavené ve filtrech">Odkaz na filtr</button>
     <button class="btn" type="button" id="pick-visible">Označit viditelné</button>
     <button class="btn btn--ghost" type="button" id="theme-toggle" title="Přepnout motiv">Motiv</button>
     <span class="saved-state" id="saved">načítám…</span>
@@ -1610,6 +1611,8 @@
       e.preventDefault();
       document.getElementById('f-phase').value = p.id;
       applyFilters();
+      stats();
+      syncUrl();
       window.scrollTo({ top: sectionsEl.offsetTop - 80, behavior: 'smooth' });
     });
     railPhasesEl.appendChild(row);
@@ -2092,6 +2095,53 @@
     });
   }
 
+  // ── Filtr v adrese ────────────────────────────────────────
+  // Nastavený filtr je půl práce a druhá půlka je poslat ho někomu dál
+  // („koukni na tohle"). Drží se proto v query stringu: každá změna ho
+  // přepíše (bez nové položky v historii, aby zpátky vedlo ze stránky
+  // pryč) a při načtení se z něj filtry poskládají zpátky.
+  var FILTERS = [
+    { id: 'q', key: 'q', def: '' },
+    { id: 'f-state', key: 'stav', def: 'all' },
+    { id: 'f-phase', key: 'faze', def: 'all' },
+    { id: 'f-scope', key: 'rozsah', def: 'all' },
+    { id: 'f-nice', key: 'nice', def: 'all' },
+    { id: 'f-unsure', key: 'jasne', def: 'all' },
+    { id: 'f-team', key: 'tym', def: 'all' }
+  ];
+
+  function filterUrl() {
+    var params = new URLSearchParams();
+    FILTERS.forEach(function (f) {
+      var v = document.getElementById(f.id).value;
+      if (v && v !== f.def) params.set(f.key, v);
+    });
+    var qs = params.toString();
+    return location.origin + location.pathname + (qs ? '?' + qs : '') + location.hash;
+  }
+
+  function syncUrl() {
+    try { window.history.replaceState(null, '', filterUrl()); } catch (e) {}
+  }
+
+  // Hodnotu ze selectu bereme jen tehdy, když ji stránka zná — překlep
+  // v odkazu by jinak tiše schoval všechno a vypadalo to na prázdná data.
+  function readUrlFilters() {
+    var params = new URLSearchParams(location.search);
+    FILTERS.forEach(function (f) {
+      if (!params.has(f.key)) return;
+      var el = document.getElementById(f.id);
+      var v = params.get(f.key);
+      if (el.tagName === 'SELECT') {
+        var known = Array.prototype.some.call(el.options, function (o) { return o.value === v; });
+        if (!known) return;
+      }
+      el.value = v;
+    });
+  }
+
+  readUrlFilters();
+
   function applyFilters() {
     var q = document.getElementById('q').value.trim().toLowerCase();
     var fs = document.getElementById('f-state').value;
@@ -2347,6 +2397,21 @@
   document.getElementById('export-csv').addEventListener('click', exportCsv);
   document.getElementById('export-filter').addEventListener('click', exportCsv);
 
+  document.getElementById('copy-filter-link').addEventListener('click', function (ev) {
+    var btn = ev.currentTarget;
+    var url = filterUrl();
+    function back() { setTimeout(function () { btn.textContent = 'Odkaz na filtr'; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        btn.textContent = 'Zkopírováno';
+        back();
+      }).catch(function () { window.prompt('Zkopíruj odkaz:', url); });
+    } else {
+      // Schránka je vázaná na https a povolení; bez ní aspoň text k vybrání.
+      window.prompt('Zkopíruj odkaz:', url);
+    }
+  });
+
   document.getElementById('copy-io').addEventListener('click', function (ev) {
     io.select();
     navigator.clipboard.writeText(io.value).then(function () {
@@ -2358,8 +2423,10 @@
     });
   });
 
-  ['q', 'f-state', 'f-phase', 'f-scope', 'f-nice', 'f-unsure', 'f-team'].forEach(function (id) {
-    document.getElementById(id).addEventListener('input', function () { applyFilters(); stats(); });
+  FILTERS.forEach(function (f) {
+    document.getElementById(f.id).addEventListener('input', function () {
+      applyFilters(); stats(); syncUrl();
+    });
   });
 
   // ── Komentáře ─────────────────────────────────────────────
@@ -2621,6 +2688,7 @@
     });
     applyFilters();
     stats();
+    syncUrl();
   });
 
   document.getElementById('h-who').addEventListener('change', loadHistory);
