@@ -300,10 +300,56 @@ async function stateResponse(env) {
     `SELECT r.email, m.name, r.item_id, r.phase, r.weight, r.scope, r.pct, r.effort, r.nice, r.unsure, r.updated_at
        FROM sb_ratings r LEFT JOIN sb_members m ON m.email = r.email`
   ).all();
+  const commentCounts = await env.DB.prepare(
+    `SELECT item_id, COUNT(*) AS count FROM sb_comments GROUP BY item_id`
+  ).all();
   return json({
     members: members.results || [],
     ratings: ratings.results || [],
+    commentCounts: commentCounts.results || [],
   });
+}
+
+async function commentsResponse(request, env, user, url) {
+  const item = String(url.searchParams.get("item") || "").trim();
+  if (!item || item.length > 40) return json({ error: "Chybí položka." }, 400);
+
+  if (request.method === "GET") {
+    const rows = await env.DB.prepare(
+      `SELECT c.id, c.item_id, c.email, COALESCE(m.name, c.email) AS name,
+              c.body, c.created_at
+         FROM sb_comments c LEFT JOIN sb_members m ON m.email = c.email
+        WHERE c.item_id = ?1
+        ORDER BY c.created_at, c.id`
+    )
+      .bind(item)
+      .all();
+    return json({ comments: rows.results || [] });
+  }
+
+  if (request.method !== "POST") return json({ error: "Method Not Allowed" }, 405);
+
+  const data = await request.json().catch(() => null);
+  const body = String(data?.body || "").trim();
+  if (!body) return json({ error: "Napiš komentář." }, 400);
+  if (body.length > 2000) return json({ error: "Komentář může mít nejvýše 2 000 znaků." }, 400);
+
+  const result = await env.DB.prepare(
+    `INSERT INTO sb_comments (item_id, email, body) VALUES (?1, ?2, ?3)`
+  )
+    .bind(item, user.email, body)
+    .run();
+
+  const row = await env.DB.prepare(
+    `SELECT c.id, c.item_id, c.email, COALESCE(m.name, c.email) AS name,
+            c.body, c.created_at
+       FROM sb_comments c LEFT JOIN sb_members m ON m.email = c.email
+      WHERE c.id = ?1`
+  )
+    .bind(result.meta.last_row_id)
+    .first();
+
+  return json({ comment: row }, 201);
 }
 
 // Historie změn — buď posledních N napříč týmem (panel), nebo celá historie
@@ -581,6 +627,7 @@ export async function handleStatusboard(request, env, url) {
   if (path === "/api/statusboard/state") return stateResponse(env);
   if (path === "/api/statusboard/rate" && request.method === "POST") return saveRatings(request, env, user);
   if (path === "/api/statusboard/history") return historyResponse(env, url);
+  if (path === "/api/statusboard/comments") return commentsResponse(request, env, user, url);
   if (path === "/statusboard" || path === "/statusboard/") {
     const me = JSON.stringify({ email: user.email, name: user.name, role: user.role });
     return html(`<script>window.SB_ME = ${me};</script>\n${PAGE}`);

@@ -177,6 +177,18 @@ kdo se proklikáním vrátí na výchozí hodnotu, nezanechá záznam žádný. 
 seznam má strop výšky a scrolluje v sobě; tlačítko `⟲ N` v řádku rozbalí historii
 jedné položky.
 
+**Komentáře** jsou týmová diskuse k jedné položce (`sb_comments`, migrace `0008`).
+Otevírá je tlačítko „Komentáře N" v řádku, počet visí přímo na něm a chodí ve
+`state` jako `commentCounts`, aby se kvůli číslu nemusela tahat těla. Zápis je
+**append-only** — komentář nejde upravit ani smazat z UI, autor a čas jsou součástí
+záznamu. Strop je 2 000 znaků; cesta `/api/statusboard/comments` je za session jako
+zbytek API a POST navíc za kontrolou `Origin`.
+
+Komentář slouží k tomu, na co hodnocení nestačí: proč je u položky otazník, co
+přesně v zadání chybí, co se ověřilo v kódu. Agenti mají vlastní členství
+(`codex@`, `claude@indigostudio.cz`) — jejich příspěvky se tedy podepisují samy
+a nemíchají se s hlasy týmu.
+
 ⚠️ Vlastní hodnocení (`mine`) se ze serveru přebírá **jen při prvním načtení**.
 Periodický refresh tahá cizí hlasy — kdyby přepisoval i vlastní, sebral by rozdělanou
 změnu: klik doběhne dřív než odpověď a další zápis by poslal starou hodnotu zpátky.

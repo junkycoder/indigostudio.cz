@@ -177,9 +177,31 @@
   .saved-state { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
   .saved-state.is-error { color: var(--s-missing); }
 
-  .bulkbar { background: var(--accent-soft); border-bottom: 1px solid var(--line); }
+  .bulkbar {
+    position: fixed;
+    z-index: 50;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--accent-soft);
+    border-top: 1px solid var(--line-strong);
+    box-shadow: 0 -10px 32px rgba(13, 20, 32, .16);
+  }
   .bulkbar[hidden] { display: none; }
-  .bulkbar__inner { max-width: 1400px; margin: 0 auto; padding: .55rem 1.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .9rem; }
+  .bulkbar__inner {
+    max-width: 1400px;
+    min-height: 4.5rem;
+    max-height: min(45vh, 20rem);
+    margin: 0 auto;
+    padding: .8rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .65rem 1rem;
+    overflow-y: auto;
+  }
+  body.has-selection { padding-bottom: var(--bulkbar-height, 7rem); }
   .bulkbar__count { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; }
   .bulkbar__group { display: flex; align-items: center; gap: .3rem; }
   .bulkbar__group > span { font-family: var(--font-mono); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-right: .1rem; }
@@ -297,7 +319,7 @@
   .row .phase { grid-column: 3; grid-row: 2; }
   .row__flags { grid-column: 4; grid-row: 2; }
   .row .team { grid-column: 5; grid-row: 2; }
-  .row__hist { grid-column: 6; grid-row: 2; justify-self: start; }
+  .row__actions { grid-column: 6; grid-row: 2; justify-self: start; }
   .row__log { grid-column: 2 / -1; grid-row: 3; }
 
   .row:first-of-type { border-top: 0; }
@@ -621,6 +643,20 @@
   .row__hist:hover { color: var(--ink); border-color: var(--line-strong); }
   .row__hist[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
 
+  .row__actions { display: flex; align-items: center; gap: .25rem; }
+  .row__comments {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: .15rem .35rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .row__comments:hover { color: var(--ink); border-color: var(--line-strong); }
+
   .row__log {
     grid-column: 3;
     margin-top: .3rem;
@@ -629,6 +665,51 @@
   }
 
   .row__log[hidden] { display: none; }
+
+  /* ── Komentáře ──────────────────────────────────────────── */
+
+  .comment-dialog {
+    width: min(36rem, calc(100vw - 2rem));
+    max-height: min(44rem, calc(100vh - 2rem));
+    padding: 0;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    box-shadow: 0 18px 60px rgba(13, 20, 32, .28);
+  }
+  .comment-dialog::backdrop { background: rgba(6, 12, 22, .58); }
+  .comment-dialog__head {
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .comment-dialog__head > div { min-width: 0; flex: 1; }
+  .comment-dialog h2 { margin: 0; font-family: var(--font-display); font-size: 1.15rem; }
+  .comment-dialog__item { margin: .2rem 0 0; color: var(--muted); font-size: var(--fs-sm); }
+  .comment-dialog__body { padding: .2rem 1.1rem 1.1rem; overflow-y: auto; }
+  .comments { list-style: none; margin: 0; padding: 0; }
+  .comment { padding: .85rem 0; border-bottom: 1px solid var(--line); }
+  .comment__meta { display: flex; gap: .5rem; justify-content: space-between; color: var(--muted); font-size: var(--fs-xs); }
+  .comment__author { color: var(--ink); font-weight: 600; }
+  .comment__body { margin: .35rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .comments-empty { margin: 1rem 0; color: var(--muted); font-size: var(--fs-sm); }
+  .comment-form { display: grid; gap: .55rem; margin-top: .9rem; }
+  .comment-form label { font-size: var(--fs-sm); font-weight: 600; }
+  .comment-form textarea {
+    min-height: 6rem;
+    resize: vertical;
+    padding: .65rem .7rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    line-height: 1.45;
+  }
+  .comment-form__foot { display: flex; align-items: center; gap: .7rem; justify-content: flex-end; }
+  .comment-form__status { flex: 1; margin: 0; color: var(--muted); font-size: var(--fs-xs); }
+  .comment-form__status.is-error { color: var(--s-missing); }
 
   /* ── Mobil ──────────────────────────────────────────────────
      Telefon není zmenšený desktop: písmo se zvětší (na 390 px je .82rem
@@ -682,7 +763,7 @@
     .row__check { grid-column: 1; grid-row: 1; }
     .row__main { grid-column: 2 / 4; grid-row: 1; }
     .row__chips { grid-column: 2 / 4; grid-row: 2; width: 100%; max-width: none; }
-    .row__hist { grid-column: 3; grid-row: 2; align-self: center; }
+    .row__actions { grid-column: 2 / 4; grid-row: 5; justify-self: end; }
     .phase { grid-column: 2 / 4; grid-row: 3; }
     /* Jeden pás na celou šířku: rozsah vlevo, váha vpravo, „nice to have"
        mezi nimi zúžené na samotné zaškrtávátko (popisek nese `title`). */
@@ -691,7 +772,7 @@
     .nice { padding: .35rem; }
     .nice input { width: 1.15rem; height: 1.15rem; }
     .unsure { width: 2rem; height: 2rem; }
-    .team { grid-column: 2 / 4; grid-row: 5; }
+    .team { grid-column: 2; grid-row: 5; }
     .row__log { grid-column: 2 / 4; grid-row: 6; }
     .row__state-label { font-size: var(--fs-xs); }
 
@@ -708,7 +789,7 @@
     .scope { justify-self: start; padding: .4rem .8rem; }
     .weight select { padding: .4rem .5rem; font-size: var(--fs-base); }
     .team { min-height: 1.3rem; }
-    .row__hist { justify-self: end; padding: .35rem .5rem; }
+    .row__hist, .row__comments { padding: .35rem .5rem; }
 
     /* Hromadná lišta se na telefonu nesmí rozjet do stran. */
     .bulkbar__inner { gap: .4rem .5rem; }
@@ -729,7 +810,7 @@
   <div class="wrap">
     <div class="masthead__grid">
       <div>
-        <p class="eyebrow">2. 4. – 25. 8. 2026 · větev staging · stav k 25. 8. odpoledne</p>
+        <p class="eyebrow">2. 4. – 27. 8. 2026 · staging 099c529 · ověřeno 27. 8.</p>
         <h1>Statusboard mBlue</h1>
         <p class="masthead__sub">
           Stav přečtený z kódu postavený proti původnímu zadání. Každý z týmu má
@@ -826,6 +907,7 @@
       </select>
     </div>
     <div class="toolbar__spacer"></div>
+    <button class="btn" type="button" id="export-filter">Exportovat filtr</button>
     <button class="btn" type="button" id="pick-visible">Označit viditelné</button>
     <button class="btn btn--ghost" type="button" id="theme-toggle" title="Přepnout motiv">Motiv</button>
     <span class="saved-state" id="saved">načítám…</span>
@@ -922,16 +1004,38 @@
       <div class="io-actions">
         <button class="btn btn--primary" type="button" id="export-plan">Vypsat plán podle mého zařazení</button>
         <button class="btn" type="button" id="export-split">Vypsat sporné položky</button>
-        <button class="btn" type="button" id="export-csv">Export CSV (celý tým)</button>
+        <button class="btn" type="button" id="export-csv">Export CSV (aktuální filtr)</button>
         <button class="btn" type="button" id="copy-io">Kopírovat do schránky</button>
       </div>
     </div>
   </main>
 </div>
 
+<dialog class="comment-dialog" id="comment-dialog" aria-labelledby="comment-title">
+  <div class="comment-dialog__head">
+    <div>
+      <h2 id="comment-title">Komentáře</h2>
+      <p class="comment-dialog__item" id="comment-item"></p>
+    </div>
+    <button class="btn btn--ghost" type="button" id="comment-close" aria-label="Zavřít komentáře">Zavřít</button>
+  </div>
+  <div class="comment-dialog__body">
+    <div id="comments-list"></div>
+    <form class="comment-form" id="comment-form">
+      <label for="comment-body">Nový komentář</label>
+      <textarea id="comment-body" maxlength="2000" required placeholder="Co je potřeba doplnit, ověřit nebo rozhodnout?"></textarea>
+      <div class="comment-form__foot">
+        <p class="comment-form__status" id="comment-status" aria-live="polite"></p>
+        <button class="btn btn--primary" type="submit">Přidat komentář</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
 <p class="footnote">
-  Stav odpovídá větvi <code>staging</code> (25. 8. 2026, včetně zkušební doby u nástupu — balík z developmentu se na staging přesouvá týž den), otevřeným issues v Gitei
-  a z pracovních dokumentů projektu. Odhad 900 z 1 200 hodin je vstup ze zadání, ne měření z repozitáře.
+  Stav byl 27. 8. 2026 znovu porovnán s větví <code>staging</code> (<code>099c529</code>),
+  aktuálním <code>development</code> (<code>71602f2</code>), otevřenými issues v Gitei a pracovními dokumenty projektu.
+  Odhad 900 z 1 200 hodin je vstup ze zadání, ne měření z repozitáře.
   Stránka je neveřejná — přístup má jen tým s magic linkem.
 </p>
 
@@ -981,7 +1085,7 @@
         { id: 'FIR-06', t: 'Kontaktní osoby firmy', d: 'Zakládání, úprava, mazání, označení hlavního kontaktu.' },
         { id: 'FIR-07', t: 'Stav firmy a příznak off-limit', d: 'Šest stavů podle klientovy tabulky plus ruční „nelovíme“.' },
         { id: 'FIR-08', t: 'Karta firmy se všemi sekcemi', d: 'Projekty, kontakty, úkoly, soubory, aktivity, faktury.' },
-        { id: 'FIR-09', t: 'Výpis firem: tabulka jako výchozí, odlehčené karty', d: 'Dnes je výchozí mřížka a pilulka kontaktu překrývá text. Zadáno 24. 8., padlo už 11. 8.', s: 'castecne', ref: 'N1 · #273' },
+        { id: 'FIR-09', t: 'Výpis firem: tabulka jako výchozí, odlehčené karty', d: 'Tabulka je od 25. 8. výchozí (88a9892). Druhá půlka zadání ale hotová není: pilulka kontaktu v kartě dál může překrývat text — CSS karty se od 26. 7. nesáhlo.', s: 'castecne', ref: 'N1 · #273 · 88a9892' },
         { id: 'FIR-10', t: 'Seznam firem pro cold calling', d: 'Pracovní seznam k obvolání, ne číselník. Čeká na rozhodnutí.', s: 'chybi', ref: 'T-141', x: true },
         { id: 'FIR-11', t: 'Standard klient bez dlouhodobé zakázky', d: 'Příznak nebo pracovní seznam pro obchod; intervaly si v podkladech odporují.', s: 'chybi', ref: 'T-182 · call 6. 2. 3:49:27' },
         { id: 'FIR-12', t: 'Důvody neuzavřené spolupráce po nabídce', d: 'Klient poslal dva seznamy důvodů; v modelu není pole ani entita, kam je pověsit.', s: 'chybi', ref: 'podklad 24. 8.', x: true },
@@ -1020,13 +1124,13 @@
         { id: 'NAB-09', t: 'Dopočet přeskočených fází a vracení zpět', d: 'Historie průchodu zůstává pro reporty.' },
         { id: 'NAB-10', t: 'Nástup a zamítnutí s důvodem', d: 'Nástup si vyžádá datum, mzdu a zkušební dobu v měsících; zamítnutí důvod z číselníku. Obojí zapíše automatickou aktivitu.', ref: 'E5' },
         { id: 'NAB-11', t: 'Longlist do PDF pro klienta', d: 'Jedním klikem přehled všech kandidátů v řízení.' },
-        { id: 'NAB-12', t: 'Automatické úkoly kolem nástupu', d: 'Pět úkolů: týden před nástupem, v den nástupu, dva dny po, měsíc po a čtrnáct dní před koncem zkušební doby. Zakládají se v den splatnosti a nemailují. Job je napsaný, ale worker musí na provozu běžet.', s: 'castecne', ref: '#237 · E5' },
+        { id: 'NAB-12', t: 'Automatické úkoly kolem nástupu', d: 'Pět úkolů: týden před nástupem, v den nástupu, dva dny po, měsíc po a čtrnáct dní před koncem zkušební doby. Job i worker běží; před uzavřením #237 zbývá ověřit na stagingu, že se úkoly skutečně založí právě jednou.', s: 'castecne', ref: '#237 · E5 · 35cccce · dcb091a' },
         { id: 'NAB-13', t: 'Velký modál kandidatury: víc informací nahoře', d: 'Datum nástupu, mzda a garance jsou dnes na dně tabulky; nahoře je prázdno.', s: 'castecne', ref: 'N3' },
         { id: 'NAB-14', t: 'Změna podmínek zakázky v průběhu', d: 'Přecenění s historií původní ceny — nejspíš verzování KOPS. Odloženo kvůli obchodní schůzce.', s: 'chybi', ref: 'E6 · #252', x: true },
         { id: 'NAB-15', t: 'KOPS má navrhnout fáze výběrového řízení', d: 'Provazba „co je zaškrtnuto → jaké fáze“ chybí; kvůli tomu se odmítlo i podmíněné okno komentáře.', s: 'chybi', ref: 'T-130', x: true },
         { id: 'NAB-16', t: 'Assessment centrum', d: 'Jaký tvar má mít v systému, není rozhodnuto. Mimo první vlnu.', s: 'chybi', ref: 'T-144', x: true },
         { id: 'NAB-17', t: 'Deadline vs. datum předpokládaného obsazení', d: 'Není jasné, jestli jsou to dvě věci nebo jedna.', s: 'chybi', ref: 'T-156' },
-        { id: 'NAB-18', t: 'Otevřené bugy náboru z testování', d: 'Malý detail výběrového řízení, chybějící data u fází, opakovaná poznámka při vracení.', s: 'castecne', ref: '#262 · #266 · #267' },
+        { id: 'NAB-18', t: 'Otevřené bugy náboru z testování', d: 'Velikost modalu a datumy kroků jsou opravené. Zbývá #267: při opakovaném vrácení kandidáta se u fáze drží stará poznámka.', s: 'castecne', ref: '#267 · hotovo #262/#266 · 00f37e3' },
         { id: 'NAB-19', t: 'Připomínky před pohovorem a po něm', d: 'V pátek odpoledne upozornit na pondělní pohovor; po pohovoru připomenout zavolat kandidátovi i klientovi.', s: 'chybi', ref: 'call 6. 2. 3:22:14' },
         { id: 'NAB-20', t: 'Stádium „ve fázi nabídky“', d: 'Mezi pohovorem a nástupem chybí stav, kdy se kandidát domlouvá na podmínkách. V kanonické ose je `offered` — ověřit, že sedí na to, co klient popsal.', s: 'castecne', ref: 'call 6. 2. 3:34:08' },
         { id: 'NAB-21', t: 'Hromadné zamítnutí zbylých kandidátů', d: 'Po obsazení pozice jedním klikem zamítnout ostatní, dnes se klikají po jednom.', s: 'chybi', ref: 'call 6. 2. 3:34:34' },
@@ -1128,7 +1232,7 @@
         { id: 'PRE-01', t: 'Nasazení na staging a testovací týden', d: 'Testuje se ve čtyřech lidech od 24. 8., dva z nich „nepolíbení“.' },
         { id: 'PRE-02', t: 'Scénáře pro testery', d: 'Procházení aplikace „z důvodu“, se záznamovým archem.' },
         { id: 'PRE-03', t: 'Zapnout moduly nábor a pozice v produkci', d: 'Na stagingu zapnuté; v produkci čeká na rozhodnutí.', s: 'chybi', ref: 'T-007' },
-        { id: 'PRE-04', t: 'Spustit frontu úloh na provozu', d: 'Bez běžícího workeru se automatické úkoly a úklid konceptů jen hromadí ve frontě.', s: 'chybi' },
+        { id: 'PRE-04', t: 'Spustit frontu úloh na provozu', d: 'Na stagingu worker Solid Queue od 25. 8. startuje uvnitř Pumy a hlídá ho guard test (dcb091a). Na provozu ne: větev production je 937 commitů pozadu, oprava v ní není — viz PRE-03.', s: 'castecne', ref: 'dcb091a' },
         { id: 'PRE-05', t: 'Demo data pro testery mají díry', d: 'Ukázková kandidatura má prázdné poznámky ke krokům, takže průběh výběrka vypadá prázdně.', s: 'castecne' },
         { id: 'PRE-06', t: 'Onboarding a zaškolení nových lidí', d: 'Plán pro převedení celé firmy na nový systém není nikde napsaný.', s: 'chybi' },
         { id: 'PRE-07', t: 'Odříznutí Atollonu', d: 'Cílový milník: firma běží na novém systému a starý se vypne.', s: 'chybi' },
@@ -1167,13 +1271,13 @@
         { id: 'UI-02', t: 'Světlý a tmavý motiv, styleguide, nápověda', d: '' },
         { id: 'UI-03', t: 'Koncepty rozdělané práce a jejich úklid', d: 'Autosave, patka panelu, automatické mazání.' },
         { id: 'UI-04', t: 'Archiv místo mazání', d: 'Uživatel archivuje, správce maže natvrdo.' },
-        { id: 'UI-05', t: 'Tři poslední navštívené v nabídce sekce', d: 'Historie existuje, ale nabídka v liště ji nečte — půlka práce se dokumentovala jako hotová.', s: 'castecne', ref: 'N2' },
+        { id: 'UI-05', t: 'Tři poslední navštívené v nabídce sekce', d: 'Dropdown sekce od 25. 8. čte tři poslední navštívené detaily.', ref: 'N2 · d59ee44' },
         { id: 'UI-06', t: 'Přilepený řádek filtrů při scrollování', d: 'Týká se osmi seznamů se split-view.', s: 'chybi', ref: 'N4' },
-        { id: 'UI-07', t: 'Zvýraznění klikatelných prvků při hoveru', d: 'Uživatelé nepoznají, co je odkaz.', s: 'chybi', ref: '#263' },
+        { id: 'UI-07', t: 'Zvýraznění klikatelných prvků při hoveru', d: 'Textové odkazy uvnitř klikatelných karet se na hover podtrhnou; stejné zvýraznění používají vazby entit v panelech a tabulkách.', ref: '#263 · 92ab002' },
         { id: 'UI-08', t: 'Méně barev a klidnější karty', d: 'Zpětná vazba z callu: „spousta barviček, co mě ruší“.', s: 'castecne' },
         { id: 'UI-10', t: 'Mobil v terénu', d: 'Co konkrétně má na telefonu fungovat, není rozhodnuté — přitom to bylo označené jako stěžejní.', s: 'chybi', ref: 'T-157' },
-        { id: 'UI-11', t: 'Osobní nástěnka po přihlášení', d: 'Návrhy dashboardů leží na klientově SharePointu, nestažené.', s: 'castecne', ref: 'T-129 · T-238.5' },
-        { id: 'UI-12', t: 'Dvě okna současně', d: 'Nově zadaný kandidát se má objevit i v druhém otevřeném okně.', s: 'chybi', ref: 'T-149', x: true },
+        { id: 'UI-11', t: 'Osobní nástěnka po přihlášení', d: 'Postavená 25. 8. podle doručeného návrhu Alyra (2e32ede). KPI, výsledky, úkoly, poznámkovník, funnel i pohledávky čtou skutečná data; obchodní trychtýř, portfolio potenciál a měsíční cíle běží na zástupných číslech — obchodní příležitost v mBlue jako entita neexistuje.', s: 'castecne', ref: 'T-129 · T-238.5 · 2e32ede' },
+        { id: 'UI-12', t: 'Dvě okna současně', d: 'Nově zadaný kandidát se od 25. 8. přes Bus a BroadcastChannel objeví i v druhém otevřeném okně.', ref: 'T-149 · b2d3613', x: true },
       ]
     },
   ];
@@ -1235,6 +1339,7 @@
   var members = [];
   var history = [];
   var histCounts = {};
+  var commentCounts = {};
   var selection = new Set();
   var lastClicked = null;
   var ALL = [];
@@ -1350,6 +1455,11 @@
   // poslal starou hodnotu zpátky.
   function applyState(data, withMine) {
     members = data.members || [];
+
+    commentCounts = {};
+    (data.commentCounts || []).forEach(function (row) {
+      commentCounts[row.item_id] = Number(row.count) || 0;
+    });
 
     others = {};
     if (withMine) mine = {};
@@ -1723,13 +1833,24 @@
     team.className = 'team';
     row.appendChild(team);
 
+    var actions = document.createElement('div');
+    actions.className = 'row__actions';
+
+    var commentsBtn = document.createElement('button');
+    commentsBtn.type = 'button';
+    commentsBtn.className = 'row__comments';
+    commentsBtn.textContent = 'Komentáře 0';
+    commentsBtn.addEventListener('click', function () { openComments(item); });
+    actions.appendChild(commentsBtn);
+
     var histBtn = document.createElement('button');
     histBtn.type = 'button';
     histBtn.className = 'row__hist';
     histBtn.textContent = '⟲ 0';
     histBtn.title = 'Historie změn této položky';
     histBtn.setAttribute('aria-expanded', 'false');
-    row.appendChild(histBtn);
+    actions.appendChild(histBtn);
+    row.appendChild(actions);
 
     var log = document.createElement('div');
     log.className = 'row__log';
@@ -1779,6 +1900,9 @@
     slider.value = String(pct);
     slider.style.setProperty('--fill', pct + '%');
     row.dataset.s = stateKey;
+
+    var commentsBtn = row.querySelector('.row__comments');
+    if (commentsBtn) commentsBtn.textContent = 'Komentáře ' + (commentCounts[id] || 0);
 
     var hrs = effortOf(id);
     var ef = row.querySelector('.row__effort');
@@ -1878,8 +2002,19 @@
       r.querySelector('.row__check').checked = on;
     });
     document.getElementById('sel-count').textContent = selection.size;
-    document.getElementById('bulkbar').hidden = selection.size === 0;
+    var bulkbar = document.getElementById('bulkbar');
+    bulkbar.hidden = selection.size === 0;
+    document.body.classList.toggle('has-selection', selection.size > 0);
+    if (selection.size) {
+      document.body.style.setProperty('--bulkbar-height', bulkbar.offsetHeight + 'px');
+    } else {
+      document.body.style.removeProperty('--bulkbar-height');
+    }
   }
+
+  window.addEventListener('resize', function () {
+    if (selection.size) syncSelection();
+  });
 
   function isRated(id) {
     var e = mine[id];
@@ -2133,17 +2268,24 @@
 
   var io = document.getElementById('io');
 
+  function visibleItems() {
+    return ALL.filter(function (it) {
+      var row = rowEl(it.id);
+      return row && !row.hidden;
+    });
+  }
+
   document.getElementById('export-plan').addEventListener('click', function () {
     var out = ['# Plán podle zařazení: ' + ME.name, ''];
     PHASES.forEach(function (p) {
-      var rows = ALL.filter(function (it) { return (mine[it.id] || {}).p === p.id; })
+      var rows = visibleItems().filter(function (it) { return (mine[it.id] || {}).p === p.id; })
                     .sort(function (a, b) { return ((mine[b.id] || {}).w || 0) - ((mine[a.id] || {}).w || 0); });
       if (!rows.length) return;
       out.push('## ' + p.label.toUpperCase() + ' (' + rows.length + ')');
       rows.forEach(function (it) {
         var e = mine[it.id] || {};
         out.push('- [' + (e.w === null || e.w === undefined ? '–' : e.w) + '] ' + it.t +
-                 ' — ' + STATE_LABEL[it.s] + (scopeOf(it.id) ? ' · nad rámec' : '') +
+                 ' — ' + STATE_LABEL[stateOf(pctOf(it.id))] + (scopeOf(it.id) ? ' · nad rámec' : '') +
                  ' · ' + it.module.name + (it.ref ? ' · ' + it.ref : ''));
       });
       out.push('');
@@ -2154,7 +2296,7 @@
 
   document.getElementById('export-split').addEventListener('click', function () {
     var out = ['# Sporné položky — na těch se tým neshodl', ''];
-    ALL.forEach(function (it) {
+    visibleItems().forEach(function (it) {
       if (verdict(it.id) !== 'split') return;
       var votes = [];
       var e = mine[it.id];
@@ -2169,9 +2311,9 @@
     io.focus();
   });
 
-  document.getElementById('export-csv').addEventListener('click', function () {
+  function exportCsv() {
     var lines = ['id;blok;polozka;stav;hotovo_pct;zbyva_h;kdo;faze;vaha;nad_ramec;nice_to_have;nejasne'];
-    ALL.forEach(function (it) {
+    visibleItems().forEach(function (it) {
       var rows = [];
       var e = mine[it.id];
       if (e && (e.p || e.w !== null || e.x !== null || e.nice !== null)) rows.push({ name: ME.name, p: e.p, w: e.w, x: scopeOf(it.id), nice: e.nice, unsure: e.unsure });
@@ -2185,10 +2327,24 @@
         ].join(';'));
       });
     });
-    io.value = lines.join('\n');
+    var csv = lines.join('\n');
+    io.value = csv;
     io.focus();
     function q(s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
-  });
+
+    var blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'mblue-statusboard-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  document.getElementById('export-csv').addEventListener('click', exportCsv);
+  document.getElementById('export-filter').addEventListener('click', exportCsv);
 
   document.getElementById('copy-io').addEventListener('click', function (ev) {
     io.select();
@@ -2203,6 +2359,123 @@
 
   ['q', 'f-state', 'f-phase', 'f-scope', 'f-nice', 'f-unsure', 'f-team'].forEach(function (id) {
     document.getElementById(id).addEventListener('input', function () { applyFilters(); stats(); });
+  });
+
+  // ── Komentáře ─────────────────────────────────────────────
+
+  var commentDialog = document.getElementById('comment-dialog');
+  var commentForm = document.getElementById('comment-form');
+  var commentItemId = null;
+  var openCommentRows = [];
+
+  function commentStatus(text, isError) {
+    var el = document.getElementById('comment-status');
+    el.textContent = text || '';
+    el.classList.toggle('is-error', !!isError);
+  }
+
+  function renderComments(rows) {
+    var box = document.getElementById('comments-list');
+    box.innerHTML = '';
+    if (!rows.length) {
+      var empty = document.createElement('p');
+      empty.className = 'comments-empty';
+      empty.textContent = 'Zatím bez komentáře.';
+      box.appendChild(empty);
+      return;
+    }
+
+    var list = document.createElement('ol');
+    list.className = 'comments';
+    rows.forEach(function (row) {
+      var li = document.createElement('li');
+      li.className = 'comment';
+
+      var meta = document.createElement('div');
+      meta.className = 'comment__meta';
+      var author = document.createElement('span');
+      author.className = 'comment__author';
+      author.textContent = row.name || row.email;
+      var time = document.createElement('time');
+      time.textContent = whenLabel(row.created_at);
+      time.dateTime = row.created_at.replace(' ', 'T') + 'Z';
+      time.title = row.created_at + ' UTC';
+      meta.appendChild(author);
+      meta.appendChild(time);
+      li.appendChild(meta);
+
+      var body = document.createElement('p');
+      body.className = 'comment__body';
+      body.textContent = row.body;
+      li.appendChild(body);
+      list.appendChild(li);
+    });
+    box.appendChild(list);
+  }
+
+  function openComments(item) {
+    commentItemId = item.id;
+    openCommentRows = [];
+    document.getElementById('comment-item').textContent = item.id + ' · ' + item.t;
+    document.getElementById('comment-body').value = '';
+    document.getElementById('comments-list').innerHTML = '<p class="comments-empty">Načítám…</p>';
+    commentStatus('');
+    commentDialog.showModal();
+
+    fetch('/api/statusboard/comments?item=' + encodeURIComponent(item.id))
+      .then(function (r) {
+        if (!r.ok) throw new Error('Komentáře se nepodařilo načíst.');
+        return r.json();
+      })
+      .then(function (data) {
+        if (commentItemId !== item.id) return;
+        openCommentRows = data.comments || [];
+        renderComments(openCommentRows);
+        document.getElementById('comment-body').focus();
+      })
+      .catch(function (err) { commentStatus(err.message, true); });
+  }
+
+  document.getElementById('comment-close').addEventListener('click', function () { commentDialog.close(); });
+  commentDialog.addEventListener('click', function (e) {
+    if (e.target === commentDialog) commentDialog.close();
+  });
+  commentDialog.addEventListener('close', function () { commentItemId = null; });
+
+  commentForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!commentItemId) return;
+    var body = document.getElementById('comment-body');
+    var text = body.value.trim();
+    if (!text) { commentStatus('Napiš komentář.', true); return; }
+
+    var itemId = commentItemId;
+    var submit = commentForm.querySelector('button[type="submit"]');
+    submit.disabled = true;
+    commentStatus('Ukládám…');
+    fetch('/api/statusboard/comments?item=' + encodeURIComponent(itemId), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body: text })
+    })
+      .then(function (r) {
+        return r.json().then(function (data) {
+          if (!r.ok) throw new Error(data.error || 'Komentář se nepodařilo uložit.');
+          return data;
+        });
+      })
+      .then(function (data) {
+        if (commentItemId !== itemId) return;
+        openCommentRows.push(data.comment);
+        renderComments(openCommentRows);
+        commentCounts[itemId] = (commentCounts[itemId] || 0) + 1;
+        paint(itemId);
+        body.value = '';
+        body.focus();
+        commentStatus('Přidáno.');
+      })
+      .catch(function (err) { commentStatus(err.message, true); })
+      .finally(function () { submit.disabled = false; });
   });
 
   // ── Historie změn ─────────────────────────────────────────
