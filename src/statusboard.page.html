@@ -516,7 +516,13 @@
 
   @media (max-width: 52rem) {
     .row { grid-template-columns: 1.5rem minmax(0, 1fr); row-gap: .45rem; }
-    .row__chips, .row__main, .phase, .row__flags, .team { grid-column: 2; justify-self: start; }
+    /* `.row .phase` / `.row .team`, ne holé `.phase` / `.team` — desktopová
+       pravidla výš jsou psaná s prefixem `.row `, takže mají VYŠŠÍ specificitu
+       (0-2-0 proti 0-1-0). Media query specificitu nezvyšuje, takže by holý
+       selektor prohrál a oba prvky by zůstaly na desktopové pozici — přesně to
+       se dělo: `.phase` seděla v `grid-column: 3 / grid-row: 2`, tedy PŘES
+       `.row__chips`, a popisky „hotovo"/„jádro" se překrývaly. */
+    .row__chips, .row__main, .row .phase, .row__flags, .row .team { grid-column: 2; justify-self: start; }
   }
 
   /* ── Panely ─────────────────────────────────────────────── */
@@ -764,7 +770,7 @@
     .row__main { grid-column: 2 / 4; grid-row: 1; }
     .row__chips { grid-column: 2 / 4; grid-row: 2; width: 100%; max-width: none; }
     .row__actions { grid-column: 2 / 4; grid-row: 5; justify-self: end; }
-    .phase { grid-column: 2 / 4; grid-row: 3; }
+    .row .phase { grid-column: 2 / 4; grid-row: 3; }  /* prefix `.row` nutný — viz poznámka o specificitě výš */
     /* Jeden pás na celou šířku: rozsah vlevo, váha vpravo, „nice to have"
        mezi nimi zúžené na samotné zaškrtávátko (popisek nese `title`). */
     .row__flags { grid-column: 2 / 4; grid-row: 4; width: 100%; justify-content: space-between; }
@@ -772,7 +778,7 @@
     .nice { padding: .35rem; }
     .nice input { width: 1.15rem; height: 1.15rem; }
     .unsure { width: 2rem; height: 2rem; }
-    .team { grid-column: 2; grid-row: 5; }
+    .row .team { grid-column: 2; grid-row: 5; }
     .row__log { grid-column: 2 / 4; grid-row: 6; }
     .row__state-label { font-size: var(--fs-xs); }
 
