@@ -189,6 +189,19 @@
     box-shadow: 0 -10px 32px rgba(13, 20, 32, .16);
   }
   .bulkbar[hidden] { display: none; }
+
+  /* Přepínače sbalení jsou jen pro telefon; na desktopu se obě lišty vejdou. */
+  .toolbar__more, .bulkbar__more { display: none; }
+  .toolbar__more[data-active]::after {
+    content: attr(data-active);
+    margin-left: .35rem;
+    background: var(--accent);
+    color: var(--surface);
+    border-radius: 999px;
+    padding: 0 .35rem;
+    font-size: var(--fs-xs);
+    font-variant-numeric: tabular-nums;
+  }
   .bulkbar__inner {
     max-width: 1400px;
     min-height: 4.5rem;
@@ -743,6 +756,17 @@
     .score__value { font-size: 1.25rem; }
     .consensus__goalbox { text-align: left; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
     /* Filtry ob dva na řádek, hledání přes celou šířku. */
+    /* Sbalená lišta filtrů. Je `position: sticky`, takže v rozbaleném stavu
+       zabírala přes 900 px — na telefonu celou horní polovinu displeje a na
+       obsah nezbylo nic. Sbalená nechá jen hledání a přepínač. */
+    .toolbar__more { display: inline-flex; align-items: center; margin-left: auto; }
+    .toolbar:not(.is-open) .field:not(.field--search),
+    .toolbar:not(.is-open) .toolbar__inner > .btn:not(.toolbar__more),
+    .toolbar:not(.is-open) .toolbar__spacer,
+    .toolbar:not(.is-open) .saved-state,
+    .toolbar:not(.is-open) #logout { display: none; }
+    .toolbar.is-open .toolbar__inner { max-height: 80vh; overflow-y: auto; }
+
     .toolbar__inner { gap: .4rem; }
     .field { flex: 1 1 8.5rem; }
     .field--search { flex: 1 1 100%; }
@@ -798,6 +822,13 @@
     .row__hist, .row__comments { padding: .35rem .5rem; }
 
     /* Hromadná lišta se na telefonu nesmí rozjet do stran. */
+    /* Hromadná lišta jako ÚZKÝ PRUH dole, ne panel přes půl displeje —
+       akce se rozbalí až na vyžádání. */
+    .bulkbar__more { display: inline-flex; margin-left: auto; }
+    .bulkbar:not(.is-open) .bulkbar__inner { min-height: 0; }
+    .bulkbar:not(.is-open) .bulkbar__group { display: none; }
+    .bulkbar.is-open .bulkbar__inner { max-height: 60vh; overflow-y: auto; }
+
     .bulkbar__inner { gap: .4rem .5rem; }
     .bulkbar__group { flex-wrap: wrap; }
     .bulkbar__group > span { flex: 1 1 100%; margin: 0; }
@@ -853,11 +884,16 @@
 </header>
 
 <div class="toolbar">
-  <div class="toolbar__inner">
+  <div class="toolbar__inner" id="toolbar-inner">
     <div class="field field--search">
       <label for="q">Hledat</label>
       <input id="q" type="search" placeholder="název, popis, issue…" autocomplete="off">
     </div>
+    <!-- Jen pro telefon (CSS ho jinde schová): sbalená lišta by jinak zabrala
+         přes půl obrazovky a na obsah by nezbylo místo. `data-active` nese počet
+         zapnutých filtrů — bez toho by sbalený stav tajil, PROČ je seznam krátký. -->
+    <button class="btn toolbar__more" type="button" id="filters-toggle"
+            aria-expanded="false" aria-controls="toolbar-inner">Filtry</button>
     <div class="field">
       <label for="f-state">Stav</label>
       <select id="f-state">
@@ -925,6 +961,10 @@
 <div class="bulkbar" id="bulkbar" hidden>
   <div class="bulkbar__inner">
     <span class="bulkbar__count"><span id="sel-count">0</span> vybráno</span>
+    <!-- Telefon: hromadná lišta má sedět jako úzký pruh dole, ne jako panel
+         přes půl displeje. Akce se rozbalí až na vyžádání. -->
+    <button class="btn bulkbar__more" type="button" id="bulk-toggle"
+            aria-expanded="false">Akce</button>
     <div class="bulkbar__group">
       <span>fáze</span>
       <button class="btn" type="button" data-bulk-phase="jadro">jádro</button>
@@ -2401,6 +2441,43 @@
   }
 
   document.getElementById('export-csv').addEventListener('click', exportCsv);
+  // ── Sbalené lišty na telefonu ────────────────────────────────────────
+  // Obě lišty jsou přilepené (filtry nahoře `sticky`, hromadná dole `fixed`)
+  // a v rozbaleném stavu spolu na displeji telefonu nenechaly na obsah místo.
+  // Sbalené jsou úzké; rozbalí se kliknutím a rozbalený stav DRŽÍ, dokud ho
+  // člověk nezavře — filtruje se často několikrát po sobě.
+  (function () {
+    function bind(btnId, target) {
+      var btn = document.getElementById(btnId);
+      var box = document.querySelector(target);
+      if (!btn || !box) return;
+      btn.addEventListener('click', function () {
+        var open = box.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+    bind('filters-toggle', '.toolbar');
+    bind('bulk-toggle', '.bulkbar');
+
+    // Sbalená lišta by jinak zatajila, PROČ je seznam krátký — počet zapnutých
+    // filtrů se proto ukazuje na přepínači i ve sbaleném stavu.
+    var toggle = document.getElementById('filters-toggle');
+    function refreshActiveCount() {
+      if (!toggle) return;
+      var ids = ['f-state', 'f-phase', 'f-scope', 'f-nice', 'f-unsure', 'f-team'];
+      var n = ids.reduce(function (acc, id) {
+        var el = document.getElementById(id);
+        return acc + (el && el.value && el.value !== 'all' ? 1 : 0);
+      }, 0);
+      var q = document.getElementById('q');
+      if (q && q.value.trim()) n += 1;
+      if (n > 0) { toggle.setAttribute('data-active', n); } else { toggle.removeAttribute('data-active'); }
+    }
+    document.addEventListener('change', refreshActiveCount);
+    document.addEventListener('input', refreshActiveCount);
+    refreshActiveCount();
+  }());
+
   document.getElementById('export-filter').addEventListener('click', exportCsv);
 
   document.getElementById('copy-filter-link').addEventListener('click', function (ev) {
