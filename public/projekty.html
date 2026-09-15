@@ -134,6 +134,9 @@
   .item-link { margin-top: auto; display: inline-flex; align-items: center; gap: 0.4rem; align-self: flex-start; font-size: 0.9rem; font-weight: 550; color: var(--accent); text-decoration: none; }
   .item-link:hover { text-decoration: underline; text-underline-offset: 0.2em; }
   .item-link svg { width: 15px; height: 15px; }
+  /* zastavený projekt: vybledlá karta, při najetí se zvýrazní */
+  .item.stopped { opacity: 0.55; filter: grayscale(1); transition: opacity 0.2s var(--ease), border-color 0.2s var(--ease); }
+  .item.stopped:hover, .item.stopped:focus-within { opacity: 0.9; }
   .item .item-note { margin: auto 0 0; font-size: 0.84rem; color: var(--fg-faint); }
 
   /* reference = citace */
@@ -206,6 +209,18 @@
         <a class="item-link" href="https://signalcollector.app" target="_blank" rel="noopener">
           signalcollector.app
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </li>
+
+      <li class="item stopped" data-kind="app">
+        <span class="item-kind">Aplikace · MVP · zastaveno</span>
+        <h2>Pásek</h2>
+        <p class="item-sub">Digitální pas nemovitosti z&nbsp;iPhonu</p>
+        <p>MVP vlastní aplikace: majitel starého domu projde místnosti s&nbsp;iPhonem a&nbsp;získá půdorys, výměry, 3D model a&nbsp;export pro architekta. Jako produkt nedopadlo a&nbsp;projekt jsme zastavili.</p>
+        <ul class="tags"><li>Swift</li><li>RoomPlan</li><li>ARKit</li><li>Capacitor</li><li>iOS</li></ul>
+        <a class="item-link" href="/projekty/pasek">
+          Přečíst případovou studii
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
         </a>
       </li>
 

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Pásek — MVP digitálního pasu nemovitosti | Indigo Studio</title>
+<meta name="description" content="Případová studie: Pásek, MVP vlastní aplikace Indigo Studio pro zaměření domu iPhonem. Projekt jsme po ověření zastavili.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/projekty/pasek">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Pásek — MVP digitálního pasu nemovitosti (zastaveno)">
+<meta property="og:description" content="MVP aplikace pro zaměření domu iPhonem. Nedopadlo a projekt jsme zastavili.">
+<meta property="og:url" content="https://indigostudio.cz/projekty/pasek">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://indigostudio.cz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pásek — MVP digitálního pasu nemovitosti (zastaveno)">
+<meta name="twitter:description" content="MVP aplikace pro zaměření domu iPhonem. Nedopadlo a projekt jsme zastavili.">
+<meta name="twitter:image" content="https://indigostudio.cz/og.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .mark { width: 26px; height: 26px; border-radius: 4px; background: linear-gradient(135deg, var(--accent-strong), #818cf8); }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .muted { color: var(--fg-muted); font-weight: 500; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 22ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 60ch; }
+
+  /* stav projektu: zastavené MVP */
+  .status { display: flex; gap: 0.75rem; align-items: flex-start; margin: 1.4rem 0 0; padding: 0.9rem 1.1rem; border: 1px dashed var(--border-strong); border-radius: 6px; color: var(--fg-muted); font-size: 0.92rem; max-width: 64ch; }
+  .status strong { color: var(--fg); font-weight: 600; }
+  .badge { flex: 0 0 auto; font-size: 0.72rem; font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-muted); border: 1px solid var(--border-strong); border-radius: 3px; padding: 0.1rem 0.45rem; margin-top: 0.15rem; }
+  /* zastavený projekt je vizuálně vybledlý */
+  .stopped .hero h1, .stopped .stat strong { color: var(--fg-muted); }
+  .stopped .eyebrow { color: var(--fg-faint); }
+  .stopped .stat { border-top-color: var(--border-strong); }
+
+  /* fakta o projektu */
+  .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); }
+  .facts div { padding: 1rem 1.2rem; border-left: 1px solid var(--border); }
+  .facts div:first-child { border-left: 0; }
+  .facts dt { font-size: 0.76rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 0.25rem; }
+  .facts dd { font-size: 0.92rem; font-weight: 550; }
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose a { color: var(--accent); text-underline-offset: 0.2em; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+
+  /* výzvy */
+  .challenges { display: flex; flex-direction: column; gap: 0.75rem; }
+  .challenge { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.2rem 1.3rem; }
+  .challenge h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+  .challenge dl { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 0.35rem 1rem; }
+  .challenge dt { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-faint); padding-top: 0.2rem; }
+  .challenge dd { font-size: 0.92rem; color: var(--fg-muted); }
+
+  .tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.2rem 0 1.1rem; }
+  .tags li { font-size: 0.8rem; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 3px; padding: 0.15rem 0.55rem; background: var(--surface); }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .facts div:nth-child(3) { border-left: 0; }
+    .facts div:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules { grid-template-columns: 1fr; }
+    .challenge dl { grid-template-columns: 1fr; gap: 0.1rem; }
+    .challenge dd + dt { margin-top: 0.5rem; }
+    .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">Indigo <span class="muted">Studio</span></span>
+    </a>
+    <a class="nav-link" href="/projekty">
+      Případové studie, ukázky a&nbsp;reference
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </a>
+  </div>
+</header>
+
+<main class="stopped">
+  <div class="container">
+    <nav class="crumbs" aria-label="Drobečková navigace">
+      <a href="/">Úvod</a><span class="sep">/</span><a href="/projekty">Projekty</a><span class="sep">/</span><span aria-current="page">Pásek</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Případová studie · Vlastní produkt · MVP</p>
+      <h1>Pásek: digitální pas nemovitosti z&nbsp;iPhonu</h1>
+      <p class="lead">Pásek je naše vlastní aplikace pro majitele starších domů, chalup a&nbsp;usedlostí, které nemají žádné výkresy. S&nbsp;iPhonem projdou dům, během skenu vznikne půdorys, výměry a&nbsp;3D model a&nbsp;vše se složí do&nbsp;přehledného pasu nemovitosti, který lze předat architektovi nebo řemeslníkovi. Navrhli jsme a&nbsp;postavili celé MVP — aplikaci, web, podporu i&nbsp;vydávání.</p>
+      <p class="status"><span class="badge">Zastaveno</span><span><strong>MVP nedopadlo a&nbsp;projekt jsme zastavili.</strong> Umíme postavit produkt za&nbsp;týden — a&nbsp;stejně rychle ho ukončit, když nefunguje. Stránku necháváme jako ukázku technického řešení.</span></p>
+    </header>
+
+    <dl class="facts">
+      <div><dt>Produkt</dt><dd>Vlastní MVP Indigo Studio</dd></div>
+      <div><dt>Obor</dt><dd>Nemovitosti a&nbsp;rekonstrukce</dd></div>
+      <div><dt>Platforma</dt><dd>iPhone a&nbsp;iPad, web</dd></div>
+      <div><dt>Stav</dt><dd>MVP, zastaveno</dd></div>
+    </dl>
+
+    <div class="stats">
+      <div class="stat"><strong>1&nbsp;týden</strong><span>od prvního řádku kódu po&nbsp;schválení první verze v&nbsp;App Store</span></div>
+      <div class="stat"><strong>1&nbsp;000+</strong><span>automatických kontrol v&nbsp;unit, end-to-end a&nbsp;vizuálních testech</span></div>
+      <div class="stat"><strong>5&nbsp;formátů</strong><span>exportu: PDF, DXF pro CAD, 3D model, ZIP a&nbsp;JSON</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1"><span class="num">01</span>Proč Pásek vznikl</h2>
+      <div class="prose">
+        <p>Kdo kupuje nebo opravuje starý dům, obvykle nemá plány ani rozměry. Běžné postupy mu nepomohou:</p>
+        <ul class="list">
+          <li><strong>Svinovací metr a&nbsp;papír</strong> — pomalé, nepřesné a&nbsp;polovina rozměrů se ztratí.</li>
+          <li><strong>Geodet</strong> — drahý, s&nbsp;dlouhou čekací lhůtou a&nbsp;pro plánování rekonstrukce zbytečně podrobný.</li>
+          <li><strong>Staré stavby nejsou pravoúhlé</strong> — běžné aplikace je zjednoduší a&nbsp;výměry pak nesedí.</li>
+        </ul>
+        <p><strong>Typický scénář:</strong> majitel chalupy projde s&nbsp;iPhonem místnost po&nbsp;místnosti, rozměry, na&nbsp;kterých záleží, doměří laserem, k&nbsp;vlhké zdi připne fotku a&nbsp;poznámku a&nbsp;architektovi pošle PDF s&nbsp;půdorysem a&nbsp;výkres pro CAD. Pásek je orientační nástroj pro plánování, nenahrazuje geodetické zaměření pro úřad.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2"><span class="num">02</span>Co jsme postavili</h2>
+      <div class="prose">
+        <p>Celý produkt od&nbsp;skenu v&nbsp;telefonu po&nbsp;prodej v&nbsp;App Store. Aplikace funguje offline, bez účtu a&nbsp;data zůstávají v&nbsp;zařízení.</p>
+        <div class="modules">
+          <div class="module"><h3>Sken domu</h3><p>iOS aplikace s&nbsp;Apple RoomPlan zaměří stěny, dveře a&nbsp;okna a&nbsp;poskládá místnosti do&nbsp;celého patra.</p></div>
+          <div class="module"><h3>Obkreslení v&nbsp;AR</h3><p>Na&nbsp;iPhonu bez LiDARu uživatel obkreslí podlahu v&nbsp;rozšířené realitě.</p></div>
+          <div class="module"><h3>Půdorys a&nbsp;výměry</h3><p>Plochy, obvody a&nbsp;výšky s&nbsp;přesností v&nbsp;procentech podle toho, čím se měřilo.</p></div>
+          <div class="module"><h3>Pas nemovitosti</h3><p>Přehled budov a&nbsp;pater s&nbsp;fotkami, poznámkami, dokumenty, střechami a&nbsp;situačním plánem.</p></div>
+          <div class="module"><h3>3D model a&nbsp;AR</h3><p>Prohlížeč modelu přímo v&nbsp;aplikaci a&nbsp;zobrazení naskenovaného domu v&nbsp;AR.</p></div>
+          <div class="module"><h3>Exporty</h3><p>PDF pas s&nbsp;půdorysy a&nbsp;fotkami, DXF pro CAD a&nbsp;balíček pro zálohu i&nbsp;import zpět.</p></div>
+          <div class="module"><h3>Katastr</h3><p>Ve&nbsp;zkušební verzi aplikace načte parcelu a&nbsp;adresu z&nbsp;veřejných služeb ČÚZK podle polohy.</p></div>
+          <div class="module"><h3>Web a&nbsp;blog</h3><p>Prezentace, podmínky, zásady a&nbsp;blog v&nbsp;češtině i&nbsp;angličtině na&nbsp;pasek.app.</p></div>
+          <div class="module"><h3>Podpora a&nbsp;zpětná vazba</h3><p>Stránka podpory přímo v&nbsp;aplikaci a&nbsp;automatický převod hlášení z&nbsp;beta verze do&nbsp;úkolů vývoje.</p></div>
+          <div class="module"><h3>Vydávání a&nbsp;prodej</h3><p>Automatické testy, sestavení do&nbsp;TestFlightu a&nbsp;App Store s&nbsp;jednorázovým nákupem bez předplatného.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3"><span class="num">03</span>Výzvy a&nbsp;řešení</h2>
+      <div class="challenges">
+        <article class="challenge">
+          <h3>Staré domy nemají pravé úhly</h3>
+          <dl>
+            <dt>Problém</dt><dd>Skenovací technologie stěny idealizuje a&nbsp;běžné editory rohy zarovnávají na&nbsp;90&nbsp;stupňů. U&nbsp;staré usedlosti by pak plochy neseděly.</dd>
+            <dt>Řešení</dt><dd>Geometrie drží skutečné úhly. Rohy dopočítáváme průsečíkem os stěn a&nbsp;místnosti skládáme do&nbsp;půdorysu bez zarovnávání.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Přesnost, které lze věřit</h3>
+          <dl>
+            <dt>Problém</dt><dd>Sken, laser, metr i&nbsp;odhad od&nbsp;oka dávají různě přesná čísla. Jedno číslo bez kontextu by uživatele klamalo.</dd>
+            <dt>Řešení</dt><dd>Každá míra nese zdroj a&nbsp;toleranci, která se propočítá do&nbsp;ploch i&nbsp;obvodů. Ruční míra má přednost před skenem a&nbsp;pas ukáže, kde je potřeba doměřit. Výpočty hlídají unit testy.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Sken celé budovy, ne jen místnosti</h3>
+          <dl>
+            <dt>Problém</dt><dd>Při přechodu mezi místnostmi telefon ztrácel orientaci a&nbsp;místnosti se neskládaly k&nbsp;sobě.</dd>
+            <dt>Řešení</dt><dd>Kamera a&nbsp;AR relace zůstávají aktivní po&nbsp;celou dobu skenu budovy. Všechny místnosti tak vznikají ve&nbsp;společném prostoru a&nbsp;z&nbsp;nich rovnou půdorys patra i&nbsp;3D model.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Webové rozhraní s&nbsp;nativními schopnostmi</h3>
+          <dl>
+            <dt>Problém</dt><dd>Rozhraní je postavené na&nbsp;webových technologiích, ale skenování, AR a&nbsp;tisk do&nbsp;PDF vyžadují nativní iOS.</dd>
+            <dt>Řešení</dt><dd>Vlastní tenký plugin ve&nbsp;Swiftu předává z&nbsp;RoomPlanu parametrický model a&nbsp;veškerá logika zůstává v&nbsp;JavaScriptu. PDF vzniká nativním renderem ve&nbsp;formátu A4 a&nbsp;soubory se sdílejí systémovým dialogem.</dd>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4"><span class="num">04</span>Technologie a&nbsp;kvalita</h2>
+      <div class="prose">
+        <ul class="tags">
+          <li>Swift</li><li>RoomPlan</li><li>ARKit</li><li>AR Quick Look</li><li>Capacitor</li><li>Vanilla JavaScript</li><li>SVG</li><li>Cloudflare Workers</li><li>Playwright</li><li>GitHub Actions</li><li>Xcode Cloud</li><li>TestFlight</li>
+        </ul>
+        <p>Uživatelské rozhraní je bez frameworku a&nbsp;UI knihoven. 3D prohlížeč, výkres DXF i&nbsp;balíček ZIP generujeme přímo v&nbsp;JavaScriptu, takže základní funkce běží bez připojení. Aplikace i&nbsp;web jsou v&nbsp;češtině a&nbsp;angličtině, ve&nbsp;světlém i&nbsp;tmavém režimu.</p>
+        <p>Kvalitu drží přes 900 kontrol v&nbsp;unit testech, 111 end-to-end testů v&nbsp;prohlížeči a&nbsp;vizuální regresní testy obrazovek v&nbsp;obou režimech. Testy běží automaticky před každým sloučením změn a&nbsp;nová verze se sama sestaví do&nbsp;TestFlightu. Snímky obrazovek a&nbsp;popisky pro App Store připravují a&nbsp;nahrávají skripty v&nbsp;obou jazycích.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5"><span class="num">05</span>Výsledek a&nbsp;zastavení</h2>
+      <div class="prose">
+        <p>Za&nbsp;týden od&nbsp;prvního řádku kódu prošla první verze schválením v&nbsp;App Store. Uživatel dostane sken domu, půdorys s&nbsp;přesností v&nbsp;procentech, 3D model a&nbsp;export pro architekta — bez účtu, bez předplatného a&nbsp;s&nbsp;daty jen ve&nbsp;svém telefonu.</p>
+        <p><strong>Jako produkt ale MVP nedopadlo a&nbsp;projekt jsme zastavili.</strong> Právě k&nbsp;tomu MVP slouží: ověřit nápad rychle a&nbsp;levně, dřív než do&nbsp;něj padnou měsíce práce.</p>
+        <p>Umíme dotáhnout věc do&nbsp;konce, ale také poznat, kdy ji ukončit. Stejný přístup nabízíme klientům: raději zastavit včas než financovat něco, co nefunguje.</p>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Máte nápad na&nbsp;aplikaci?</h2>
+        <p>Napište nám, co má řešit, a&nbsp;navrhneme, jak ji postavit.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" href="/projekty">Další projekty</a>
+        <a class="button" href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">Napsat na&nbsp;info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
+    <p><a href="/">Zpět na&nbsp;úvod</a></p>
+  </div>
+</footer>
+</body>
+</html>
