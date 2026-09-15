@@ -11,6 +11,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://indigostudio.cz/projekty/mblue</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://indigostudio.cz/cookies</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

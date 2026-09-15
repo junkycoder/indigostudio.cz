@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>mBlue — CRM a ATS na míru pro personální agenturu | Indigo Studio</title>
+<meta name="description" content="Případová studie: vlastní CRM a náborový systém pro HR agenturu mBlue. Obchod, nábor, výkazy, fakturace a reporty v jedné aplikaci místo dlouholetého systému.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/projekty/mblue">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="mBlue — CRM a ATS na míru pro personální agenturu">
+<meta property="og:description" content="Obchod, nábor, výkazy, fakturace a reporty v jedné aplikaci místo dlouholetého systému.">
+<meta property="og:url" content="https://indigostudio.cz/projekty/mblue">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://indigostudio.cz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="mBlue — CRM a ATS na míru pro personální agenturu">
+<meta name="twitter:description" content="Obchod, nábor, výkazy, fakturace a reporty v jedné aplikaci místo dlouholetého systému.">
+<meta name="twitter:image" content="https://indigostudio.cz/og.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .mark { width: 26px; height: 26px; border-radius: 4px; background: linear-gradient(135deg, var(--accent-strong), #818cf8); }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .muted { color: var(--fg-muted); font-weight: 500; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 22ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 60ch; }
+
+  /* fakta o projektu */
+  .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); }
+  .facts div { padding: 1rem 1.2rem; border-left: 1px solid var(--border); }
+  .facts div:first-child { border-left: 0; }
+  .facts dt { font-size: 0.76rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 0.25rem; }
+  .facts dd { font-size: 0.92rem; font-weight: 550; }
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+
+  /* výzvy */
+  .challenges { display: flex; flex-direction: column; gap: 0.75rem; }
+  .challenge { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.2rem 1.3rem; }
+  .challenge h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+  .challenge dl { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 0.35rem 1rem; }
+  .challenge dt { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-faint); padding-top: 0.2rem; }
+  .challenge dd { font-size: 0.92rem; color: var(--fg-muted); }
+
+  .tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.2rem 0 1.1rem; }
+  .tags li { font-size: 0.8rem; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 3px; padding: 0.15rem 0.55rem; background: var(--surface); }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .facts div:nth-child(3) { border-left: 0; }
+    .facts div:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules { grid-template-columns: 1fr; }
+    .challenge dl { grid-template-columns: 1fr; gap: 0.1rem; }
+    .challenge dd + dt { margin-top: 0.5rem; }
+    .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">Indigo <span class="muted">Studio</span></span>
+    </a>
+    <a class="nav-link" href="/projekty">
+      Případové studie, ukázky a&nbsp;reference
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Drobečková navigace">
+      <a href="/">Úvod</a><span class="sep">/</span><a href="/projekty">Projekty</a><span class="sep">/</span><span aria-current="page">mBlue</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Případová studie · HR a&nbsp;nábor</p>
+      <h1>CRM a&nbsp;náborový systém na&nbsp;míru pro personální agenturu mBlue</h1>
+      <p class="lead">mBlue Czech hledá zaměstnance pro firemní klienty a&nbsp;poskytuje HR poradenství. Roky pracovala v&nbsp;systému, který přestal stačit. Navrhli a&nbsp;vyvinuli jsme aplikaci, ve které tým vede obchod, nábor, výkazy práce i&nbsp;reporty na&nbsp;jednom místě — a&nbsp;převedli do ní historická data celé firmy.</p>
+    </header>
+
+    <dl class="facts">
+      <div><dt>Klient</dt><dd>mBlue Czech s.r.o.</dd></div>
+      <div><dt>Obor</dt><dd>Personální agentura</dd></div>
+      <div><dt>Dodávka</dt><dd>Návrh, vývoj, migrace dat</dd></div>
+      <div><dt>Období</dt><dd>Duben – září 2026</dd></div>
+    </dl>
+
+    <div class="stats">
+      <div class="stat"><strong>250&nbsp;tis.</strong><span>záznamů v&nbsp;zátěžových testech vyhledávání a&nbsp;výpisů</span></div>
+      <div class="stat"><strong>2&nbsp;500+</strong><span>automatických testů včetně end-to-end scénářů</span></div>
+      <div class="stat"><strong>5,5&nbsp;měsíce</strong><span>od prvního řádku kódu po testování u&nbsp;klienta</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1"><span class="num">01</span>Výchozí situace</h2>
+      <div class="prose">
+        <p>Agentura vedla klienty, kandidáty a&nbsp;zakázky v&nbsp;obecném systému, který používala mnoho let. Na&nbsp;její způsob práce už nestačil:</p>
+        <ul class="list">
+          <li><strong>Na&nbsp;zakázce nešlo evidovat víc spolupracovníků</strong>, přestože na&nbsp;náboru běžně pracuje tým.</li>
+          <li><strong>Chybělo skutečné smazání osobních údajů</strong> podle GDPR se záznamem, kdo a&nbsp;kdy mazal.</li>
+          <li><strong>Obchod, nábor a&nbsp;fakturace žily odděleně</strong> — podklady pro vedení se skládaly ručně.</li>
+        </ul>
+        <p>Cílem nebyla další krabicová aplikace, ale systém postavený přesně podle toho, jak agentura obchoduje, obsazuje pozice a&nbsp;vyhodnocuje výsledky.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2"><span class="num">02</span>Co jsme postavili</h2>
+      <div class="prose">
+        <p>Jednu aplikaci pro celou firmu — pro konzultanty, team leadery, back office i&nbsp;vedení. Práce stojí na&nbsp;rychlém rozhraní seznam–detail, kde se změny propisují okamžitě bez načítání stránky.</p>
+        <div class="modules">
+          <div class="module"><h3>Databáze kandidátů</h3><p>Fulltext i&nbsp;v&nbsp;obsahu životopisů, kontrola duplicit, štítky a&nbsp;jazyky. Nahraný životopis předvyplní formulář.</p></div>
+          <div class="module"><h3>Klienti a&nbsp;kontakty</h3><p>Karta firmy s&nbsp;dohledáním v&nbsp;ARES, odvětví, segmenty a&nbsp;holdingové vazby.</p></div>
+          <div class="module"><h3>Obchodní pipeline</h3><p>Akvizice a&nbsp;retence s&nbsp;naceněním. Podepsaná zakázka sama založí náborový projekt.</p></div>
+          <div class="module"><h3>Nábor a&nbsp;výběrová řízení</h3><p>Vlastní fáze náboru nad pevnou reportovací osou, trychtýř, důvody zamítnutí a&nbsp;nástupy.</p></div>
+          <div class="module"><h3>Cenová kalkulace</h3><p>Nacenění služeb podle katalogu a&nbsp;obchodních podmínek, s&nbsp;oprávněním jen pro určené role.</p></div>
+          <div class="module"><h3>Výkazy a&nbsp;fakturace</h3><p>Timesheety, exporty, PDF faktury s&nbsp;QR platbou a&nbsp;finanční plán.</p></div>
+          <div class="module"><h3>Dokumenty a&nbsp;nahrávky</h3><p>Vytěžení textu z&nbsp;PDF, kancelářských souborů i&nbsp;skenů (OCR) a&nbsp;přepis nahrávek do textu.</p></div>
+          <div class="module"><h3>Reporty</h3><p>Manažerské, obchodní, účetní a&nbsp;delivery přehledy nad jednotnými daty.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3"><span class="num">03</span>Převod historických dat</h2>
+      <div class="prose">
+        <p>Nová aplikace by bez historie neměla pro agenturu cenu. Z&nbsp;původního systému jsme převedli klienty, kandidáty, zakázky i&nbsp;průběh výběrových řízení. Co převést a&nbsp;co ponechat v&nbsp;archivu, určil klient.</p>
+        <p>Převod je <strong>opakovatelný</strong> — další běh nic nezdvojí — a&nbsp;ke každému vynechanému záznamu uvede důvod. Klient tak má přehled o&nbsp;tom, co se převedlo a&nbsp;proč, a&nbsp;historie je v&nbsp;nové aplikaci dohledatelná od prvního dne.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4"><span class="num">04</span>Výzvy a&nbsp;řešení</h2>
+      <div class="challenges">
+        <article class="challenge">
+          <h3>Reporty, které nelžou</h3>
+          <dl>
+            <dt>Problém</dt><dd>Každý tým si fáze náboru pojmenovává po&nbsp;svém. Běžné systémy pak nedokážou výsledky porovnat napříč projekty.</dd>
+            <dt>Řešení</dt><dd>Vlastní názvy fází se mapují na&nbsp;osm pevných kroků pro reporty. Když se kandidát vrátí o&nbsp;krok zpět, historie se neztrácí — systém rozlišuje, kde kandidát je a&nbsp;kam až došel.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Vyhledávání a&nbsp;řazení v&nbsp;češtině</h3>
+          <dl>
+            <dt>Problém</dt><dd>Rozsáhlá databáze, diakritika a&nbsp;jména, která musí být seřazená tak, jak je čeština očekává.</dd>
+            <dt>Řešení</dt><dd>Fulltextové vyhledávání najde záznam podle začátků slov s&nbsp;diakritikou i&nbsp;bez ní, české řazení funguje napříč aplikací a&nbsp;osoby se řadí podle příjmení. Rychlost jsme ověřili zátěžovými testy na&nbsp;250&nbsp;tisících záznamů a&nbsp;správnost řazení hlídají automatické testy.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Jednotné a&nbsp;přístupné rozhraní</h3>
+          <dl>
+            <dt>Problém</dt><dd>Desítky obrazovek, na&nbsp;kterých lidé tráví celý pracovní den.</dd>
+            <dt>Řešení</dt><dd>Vlastní design systém se živým katalogem komponent, který vykresluje přímo produkční části aplikace. Automatické testy kontrolují kontrast, velikost ovládacích prvků i&nbsp;popisky pro čtečky obrazovky.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Osobní údaje pod kontrolou</h3>
+          <dl>
+            <dt>Problém</dt><dd>Agentura spravuje citlivé osobní údaje kandidátů i&nbsp;kontaktů u&nbsp;klientů.</dd>
+            <dt>Řešení</dt><dd>Nevratné smazání osobních údajů se záznamem, přihlášení jednorázovým odkazem bez hesel, bezpečnostní politika obsahu a&nbsp;omezení odchozí pošty na&nbsp;povolené adresy.</dd>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5"><span class="num">05</span>Technologie a&nbsp;kvalita</h2>
+      <div class="prose">
+        <ul class="tags">
+          <li>Ruby on Rails 8</li><li>Solid Queue</li><li>Vlastní design systém</li><li>Playwright</li><li>Minitest</li><li>ARES</li><li>Teamio</li><li>AWS S3</li><li>Sentry</li>
+        </ul>
+        <p>Záměrně jednoduchý provoz: úlohy na&nbsp;pozadí bez dalších služeb a&nbsp;žádný frontendový framework. Aplikaci tak lze dlouhodobě udržovat bez rostoucích nákladů na&nbsp;infrastrukturu.</p>
+        <p>Kvalitu drží přes 2&nbsp;000 unit a&nbsp;integračních testů a&nbsp;téměř 500 end-to-end scénářů v&nbsp;prohlížeči, statická bezpečnostní analýza a&nbsp;oddělená prostředí pro vývoj, testování a&nbsp;provoz.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s6">
+      <h2 id="s6"><span class="num">06</span>Výsledek</h2>
+      <div class="prose">
+        <p>Za&nbsp;pět a&nbsp;půl měsíce vznikla aplikace, která pokrývá celý cyklus agentury — od&nbsp;obchodní příležitosti přes nábor a&nbsp;výkazy až po&nbsp;fakturaci a&nbsp;reporty pro vedení. Historická data jsou převedená a&nbsp;dohledatelná.</p>
+        <p>Od&nbsp;konce srpna 2026 aplikaci ověřuje tým klienta a&nbsp;vývoj pokračuje podle jeho zpětné vazby — aktuálně manažerské reporty, publikace inzerátů na&nbsp;pracovní portály a&nbsp;nový přehled na&nbsp;úvodní obrazovce.</p>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Potřebujete systém na&nbsp;míru?</h2>
+        <p>Napište nám, jak dnes pracujete, a&nbsp;navrhneme řešení.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" href="/projekty">Další projekty</a>
+        <a class="button" href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">Napsat na&nbsp;info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
+    <p><a href="/">Zpět na&nbsp;úvod</a></p>
+  </div>
+</footer>
+</body>
+</html>
