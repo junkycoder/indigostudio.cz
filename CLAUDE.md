@@ -8,13 +8,16 @@ Jedna stránka, žádný build step, žádné frameworky.
 `indigostudio.cz` — minimalistická one-page vizitka:
 - střídmě, vycentrovaně, na jeden viewport, mobile-friendly
 - dark/light přepínač (respektuje `prefers-color-scheme`, ukládá do localStorage)
-- jemný interaktivní glow za kurzorem
+- horní lišta s odkazem na `/projekty` (případové studie, ukázky a reference)
 - OG/Twitter share preview (`/og.png`)
 - kontakty na tým + firemní údaje
 
 ## Struktura
 
 - `public/index.html` — celá stránka (inline CSS + JS)
+- `public/projekty.html` — feed: aplikace, případové studie, reference, ukázky
+  (položka = `<li class="item" data-kind="app|case|reference|sample">`, šablony v komentáři;
+  filtr ukazuje jen neprázdné kategorie)
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`

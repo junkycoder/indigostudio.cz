@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Případové studie, ukázky a reference | Indigo Studio</title>
+<meta name="description" content="Aplikace, případové studie, reference a ukázky práce Indigo Studio — weby, mobilní aplikace, interní systémy a AI na míru.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/projekty">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Případové studie, ukázky a reference — Indigo Studio">
+<meta property="og:description" content="Aplikace, případové studie, reference a ukázky naší práce.">
+<meta property="og:url" content="https://indigostudio.cz/projekty">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://indigostudio.cz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Případové studie, ukázky a reference — Indigo Studio">
+<meta name="twitter:description" content="Aplikace, případové studie, reference a ukázky naší práce.">
+<meta name="twitter:image" content="https://indigostudio.cz/og.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny a lišta jsou shodné s index.html — při změně upravit obě stránky */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.55; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .mark { width: 26px; height: 26px; border-radius: 4px; background: linear-gradient(135deg, var(--accent-strong), #818cf8); }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .muted { color: var(--fg-muted); font-weight: 500; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+
+  /* ---- Úvod feedu ---- */
+  main { flex: 1; }
+  .intro { padding-block: clamp(2.5rem, 7vh, 4.5rem) 1.8rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 1rem; }
+  .intro h1 { font-size: clamp(1.9rem, 4.4vw, 2.9rem); font-weight: 650; line-height: 1.12; letter-spacing: -0.03em; max-width: 20ch; margin-bottom: 1rem; }
+  .intro .lead { font-size: clamp(1.02rem, 1.6vw, 1.15rem); color: var(--fg-muted); max-width: 56ch; }
+
+  /* ---- Filtr kategorií (bez JS se nezobrazí, feed je pak celý) ---- */
+  .filters { display: flex; flex-wrap: wrap; gap: 0.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); margin-bottom: 1.6rem; }
+  .filter {
+    font: inherit; font-size: 0.86rem; font-weight: 550; color: var(--fg-muted);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 3px;
+    padding: 0.4rem 0.9rem; cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .filter:hover { border-color: var(--border-strong); color: var(--fg); }
+  .filter[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+  .filter .count { opacity: 0.6; margin-left: 0.3rem; font-weight: 500; }
+
+  /* ---- Feed ---- */
+  .feed { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; padding-bottom: clamp(2.5rem, 7vh, 4.5rem); }
+  .item {
+    display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow); padding: 1.5rem;
+    transition: border-color 0.2s var(--ease);
+  }
+  .item:hover { border-color: var(--border-strong); }
+  .item-kind { display: inline-flex; align-self: flex-start; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border-radius: 3px; padding: 0.2rem 0.5rem; margin-bottom: 1rem; }
+  .item h2 { font-size: 1.25rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 0.35rem; }
+  .item .item-sub { font-size: 0.92rem; color: var(--fg-muted); font-weight: 500; margin-bottom: 0.9rem; }
+  .item p { color: var(--fg-muted); font-size: 0.94rem; margin-bottom: 0.7rem; }
+  .item p strong { color: var(--fg); font-weight: 600; }
+  .tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.4rem 0 1.2rem; }
+  .tags li { font-size: 0.78rem; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 3px; padding: 0.15rem 0.5rem; }
+  .item-link { margin-top: auto; display: inline-flex; align-items: center; gap: 0.4rem; align-self: flex-start; font-size: 0.9rem; font-weight: 550; color: var(--accent); text-decoration: none; }
+  .item-link:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+  .item-link svg { width: 15px; height: 15px; }
+  .item .item-note { margin: auto 0 0; font-size: 0.84rem; color: var(--fg-faint); }
+
+  /* reference = citace */
+  .item.quote blockquote { font-size: 1.05rem; line-height: 1.55; color: var(--fg); margin-bottom: 1.1rem; }
+  .item.quote figcaption { margin-top: auto; font-size: 0.88rem; color: var(--fg-muted); }
+  .item.quote figcaption strong { color: var(--fg); font-weight: 600; }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+
+  /* ---- Patička ---- */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 760px) {
+    .feed { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .item, .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">Indigo <span class="muted">Studio</span></span>
+    </a>
+    <a class="nav-link" href="/#poptavka">
+      Poptávka
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="container intro">
+    <p class="eyebrow">Projekty</p>
+    <h1>Případové studie, ukázky a&nbsp;reference</h1>
+    <p class="lead">Studio vedou dva partneři, na&nbsp;projektech spolupracujeme s&nbsp;prověřenou sítí specialistů. Tady je výběr z&nbsp;toho, na&nbsp;čem jsme pracovali.</p>
+  </div>
+
+  <div class="container">
+    <!-- Filtr skládá JS podle kategorií, které ve feedu opravdu jsou (prázdné se neukážou) -->
+    <div class="filters" id="filters" role="group" aria-label="Filtrovat podle typu" hidden></div>
+
+    <!--
+      Feed: každá položka má data-kind = app | case | reference | sample.
+      Pořadí kategorií ve filtru: Aplikace, Případové studie, Reference, Ukázky.
+    -->
+    <ul class="feed" id="feed">
+
+      <!-- ===== 1. Aplikace ===== -->
+      <li class="item" data-kind="app">
+        <span class="item-kind">Aplikace</span>
+        <h2>Signal Collector</h2>
+        <p class="item-sub">Android aplikace pro měření signálu a&nbsp;senzorů</p>
+        <p>Zaznamenává data ze senzorů telefonu, rádiových a&nbsp;síťových rozhraní — GNSS, Wi‑Fi, Bluetooth, mobilní buňky i&nbsp;testy kvality připojení. Funguje offline a&nbsp;naměřená data zůstávají v&nbsp;zařízení. Vydaná na&nbsp;Google Play.</p>
+        <ul class="tags"><li>Kotlin</li><li>Jetpack Compose</li><li>Room</li><li>Android</li></ul>
+        <a class="item-link" href="https://signalcollector.app" target="_blank" rel="noopener">
+          signalcollector.app
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </li>
+
+      <!-- ===== 2. Případové studie ===== -->
+      <li class="item" data-kind="case">
+        <span class="item-kind">Případová studie</span>
+        <h2>mBlue</h2>
+        <p class="item-sub">Společný přehled stavu vývoje aplikace</p>
+        <p>Tým klienta potřeboval shodu na&nbsp;tom, co je v&nbsp;aplikaci hotové a&nbsp;co zbývá. Postavili jsme neveřejný statusboard: každá funkce má zjištěný stav, členové týmu jí přiřazují fázi a&nbsp;váhu a&nbsp;stránka průběžně počítá míru shody.</p>
+        <p><strong>Výsledek:</strong> jeden zdroj pravdy pro rozsah projektu místo rozptýlených tabulek a&nbsp;callů.</p>
+        <ul class="tags"><li>Cloudflare Workers</li><li>D1</li><li>Přihlášení odkazem</li></ul>
+        <p class="item-note">Interní nástroj klienta, není veřejně dostupný.</p>
+      </li>
+
+      <!-- ===== 3. Reference =====
+        Šablona (odkomentovat a vyplnit skutečnou citaci se svolením klienta):
+      <li class="item quote" data-kind="reference">
+        <span class="item-kind">Reference</span>
+        <figure>
+          <blockquote>„Text reference.“</blockquote>
+          <figcaption><strong>Jméno Příjmení</strong>, pozice, firma</figcaption>
+        </figure>
+      </li>
+      -->
+
+      <!-- ===== 4. Ukázky =====
+        Šablona:
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Ukázka</span>
+        <h2>Název projektu</h2>
+        <p class="item-sub">Typ projektu, rok</p>
+        <p>Stručný popis — co bylo zadáním a co vzniklo.</p>
+        <ul class="tags"><li>Technologie</li></ul>
+        <a class="item-link" href="https://…" target="_blank" rel="noopener">odkaz</a>
+      </li>
+      -->
+
+    </ul>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Řešíte podobný projekt?</h2>
+        <p>Napište nám zadání a&nbsp;ozveme se nejpozději do několika hodin.</p>
+      </div>
+      <a class="button" href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">Napsat na&nbsp;info@indigostudio.cz</a>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
+    <p><a href="/">Zpět na&nbsp;úvod</a></p>
+  </div>
+</footer>
+
+<script>
+  // Filtr feedu — tlačítka jen pro kategorie, které mají aspoň jednu položku
+  (function () {
+    var KINDS = [
+      { id: "app", label: "Aplikace" },
+      { id: "case", label: "Případové studie" },
+      { id: "reference", label: "Reference" },
+      { id: "sample", label: "Ukázky" }
+    ];
+    var feed = document.getElementById("feed");
+    var bar = document.getElementById("filters");
+    if (!feed || !bar) return;
+    var items = Array.prototype.slice.call(feed.querySelectorAll(".item"));
+
+    var present = KINDS.map(function (k) {
+      return { id: k.id, label: k.label, n: items.filter(function (el) { return el.dataset.kind === k.id; }).length };
+    }).filter(function (k) { return k.n > 0; });
+
+    // s jednou kategorií filtr nedává smysl
+    if (present.length < 2) return;
+
+    var buttons = [];
+    function add(id, label, n) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "filter";
+      b.dataset.kind = id;
+      b.setAttribute("aria-pressed", "false");
+      b.innerHTML = label + '<span class="count">' + n + "</span>";
+      b.addEventListener("click", function () { select(id, true); });
+      bar.appendChild(b);
+      buttons.push(b);
+    }
+    add("all", "Vše", items.length);
+    present.forEach(function (k) { add(k.id, k.label, k.n); });
+
+    function select(id, push) {
+      buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.kind === id)); });
+      items.forEach(function (el) { el.hidden = id !== "all" && el.dataset.kind !== id; });
+      // filtr jde poslat odkazem (#aplikace apod.)
+      if (push) history.replaceState(null, "", id === "all" ? location.pathname : "#" + id);
+    }
+
+    var initial = location.hash.slice(1);
+    select(present.some(function (k) { return k.id === initial; }) ? initial : "all", false);
+    bar.hidden = false;
+  })();
+</script>
+</body>
+</html>
