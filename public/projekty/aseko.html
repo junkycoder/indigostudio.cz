@@ -4,24 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
-<title>Aseko — od jedné offline aplikace k týmu cloudové platformy | Indigo Studio</title>
-<meta name="description" content="Případová studie: u Aseko jsme začali jednoduchou offline Bluetooth aplikací pro nastavení krytu bazénu a stali jsme se součástí týmu cloudové platformy ACS, kde máme na starosti mobilní vývoj. Původní aplikace dál běží vedle platformy.">
+<title>Aseko — převzetí vývoje softwaru pro bazénovou techniku | Indigo Studio</title>
+<meta name="description" content="Případová studie: pro Aseko jsme v týmu s Telionem převzali vývoj veškerého softwaru. Dodali jsme frontend aplikací Aseko Live, Aseko Remote, whitelabel verzí a backoffice včetně vydávání do obchodů a automatických testů.">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/projekty/aseko">
 
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Indigo Studio">
-<meta property="og:title" content="Aseko — od jedné offline aplikace k týmu cloudové platformy">
-<meta property="og:description" content="Začali jsme offline Bluetooth aplikací pro kryt bazénu a stali se součástí týmu cloudové platformy pro všechna zařízení Aseko.">
+<meta property="og:title" content="Aseko — převzetí vývoje softwaru pro bazénovou techniku">
+<meta property="og:description" content="Aseko vyrábí hardware, software jsme převzali my s Telionem. Jedna aplikace pro web, iOS i Android, whitelabel verze a vydávání na kliknutí.">
 <meta property="og:url" content="https://indigostudio.cz/projekty/aseko">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:image" content="https://indigostudio.cz/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Aseko — od jedné offline aplikace k týmu cloudové platformy">
-<meta name="twitter:description" content="Začali jsme offline Bluetooth aplikací pro kryt bazénu a stali se součástí týmu cloudové platformy pro všechna zařízení Aseko.">
+<meta name="twitter:title" content="Aseko — převzetí vývoje softwaru pro bazénovou techniku">
+<meta name="twitter:description" content="Aseko vyrábí hardware, software jsme převzali my s Telionem. Jedna aplikace pro web, iOS i Android, whitelabel verze a vydávání na kliknutí.">
 <meta name="twitter:image" content="https://indigostudio.cz/og.png">
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -206,122 +206,107 @@
     </nav>
 
     <header class="hero">
-      <p class="eyebrow">Případová studie · Mobilní aplikace · IoT</p>
-      <h1>Aseko: od jedné offline aplikace k&nbsp;týmu cloudové platformy</h1>
-      <p class="lead">Aseko vyrábí řídicí jednotky pro bazény — dávkovače chemie, měření teploty a&nbsp;kvality vody, filtraci i&nbsp;pohony krytů — pod vlastní značkou i&nbsp;pro partnery. Spolupráce začala jednoduchou offline aplikací pro nastavení krytu bazénu přes Bluetooth. Postupně jsme se stali součástí týmu, který staví cloudovou platformu ACS pro všechna zařízení Aseko a&nbsp;jejich partnerů. Naší částí v&nbsp;něm je vývoj mobilních aplikací.</p>
+      <p class="eyebrow">Případová studie · Mobilní a&nbsp;webové aplikace · IoT</p>
+      <h1>Aseko: převzetí vývoje veškerého softwaru</h1>
+      <p class="lead">Aseko vyrábí řídicí jednotky pro bazény — dávkovací stanice, měření kvality a&nbsp;teploty vody, řízení filtrace i&nbsp;pohony krytů — pod vlastní značkou i&nbsp;pro partnery. Na&nbsp;hardware se soustředí samo, vývoj softwaru převzal tým dvou dodavatelů. Jako druhý dodavatel vedle Telionu jsme dodali frontend všech aplikací, jejich vydávání do&nbsp;obchodů a&nbsp;automatické testy.</p>
     </header>
 
     <dl class="facts">
       <div><dt>Klient</dt><dd>ASEKO, spol. s&nbsp;r.o.</dd></div>
       <div><dt>Obor</dt><dd>Bazénová technika a&nbsp;IoT</dd></div>
-      <div><dt>Naše role</dt><dd>Mobilní vývoj iOS a&nbsp;Android</dd></div>
-      <div><dt>Od roku</dt><dd>2022</dd></div>
+      <div><dt>Naše role</dt><dd>Frontend, vydávání, testy</dd></div>
+      <div><dt>Spolupráce</dt><dd>Od roku 2022</dd></div>
     </dl>
 
     <div class="stats">
-      <div class="stat"><strong>1&nbsp;aplikace</strong><span>na&nbsp;začátku: offline nastavení pohonu krytu bazénu přes Bluetooth</span></div>
-      <div class="stat"><strong>1&nbsp;platforma</strong><span>sdílených komponent, na&nbsp;které stojí mobilní aplikace Pool Live i&nbsp;Pool Remote</span></div>
-      <div class="stat"><strong>1&nbsp;kliknutí</strong><span>a&nbsp;nová verze míří do&nbsp;App Store i&nbsp;Google Play</span></div>
+      <div class="stat"><strong>1&nbsp;kód</strong><span>pro web, iOS i&nbsp;Android — Aseko Live běží v&nbsp;prohlížeči i&nbsp;v&nbsp;obou obchodech</span></div>
+      <div class="stat"><strong>4&nbsp;aplikace</strong><span>pro majitele bazénů, partnery a&nbsp;zaměstnance Aseko nad jednou knihovnou komponent</span></div>
+      <div class="stat"><strong>1&nbsp;kliknutí</strong><span>a&nbsp;nová verze míří do&nbsp;App Store i&nbsp;Google Play, i&nbsp;pod účty zákazníka</span></div>
     </div>
 
     <section class="block" aria-labelledby="s1">
-      <h2 id="s1"><span class="num">01</span>Začátek: Pool Cover Controller</h2>
+      <h2 id="s1"><span class="num">01</span>Od malé zakázky k&nbsp;veškerému softwaru</h2>
       <div class="prose">
-        <p>V&nbsp;roce 2022, ještě před nástupem AI nástrojů ve&nbsp;vývoji, jsme dostali úzce vymezené zadání: aplikaci, se&nbsp;kterou montážní technik zkalibruje a&nbsp;nastaví řídicí jednotku s&nbsp;motorem, který navíjí rolovací kryt bazénu. U&nbsp;bazénu často není signál, a&nbsp;proto aplikace funguje zcela offline a&nbsp;s&nbsp;jednotkou komunikuje přímo přes Bluetooth.</p>
-        <p>Aplikace je neveřejná (unlisted) v&nbsp;App Store i&nbsp;Google Play, dostupná jen přes přímý odkaz. Stojí na&nbsp;Capacitoru s&nbsp;jednoduchými komponentami Ionic a&nbsp;běží dodnes samostatně vedle platformy ACS.</p>
-        <div class="modules">
-          <div class="module"><h3>Kalibrace krajních poloh</h3><p>Průvodce krok za&nbsp;krokem nastaví otevřenou a&nbsp;zavřenou polohu krytu.</p></div>
-          <div class="module"><h3>Rychlostní profil</h3><p>Pozvolný rozjezd motoru zvlášť pro otevírání a&nbsp;zavírání.</p></div>
-          <div class="module"><h3>Proud motoru</h3><p>Špičkový a&nbsp;průměrný proud a&nbsp;bezpečnostní limit, při kterém se motor vypne.</p></div>
-          <div class="module"><h3>Nástěnná tlačítka</h3><p>Ovládání jedním nebo dvěma tlačítky a&nbsp;zavírání jen při držení tlačítka.</p></div>
-          <div class="module"><h3>Servis a&nbsp;diagnostika</h3><p>Chybový záznam, počítadlo cyklů, ruční ovládání motoru a&nbsp;tovární reset.</p></div>
-          <div class="module"><h3>Ladicí obrazovka</h3><p>Všechny hodnoty jednotky obnovované každou sekundu pro hledání chyb v&nbsp;terénu.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" aria-labelledby="s2">
-      <h2 id="s2"><span class="num">02</span>Převzetí mobilních aplikací</h2>
-      <div class="prose">
-        <p>Aseko se rozhodlo nahradit starou infrastrukturu a&nbsp;aplikace po&nbsp;předchozím dodavateli novou cloudovou platformou ACS. Původní systém převzal a&nbsp;přestavěl společný tým. <strong>My jsme převzali vývoj mobilních aplikací</strong>, zbytek — backend, infrastrukturu a&nbsp;weby — kolegové z&nbsp;<a href="https://telion.cz/en" target="_blank" rel="noopener">Telionu</a>.</p>
+        <p>Spolupráce začala v&nbsp;roce 2022 drobnou offline aplikací Pool Cover Controller, se&nbsp;kterou technik přes Bluetooth nastaví pohon rolovacího krytu bazénu. Aplikace běží dodnes, i&nbsp;ve&nbsp;verzi pod značkou partnera.</p>
+        <p>Pak se Aseko rozhodlo nahradit starou infrastrukturu a&nbsp;aplikace po&nbsp;předchozím dodavateli novou cloudovou platformou ACS a&nbsp;vývoj softwaru předat externímu týmu. <strong>Aseko si nechalo hardware, software převzal tým Telionu a&nbsp;náš.</strong></p>
         <ul class="list">
-          <li><strong>Převzetí stávajících aplikací</strong> — zprovoznění sestavení, podpisů a&nbsp;účtů v&nbsp;obchodech a&nbsp;udržení provozu pro existující uživatele během přechodu.</li>
-          <li><strong>Sjednocení na&nbsp;jednu hybridní platformu</strong> — místo oddělených nativních projektů jeden kód na&nbsp;Capacitoru pro iOS i&nbsp;Android.</li>
-          <li><strong>Vydávání na&nbsp;kliknutí</strong> — sestavení, testovací verze i&nbsp;produkční vydání do&nbsp;obou obchodů bez ruční práce.</li>
+          <li><strong>Indigo Studio</strong> — frontend aplikací, vydávání do&nbsp;App Store a&nbsp;Google Play včetně automatizace, end-to-end a&nbsp;regresní testy.</li>
+          <li><strong><a href="https://telion.cz/en" target="_blank" rel="noopener">Telion</a></strong> — zbytek platformy ACS: backend, infrastruktura a&nbsp;API. Jejich designer a&nbsp;kodér s&nbsp;námi stavěl sdílenou knihovnu UI komponent pro hybridní i&nbsp;webové aplikace.</li>
         </ul>
       </div>
     </section>
 
-    <section class="block" aria-labelledby="s3">
-      <h2 id="s3"><span class="num">03</span>Aplikace nad skutečnými zařízeními</h2>
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2"><span class="num">02</span>Co jsme dodali</h2>
       <div class="prose">
-        <p>Na&nbsp;nové platformě jsme vyvíjeli aplikace, které zobrazují a&nbsp;ovládají reálný hardware kolem bazénu. Stojí na&nbsp;vlastním UI frameworku sdílených komponent, takže nová funkce vznikne jednou a&nbsp;dostane se do&nbsp;všech aplikací i&nbsp;do&nbsp;verzí pod značkou zákazníka.</p>
+        <p>Aplikace, které zobrazují a&nbsp;ovládají skutečný hardware kolem bazénu. Převzali jsme původní aplikace a&nbsp;sjednotili je na&nbsp;jednu hybridní platformu, takže stejný kód běží na&nbsp;webu, v&nbsp;iPhonu i&nbsp;v&nbsp;Androidu.</p>
         <div class="modules">
-          <div class="module"><h3>Pool Live</h3><p>Stav bazénu v&nbsp;reálném čase: kvalita vody, teplota, provoz jednotky, upozornění a&nbsp;spotřební materiál.</p></div>
-          <div class="module"><h3>Pool Remote</h3><p>Vzdálené ovládání jednotek: režimy provozu, praní filtru, relé, ohřev, dopouštění vody a&nbsp;další nastavení.</p></div>
-          <div class="module"><h3>Sdílená knihovna komponent</h3><p>UI, datová vrstva, překlady a&nbsp;oprávnění v&nbsp;jednom interním balíčku pro obě aplikace.</p></div>
-          <div class="module"><h3>Remote pod značkou zákazníka</h3><p>Verze Pool Remote v&nbsp;barvách zákazníka, vydávaná pod jeho vlastními vývojářskými účty Apple a&nbsp;Google.</p></div>
+          <div class="module"><h3>Aseko Live</h3><p>Sledování parametrů bazénu online, upozornění na&nbsp;překročení limitů a&nbsp;historie. Jako aplikace pro iOS a&nbsp;Android i&nbsp;jako web aseko.cloud.</p></div>
+          <div class="module"><h3>Aseko Remote</h3><p>Ovládání bazénových komponent na&nbsp;dálku: režimy provozu, praní filtru, relé, ohřev, dopouštění vody.</p></div>
+          <div class="module"><h3>Pool Control pro T&amp;A</h3><p>Verze vzdáleného ovládání pro Technics and Applications v&nbsp;jejich barvách, vydávaná pod jejich vlastními vývojářskými účty Apple a&nbsp;Google.</p></div>
+          <div class="module"><h3>Backoffice</h3><p>Interní aplikace pro Aseko a&nbsp;jeho zaměstnance.</p></div>
+          <div class="module"><h3>Sdílená knihovna UI</h3><p>Komponenty, datová vrstva, překlady a&nbsp;oprávnění v&nbsp;jednom interním balíčku pro všechny aplikace.</p></div>
+          <div class="module"><h3>Vydávání a&nbsp;testy</h3><p>Automatická sestavení, testovací a&nbsp;produkční prostředí, TestFlight, interní testování Google Play, end-to-end a&nbsp;regresní testy.</p></div>
         </div>
       </div>
     </section>
 
-    <section class="block" aria-labelledby="s4">
-      <h2 id="s4"><span class="num">04</span>Výzvy a&nbsp;řešení</h2>
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3"><span class="num">03</span>Výzvy a&nbsp;řešení</h2>
       <div class="challenges">
         <article class="challenge">
-          <h3>Spolehlivá komunikace přes Bluetooth</h3>
+          <h3>Jedna aplikace na&nbsp;webu, iOS i&nbsp;Androidu</h3>
           <dl>
-            <dt>Problém</dt><dd>Jednotka krytu má vlastní protokol a&nbsp;nastavení posílá po&nbsp;skupinách hodnot. Když aplikace odeslala jen změněnou hodnotu, nastavení se na&nbsp;jednotce neuložilo správně.</dd>
-            <dt>Řešení</dt><dd>Aplikace drží celý stav jednotky a&nbsp;posílá vždy kompletní skupinu nastavení. Převod dat mezi aplikací a&nbsp;jednotkou hlídají automatické testy.</dd>
+            <dt>Problém</dt><dd>Převzaté aplikace měly pro každou platformu vlastní cestu. Každá změna se dělala vícekrát a&nbsp;vydání bylo pracné.</dd>
+            <dt>Řešení</dt><dd>Hybridní aplikace na&nbsp;Capacitoru a&nbsp;Vue nad sdílenou knihovnou komponent. Aseko Live z&nbsp;jednoho kódu vydáváme jako web i&nbsp;do&nbsp;obou obchodů.</dd>
           </dl>
         </article>
         <article class="challenge">
-          <h3>Jedna aplikace, více značek</h3>
+          <h3>Stejná aplikace pod cizí značkou a&nbsp;cizími účty</h3>
           <dl>
-            <dt>Problém</dt><dd>Pool Cover Controller začali používat i&nbsp;partneři Aseko pod vlastní značkou a&nbsp;každý potřeboval vlastní aplikaci v&nbsp;obchodech.</dd>
-            <dt>Řešení</dt><dd>Skript přepne ikony, úvodní obrazovku, logo i&nbsp;identifikátor aplikace. Všechny značky sdílejí jeden kód a&nbsp;jedno číslo verze.</dd>
-          </dl>
-        </article>
-        <article class="challenge">
-          <h3>Více aplikací, jeden základ</h3>
-          <dl>
-            <dt>Problém</dt><dd>Převzaté aplikace měly oddělený kód pro každou platformu. Každá změna se dělala vícekrát a&nbsp;vydání bylo pracné.</dd>
-            <dt>Řešení</dt><dd>Hybridní aplikace na&nbsp;Capacitoru nad sdílenou knihovnou komponent. Opravu nebo novou funkci uděláme jednou a&nbsp;vydáme do&nbsp;všech aplikací pro iOS i&nbsp;Android — včetně verzí pod značkou zákazníka a&nbsp;jeho účty v&nbsp;obchodech.</dd>
+            <dt>Problém</dt><dd>Zákazník Aseko chtěl vzdálené ovládání pod vlastní značkou a&nbsp;ve&nbsp;vlastních účtech v&nbsp;App Store a&nbsp;Google Play.</dd>
+            <dt>Řešení</dt><dd>Barvy, ikony, názvy i&nbsp;podpisové klíče jsou konfigurace, ne samostatný kód. Opravy a&nbsp;nové funkce se dostanou do&nbsp;verze Aseko i&nbsp;do&nbsp;verze zákazníka zároveň.</dd>
           </dl>
         </article>
         <article class="challenge">
           <h3>Kdo smí co ovládat</h3>
           <dl>
-            <dt>Problém</dt><dd>K&nbsp;jedné jednotce přistupuje více lidí a&nbsp;každý smí něco jiného.</dd>
-            <dt>Řešení</dt><dd>Oprávnění ke&nbsp;každé jednotce řídí, co aplikace zobrazí a&nbsp;dovolí změnit. Pravidla jsou součástí sdílené knihovny, takže platí stejně ve&nbsp;všech aplikacích.</dd>
+            <dt>Problém</dt><dd>K&nbsp;jedné jednotce přistupuje více lidí a&nbsp;každý smí něco jiného. Aplikace nesmí nabídnout akci, kterou server odmítne.</dd>
+            <dt>Řešení</dt><dd>Oprávnění ke&nbsp;každé jednotce — 64 samostatných pravidel — řídí, co aplikace zobrazí a&nbsp;dovolí změnit. Pravidla jsou ve&nbsp;sdílené knihovně a&nbsp;platí stejně ve&nbsp;všech aplikacích.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Staré verze v&nbsp;telefonech</h3>
+          <dl>
+            <dt>Problém</dt><dd>Platforma se vyvíjí, ale část uživatelů aplikace neaktualizuje. Stará verze pak přestane rozumět serveru.</dd>
+            <dt>Řešení</dt><dd>Vynucená aktualizace: aplikace pozná, že je příliš stará, a&nbsp;uživatele pošle do&nbsp;obchodu dřív, než narazí na&nbsp;chybu.</dd>
           </dl>
         </article>
       </div>
     </section>
 
-    <section class="block" aria-labelledby="s5">
-      <h2 id="s5"><span class="num">05</span>Technologie</h2>
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4"><span class="num">04</span>Technologie a&nbsp;kvalita</h2>
       <div class="prose">
         <ul class="tags">
-          <li>Capacitor</li><li>Ionic</li><li>Bluetooth LE</li><li>Vue.js</li><li>Pinia</li><li>GraphQL</li><li>WebSocket</li><li>Firebase Cloud Messaging</li><li>Sentry</li><li>GitLab CI</li><li>Xcode Cloud</li><li>TestFlight</li><li>Google Play</li>
+          <li>Vue.js</li><li>Capacitor</li><li>Pinia</li><li>GraphQL</li><li>WebSocket</li><li>Firebase Cloud Messaging</li><li>Sentry</li><li>Playwright</li><li>GitLab CI</li><li>Xcode Cloud</li><li>TestFlight</li><li>Google Play</li><li>Bluetooth LE</li>
         </ul>
-        <p><strong>Pool Cover Controller</strong> je napsaný v&nbsp;čistém JavaScriptu s&nbsp;komponentami Ionic. Všechny závislosti jsou přibalené přímo v&nbsp;aplikaci, aby fungovala bez internetu. Je přeložená do&nbsp;šesti jazyků.</p>
-        <p><strong>Pool Live a&nbsp;Pool Remote</strong> stojí na&nbsp;Vue a&nbsp;vlastní knihovně sdílených komponent, kterou distribuujeme jako interní balíček. Data přichází z&nbsp;platformy ACS přes GraphQL a&nbsp;WebSocket, upozornění přes push notifikace. Chyby z&nbsp;provozu sleduje Sentry a&nbsp;testovací i&nbsp;produkční verze se sestavují automaticky.</p>
+        <p>Aplikace stojí na&nbsp;Vue a&nbsp;vlastní knihovně sdílených komponent, kterou distribuujeme jako interní balíček. Data přichází z&nbsp;platformy ACS přes GraphQL a&nbsp;WebSocket, upozornění přes push notifikace a&nbsp;chyby z&nbsp;provozu sleduje Sentry.</p>
+        <p>Každá verze prochází end-to-end a&nbsp;regresními testy. Sestavení pro testovací i&nbsp;produkční prostředí běží automaticky z&nbsp;GitLabu přes Xcode Cloud do&nbsp;TestFlightu a&nbsp;do&nbsp;interního testování Google Play, odkud jde verze na&nbsp;kliknutí k&nbsp;uživatelům.</p>
       </div>
     </section>
 
-    <section class="block" aria-labelledby="s6">
-      <h2 id="s6"><span class="num">06</span>Výsledek</h2>
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5"><span class="num">05</span>Výsledek</h2>
       <div class="prose">
-        <p>Z&nbsp;jedné malé zakázky se stala dlouhodobá spolupráce. Offline aplikace pro kryt bazénu slouží technikům dál a&nbsp;vedle ní jsme se stali plnohodnotnou součástí týmu, který stojí za&nbsp;cloudovou platformou Aseko.</p>
-        <p>Mobilní aplikace, které jsme převzali, dnes stojí na&nbsp;jednom sdíleném základu pro iOS i&nbsp;Android a&nbsp;nová verze se do&nbsp;obou obchodů dostane na&nbsp;kliknutí.</p>
+        <p>Z&nbsp;malé offline aplikace se stala dlouhodobá spolupráce, ve&nbsp;které s&nbsp;Telionem zajišťujeme software pro celé Aseko. Aseko se může věnovat hardwaru a&nbsp;jeho zařízení mají aplikace na&nbsp;webu, v&nbsp;iOS i&nbsp;v&nbsp;Androidu — pod vlastní značkou i&nbsp;pod značkami zákazníků.</p>
       </div>
     </section>
 
     <section class="closing" aria-labelledby="closing-title">
       <div>
-        <h2 id="closing-title">Vyvíjíte zařízení a&nbsp;potřebujete k&nbsp;němu aplikaci?</h2>
-        <p>Napište nám, co má ovládat, a&nbsp;navrhneme, jak ji postavit.</p>
+        <h2 id="closing-title">Vyrábíte zařízení a&nbsp;potřebujete k&nbsp;nim software?</h2>
+        <p>Napište nám, co má aplikace ovládat, a&nbsp;navrhneme, jak ji postavit.</p>
       </div>
       <div class="actions">
         <a class="button ghost" href="/projekty">Další projekty</a>
