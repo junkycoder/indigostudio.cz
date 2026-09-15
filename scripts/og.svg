@@ -24,7 +24,7 @@
   <text x="236" y="290" font-family="Helvetica, Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="-2" fill="#f4f4f6">Indigo<tspan dx="22" fill="#818cf8">Studio</tspan></text>
 
   <!-- tagline -->
-  <text x="140" y="392" font-family="Helvetica, Arial, sans-serif" font-size="38" font-weight="400" fill="#a1a1ad">Od jednoduchého webu po AI integrace do firem.</text>
+  <text x="140" y="392" font-family="Helvetica, Arial, sans-serif" font-size="38" font-weight="400" fill="#a1a1ad">Od interních nástrojů po veřejné produkty.</text>
 
   <!-- footer line -->
   <text x="140" y="540" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="400" fill="#6b6b78">indigostudio.cz</text>
