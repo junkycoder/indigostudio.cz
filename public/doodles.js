@@ -59,7 +59,21 @@
   @media (prefers-reduced-motion: reduce) {
     .doodle, .doodle .s, .doodle .caret { animation: none; stroke-dashoffset: 0; }
   }
-  @media print { .doodles { display: none !important; } }
+  /* světlo pod kurzorem: jemná indigová záře, tlumená stejně jako malůvky */
+  .doodles-glow {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 30%), rgba(99, 102, 241, 0.07), transparent 70%);
+  }
+  @media (prefers-color-scheme: light) {
+    .doodles-glow { background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 30%), rgba(99, 102, 241, 0.045), transparent 70%); }
+  }
+  @media (hover: none), (prefers-reduced-motion: reduce) { .doodles-glow { display: none; } }
+  @media print { .doodles, .doodles-glow { display: none !important; } }
+  /* popis pro čtečky: vizuálně skrytý, na konci stránky, přečte se jen při průchodu obsahem */
+  .doodles-desc {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
 `;
 
   var SVGS = `
@@ -251,6 +265,24 @@
   if (document.body) document.body.insertBefore(host, document.body.firstChild);
   else document.documentElement.appendChild(host);
 
+  // světlo pod kurzorem — před malůvkami, ať je záře pod nimi
+  var glow = document.createElement("div");
+  glow.className = "doodles-glow";
+  glow.setAttribute("aria-hidden", "true");
+  host.parentNode.insertBefore(glow, host);
+  var mx = 0, my = 0, pending = false;
+  window.addEventListener("pointermove", function (e) {
+    if (e.pointerType !== "mouse") return;
+    mx = e.clientX; my = e.clientY;
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(function () {
+      pending = false;
+      glow.style.setProperty("--mx", mx + "px");
+      glow.style.setProperty("--my", my + "px");
+    });
+  }, { passive: true });
+
   var tpl = document.createElement("template");
   tpl.innerHTML = SVGS;
   var byName = {};
@@ -261,6 +293,13 @@
   var PATTERN = ["d-mock", "d-mail", "d-code", "d-uml", "d-flow", "d-mail", "d-phone", "d-kanban", "d-code", "d-git", "d-meet", "d-desktop"];
   var RARE = ["d-chat", "d-call", "d-watch"];
   var CYCLE = 18000; // délka doodle-draw
+  // názvy motivů pro popis pozadí ve čtečce
+  var NAMES = {
+    "d-mock": "návrh webové stránky", "d-code": "editor s\u00a0kódem", "d-uml": "UML diagram tříd",
+    "d-flow": "diagram workflow", "d-mail": "odesílaný e-mail", "d-phone": "mobilní aplikace",
+    "d-kanban": "kanban s\u00a0úkoly", "d-git": "větvení v\u00a0gitu", "d-meet": "schůzka u\u00a0stolu",
+    "d-desktop": "počítač", "d-chat": "chat", "d-call": "příchozí hovor", "d-watch": "chytré hodinky"
+  };
 
   // semínko na dobu návštěvy: při přechodu mezi stránkami zůstane rozvrh i fáze stejná,
   // nová návštěva = nové rozložení
@@ -359,6 +398,30 @@
     host.textContent = "";
     var now = Date.now();
     grid.cells.forEach(function (p, i) { host.appendChild(grid.els[i] = makeDoodle(i, now)); });
+    describe();
+  }
+
+  // Popis pro čtečky: malůvky samy jsou aria-hidden (mění se každých pár sekund), místo nich
+  // je na konci <body> jeden statický obrázek s výčtem motivů. Bez aria-live → nepřečte se
+  // znovu při každé proměně, jen když na něj uživatel při čtení stránky narazí.
+  var desc = null;
+  function describe() {
+    if (!document.body) return;
+    if (!desc) {
+      desc = document.createElement("div");
+      desc.className = "doodles-desc";
+      desc.setAttribute("role", "img");
+      document.body.appendChild(desc);
+    }
+    var seen = {}, list = [];
+    grid.els.forEach(function (el, i) {
+      var p = grid.cells[i], name = el.getAttribute("data-name");
+      if (p.x < window.innerWidth + grid.cell / 2 && p.y < window.innerHeight + grid.rowH / 2 && !seen[name]) {
+        seen[name] = 1;
+        list.push(NAMES[name]);
+      }
+    });
+    desc.setAttribute("aria-label", "Pozadí stránky: ručně kreslené malůvky naší práce, které se pomalu kreslí, mizí a\u00a0střídají. Právě je tu " + list.join(", ") + ".");
   }
 
   // po každém cyklu (nakreslit → smazat) se na místě objeví jiná malůvka
@@ -371,6 +434,7 @@
   });
 
   build();
+  if (!document.body) document.addEventListener("DOMContentLoaded", describe);
   var t;
   window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(build, 150); });
 })();

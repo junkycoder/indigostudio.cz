@@ -18,7 +18,10 @@ Jedna stránka, žádný build step, žádné frameworky.
 - `public/projekty.html` — feed: aplikace, případové studie, reference, ukázky
   (položka = `<li class="item" data-kind="app|case|reference|sample">`, šablony v komentáři;
   filtr ukazuje jen neprázdné kategorie)
-- `public/doodles.js` — sdílené animované pozadí (malůvky), připojit `<script src="/doodles.js" defer>`
+- `public/doodles.js` — sdílené animované pozadí (malůvky), připojit `<script src="/doodles.js" defer>`;
+  pro čtečky jeden statický popis motivů na konci `<body>` (bez aria-live)
+- `public/cursors.js` — kurzory ve stylu malůvek jen nad kartami (motiv podle typu karty),
+  připojit hned za doodles.js; nová karta = řádek v `CARDS`
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`
