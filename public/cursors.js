@@ -74,7 +74,8 @@
   var INTERACTIVE = 'a[href], button, summary, label, select, [role="button"], .tip, abbr[title], input:is([type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="reset"])';
   var TEXT = 'input:not([type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="reset"]), textarea, [contenteditable]';
 
-  var HEADER = ".site-header .nav-link";
+  // prvky s animovanou rukou místo kurzoru
+  var HAND = '.site-header .nav-link, [aria-labelledby="poptavka"] .cta';
   var HAND_CSS = `
   .cursor-hand {
     --hc: ${COLORS.dark[1]}; --hr: ${COLORS.dark[4]}; --hh: ${COLORS.dark.halo};
@@ -124,16 +125,16 @@
   var css = "@media (hover: hover) and (pointer: fine) {\n" +
     rules(COLORS.dark) + "\n" +
     "@media (prefers-color-scheme: light) {\n" + rules(COLORS.light) + "\n}\n" +
-    IN_CARD + ":is(" + INTERACTIVE + ") { cursor: var(--cur-hi) !important; }\n" +
+    IN_CARD + ":is(" + INTERACTIVE + "):not(" + HAND + ") { cursor: var(--cur-hi) !important; }\n" +
     IN_CARD + ":disabled { cursor: var(--cur) !important; }\n" +
-    HEADER + " { cursor: none !important; }\n" +
+    ":is(" + HAND + ") { cursor: none !important; }\n" +
     "}\n" + HAND_CSS;
 
   var style = document.createElement("style");
   style.textContent = css;
   document.head.appendChild(style);
 
-  // Tlačítko v hlavičce: animovaná ruka, která pulzuje a ťuká prstem.
+  // Tlačítko v hlavičce a v poptávce: animovaná ruka, která pulzuje a ťuká prstem.
   // Animovaný kurzor CSS neumí → systémový se skryje a ruka je prvek, který jede za myší.
   if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   var hand = document.createElement("div");
@@ -156,7 +157,7 @@
   window.addEventListener("pointermove", function (e) {
     if (e.pointerType !== "mouse") return;
     x = e.clientX; y = e.clientY;
-    on = !!(e.target.closest && e.target.closest(HEADER));
+    on = !!(e.target.closest && e.target.closest(HAND));
     update();
   }, { passive: true });
   document.addEventListener("pointerdown", function () { hand.classList.add("is-down"); });
