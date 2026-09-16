@@ -1,5 +1,6 @@
 /* Pozadí: živé malůvky naší práce (návrh, kód, UML, workflow, e-maily…)
-   Sdílené pro všechny stránky — stačí <script src="/doodles.js" defer></script>.
+   Sdílené pro všechny stránky — <script src="/doodles.js"></script> v <head>, BEZ defer:
+   malůvky tak existují už při prvním vykreslení a při přechodu mezi stránkami neproblikne pozadí.
    Vloží vlastní styly, host .doodles a poskládá vzor přes celý viewport. */
 (function () {
   var CSS = `
@@ -24,7 +25,8 @@
     translate: -50% -50%;
     fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
     animation: doodle-float 16s ease-in-out infinite alternate;
-    animation-delay: var(--o, 0s);
+    /* --tf/--td = fáze podle hodin → animace na nové stránce plynule navazuje na předchozí */
+    animation-delay: calc(var(--tf, 0ms) + var(--o, 0s));
   }
   .doodle .s {
     stroke-dasharray: 1; stroke-dashoffset: 1;
@@ -39,8 +41,9 @@
   /* relativní velikost motivu vůči buňce vzoru */
   .d-mock { --w: 0.78; } .d-code { --w: 0.74; } .d-uml { --w: 0.68; } .d-flow { --w: 0.84; }
   .d-mail { --w: 0.45; } .d-phone { --w: 0.36; } .d-kanban { --w: 0.72; } .d-git { --w: 0.66; }
-  /* chat a hovor jsou vzácné „perličky": menší a nejvýš jednou na stránce */
+  /* chat, hovor a hodinky jsou vzácné „perličky": menší a nejvýš jednou na stránce */
   .d-chat { --w: 0.46; } .d-call { --w: 0.34; }
+  .d-meet { --w: 0.4; } .d-desktop { --w: 0.55; } .d-watch { --w: 0.24; }
 
   @keyframes doodle-draw {
     0%        { stroke-dashoffset: 1; }
@@ -202,6 +205,39 @@
   <path class="s k4" style="--i:6" pathLength="1" d="M106 22a50 50 0 0 1 48 48"/>
 </svg>
 
+<!-- schůzka: malý okruh u stolu (2–5 lidí, počet se losuje) -->
+<svg class="doodle d-meet" viewBox="0 0 200 170">
+  <ellipse class="s k1" style="--i:0" pathLength="1" cx="100" cy="92" rx="44" ry="28"/>
+  <path class="s k4" style="--i:1" pathLength="1" d="M84 88h32M90 98h20"/>
+  <g data-p="1"><circle class="s k2" style="--i:2" pathLength="1" cx="34" cy="70" r="9"/><path class="s k2" style="--i:3" pathLength="1" d="M19 104a15 14 0 0 1 30 0"/></g>
+  <g data-p="2"><circle class="s k3" style="--i:3" pathLength="1" cx="166" cy="70" r="9"/><path class="s k3" style="--i:4" pathLength="1" d="M151 104a15 14 0 0 1 30 0"/></g>
+  <g data-p="3"><circle class="s k5" style="--i:4" pathLength="1" cx="100" cy="22" r="9"/><path class="s k5" style="--i:5" pathLength="1" d="M85 56a15 14 0 0 1 30 0"/></g>
+  <g data-p="4"><circle class="s k4" style="--i:5" pathLength="1" cx="62" cy="128" r="9"/><path class="s k4" style="--i:6" pathLength="1" d="M47 162a15 14 0 0 1 30 0"/></g>
+  <g data-p="5"><circle class="s k2" style="--i:6" pathLength="1" cx="138" cy="128" r="9"/><path class="s k2" style="--i:7" pathLength="1" d="M123 162a15 14 0 0 1 30 0"/></g>
+</svg>
+
+<!-- počítač: monitor na stojanu -->
+<svg class="doodle d-desktop" viewBox="0 0 200 160">
+  <rect class="s k1" style="--i:0" pathLength="1" x="20" y="10" width="160" height="104" rx="8"/>
+  <path class="s k1" style="--i:1" pathLength="1" d="M20 96h160"/>
+  <path class="s k1" style="--i:2" pathLength="1" d="M88 114l-6 24h36l-6-24M66 142h68"/>
+  <rect class="s k3" style="--i:3" pathLength="1" x="34" y="24" width="30" height="60" rx="3"/>
+  <path class="s k4 tok" style="--i:4" pathLength="1" d="M78 32h74"/>
+  <path class="s k2 tok" style="--i:5" pathLength="1" d="M78 48h54"/>
+  <path class="s k5 tok" style="--i:6" pathLength="1" d="M78 64h64"/>
+  <circle class="s k4" style="--i:7" pathLength="1" cx="100" cy="105" r="2"/>
+</svg>
+
+<!-- chytré hodinky (perlička) -->
+<svg class="doodle d-watch" viewBox="0 0 120 170">
+  <path class="s k1" style="--i:0" pathLength="1" d="M44 10h32l4 30H40zM40 130h40l-4 30H44z"/>
+  <rect class="s k1" style="--i:1" pathLength="1" x="30" y="40" width="60" height="90" rx="16"/>
+  <path class="s k4" style="--i:2" pathLength="1" d="M90 70h6v16h-6"/>
+  <circle class="s k5" style="--i:3" pathLength="1" cx="60" cy="76" r="16"/>
+  <circle class="s k2" style="--i:4" pathLength="1" cx="60" cy="76" r="8"/>
+  <path class="s k3 tok" style="--i:5" pathLength="1" d="M48 110h24"/>
+</svg>
+
 `;
 
   var style = document.createElement("style");
@@ -211,62 +247,129 @@
   var host = document.createElement("div");
   host.className = "doodles";
   host.setAttribute("aria-hidden", "true");
-  document.body.insertBefore(host, document.body.firstChild);
+  // skript běží v <head> → <body> ještě neexistuje; host visí přímo pod <html> (fixed, z-index -1)
+  if (document.body) document.body.insertBefore(host, document.body.firstChild);
+  else document.documentElement.appendChild(host);
 
   var tpl = document.createElement("template");
   tpl.innerHTML = SVGS;
-  var all = tpl.content.querySelectorAll(".doodle");
-  var byName = {}, rare = [];
-  // perličky (chat, hovor) se neopakují ve vzoru — každá max. jednou na stránce
-  Array.prototype.forEach.call(all, function (el) {
-    var name = el.getAttribute("class").match(/d-\w+$/)[0];
-    byName[name] = el;
-    if (/d-(chat|call)/.test(name)) rare.push(el);
+  var byName = {};
+  Array.prototype.forEach.call(tpl.content.querySelectorAll(".doodle"), function (el) {
+    byName[el.getAttribute("class").match(/d-\w+$/)[0]] = el;
   });
-  // pořadí vzoru; e-mail a kód jsou dvakrát (častější). Duplikáty mají odstup 4 a 6,
-  // takže při indexu (c*3 + r*5) % 10 nikdy nesousedí stejné motivy.
-  var PATTERN = ["d-mock", "d-mail", "d-code", "d-uml", "d-flow", "d-mail", "d-phone", "d-kanban", "d-code", "d-git"];
-  var set = PATTERN.map(function (n) { return byName[n]; });
-  // kde perličky leží: nejbližší buňka ke kotvě (podíl šířky/výšky viewportu)
-  var RARE_AT = { "d-call": [0.85, 0.2], "d-chat": [0.3, 0.8] };
-  var key = "";
+  // losovací osudí: e-mail a kód jsou častější; perličky (RARE) se losují zvlášť níže
+  var PATTERN = ["d-mock", "d-mail", "d-code", "d-uml", "d-flow", "d-mail", "d-phone", "d-kanban", "d-code", "d-git", "d-meet", "d-desktop"];
+  var RARE = ["d-chat", "d-call", "d-watch"];
+  var CYCLE = 18000; // délka doodle-draw
+
+  // semínko na dobu návštěvy: při přechodu mezi stránkami zůstane rozvrh i fáze stejná,
+  // nová návštěva = nové rozložení
+  var seed = 0;
+  try { seed = +sessionStorage.getItem("doodleSeed") || 0; } catch (e) {}
+  if (!seed) {
+    seed = 1 + Math.floor(Math.random() * 4294967294);
+    try { sessionStorage.setItem("doodleSeed", seed); } catch (e) {}
+  }
+  // deterministický generátor (mulberry32) z (semínko, a, b, c)
+  function rng(a, b, c) {
+    var t = (seed ^ Math.imul(a + 1, 0x9e3779b1) ^ Math.imul(b + 1, 0x85ebca77) ^ Math.imul(c + 1, 0xc2b2ae3d)) >>> 0;
+    return function () {
+      t = (t + 0x6d2b79f5) >>> 0;
+      var x = Math.imul(t ^ (t >>> 15), 1 | t);
+      x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x;
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  var grid = null;
+
+  // motiv buňky i v cyklu k — čistá funkce, takže vyjde stejně na každé stránce
+  function pick(i, k) {
+    // perlička n má svoje místo a ukáže se jen v cyklech, kdy k % počet === n
+    for (var n = 0; n < RARE.length; n++) {
+      if (i === grid.rare[n] && k % RARE.length === n) return RARE[n];
+    }
+    return PATTERN[Math.floor(rng(i, k, 1)() * PATTERN.length)];
+  }
+
+  function makeDoodle(i, now) {
+    var p = grid.cells[i], o = grid.offs[i];
+    var k = Math.floor((now + o) / CYCLE);
+    var name = pick(i, k);
+    // ne stejný motiv jako sousedé ani jako předchozí malůvka na tomhle místě
+    if (RARE.indexOf(name) < 0) {
+      var avoid = {};
+      [i].concat(grid.nb[i]).forEach(function (j) {
+        if (grid.els[j]) avoid[grid.els[j].getAttribute("data-name")] = 1;
+      });
+      var start = PATTERN.indexOf(name), n = 0;
+      while (n < PATTERN.length && avoid[PATTERN[(start + n) % PATTERN.length]]) n++;
+      if (n < PATTERN.length) name = PATTERN[(start + n) % PATTERN.length];
+    }
+    var r = rng(i, k, 2);
+    var svg = byName[name].cloneNode(true);
+    if (name === "d-meet") {
+      var people = 2 + Math.floor(r() * 4); // 2–5 lidí
+      Array.prototype.forEach.call(svg.querySelectorAll("[data-p]"), function (g) {
+        if (+g.getAttribute("data-p") > people) g.parentNode.removeChild(g);
+      });
+    }
+    svg.querySelector(".s").setAttribute("data-first", "");
+    svg.setAttribute("data-cell", i);
+    svg.setAttribute("data-name", name);
+    svg.style.width = "calc(var(--cell) * var(--w) * " + (0.75 + r() * 0.5).toFixed(2) + ")";
+    svg.style.left = (p.x + (r() - 0.5) * grid.cell * 0.4).toFixed(0) + "px";
+    svg.style.top = (p.y + (r() - 0.5) * grid.rowH * 0.35).toFixed(0) + "px";
+    svg.style.rotate = ((r() - 0.5) * 16).toFixed(1) + "deg";
+    // fáze kreslení podle hodin → na další stránce animace navazuje
+    svg.style.setProperty("--o", -((now + o) % CYCLE) + "ms");
+    return svg;
+  }
 
   function build() {
     var w = window.innerWidth, h = window.innerHeight;
     var cell = w < 560 ? 190 : 290, rowH = Math.round(cell * 0.72);
     var cols = Math.ceil(w / cell) + 1, rows = Math.ceil(h / rowH) + 1;
-    if (key === cols + "x" + rows + "@" + cell) return;
-    key = cols + "x" + rows + "@" + cell;
-    host.style.setProperty("--cell", cell + "px");
-    host.textContent = "";
-    var cells = [];
+    var key = cols + "x" + rows + "@" + cell;
+    if (grid && grid.key === key) return;
+    grid = { key: key, cell: cell, rowH: rowH, cells: [], offs: [], rare: [], nb: [], els: [] };
+    var visible = [];
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
-        cells.push({ r: r, c: c, x: (c + (r % 2 ? 0.5 : 0)) * cell, y: (r + 0.35) * rowH });
+        var p = { x: (c + (r % 2 ? 0.5 : 0)) * cell, y: (r + 0.35) * rowH };
+        var i = grid.cells.push(p) - 1;
+        grid.offs.push(Math.floor(rng(i, 0, 0)() * CYCLE)); // každá buňka má svůj rytmus
+        if (p.x >= cell / 2 && p.x <= w - cell / 2 && p.y >= rowH / 2 && p.y <= h - rowH / 2) visible.push(i);
       }
     }
-    // perličky dostanou buňku nejblíž své kotvě (jen celé viditelné buňky)
-    var taken = {};
-    rare.forEach(function (el) {
-      var name = el.getAttribute("class").match(/d-\w+$/)[0], at = RARE_AT[name], best = -1, bestD = Infinity;
-      cells.forEach(function (p, i) {
-        if (taken[i] || p.x < cell / 2 || p.x > w - cell / 2 || p.y < rowH / 2 || p.y > h - rowH / 2) return;
-        var d = Math.pow(p.x - at[0] * w, 2) + Math.pow(p.y - at[1] * h, 2);
-        if (d < bestD) { bestD = d; best = i; }
+    // sousedé = buňky do vzdálenosti ~1,2 buňky (vedle i šikmo v sousední řadě)
+    grid.cells.forEach(function (p, i) {
+      grid.nb[i] = [];
+      grid.cells.forEach(function (q, j) {
+        if (i !== j && Math.pow(p.x - q.x, 2) + Math.pow(p.y - q.y, 2) <= Math.pow(cell * 1.2, 2)) grid.nb[i].push(j);
       });
-      if (best >= 0) taken[best] = el;
     });
-    cells.forEach(function (p, i) {
-      // sousedé (vodorovně i svisle) mají vždy jiný motiv
-      var svg = (taken[i] || set[(p.c * 3 + p.r * 5) % set.length]).cloneNode(true);
-      svg.style.left = p.x + "px";
-      svg.style.top = p.y + "px";
-      svg.style.rotate = (((p.c * 7 + p.r * 11) % 9) - 4) + "deg";
-      // posun startu po diagonále → kreslení běží ve vlnách
-      svg.style.setProperty("--o", -(((p.c + p.r) * 1.4) % 18).toFixed(1) + "s");
-      host.appendChild(svg);
+    // perličky: každá má jedno vlastní viditelné místo → nejvýš jednou na stránce
+    var rr = rng(7, 7, 7);
+    RARE.forEach(function () {
+      grid.rare.push(visible.length ? visible.splice(Math.floor(rr() * visible.length), 1)[0] : -1);
     });
+    host.style.setProperty("--cell", cell + "px");
+    host.style.setProperty("--tf", -(Date.now() % 32000) + "ms");
+    host.textContent = "";
+    var now = Date.now();
+    grid.cells.forEach(function (p, i) { host.appendChild(grid.els[i] = makeDoodle(i, now)); });
   }
+
+  // po každém cyklu (nakreslit → smazat) se na místě objeví jiná malůvka
+  host.addEventListener("animationiteration", function (e) {
+    if (e.animationName !== "doodle-draw" || !e.target.hasAttribute || !e.target.hasAttribute("data-first")) return;
+    var old = e.target.closest(".doodle");
+    if (!old || old.parentNode !== host) return;
+    var i = +old.getAttribute("data-cell");
+    host.replaceChild(grid.els[i] = makeDoodle(i, Date.now() + 50), old);
+  });
+
   build();
   var t;
   window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(build, 150); });

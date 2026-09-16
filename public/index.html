@@ -344,8 +344,8 @@
   abbr[title] { text-decoration: underline dotted; text-underline-offset: 0.18em; cursor: help; }
 
   /* ---- Patička: firemní údaje + odkazy ---- */
-  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
-  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 78%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  /* průsvitné pozadí — malůvky prosvítají */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
   .site-footer .container {
     display: flex; justify-content: space-between; align-items: flex-end;
     flex-wrap: wrap; gap: 1rem 2rem;
@@ -419,6 +419,7 @@
     .business-card .crop.br { bottom: -3mm; right: -3mm; border-left: 0.2mm solid #15161d; border-top: 0.2mm solid #15161d; }
   }
 </style>
+<script src="/doodles.js"></script>
 </head>
 <body>
 
@@ -721,6 +722,5 @@
     answer.hidden = true;
   })();
 </script>
-<script src="/doodles.js" defer></script>
 </body>
 </html>

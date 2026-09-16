@@ -153,7 +153,7 @@
 
   /* ---- Patička ---- */
   /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
-  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 78%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
   .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
   .site-footer strong { color: var(--fg); font-weight: 600; }
   .site-footer a { color: var(--fg-muted); text-decoration: none; }
@@ -168,6 +168,7 @@
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
+<script src="/doodles.js"></script>
 </head>
 <body>
 <header class="site-header">
@@ -260,8 +261,48 @@
       </li>
       -->
 
-      <!-- ===== 4. Ukázky =====
-        Šablona:
+      <!-- ===== 4. Ukázky (menší zakázky a kusovky) ===== -->
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Ukázka</span>
+        <h2>Hlídač shopů</h2>
+        <p class="item-sub">Rozšíření prohlížeče, iOS aplikace a&nbsp;hlídání cen</p>
+        <p>Původní rozšíření prohlížeče a&nbsp;první iOS aplikace, které u&nbsp;produktu na&nbsp;e‑shopu ukážou vývoj ceny a&nbsp;odhalí falešné slevy. K&nbsp;tomu několik actorů, které automaticky stahují a&nbsp;kontrolují ceny na&nbsp;českých e‑shopech.</p>
+        <ul class="tags"><li>Rozšíření prohlížeče</li><li>iOS</li><li>Apify</li><li>Scraping</li></ul>
+        <a class="item-link" href="https://www.hlidacshopu.cz" target="_blank" rel="noopener">
+          hlidacshopu.cz
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </li>
+
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Ukázka · v&nbsp;TopMonks</span>
+        <h2>Invity</h2>
+        <p class="item-sub">Srovnání nákupu a&nbsp;směny kryptoměn pro SatoshiLabs</p>
+        <p>U&nbsp;zrodu Invity jsme byli ještě jako tým v&nbsp;TopMonks. Služba porovnává nabídky směnáren pro nákup, prodej a&nbsp;směnu kryptoměn a&nbsp;je dostupná i&nbsp;přímo v&nbsp;Trezor Suite.</p>
+        <ul class="tags"><li>Fintech</li><li>Integrace API</li><li>Trezor Suite</li></ul>
+        <a class="item-link" href="https://invity.io" target="_blank" rel="noopener">
+          invity.io
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </li>
+
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Ukázka</span>
+        <h2>Program festivalu v&nbsp;kalendáři</h2>
+        <p class="item-sub">Převod programu malého festivalu do&nbsp;nativního kalendáře</p>
+        <p>Program jsme převedli do&nbsp;odebíratelného kalendáře (iCal) pro Apple, Google i&nbsp;Outlook. Účastníci mají všechny akce i&nbsp;s&nbsp;popisem v&nbsp;telefonu offline, a&nbsp;přesto se jim změny v&nbsp;programu průběžně aktualizují. Bez instalace další aplikace.</p>
+        <ul class="tags"><li>iCalendar</li><li>Webcal</li><li>Offline</li></ul>
+      </li>
+
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Ukázka · v&nbsp;TopMonks</span>
+        <h2>Výkazy času ze Slacku</h2>
+        <p class="item-sub">Integrace Slacku s&nbsp;interním systémem Monksheets</p>
+        <p>Vykazování odpracovaného času na&nbsp;projekty přímo ze Slacku, bez otevírání dalšího nástroje. Záznamy se ukládají do&nbsp;interního systému Monksheets, ze kterého vychází přehled hodin i&nbsp;fakturace.</p>
+        <ul class="tags"><li>Slack API</li><li>Integrace</li><li>Interní nástroje</li></ul>
+      </li>
+
+      <!-- Šablona ukázky:
       <li class="item" data-kind="sample">
         <span class="item-kind">Ukázka</span>
         <h2>Název projektu</h2>
@@ -339,6 +380,5 @@
     bar.hidden = false;
   })();
 </script>
-<script src="/doodles.js" defer></script>
 </body>
 </html>
