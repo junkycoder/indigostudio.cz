@@ -162,7 +162,8 @@
   .button.ghost:hover { border-color: var(--accent); filter: none; }
 
   /* ---- Patička ---- */
-  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 78%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
   .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
   .site-footer strong { color: var(--fg); font-weight: 600; }
   .site-footer a { color: var(--fg-muted); text-decoration: none; }
@@ -333,5 +334,6 @@
     <p><a href="/">Zpět na&nbsp;úvod</a></p>
   </div>
 </footer>
+<script src="/doodles.js" defer></script>
 </body>
 </html>
