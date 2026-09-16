@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Převzetí vývoje softwaru po dodavateli | Indigo Studio</title>
+<meta name="description" content="Převezmeme vývoj a správu vašeho softwaru po předchozím dodavateli nebo vývojáři. Začínáme revizí zdarma: stav kódu, rizika a plán převzetí.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/prevzeti-vyvoje">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Převzetí vývoje softwaru po dodavateli">
+<meta property="og:description" content="Dodavatel skončil nebo vývojář odešel? Převezmeme vývoj vaší aplikace nebo interního systému. Začínáme revizí zdarma.">
+<meta property="og:url" content="https://indigostudio.cz/prevzeti-vyvoje">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://indigostudio.cz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Převzetí vývoje softwaru po dodavateli">
+<meta name="twitter:description" content="Dodavatel skončil nebo vývojář odešel? Převezmeme vývoj vaší aplikace nebo interního systému. Začínáme revizí zdarma.">
+<meta name="twitter:image" content="https://indigostudio.cz/og.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 22ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 60ch; }
+
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose a { color: var(--accent); text-underline-offset: 0.2em; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+
+
+  /* ---- Převzetí: postup ---- */
+  .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 0.6rem; }
+  .step { counter-increment: step; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.2rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.1rem 1.2rem; }
+  .step::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: 0.9rem; }
+  .step h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; align-self: center; }
+  .step h3 .badge { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-left: 0.5rem; }
+  .step p { font-size: 0.9rem; color: var(--fg-muted); line-height: 1.55; }
+
+  /* reference */
+  .module.ref { display: flex; flex-direction: column; gap: 0.2rem; text-decoration: none; color: inherit; transition: border-color 0.2s var(--ease); }
+  .module.ref:hover { border-color: var(--accent); }
+  .module.ref .more { font-size: 0.85rem; font-weight: 550; color: var(--accent); margin-top: 0.5rem; }
+
+  /* otázky */
+  .faq { display: flex; flex-direction: column; gap: 1.1rem; max-width: 64ch; }
+  .faq h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+  .faq p { color: var(--fg-muted); }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules { grid-template-columns: 1fr; }
+    .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <a class="nav-link" href="/projekty">
+      Případové studie, ukázky a&nbsp;reference
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Drobečková navigace">
+      <a href="/">Úvod</a><span class="sep">/</span><span aria-current="page">Převzetí vývoje</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Převzetí vývoje a&nbsp;správy softwaru</p>
+      <h1>Když firmě odejde dodavatel softwaru</h1>
+      <p class="lead">Převezmeme vývoj vaší aplikace nebo interního systému po&nbsp;předchozím dodavateli či vývojáři. Nejdřív zjistíme, v&nbsp;jakém stavu software je, a&nbsp;teprve potom se rozhodnete, co dál. Revize před převzetím je zdarma.</p>
+    </header>
+
+    <div class="actions">
+      <a class="button" data-mail href="mailto:info@indigostudio.cz?subject=P%C5%99evzet%C3%AD%20v%C3%BDvoje">Domluvit revizi</a>
+      <a class="button ghost" data-wa href="https://wa.me/420770371535" target="_blank" rel="noopener">Napsat přes WhatsApp</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><strong>od&nbsp;2022</strong><span>vyvíjíme software pro Aseko, které převzalo aplikace po&nbsp;předchozím dodavateli</span></div>
+      <div class="stat"><strong>4&nbsp;aplikace</strong><span>Aseko na&nbsp;jednom kódu pro web, iOS i&nbsp;Android</span></div>
+      <div class="stat"><strong>5,5&nbsp;měsíce</strong><span>od&nbsp;prvního řádku kódu po&nbsp;testování nového systému mBlue u&nbsp;klienta</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1">Kdy se nám ozvat</h2>
+      <div class="modules">
+        <div class="module"><h3>Dodavatel skončil nebo nereaguje</h3><p>Agentura zanikla, freelancer odešel k&nbsp;jiné práci nebo na&nbsp;požadavky odpovídá týdny.</p></div>
+        <div class="module"><h3>Odešel interní vývojář</h3><p>Software zná jediný člověk, který už ve&nbsp;firmě není. Nikdo neví, co v&nbsp;kódu je.</p></div>
+        <div class="module"><h3>Systém dosloužil</h3><p>Starý informační systém nikdo nechce upravovat a&nbsp;práce se přesouvá do&nbsp;tabulek vedle něj.</p></div>
+        <div class="module"><h3>Aplikace nejde vydat</h3><p>Mobilní aplikace padá, neprojde schválením v&nbsp;App Store nebo Google Play, nebo má pro každou platformu jiný kód.</p></div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2">Jak převzetí probíhá</h2>
+      <ol class="steps">
+        <li class="step"><h3>Revize<span class="badge">zdarma</span></h3><p>Hodinová schůzka a&nbsp;náhled do&nbsp;kódu, serverů a&nbsp;účtů, na&nbsp;požádání po&nbsp;podpisu NDA. Dostanete krátkou písemnou zprávu: stav kódu, hlavní rizika, odhad nákladů na&nbsp;převzetí a&nbsp;co udělat jako první.</p></li>
+        <li class="step"><h3>Předání přístupů</h3><p>Sepíšeme a&nbsp;převezmeme všechno, na&nbsp;čem software stojí: repozitář, servery, databáze, domény, certifikáty, účty v&nbsp;App Store a&nbsp;Google Play i&nbsp;služby třetích stran. Ověříme, že máte funkční zálohy.</p></li>
+        <li class="step"><h3>Stabilizace</h3><p>Zprovozníme automatické sestavení a&nbsp;vydávání, sledování chyb z&nbsp;provozu a&nbsp;testy tam, kde nejvíc hrozí regrese. Opravíme chyby, které vás nejvíc omezují.</p></li>
+        <li class="step"><h3>Další vývoj, nebo náhrada</h3><p>Na&nbsp;základě toho, co jsme v&nbsp;kódu našli, doporučíme, jestli software rozvíjet, postupně přepsat, nebo nahradit. Rozhodnutí je na&nbsp;vás.</p></li>
+      </ol>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3">Kde jsme to už dělali</h2>
+      <div class="modules">
+        <a class="module ref" href="/projekty/aseko">
+          <h3>Aseko</h3>
+          <p>Výrobce bazénové techniky nahradil aplikace po&nbsp;předchozím dodavateli. Software jsme převzali spolu s&nbsp;Telionem: frontend aplikací, vydávání do&nbsp;App Store i&nbsp;Google Play a&nbsp;automatické testy.</p>
+          <span class="more">Případová studie</span>
+        </a>
+        <a class="module ref" href="/projekty/mblue">
+          <h3>mBlue</h3>
+          <p>Personální agentura nahradila systém, který používala mnoho let. Postavili jsme CRM a&nbsp;náborový systém na&nbsp;míru a&nbsp;převedli do&nbsp;něj historická data.</p>
+          <span class="more">Případová studie</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4">Časté otázky</h2>
+      <div class="faq">
+        <div><h3>Znáte technologii, ve&nbsp;které je software napsaný?</h3><p>Pracujeme mimo jiné s&nbsp;Vue.js, Ruby on Rails, Swiftem, Kotlinem a&nbsp;hybridními aplikacemi na&nbsp;Capacitoru. Když technologii nepokryjeme sami ani s&nbsp;naší sítí specialistů, řekneme vám to na&nbsp;revizi.</p></div>
+        <div><h3>Co když nemáme přístup ke&nbsp;zdrojovému kódu?</h3><p>I&nbsp;to se dá řešit. Na&nbsp;revizi zjistíme, co máte k&nbsp;dispozici, kde kód nejspíš je a&nbsp;jak ho získat. Když to nepůjde, navrhneme náhradu.</p></div>
+        <div><h3>Kolik převzetí stojí?</h3><p>Záleží na&nbsp;rozsahu a&nbsp;stavu softwaru. Revize je zdarma a&nbsp;její součástí je odhad nákladů, takže cenu znáte dřív, než se k&nbsp;čemukoli zavážete.</p></div>
+        <div><h3>Jak rychle můžete začít?</h3><p>Na&nbsp;zprávu odpovídáme nejpozději do&nbsp;několika hodin. Termín revize domluvíme podle toho, jak je situace akutní.</p></div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Řešíte převzetí softwaru?</h2>
+        <p>Napište, o&nbsp;jaký software jde a&nbsp;co se stalo. Ozveme se nejpozději do&nbsp;několika hodin.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" data-wa href="https://wa.me/420770371535" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="button" data-mail href="mailto:info@indigostudio.cz?subject=P%C5%99evzet%C3%AD%20v%C3%BDvoje">Napsat na&nbsp;info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
+    <p><a href="/">Zpět na&nbsp;úvod</a></p>
+  </div>
+</footer>
+
+<script>
+  // Zdroj kampaně bez cookies: ?k=gads|sklik|li se propíše do předmětu e-mailu a textu zprávy
+  (function () {
+    var k = new URLSearchParams(location.search).get("k");
+    k = k && /^[a-z0-9-]{1,20}$/.test(k) ? k : "";
+    var subject = "Převzetí vývoje" + (k ? " [" + k + "]" : "");
+    var text = "Dobrý den, řešíme převzetí vývoje softwaru." + (k ? " [" + k + "]" : "");
+    document.querySelectorAll("[data-mail]").forEach(function (a) {
+      a.href = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent(subject);
+    });
+    document.querySelectorAll("[data-wa]").forEach(function (a) {
+      a.href = "https://wa.me/420770371535?text=" + encodeURIComponent(text);
+    });
+  })();
+</script>
+</body>
+</html>

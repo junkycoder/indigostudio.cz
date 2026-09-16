@@ -7,6 +7,7 @@ Studio vedou dva partneři, na projektech spolupracujeme s prověřenou sítí s
 ## Stránky
 
 - [Úvod](https://indigostudio.cz/): služby, poptávka a kontakty
+- [Převzetí vývoje](https://indigostudio.cz/prevzeti-vyvoje): převzetí vývoje a správy softwaru po předchozím dodavateli, postup a revize zdarma
 - [Projekty](https://indigostudio.cz/projekty): případové studie, aplikace a reference
 - [Aseko](https://indigostudio.cz/projekty/aseko): převzetí vývoje veškerého softwaru pro výrobce bazénové techniky (Vue.js, Capacitor, GraphQL; web, iOS, Android)
 - [mBlue](https://indigostudio.cz/projekty/mblue): CRM a náborový systém na míru pro personální agenturu, včetně migrace historických dat (Ruby on Rails)
