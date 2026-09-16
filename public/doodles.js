@@ -12,12 +12,12 @@
     --cell: 290px;
     position: fixed; inset: 0; z-index: -1;
     pointer-events: none; overflow: hidden;
-    opacity: 0.17;
+    opacity: 0.11;
   }
   @media (prefers-color-scheme: light) {
-    .doodles { --c1: #6366f1; --c2: #db2777; --c3: #0d9488; --c4: #d97706; --c5: #16a34a; opacity: 0.16; }
+    .doodles { --c1: #6366f1; --c2: #db2777; --c3: #0d9488; --c4: #d97706; --c5: #16a34a; opacity: 0.1; }
   }
-  @media (max-width: 560px) { .doodles { opacity: 0.13; } }
+  @media (max-width: 560px) { .doodles { opacity: 0.08; } }
   .doodle {
     position: absolute; height: auto;
     width: calc(var(--cell) * var(--w, 0.75));
@@ -38,7 +38,9 @@
 
   /* relativní velikost motivu vůči buňce vzoru */
   .d-mock { --w: 0.78; } .d-code { --w: 0.74; } .d-uml { --w: 0.68; } .d-flow { --w: 0.84; }
-  .d-mail { --w: 0.6; } .d-phone { --w: 0.36; } .d-kanban { --w: 0.72; } .d-git { --w: 0.66; }
+  .d-mail { --w: 0.45; } .d-phone { --w: 0.36; } .d-kanban { --w: 0.72; } .d-git { --w: 0.66; }
+  /* chat a hovor jsou vzácné „perličky": menší a nejvýš jednou na stránce */
+  .d-chat { --w: 0.46; } .d-call { --w: 0.34; }
 
   @keyframes doodle-draw {
     0%        { stroke-dashoffset: 1; }
@@ -177,6 +179,29 @@
   <path class="s k4" style="--i:9" pathLength="1" d="M160 88h24l8 8-8 8h-24z"/>
   <path class="s k2" style="--i:10" pathLength="1" d="M40 30h40M40 42h26"/>
 </svg>
+<!-- chat: konverzace v aplikaci -->
+<svg class="doodle d-chat" viewBox="0 0 200 150">
+  <rect class="s k1" style="--i:0" pathLength="1" x="10" y="10" width="180" height="130" rx="10"/>
+  <path class="s k1" style="--i:1" pathLength="1" d="M10 34h180"/>
+  <circle class="s k5" style="--i:2" pathLength="1" cx="26" cy="22" r="6"/>
+  <path class="s k1" style="--i:2" pathLength="1" d="M40 22h44"/>
+  <path class="s k3" style="--i:3" pathLength="1" d="M30 46h70a8 8 0 0 1 8 8v8a8 8 0 0 1-8 8H38l-10 8v-8a8 8 0 0 1-6-8v-8a8 8 0 0 1 8-8z"/>
+  <path class="s k3" style="--i:4" pathLength="1" d="M34 58h52"/>
+  <path class="s k2" style="--i:5" pathLength="1" d="M170 82H100a8 8 0 0 0-8 8v8a8 8 0 0 0 8 8h62l10 8v-8a8 8 0 0 0 6-8v-8a8 8 0 0 0-8-8z"/>
+  <path class="s k2" style="--i:6" pathLength="1" d="M104 94h54"/>
+  <rect class="s k4" style="--i:7" pathLength="1" x="22" y="110" width="44" height="20" rx="10"/>
+  <circle class="s k4" style="--i:8" pathLength="1" cx="34" cy="120" r="2"/>
+  <circle class="s k4" style="--i:9" pathLength="1" cx="44" cy="120" r="2"/>
+  <circle class="s k4" style="--i:10" pathLength="1" cx="54" cy="120" r="2"/>
+</svg>
+
+<!-- telefon: příchozí hovor -->
+<svg class="doodle d-call" viewBox="0 0 180 150">
+  <path class="s k5" style="--i:0" pathLength="1" d="M30 36c6-8 16-8 22-1l12 15c5 6 4 14-2 19l-7 6c7 15 18 26 33 33l6-7c5-6 13-7 19-2l15 12c7 6 7 16-1 22l-8 7c-9 8-22 9-33 3-28-14-50-36-64-64-6-11-5-24 3-33z"/>
+  <path class="s k4" style="--i:4" pathLength="1" d="M104 44a28 28 0 0 1 28 28"/>
+  <path class="s k4" style="--i:6" pathLength="1" d="M106 22a50 50 0 0 1 48 48"/>
+</svg>
+
 `;
 
   var style = document.createElement("style");
@@ -190,7 +215,20 @@
 
   var tpl = document.createElement("template");
   tpl.innerHTML = SVGS;
-  var set = tpl.content.querySelectorAll(".doodle");
+  var all = tpl.content.querySelectorAll(".doodle");
+  var byName = {}, rare = [];
+  // perličky (chat, hovor) se neopakují ve vzoru — každá max. jednou na stránce
+  Array.prototype.forEach.call(all, function (el) {
+    var name = el.getAttribute("class").match(/d-\w+$/)[0];
+    byName[name] = el;
+    if (/d-(chat|call)/.test(name)) rare.push(el);
+  });
+  // pořadí vzoru; e-mail a kód jsou dvakrát (častější). Duplikáty mají odstup 4 a 6,
+  // takže při indexu (c*3 + r*5) % 10 nikdy nesousedí stejné motivy.
+  var PATTERN = ["d-mock", "d-mail", "d-code", "d-uml", "d-flow", "d-mail", "d-phone", "d-kanban", "d-code", "d-git"];
+  var set = PATTERN.map(function (n) { return byName[n]; });
+  // kde perličky leží: nejbližší buňka ke kotvě (podíl šířky/výšky viewportu)
+  var RARE_AT = { "d-call": [0.85, 0.2], "d-chat": [0.3, 0.8] };
   var key = "";
 
   function build() {
@@ -201,18 +239,33 @@
     key = cols + "x" + rows + "@" + cell;
     host.style.setProperty("--cell", cell + "px");
     host.textContent = "";
+    var cells = [];
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
-        // sousedé (vodorovně i svisle) mají vždy jiný motiv
-        var svg = set[(c * 3 + r * 5) % set.length].cloneNode(true);
-        svg.style.left = (c + (r % 2 ? 0.5 : 0)) * cell + "px";
-        svg.style.top = (r + 0.35) * rowH + "px";
-        svg.style.rotate = (((c * 7 + r * 11) % 9) - 4) + "deg";
-        // posun startu po diagonále → kreslení běží ve vlnách
-        svg.style.setProperty("--o", -(((c + r) * 1.4) % 18).toFixed(1) + "s");
-        host.appendChild(svg);
+        cells.push({ r: r, c: c, x: (c + (r % 2 ? 0.5 : 0)) * cell, y: (r + 0.35) * rowH });
       }
     }
+    // perličky dostanou buňku nejblíž své kotvě (jen celé viditelné buňky)
+    var taken = {};
+    rare.forEach(function (el) {
+      var name = el.getAttribute("class").match(/d-\w+$/)[0], at = RARE_AT[name], best = -1, bestD = Infinity;
+      cells.forEach(function (p, i) {
+        if (taken[i] || p.x < cell / 2 || p.x > w - cell / 2 || p.y < rowH / 2 || p.y > h - rowH / 2) return;
+        var d = Math.pow(p.x - at[0] * w, 2) + Math.pow(p.y - at[1] * h, 2);
+        if (d < bestD) { bestD = d; best = i; }
+      });
+      if (best >= 0) taken[best] = el;
+    });
+    cells.forEach(function (p, i) {
+      // sousedé (vodorovně i svisle) mají vždy jiný motiv
+      var svg = (taken[i] || set[(p.c * 3 + p.r * 5) % set.length]).cloneNode(true);
+      svg.style.left = p.x + "px";
+      svg.style.top = p.y + "px";
+      svg.style.rotate = (((p.c * 7 + p.r * 11) % 9) - 4) + "deg";
+      // posun startu po diagonále → kreslení běží ve vlnách
+      svg.style.setProperty("--o", -(((p.c + p.r) * 1.4) % 18).toFixed(1) + "s");
+      host.appendChild(svg);
+    });
   }
   build();
   var t;
