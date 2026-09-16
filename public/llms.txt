@@ -1,0 +1,19 @@
+# Indigo Studio s.r.o.
+
+> Softwarové studio z Prahy. Vyvíjíme software na míru pro firmy: interní aplikace pro web, iOS a Android, integrace (Slack, Shoptet a další), rozšíření pro Chrome a Safari, veřejné služby a produkty. Přebíráme vývoj existujícího softwaru po jiném dodavateli.
+
+Studio vedou dva partneři, na projektech spolupracujeme s prověřenou sítí specialistů. Na poptávku odpovídáme nejpozději do několika hodin.
+
+## Stránky
+
+- [Úvod](https://indigostudio.cz/): služby, poptávka a kontakty
+- [Projekty](https://indigostudio.cz/projekty): případové studie, aplikace a reference
+- [Aseko](https://indigostudio.cz/projekty/aseko): převzetí vývoje veškerého softwaru pro výrobce bazénové techniky (Vue.js, Capacitor, GraphQL; web, iOS, Android)
+- [mBlue](https://indigostudio.cz/projekty/mblue): CRM a náborový systém na míru pro personální agenturu, včetně migrace historických dat (Ruby on Rails)
+- [Pásek](https://indigostudio.cz/projekty/pasek): MVP aplikace pro digitální pas nemovitosti z iPhonu (Swift, RoomPlan, ARKit)
+- [Cookie lišta](https://indigostudio.cz/cookies): kdy web cookie lištu nepotřebuje
+
+## Kontakt
+
+- E-mail: info@indigostudio.cz
+- Indigo Studio s.r.o., IČO 14389096, Chudenická 1059/30, Hostivař, 102 00 Praha
