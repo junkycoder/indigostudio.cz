@@ -464,7 +464,7 @@
       <h2 id="poptavka">Poptávka</h2>
       <p class="panel-sub">Zvolte si způsob komunikace, který vám nejvíce vyhovuje:</p>
       <div class="cta-group">
-        <a class="cta" href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">
+        <a class="cta" data-mail href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">
           <span class="cta-ico" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
           </span>
@@ -474,7 +474,7 @@
           </span>
         </a>
         <!-- WhatsApp: mezinárodní formát bez +, mezer a 0 na začátku -->
-        <a class="cta" href="https://wa.me/420770371535" target="_blank" rel="noopener">
+        <a class="cta" data-wa href="https://wa.me/420770371535" target="_blank" rel="noopener">
           <span class="cta-ico" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5Z"/></svg>
           </span>
@@ -650,7 +650,16 @@
       { t: "Google Ads", d: "Nastavení účtu, kampaní a měření konverzí.", k: "google ads adwords reklama ppc kampan kampane konverze analytics ga4 tag manager gtm mereni", hidden: true },
       { t: "Údržba a provoz", d: "Hosting, DevOps, opravy a dlouhodobá podpora.", k: "udrzba provoz hosting devops podpora oprava sprava server linux zalohy" }
     ];
-    var MAIL = "mailto:info@indigostudio.cz?subject=Popt%C3%A1vka";
+    // Zdroj kampaně bez cookies: ?k=… se propíše do předmětu e-mailu a textu zprávy
+    var src = new URLSearchParams(location.search).get("k");
+    src = src && /^[a-z0-9-]{1,20}$/.test(src) ? " [" + src + "]" : "";
+    var MAIL = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent("Poptávka" + src);
+    if (src) {
+      document.querySelectorAll("[data-mail]").forEach(function (a) { a.href = MAIL; });
+      document.querySelectorAll("[data-wa]").forEach(function (a) {
+        a.href = "https://wa.me/420770371535?text=" + encodeURIComponent("Dobrý den, mám poptávku." + src);
+      });
+    }
     var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
 
     var input = document.getElementById("capQ");
