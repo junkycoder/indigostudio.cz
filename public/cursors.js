@@ -74,6 +74,42 @@
   var INTERACTIVE = 'a[href], button, summary, label, select, [role="button"], .tip, abbr[title], input:is([type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="reset"])';
   var TEXT = 'input:not([type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="reset"]), textarea, [contenteditable]';
 
+  var HEADER = ".site-header .nav-link";
+  var HAND_CSS = `
+  .cursor-hand {
+    --hc: ${COLORS.dark[1]}; --hr: ${COLORS.dark[4]}; --hh: ${COLORS.dark.halo};
+    position: fixed; left: 0; top: 0; z-index: 2147483647; pointer-events: none;
+    opacity: 0; transition: opacity 0.12s;
+  }
+  @media (prefers-color-scheme: light) {
+    .cursor-hand { --hc: ${COLORS.light[1]}; --hr: ${COLORS.light[4]}; --hh: ${COLORS.light.halo}; }
+  }
+  .cursor-hand.is-on { opacity: 1; }
+  .cursor-hand svg { display: block; overflow: visible; }
+  .cursor-hand .ch-halo { stroke: var(--hh); stroke-width: 4; fill: var(--hh); }
+  .cursor-hand .ch-line { stroke: var(--hc); stroke-width: 1.8; }
+  .cursor-hand .ch-ring { stroke: var(--hr); stroke-width: 1.6; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .cursor-hand .ch-hand { transform-origin: 9px 3px; }
+  /* ruka jemně pulzuje a prstem ťukne; od špičky se rozběhne kroužek */
+  .cursor-hand.is-on .ch-hand { animation: ch-tap 1.6s ease-in-out infinite; }
+  .cursor-hand.is-on .ch-ring { animation: ch-ring 1.6s ease-out infinite; }
+  .cursor-hand.is-down .ch-hand { animation: none; transform: translateY(1.5px) scale(0.92); }
+  @keyframes ch-tap {
+    0%, 100% { transform: scale(1); }
+    35% { transform: scale(1.08); }
+    55% { transform: translateY(1.5px) scale(0.94); }
+    70% { transform: scale(1); }
+  }
+  @keyframes ch-ring {
+    0%, 52% { opacity: 0; transform: scale(0.3); }
+    58% { opacity: 1; transform: scale(0.5); }
+    100% { opacity: 0; transform: scale(1.6); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-hand.is-on .ch-hand, .cursor-hand.is-on .ch-ring { animation: none; }
+  }
+  `;
+
   function rules(pal) {
     return CARDS.map(function (c) {
       var full = c[1];
@@ -90,9 +126,42 @@
     "@media (prefers-color-scheme: light) {\n" + rules(COLORS.light) + "\n}\n" +
     IN_CARD + ":is(" + INTERACTIVE + ") { cursor: var(--cur-hi) !important; }\n" +
     IN_CARD + ":disabled { cursor: var(--cur) !important; }\n" +
-    "}";
+    HEADER + " { cursor: none !important; }\n" +
+    "}\n" + HAND_CSS;
 
   var style = document.createElement("style");
   style.textContent = css;
   document.head.appendChild(style);
+
+  // Tlačítko v hlavičce: animovaná ruka, která pulzuje a ťuká prstem.
+  // Animovaný kurzor CSS neumí → systémový se skryje a ruka je prvek, který jede za myší.
+  if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  var hand = document.createElement("div");
+  hand.className = "cursor-hand";
+  hand.setAttribute("aria-hidden", "true");
+  var d = ICONS.hand.map(function (s) { return s[1]; });
+  hand.innerHTML = '<svg viewBox="-4 -4 36 36" width="40" height="40" stroke-linecap="round" stroke-linejoin="round" fill="none">' +
+    '<circle class="ch-ring" cx="9" cy="3" r="4.5"/>' +
+    '<g class="ch-hand"><path class="ch-halo" ' + d[0] + '/><path class="ch-halo" ' + d[1] + '/>' +
+    '<path class="ch-line" ' + d[0] + '/><path class="ch-line" ' + d[1] + '/></g></svg>';
+
+  var x = 0, y = 0, on = false, queued = false;
+  function place() {
+    queued = false;
+    // hotspot = špička prstu (9, 3) ve viewBoxu posunutém o 4, měřítko 40/36
+    hand.style.transform = "translate(" + (x - 14.4) + "px, " + (y - 7.8) + "px)";
+    hand.classList.toggle("is-on", on);
+  }
+  function update() { if (!queued) { queued = true; requestAnimationFrame(place); } }
+  window.addEventListener("pointermove", function (e) {
+    if (e.pointerType !== "mouse") return;
+    x = e.clientX; y = e.clientY;
+    on = !!(e.target.closest && e.target.closest(HEADER));
+    update();
+  }, { passive: true });
+  document.addEventListener("pointerdown", function () { hand.classList.add("is-down"); });
+  document.addEventListener("pointerup", function () { hand.classList.remove("is-down"); });
+  document.documentElement.addEventListener("mouseleave", function () { on = false; update(); });
+  window.addEventListener("scroll", function () { if (on) { on = false; update(); } }, { passive: true });
+  document.addEventListener("DOMContentLoaded", function () { document.body.appendChild(hand); });
 })();
