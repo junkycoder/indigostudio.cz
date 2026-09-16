@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
 <title>Cookie lišta — a kdy ji vlastně nepotřebujete | Indigo Studio</title>
 <meta name="description" content="Cookie lišta bývá na webu to jediné, co reálně porušuje pravidla přístupnosti. Vysvětlujeme, proč souhlas vůbec je, kdy lištu nepotřebujete a jak měřit návštěvnost bez cookies.">
-<meta name="theme-color" content="#16162d" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f6f6fe" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/cookies">
 
 <meta property="og:type" content="article">
@@ -27,148 +28,210 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <style>
+  /* Tokeny, lišta a patička jsou shodné s index.html, projekty.html a prevzeti-vyvoje.html */
   :root {
-    --indigo: #6366f1; --indigo-2: #818cf8; --indigo-soft: rgba(99,102,241,.14);
-    --ease: cubic-bezier(.22,1,.36,1);
-    --bg: #0b0b12; --bg-top: rgba(99,102,241,.12); --bg-elev: rgba(255,255,255,.035);
-    --border: rgba(255,255,255,.09); --border-hover: rgba(129,140,248,.45);
-    --fg: #f4f4f6; --fg-muted: #a1a1ad; --fg-faint: #6b6b78; --glow: rgba(99,102,241,.16);
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
     :root {
-      --bg: #ffffff; --bg-top: rgba(99,102,241,.06); --bg-elev: rgba(15,18,40,.025);
-      --border: rgba(15,18,40,.10); --border-hover: rgba(99,102,241,.5);
-      --fg: #15161d; --fg-muted: #5a5b6a; --fg-faint: #9a9ba8; --glow: rgba(99,102,241,.10);
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  [hidden] { display: none !important; }
   body {
-    background: linear-gradient(180deg, var(--bg-top), transparent 320px) no-repeat, var(--bg);
-    color: var(--fg);
+    background: var(--bg); color: var(--fg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased; line-height: 1.6; min-height: 100svh; overflow-x: hidden;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
   }
-  .glow { position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background: radial-gradient(420px circle at var(--mx,50%) var(--my,18%), var(--glow), transparent 70%);
-    transition: background .2s linear; }
-  a { color: var(--indigo-2); }
-  :focus-visible { outline: 2px solid var(--indigo-2); outline-offset: 3px; border-radius: 4px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
 
-  .wrap { position: relative; z-index: 1; max-width: 720px; margin: 0 auto;
-    padding: max(2rem, env(safe-area-inset-top)) max(1.4rem, env(safe-area-inset-right))
-             3.5rem max(1.4rem, env(safe-area-inset-left)); }
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
 
-  .back { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem;
-    color: var(--fg-muted); text-decoration: none; margin-bottom: 2.2rem; }
-  .back:hover { color: var(--fg); }
-  .back svg { width: 15px; height: 15px; }
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
 
-  .brand { display: flex; align-items: center; gap: .7rem; margin-bottom: 1.1rem; }
-  .mark { width: 34px; height: 34px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--indigo), var(--indigo-2)); box-shadow: 0 6px 24px -6px var(--indigo); }
-  .brand h1 { font-size: clamp(1.7rem, 5vw, 2.3rem); font-weight: 650; letter-spacing: -.02em; }
+  main { flex: 1; }
 
-  .lead { font-size: clamp(1.05rem, 3vw, 1.3rem); color: var(--fg-muted); max-width: 46ch; margin-bottom: 2.6rem; }
-  .lead strong { color: var(--fg); font-weight: 550; }
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
 
-  section { border: 1px solid var(--border); background: var(--bg-elev); border-radius: 18px;
-    padding: 1.5rem 1.6rem; margin-bottom: 1rem; }
-  section h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -.01em; margin-bottom: .8rem; }
-  section p { color: var(--fg-muted); margin-bottom: .7rem; }
-  section p:last-child { margin-bottom: 0; }
-  section p strong { color: var(--fg); font-weight: 600; }
+  .hero { padding-block: 1.4rem clamp(2.5rem, 6vh, 3.5rem); }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 22ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 60ch; }
+  .hero .lead strong { color: var(--fg); font-weight: 600; }
 
-  .steps { list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: .9rem; }
-  .steps li { counter-increment: s; display: grid; grid-template-columns: 1.7rem 1fr; gap: .9rem; align-items: start; }
-  .steps li::before { content: counter(s); display: grid; place-items: center; width: 1.7rem; height: 1.7rem;
-    border-radius: 8px; background: var(--indigo-soft); color: var(--indigo-2); font-weight: 650; font-size: .85rem; }
-  .steps strong { font-weight: 600; color: var(--fg); }
-  .steps span { color: var(--fg-muted); }
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
 
-  .note { border-style: dashed; border-color: var(--border-hover); }
+  /* ---- Řešení: postup ---- */
+  .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.1rem; }
+  .step { counter-increment: step; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.2rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.1rem 1.2rem; }
+  .step::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: 0.9rem; }
+  .step h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; align-self: center; }
+  .step p { font-size: 0.9rem; color: var(--fg-muted); line-height: 1.55; }
 
-  .cta { display: inline-flex; align-items: center; gap: .5rem; margin-top: .4rem;
-    text-decoration: none; color: var(--fg); font-weight: 550;
-    background: var(--indigo-soft); border: 1px solid var(--border-hover); border-radius: 12px; padding: .7rem 1.1rem;
-    transition: transform .2s var(--ease), border-color .2s var(--ease); }
-  .cta:hover { transform: translateY(-2px); }
+  /* upozornění */
+  .note { background: var(--surface); border: 1px dashed var(--border-strong); border-radius: 8px; padding: 1.1rem 1.2rem; max-width: 64ch; }
+  .note p { color: var(--fg-muted); }
 
-  footer { margin-top: 2.4rem; padding-top: 1.4rem; border-top: 1px solid var(--border);
-    color: var(--fg-faint); font-size: .82rem; line-height: 1.7; }
-  footer a { color: var(--fg-muted); text-decoration: none; }
-  footer a:hover { color: var(--indigo-2); }
-  .sep { opacity: .4; padding: 0 .4rem; }
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
 
-  @media (prefers-reduced-motion: reduce) { *, html { transition: none !important; scroll-behavior: auto; } .glow { display: none; } }
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .block { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 <script src="/doodles.js"></script>
 </head>
 <body>
-<div class="glow" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <a class="nav-link" href="/projekty">
+      Případové studie, ukázky a&nbsp;reference
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </a>
+  </div>
+</header>
 
-<div class="wrap">
-  <a class="back" href="/">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-    Indigo Studio
-  </a>
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Drobečková navigace">
+      <a href="/">Úvod</a><span class="sep">/</span><span aria-current="page">Cookie lišta</span>
+    </nav>
 
-  <header class="brand">
-    <span class="mark" aria-hidden="true"></span>
-    <h1>Cookie lišta</h1>
-  </header>
-  <p class="lead">Povinný není ten otravný banner. Povinné je jen sbírat <strong>souhlas se sledováním</strong> — a&nbsp;ten potřebujete tehdy, když do zařízení návštěvníka ukládáte víc než technicky nezbytné minimum.</p>
+    <header class="hero">
+      <p class="eyebrow">Přístupnost a&nbsp;měření návštěvnosti</p>
+      <h1>Cookie lišta a&nbsp;kdy ji vlastně nepotřebujete</h1>
+      <p class="lead">Povinný není ten otravný banner. Povinné je jen sbírat <strong>souhlas se sledováním</strong> — a&nbsp;ten potřebujete tehdy, když do&nbsp;zařízení návštěvníka ukládáte víc než technicky nezbytné minimum.</p>
+    </header>
 
-  <section aria-labelledby="otrava">
-    <h2 id="otrava">Otrava, kterou nechce nikdo</h2>
-    <p>Cookie lišta otravuje všechny a&nbsp;nejvíc právě ty, kvůli kterým existují pravidla přístupnosti. Lidé klikají „Přijmout vše“ naslepo, jen aby okno zmizelo — souhlas tím ztrácí smysl.</p>
-    <p>Pro čtečku obrazovky nebo ovládání klávesnicí bývá lišta past: odchytí fokus, překryje obsah, zavřít jde jen myší. Tlačítko „Odmítnout“ je navíc často světle šedé — a&nbsp;přesně to automatický audit přístupnosti označí jako chybu kontrastu.</p>
-    <p>Vídáme to opakovaně: na jinak v&nbsp;pořádku udělaném webu obce je jediným skutečným problémem přístupnosti právě cookie lišta.</p>
-  </section>
+    <section class="block" aria-labelledby="otrava">
+      <h2 id="otrava">Otrava, kterou nechce nikdo</h2>
+      <div class="prose">
+        <p>Cookie lišta otravuje všechny a&nbsp;nejvíc právě ty, kvůli kterým existují pravidla přístupnosti. Lidé klikají „Přijmout vše“ naslepo, jen aby okno zmizelo — souhlas tím ztrácí smysl.</p>
+        <p>Pro čtečku obrazovky nebo ovládání klávesnicí bývá lišta past: odchytí fokus, překryje obsah, zavřít jde jen myší. Tlačítko „Odmítnout“ je navíc často světle šedé — a&nbsp;přesně to automatický audit přístupnosti označí jako chybu kontrastu.</p>
+        <p>Vídáme to opakovaně: na&nbsp;jinak v&nbsp;pořádku udělaném webu obce je jediným skutečným problémem přístupnosti právě cookie lišta.</p>
+      </div>
+    </section>
 
-  <section aria-labelledby="proc">
-    <h2 id="proc">Proč ji skoro každý má</h2>
-    <p>Ukládat nebo číst informace v&nbsp;zařízení návštěvníka (cookies, ale i&nbsp;localStorage) smíte až po jeho souhlasu — v&nbsp;Česku podle § 89 odst. 3 zákona č. 127/2005 Sb., od roku 2022 v&nbsp;režimu souhlasu předem. Lišta je jen způsob, jak ten souhlas posbírat.</p>
-    <p>Souhlas ale potřebujete jen pro to, co <strong>není nezbytné</strong>. Lištu nejčastěji vynutí analytika přes cookies (klasická Google Analytics), reklamní a&nbsp;marketingové skripty a&nbsp;vložený obsah třetích stran, který sleduje.</p>
-    <p>Naopak technicky nezbytné cookies — přihlášení, bezpečnost, jazyk, košík — souhlas nevyžadují. Jen kvůli nim lištu mít nemusíte.</p>
-  </section>
+    <section class="block" aria-labelledby="proc">
+      <h2 id="proc">Proč ji skoro každý má</h2>
+      <div class="prose">
+        <p>Ukládat nebo číst informace v&nbsp;zařízení návštěvníka (cookies, ale i&nbsp;localStorage) smíte až po&nbsp;jeho souhlasu — v&nbsp;Česku podle §&nbsp;89 odst.&nbsp;3 zákona č.&nbsp;127/2005&nbsp;Sb., od&nbsp;roku 2022 v&nbsp;režimu souhlasu předem. Lišta je jen způsob, jak ten souhlas posbírat.</p>
+        <p>Souhlas ale potřebujete jen pro to, co <strong>není nezbytné</strong>. Lištu nejčastěji vynutí analytika přes cookies (klasická Google Analytics), reklamní a&nbsp;marketingové skripty a&nbsp;vložený obsah třetích stran, který sleduje.</p>
+        <p>Naopak technicky nezbytné cookies — přihlášení, bezpečnost, jazyk, košík — souhlas nevyžadují. Jen kvůli nim lištu mít nemusíte.</p>
+      </div>
+    </section>
 
-  <section aria-labelledby="reseni">
-    <h2 id="reseni">Jde to i&nbsp;bez cookies — a&nbsp;tedy bez lišty</h2>
-    <ol class="steps">
-      <li><span><strong>Jen nezbytné cookies.</strong> Bez sledování stačí krátká informace v&nbsp;zásadách ochrany údajů. Žádné vyskakovací okno.</span></li>
-      <li><span><strong>Analytika bez cookies.</strong> Nástroje jako Plausible, Fathom nebo Matomo v&nbsp;cookieless režimu neukládají nic do zařízení a&nbsp;nesbírají osobní údaje — návštěvnost změříte typicky i&nbsp;bez souhlasu.</span></li>
-      <li><span><strong>Měření ze serveru.</strong> Souhrnnou statistiku získáte z&nbsp;logů serveru, úplně bez skriptu v&nbsp;prohlížeči.</span></li>
-      <li><span><strong>Embedy na klik.</strong> Mapu nebo video načtěte až po kliknutí — předtím neběží a&nbsp;nic nesledují.</span></li>
-    </ol>
-    <p style="margin-top:1rem">Výsledek: méně právní zátěže, rychlejší web a&nbsp;hlavně zmizí ten nejproblematičtější přístupnostní prvek na stránce.</p>
-  </section>
+    <section class="block" aria-labelledby="reseni">
+      <h2 id="reseni">Jde to i&nbsp;bez cookies, a&nbsp;tedy bez lišty</h2>
+      <div class="prose">
+        <ol class="steps">
+          <li class="step"><h3>Jen nezbytné cookies</h3><p>Bez sledování stačí krátká informace v&nbsp;zásadách ochrany údajů. Žádné vyskakovací okno.</p></li>
+          <li class="step"><h3>Analytika bez cookies</h3><p>Nástroje jako Plausible, Fathom nebo Matomo v&nbsp;režimu bez cookies neukládají nic do&nbsp;zařízení a&nbsp;nesbírají osobní údaje. Návštěvnost změříte typicky i&nbsp;bez souhlasu.</p></li>
+          <li class="step"><h3>Měření ze serveru</h3><p>Souhrnnou statistiku získáte z&nbsp;logů serveru, úplně bez skriptu v&nbsp;prohlížeči.</p></li>
+          <li class="step"><h3>Vložený obsah na&nbsp;klik</h3><p>Mapu nebo video načtěte až po&nbsp;kliknutí. Předtím neběží a&nbsp;nic nesledují.</p></li>
+        </ol>
+        <p>Výsledek: méně právní zátěže, rychlejší web a&nbsp;hlavně zmizí ten nejproblematičtější přístupnostní prvek na&nbsp;stránce.</p>
+      </div>
+    </section>
 
-  <section class="note" aria-labelledby="pozn">
-    <h2 id="pozn">Než to vypnete</h2>
-    <p>Tohle není právní rada — každý web je potřeba posoudit podle toho, co přesně načítá. Berte to jako pozvánku přestat brát cookie lištu jako nutné zlo.</p>
-  </section>
+    <section class="block" aria-labelledby="pozn">
+      <h2 id="pozn">Než lištu vypnete</h2>
+      <div class="note">
+        <p>Tohle není právní rada. Každý web je potřeba posoudit podle toho, co přesně načítá. Berte to jako pozvánku přestat brát cookie lištu jako nutné zlo.</p>
+      </div>
+    </section>
 
-  <section aria-labelledby="kontakt">
-    <h2 id="kontakt">Chcete web bez lišty?</h2>
-    <p>Napište nám a&nbsp;řekneme, jestli se bez cookie lišty obejdete a&nbsp;jak měřit návštěvnost jinak — bez závazků.</p>
-    <a class="cta" href="mailto:info@indigostudio.cz?subject=Web%20bez%20cookie%20li%C5%A1ty">Napsat na info@indigostudio.cz</a>
-  </section>
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Chcete web bez lišty?</h2>
+        <p>Řekneme vám, jestli se bez cookie lišty obejdete a&nbsp;jak měřit návštěvnost jinak.</p>
+      </div>
+      <a class="button" href="mailto:info@indigostudio.cz?subject=Web%20bez%20cookie%20li%C5%A1ty">Napsat na&nbsp;info@indigostudio.cz</a>
+    </section>
+  </div>
+</main>
 
-  <footer>
-    Projekt <a href="/">Indigo Studio s.r.o.</a><span class="sep">·</span>IČO 14389096<br>
-    Chudenická 1059/30, Hostivař, 102 00 Praha
-  </footer>
-</div>
-
-<script>
-  if (!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    var glow = document.querySelector(".glow");
-    window.addEventListener("pointermove", function (e) {
-      glow.style.setProperty("--mx", e.clientX + "px");
-      glow.style.setProperty("--my", e.clientY + "px");
-    }, { passive: true });
-  }
-</script>
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
+    <p><a href="/">Zpět na&nbsp;úvod</a></p>
+  </div>
+</footer>
 </body>
 </html>
