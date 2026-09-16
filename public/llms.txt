@@ -14,6 +14,16 @@ Studio vedou dva partneři, na projektech spolupracujeme s prověřenou sítí s
 - [Pásek](https://indigostudio.cz/projekty/pasek): MVP aplikace pro digitální pas nemovitosti z iPhonu (Swift, RoomPlan, ARKit)
 - [Cookie lišta](https://indigostudio.cz/cookies): kdy web cookie lištu nepotřebuje
 
+## Technologie a nástroje
+
+- Infrastruktura: nejraději Cloudflare (Workers, Pages, R2), dále Firebase, Google Cloud a AWS; také on-premise a Docker
+- Vývoj a nasazení: CI/CD, GitHub, GitLab, Gitea
+- Monitoring a zachytávání chyb: Sentry a podobné nástroje
+- Mobilní aplikace: Swift, Kotlin, Capacitor; publikace do Google Play a App Store
+- Web a backend: Vue.js, React, Node.js, TypeScript, Ruby on Rails, GraphQL
+- Google Workspace: automatizace a workflow přes Google Apps Script (Sheets, Docs, Drive, Calendar, Gmail)
+- Marketing: Google Ads
+
 ## Kontakt
 
 - E-mail: info@indigostudio.cz

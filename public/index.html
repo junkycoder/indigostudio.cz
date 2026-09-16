@@ -62,7 +62,19 @@
     "Newslettery a hromadné rozesílky",
     "Automatické a AI e-maily (zákaznická podpora)",
     "AI školení pro firmy a začátečníky",
-    "Interní aplikace na míru (CRM, CSM)"
+    "Interní aplikace na míru (CRM, CSM)",
+    "Cloudflare (Workers, Pages, R2)",
+    "Firebase",
+    "Google Cloud",
+    "AWS",
+    "On-premise nasazení",
+    "Docker",
+    "CI/CD",
+    "GitHub, GitLab, Gitea",
+    "Monitoring a zachytávání chyb (Sentry)",
+    "Publikace do Google Play a App Store",
+    "Google Workspace a Google Apps Script (Sheets, Docs, Drive, Calendar, Gmail)",
+    "Google Ads"
   ],
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
@@ -188,8 +200,29 @@
     font-weight: 650; line-height: 1.1; letter-spacing: -0.03em;
     max-width: 16ch; margin-bottom: 1.1rem;
   }
-  .lead { font-size: clamp(1.02rem, 1.6vw, 1.15rem); color: var(--fg-muted); max-width: 44ch; margin-bottom: 2rem; }
-  .lead a { color: var(--accent); text-underline-offset: 0.18em; }
+  .lead { font-size: clamp(1.02rem, 1.6vw, 1.15rem); color: var(--fg-muted); max-width: 44ch; margin-bottom: 1rem; }
+  .lead a, .lead-note a { color: var(--accent); text-underline-offset: 0.18em; }
+  /* doplněk pod úvodem — menší a tlumenější, ať úvod nepřehluší */
+  .lead-note { font-size: 0.88rem; color: var(--fg-faint); max-width: 52ch; line-height: 1.6; margin-bottom: 2rem; }
+  /* tooltip s vysvětlením (hover i fokus — funguje i na dotyk) */
+  .tip {
+    position: relative; cursor: help; outline-offset: 2px;
+    text-decoration: underline dotted; text-decoration-color: var(--border-strong); text-underline-offset: 0.2em;
+    transition: color 0.2s var(--ease);
+  }
+  .tip:hover, .tip:focus { color: var(--fg-muted); }
+  .tip-text {
+    position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 10;
+    translate: -50% 4px;
+    width: max-content; max-width: min(260px, 80vw);
+    padding: 0.55rem 0.75rem;
+    background: var(--surface); color: var(--fg-muted);
+    border: 1px solid var(--border-strong); border-radius: 6px; box-shadow: var(--shadow);
+    font-size: 0.8rem; line-height: 1.45; text-align: left;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.15s var(--ease), translate 0.15s var(--ease), visibility 0.15s;
+  }
+  .tip:hover .tip-text, .tip:focus .tip-text { opacity: 1; visibility: visible; translate: -50% 0; }
 
   /* ---- Karty (sdílený vzhled) ---- */
   .panel {
@@ -311,7 +344,8 @@
   abbr[title] { text-decoration: underline dotted; text-underline-offset: 0.18em; cursor: help; }
 
   /* ---- Patička: firemní údaje + odkazy ---- */
-  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
+  /* plné pozadí, ať malůvky nelezou pod firemní údaje */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: var(--bg); }
   .site-footer .container {
     display: flex; justify-content: space-between; align-items: flex-end;
     flex-wrap: wrap; gap: 1rem 2rem;
@@ -336,8 +370,57 @@
     .panel { padding: 1.2rem; }
   }
 
+  /* ---- Pozadí: živé malůvky naší práce (návrh, kód, UML, workflow, e-maily…) ----
+     Čisté SVG + CSS. Každý tah se nakreslí (pathLength=1 → dashoffset 1→0),
+     chvíli drží, pak se „smaže" a cyklus jede znovu. Pořadí tahů řídí --i.
+     Vzor (cihlová mřížka přes celý viewport) skládá JS ze šablony #doodle-set. */
+  .doodles {
+    --c1: #818cf8; --c2: #f472b6; --c3: #2dd4bf; --c4: #fbbf24; --c5: #4ade80;
+    --cell: 290px;
+    position: fixed; inset: 0; z-index: -1;
+    pointer-events: none; overflow: hidden;
+    opacity: 0.17;
+  }
+  @media (prefers-color-scheme: light) {
+    .doodles { --c1: #6366f1; --c2: #db2777; --c3: #0d9488; --c4: #d97706; --c5: #16a34a; opacity: 0.16; }
+  }
+  @media (max-width: 560px) { .doodles { opacity: 0.13; } }
+  .doodle {
+    position: absolute; height: auto;
+    width: calc(var(--cell) * var(--w, 0.75));
+    translate: -50% -50%;
+    fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    animation: doodle-float 16s ease-in-out infinite alternate;
+    animation-delay: var(--o, 0s);
+  }
+  .doodle .s {
+    stroke-dasharray: 1; stroke-dashoffset: 1;
+    animation: doodle-draw 18s var(--ease) infinite;
+    animation-delay: calc(var(--o, 0s) + var(--i, 0) * 0.22s);
+  }
+  .doodle .tok { stroke-width: 5; }
+  .doodle .caret { stroke-width: 2.5; animation: doodle-blink 1.1s steps(1) infinite; }
+  .k1 { stroke: var(--c1); } .k2 { stroke: var(--c2); } .k3 { stroke: var(--c3); }
+  .k4 { stroke: var(--c4); } .k5 { stroke: var(--c5); }
+
+  /* relativní velikost motivu vůči buňce vzoru */
+  .d-mock { --w: 0.78; } .d-code { --w: 0.74; } .d-uml { --w: 0.68; } .d-flow { --w: 0.84; }
+  .d-mail { --w: 0.6; } .d-phone { --w: 0.36; } .d-kanban { --w: 0.72; } .d-git { --w: 0.66; }
+
+  @keyframes doodle-draw {
+    0%        { stroke-dashoffset: 1; }
+    18%, 72%  { stroke-dashoffset: 0; }
+    90%, 100% { stroke-dashoffset: -1; }
+  }
+  @keyframes doodle-float {
+    from { transform: translate(0, 0) rotate(-1.5deg); }
+    to   { transform: translate(6px, -14px) rotate(1.5deg); }
+  }
+  @keyframes doodle-blink { 50% { opacity: 0; } }
+
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
+    .doodle, .doodle .s, .doodle .caret { animation: none; stroke-dashoffset: 0; }
   }
 
   /* ---- Tisk = vizitka 90×50 mm ---- */
@@ -346,7 +429,7 @@
     /* Všechny tři vizitky na jeden list A4, pod sebou, vystřihnout podle značek */
     @page { size: A4; margin: 12mm; }
     html, body { background: #ffffff !important; min-height: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .site-header, main, .site-footer { display: none !important; }
+    .site-header, main, .site-footer, .doodles { display: none !important; }
     .business-card {
       display: grid !important;
       place-items: center;
@@ -386,6 +469,130 @@
 </style>
 </head>
 <body>
+<!-- Dekorativní pozadí — malůvky naší práce, čistě vizuální -->
+<div class="doodles" aria-hidden="true"></div>
+<template id="doodle-set">
+  <!-- návrh: wireframe webu -->
+  <svg class="doodle d-mock" viewBox="0 0 220 160">
+    <rect class="s k1" style="--i:0" pathLength="1" x="10" y="10" width="200" height="140" rx="8"/>
+    <path class="s k1" style="--i:1" pathLength="1" d="M10 32h200"/>
+    <circle class="s k2" style="--i:2" pathLength="1" cx="23" cy="21" r="3"/>
+    <circle class="s k4" style="--i:2" pathLength="1" cx="33" cy="21" r="3"/>
+    <circle class="s k5" style="--i:2" pathLength="1" cx="43" cy="21" r="3"/>
+    <path class="s k1" style="--i:3" pathLength="1" d="M24 48h84M24 62h58"/>
+    <rect class="s k2" style="--i:4" pathLength="1" x="24" y="76" width="44" height="14" rx="7"/>
+    <rect class="s k3" style="--i:5" pathLength="1" x="128" y="44" width="68" height="50" rx="4"/>
+    <path class="s k3" style="--i:6" pathLength="1" d="M128 94l24-22 14 12 12-8 18 18"/>
+    <circle class="s k4" style="--i:6" pathLength="1" cx="180" cy="58" r="5"/>
+    <rect class="s k1" style="--i:7" pathLength="1" x="24" y="106" width="52" height="32" rx="4"/>
+    <rect class="s k3" style="--i:8" pathLength="1" x="84" y="106" width="52" height="32" rx="4"/>
+    <rect class="s k4" style="--i:9" pathLength="1" x="144" y="106" width="52" height="32" rx="4"/>
+    <path class="s k2" style="--i:10" pathLength="1" d="M60 84l14 30 4-12 12-4z"/>
+  </svg>
+
+  <!-- kód: editor s tokeny -->
+  <svg class="doodle d-code" viewBox="0 0 220 150">
+    <rect class="s k3" style="--i:0" pathLength="1" x="10" y="10" width="200" height="130" rx="8"/>
+    <path class="s k2 tok" style="--i:1" pathLength="1" d="M30 34h26"/>
+    <path class="s k1 tok" style="--i:2" pathLength="1" d="M64 34h46"/>
+    <path class="s k4 tok" style="--i:3" pathLength="1" d="M44 50h24"/>
+    <path class="s k3 tok" style="--i:4" pathLength="1" d="M76 50h58"/>
+    <path class="s k1 tok" style="--i:5" pathLength="1" d="M58 66h48"/>
+    <path class="s k2 tok" style="--i:6" pathLength="1" d="M114 66h16"/>
+    <path class="s k5 tok" style="--i:7" pathLength="1" d="M58 82h70"/>
+    <path class="s k4 tok" style="--i:8" pathLength="1" d="M44 98h20"/>
+    <path class="s k1 tok" style="--i:9" pathLength="1" d="M72 98h64"/>
+    <path class="s k2 tok" style="--i:10" pathLength="1" d="M30 114h14"/>
+    <path class="caret k1" d="M144 106v16"/>
+  </svg>
+
+  <!-- UML: třídy a dědičnost -->
+  <svg class="doodle d-uml" viewBox="0 0 220 170">
+    <rect class="s k1" style="--i:0" pathLength="1" x="14" y="14" width="84" height="64" rx="3"/>
+    <path class="s k1" style="--i:1" pathLength="1" d="M14 32h84M14 56h84"/>
+    <path class="s k1" style="--i:2" pathLength="1" d="M22 23h40M22 42h52M22 49h36M22 66h46"/>
+    <rect class="s k3" style="--i:3" pathLength="1" x="140" y="18" width="66" height="44" rx="3"/>
+    <path class="s k3" style="--i:4" pathLength="1" d="M140 34h66M148 26h32M148 46h44"/>
+    <path class="s k4" style="--i:5" pathLength="1" d="M98 40h42"/>
+    <path class="s k4" style="--i:6" pathLength="1" d="M132 35l8 5-8 5"/>
+    <rect class="s k2" style="--i:7" pathLength="1" x="112" y="100" width="94" height="56" rx="3"/>
+    <path class="s k2" style="--i:8" pathLength="1" d="M112 118h94M120 109h44M120 130h60M120 140h40"/>
+    <path class="s k4" style="--i:9" pathLength="1" d="M56 88v40h56"/>
+    <path class="s k4" style="--i:10" pathLength="1" d="M48 90l8-12 8 12z"/>
+  </svg>
+
+  <!-- workflow: start → krok → rozhodnutí → větve -->
+  <svg class="doodle d-flow" viewBox="0 0 240 140">
+    <circle class="s k5" style="--i:0" pathLength="1" cx="20" cy="70" r="10"/>
+    <path class="s k1" style="--i:1" pathLength="1" d="M30 70h28M52 65l6 5-6 5"/>
+    <rect class="s k1" style="--i:2" pathLength="1" x="58" y="52" width="52" height="36" rx="6"/>
+    <path class="s k1" style="--i:3" pathLength="1" d="M68 66h32M68 75h22"/>
+    <path class="s k1" style="--i:4" pathLength="1" d="M110 70h14"/>
+    <path class="s k4" style="--i:5" pathLength="1" d="M148 46l24 24-24 24-24-24z"/>
+    <path class="s k3" style="--i:6" pathLength="1" d="M148 46V22h32M174 17l6 5-6 5"/>
+    <path class="s k2" style="--i:6" pathLength="1" d="M148 94v24h32M174 113l6 5-6 5"/>
+    <rect class="s k3" style="--i:7" pathLength="1" x="180" y="8" width="50" height="28" rx="6"/>
+    <rect class="s k2" style="--i:8" pathLength="1" x="180" y="104" width="50" height="28" rx="6"/>
+    <path class="s k3" style="--i:9" pathLength="1" d="M194 22l6 6 14-12"/>
+    <path class="s k2" style="--i:9" pathLength="1" d="M198 112l14 12M212 112l-14 12"/>
+  </svg>
+
+  <!-- e-mail: obálka, notifikace, odeslání -->
+  <svg class="doodle d-mail" viewBox="0 0 200 150">
+    <rect class="s k2" style="--i:0" pathLength="1" x="20" y="44" width="130" height="88" rx="6"/>
+    <path class="s k2" style="--i:1" pathLength="1" d="M22 50l63 46 63-46"/>
+    <path class="s k2" style="--i:2" pathLength="1" d="M24 128l44-38M146 128l-44-38"/>
+    <circle class="s k4" style="--i:3" pathLength="1" cx="148" cy="46" r="11"/>
+    <path class="s k4" style="--i:4" pathLength="1" d="M146 42l3-2v12"/>
+    <path class="s k1" style="--i:5" pathLength="1" d="M20 30c30-26 70-26 104-10"/>
+    <path class="s k1" style="--i:6" pathLength="1" d="M136 22l54-14-20 44-10-16z"/>
+    <path class="s k1" style="--i:7" pathLength="1" d="M160 36l30-28"/>
+  </svg>
+
+  <!-- mobilní aplikace -->
+  <svg class="doodle d-phone" viewBox="0 0 120 200">
+    <rect class="s k3" style="--i:0" pathLength="1" x="14" y="10" width="92" height="180" rx="14"/>
+    <path class="s k3" style="--i:1" pathLength="1" d="M48 22h24"/>
+    <rect class="s k1" style="--i:2" pathLength="1" x="26" y="36" width="68" height="42" rx="5"/>
+    <path class="s k1" style="--i:3" pathLength="1" d="M26 92h68M26 104h46"/>
+    <circle class="s k4" style="--i:4" pathLength="1" cx="32" cy="124" r="5"/>
+    <path class="s k4" style="--i:5" pathLength="1" d="M44 124h48"/>
+    <circle class="s k2" style="--i:6" pathLength="1" cx="32" cy="144" r="5"/>
+    <path class="s k2" style="--i:7" pathLength="1" d="M44 144h40"/>
+    <rect class="s k5" style="--i:8" pathLength="1" x="26" y="162" width="68" height="16" rx="8"/>
+  </svg>
+  <!-- kanban: úkoly ve sloupcích -->
+  <svg class="doodle d-kanban" viewBox="0 0 220 150">
+    <rect class="s k1" style="--i:0" pathLength="1" x="10" y="10" width="62" height="130" rx="6"/>
+    <rect class="s k4" style="--i:1" pathLength="1" x="79" y="10" width="62" height="130" rx="6"/>
+    <rect class="s k5" style="--i:2" pathLength="1" x="148" y="10" width="62" height="130" rx="6"/>
+    <path class="s k1" style="--i:3" pathLength="1" d="M20 24h30M89 24h36M158 24h26"/>
+    <rect class="s k2" style="--i:4" pathLength="1" x="18" y="36" width="46" height="22" rx="3"/>
+    <rect class="s k3" style="--i:5" pathLength="1" x="18" y="64" width="46" height="22" rx="3"/>
+    <rect class="s k1" style="--i:6" pathLength="1" x="87" y="36" width="46" height="22" rx="3"/>
+    <rect class="s k2" style="--i:7" pathLength="1" x="156" y="36" width="46" height="22" rx="3"/>
+    <rect class="s k4" style="--i:8" pathLength="1" x="156" y="64" width="46" height="22" rx="3"/>
+    <rect class="s k3" style="--i:9" pathLength="1" x="156" y="92" width="46" height="22" rx="3"/>
+    <path class="s k2" style="--i:10" pathLength="1" d="M40 96c10 30 70 34 88-4M121 90l7 2 1 8"/>
+  </svg>
+
+  <!-- git: větev a merge -->
+  <svg class="doodle d-git" viewBox="0 0 200 140">
+    <circle class="s k1" style="--i:0" pathLength="1" cx="24" cy="110" r="6"/>
+    <path class="s k1" style="--i:1" pathLength="1" d="M30 110h44"/>
+    <circle class="s k1" style="--i:2" pathLength="1" cx="80" cy="110" r="6"/>
+    <path class="s k3" style="--i:3" pathLength="1" d="M84 105c12-22 16-55 34-55"/>
+    <circle class="s k3" style="--i:4" pathLength="1" cx="124" cy="50" r="6"/>
+    <path class="s k1" style="--i:4" pathLength="1" d="M86 110h82"/>
+    <path class="s k3" style="--i:5" pathLength="1" d="M130 50h18"/>
+    <circle class="s k3" style="--i:6" pathLength="1" cx="154" cy="50" r="6"/>
+    <path class="s k3" style="--i:7" pathLength="1" d="M159 54c10 20 15 40 15 50"/>
+    <circle class="s k5" style="--i:8" pathLength="1" cx="174" cy="110" r="6"/>
+    <path class="s k4" style="--i:9" pathLength="1" d="M160 88h24l8 8-8 8h-24z"/>
+    <path class="s k2" style="--i:10" pathLength="1" d="M40 30h40M40 42h26"/>
+  </svg>
+</template>
+
 <header class="site-header">
   <div class="container">
     <a class="brand" href="/" aria-label="Indigo Studio — úvod">
@@ -402,8 +609,13 @@
   <div class="container hero">
     <div>
       <p class="eyebrow">Softwarové studio · Praha</p>
-      <h1>Software na&nbsp;míru, od&nbsp;interních nástrojů po&nbsp;veřejné produkty.</h1>
-      <p class="lead">Interní aplikace pro&nbsp;web, Apple i&nbsp;Android. Integrace se&nbsp;Slackem, Shoptetem a&nbsp;nespočtem dalších nástrojů. Rozšíření pro&nbsp;Chrome a&nbsp;Safari. Veřejné služby a&nbsp;produkty. Webové stránky jsou pro&nbsp;nás maličkost. <a href="/prevzeti-vyvoje">Převezmeme i&nbsp;vývoj po&nbsp;jiném dodavateli.</a></p>
+      <h1>Software na&nbsp;míru: od&nbsp;interních nástrojů po&nbsp;veřejné produkty</h1>
+      <p class="lead">Vývoj webových, iOS i&nbsp;Android aplikací pro&nbsp;vaše podnikání. Propojíme vaše systémy se&nbsp;Slackem, Shoptetem a&nbsp;řadou dalších služeb, nebo postavíme rozšíření pro&nbsp;Chrome a&nbsp;Safari. Od&nbsp;kompletních veřejných produktů až po&nbsp;prezentace — webové stránky jsou pro&nbsp;nás maličkost.</p>
+      <p class="lead-note">Rádi <a href="/prevzeti-vyvoje">převezmeme vývoj i&nbsp;po&nbsp;předchozím dodavateli</a>. Samozřejmostí jsou pro&nbsp;nás
+        <span class="tip" tabindex="0" aria-describedby="tip-privacy">soukromí<span class="tip-text" role="tooltip" id="tip-privacy">Dbáme na&nbsp;ochranu dat a&nbsp;minimální sběr osobních údajů.</span></span>,
+        <span class="tip" tabindex="0" aria-describedby="tip-security">bezpečnost<span class="tip-text" role="tooltip" id="tip-security">Aplikace stavíme podle nejnovějších bezpečnostních standardů.</span></span>
+        a&nbsp;<span class="tip" tabindex="0" aria-describedby="tip-a11y">přístupnost<span class="tip-text" role="tooltip" id="tip-a11y">Náš kód splňuje standardy WCAG, aby byl web přístupný pro&nbsp;všechny.</span></span>.<br><br>
+        PS: Věděli jste, že <a href="/cookies">váš web možná vůbec nepotřebuje cookie lištu</a>?</p>
 
       <section class="panel cap-block" aria-label="Co pro vás můžeme udělat">
         <h2>Co pro vás můžeme udělat?</h2>
@@ -584,21 +796,63 @@
 </aside>
 
 <script>
+  // Pozadí — poskládá malůvky ze šablony do cihlového vzoru přes celý viewport
+  (function () {
+    var tpl = document.getElementById("doodle-set");
+    var host = document.querySelector(".doodles");
+    if (!tpl || !host) return;
+    var set = tpl.content.querySelectorAll(".doodle");
+    var key = "";
+
+    function build() {
+      var w = window.innerWidth, h = window.innerHeight;
+      var cell = w < 560 ? 190 : 290, rowH = Math.round(cell * 0.72);
+      var cols = Math.ceil(w / cell) + 1, rows = Math.ceil(h / rowH) + 1;
+      if (key === cols + "x" + rows + "@" + cell) return;
+      key = cols + "x" + rows + "@" + cell;
+      host.style.setProperty("--cell", cell + "px");
+      host.textContent = "";
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          // sousedé (vodorovně i svisle) mají vždy jiný motiv
+          var svg = set[(c * 3 + r * 5) % set.length].cloneNode(true);
+          svg.style.left = (c + (r % 2 ? 0.5 : 0)) * cell + "px";
+          svg.style.top = (r + 0.35) * rowH + "px";
+          svg.style.rotate = (((c * 7 + r * 11) % 9) - 4) + "deg";
+          // posun startu po diagonále → kreslení běží ve vlnách
+          svg.style.setProperty("--o", -(((c + r) * 1.4) % 18).toFixed(1) + "s");
+          host.appendChild(svg);
+        }
+      }
+    }
+    build();
+    var t;
+    window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(build, 150); });
+  })();
+</script>
+<script>
   // „Co umíme" — živé vyhledávání schopností + asertivní odpověď ano/ne
   (function () {
     var CAPS = [
-      { t: "Weby a webové aplikace", d: "Prezentace, e-shopy, portály, landing pages.", k: "web weby webovka stranky eshop e-shop prezentace landing portal wordpress aplikace" },
-      { t: "Mobilní aplikace", d: "iOS i Android, nativně i multiplatformně.", k: "mobilni mobil aplikace appka app ios android iphone telefon" },
+      { t: "Weby a webové aplikace", d: "Prezentace, e-shopy, portály, landing pages.", k: "web weby webovka stranky eshop e-shop prezentace landing portal wordpress aplikace react vue nuxt next nextjs node nodejs typescript javascript php laravel ruby rails python django graphql html css" },
+      { t: "Mobilní aplikace", d: "iOS i Android, nativně i multiplatformně.", k: "mobilni mobil aplikace appka app ios android iphone telefon swift swiftui kotlin flutter react native expo capacitor ionic arkit" },
       { t: "Interní systémy na míru", d: "CRM, CSM, evidence, sklady, rezervace, admin.", k: "interni system systemy crm csm evidence sklad rezervace agenda databaze admin" },
-      { t: "AI agenty a workflows", d: "Agenti, chatboti, asistenti a zpracování dokumentů.", k: "ai umela inteligence chatbot agent agenti asistent workflow workflows llm gpt automatizace dokumenty" },
+      { t: "AI agenty a workflows", d: "Agenti, chatboti, asistenti a zpracování dokumentů.", k: "ai umela inteligence chatbot agent agenti asistent workflow workflows llm gpt openai chatgpt claude anthropic gemini mcp rag automatizace dokumenty" },
       { t: "Automatizace procesů", d: "Propojení nástrojů přes API, integrace, makra.", k: "automatizace automat integrace api propojeni makro workflow zapier n8n" },
       { t: "Integrace do ostatních služeb", d: "Napojení na Slack, Stripe, Google, ERP a další přes API.", k: "integrace integrace napojeni propojeni sluzba sluzby slack stripe google erp api webhook" },
       { t: "Firemní e-maily a newslettery", d: "Schránky, webmail, SMTP, přeposílání, newslettery i automatické a AI e-maily (podpora).", k: "email e-mail mail maily posta schranka schranky webmail smtp imap forwarding preposilani presmerovani newsletter newslettery rozesilka hromadne transakcni automaticky autoresponder ai podpora notifikace zoho resend dkim spf" },
-      { t: "Analýza a vizualizace dat", d: "Dashboardy, reporty, scraping a čištění dat.", k: "data analyza dashboard report statistika vizualizace scraping excel bi" },
+      { t: "Analýza a vizualizace dat", d: "Dashboardy, reporty, scraping a čištění dat.", k: "data analyza dashboard report statistika vizualizace scraping excel bi sql postgres postgresql mysql bigquery looker" },
       { t: "Rozšíření do prohlížeče", d: "Doplňky a pluginy pro Chrome, Edge i Firefox.", k: "rozsireni plugin doplnek extension addon prohlizec browser chrome edge firefox" },
       { t: "Školení a konzultace", d: "Workshopy a konzultace pro firmy i začátečníky.", k: "skoleni konzultace workshop kurz vyuka mentoring zacatecnik" },
       { t: "Převzetí vývoje po dodavateli", d: "Převezmeme software po jiném dodavateli nebo vývojáři. Začínáme revizí zdarma.", k: "prevzeti prevzit vyvoj dodavatel vyvojar odesel skoncil legacy stary system sprava audit revize kod" },
-      { t: "Údržba a provoz", d: "Hosting, DevOps, opravy a dlouhodobá podpora.", k: "udrzba provoz hosting devops podpora oprava sprava server" }
+      // hidden: najde se vyhledáváním, ale nepřidává se do výchozích štítků
+      { t: "Cloud a infrastruktura", d: "Nejraději stavíme na Cloudflare, běžně i na Firebase, Google Cloud a AWS. Umíme i vlastní servery (on-premise) a Docker.", k: "cloud cloudflare workers pages r2 d1 firebase firestore google cloud gcp cloud run aws azure onprem on-prem on-premise vlastni server docker kontejner kubernetes k8s vps infrastruktura", hidden: true },
+      { t: "CI/CD a správa kódu", d: "Automatické buildy, testy a nasazení. GitHub, GitLab i Gitea.", k: "ci cd ci/cd cicd pipeline build deploy nasazeni github actions gitlab gitea git repozitar verzovani testy", hidden: true },
+      { t: "Monitoring a zachytávání chyb", d: "Sentry a podobné nástroje, logy a upozornění na výpadky.", k: "monitoring error handler handling chyby chyba sentry logy logovani alert vypadek uptime crash reporting", hidden: true },
+      { t: "Publikace do Google Play a App Store", d: "Vydání aplikace, správa vývojářských účtů a aktualizace.", k: "google play play store app store appstore publikace vydani testflight developer ucet", hidden: true },
+      { t: "Google Workspace a Apps Script", d: "Automatizace nad Tabulkami, Dokumenty, Diskem, Kalendářem a Gmailem přes Google Apps Script.", k: "google workspace gsuite g suite apps script appscript gas tabulky tabulka sheets sheet spreadsheet dokumenty docs disk drive soubory files kalendar calendar gmail email formulare forms sites stranky makro skript automatizace workflow", hidden: true },
+      { t: "Google Ads", d: "Nastavení účtu, kampaní a měření konverzí.", k: "google ads adwords reklama ppc kampan kampane konverze analytics ga4 tag manager gtm mereni", hidden: true },
+      { t: "Údržba a provoz", d: "Hosting, DevOps, opravy a dlouhodobá podpora.", k: "udrzba provoz hosting devops podpora oprava sprava server linux zalohy" }
     ];
     var MAIL = "mailto:info@indigostudio.cz?subject=Popt%C3%A1vka";
     var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
@@ -619,6 +873,7 @@
       list.className = "cap-list chips";
       list.innerHTML = "";
       CAPS.forEach(function (c) {
+        if (c.hidden) return;
         var li = document.createElement("li");
         var b = document.createElement("button");
         b.type = "button";
