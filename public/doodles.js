@@ -69,6 +69,11 @@
   }
   @media (hover: none), (prefers-reduced-motion: reduce) { .doodles-glow { display: none; } }
   @media print { .doodles, .doodles-glow { display: none !important; } }
+  /* přechod mezi stránkami: místo tvrdého přepnutí (stará stránka problikne) krátké prolnutí.
+     Malůvky mají na obou stránkách stejný rozvrh i fázi → v prolnutí stojí, mění se jen obsah. */
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.18s; }
+  @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
   /* popis pro čtečky: vizuálně skrytý, na konci stránky, přečte se jen při průchodu obsahem */
   .doodles-desc {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
