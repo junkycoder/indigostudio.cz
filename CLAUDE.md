@@ -18,6 +18,10 @@ Jedna stránka, žádný build step, žádné frameworky.
 - `public/projekty.html` — feed: aplikace, případové studie, reference, ukázky
   (položka = `<li class="item" data-kind="app|case|reference|sample">`, šablony v komentáři;
   filtr ukazuje jen neprázdné kategorie)
+- `public/skoleni.html` — školení: nahoře vždy jedno aktuální (stav v `.status`), pod ním
+  „Proběhlá školení" (záznam za ½ ceny, účastníci zdarma + článek; šablona v komentáři)
+  a odběr novinek → `src/odber.js` (double opt-in, D1 `indigostudio-odber`, schéma
+  `migrations/odber/`, potvrzovací e-mail přes Resend)
 - `public/doodles.js` — sdílené animované pozadí (malůvky), připojit `<script src="/doodles.js" defer>`;
   pro čtečky jeden statický popis motivů na konci `<body>` (bez aria-live)
 - `public/cursors.js` — kurzory ve stylu malůvek jen nad kartami (motiv podle typu karty),

@@ -35,6 +35,14 @@ binding = "DB"
 database_name = "mblue-statusboard"
 database_id = "29497ae8-5a6d-49bb-8bf5-2921c174f7ea"
 
+# Odběr novinek o školeních (double opt-in). Schválně samostatná databáze,
+# aby se e-maily zájemců nemíchaly s interními daty statusboardu.
+# Schéma: migrations/odber/
+[[d1_databases]]
+binding = "ODBER"
+database_name = "indigostudio-odber"
+database_id = "50c6d658-e8c2-4584-98c8-ca20f68c5a94"
+
 # Stránka statusboardu se importuje do Workeru jako text — schválně NENÍ v `public/`,
 # aby ji nešlo stáhnout mimo přihlášení (assets se servírují bez kontroly session).
 [[rules]]

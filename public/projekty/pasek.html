@@ -95,6 +95,7 @@
   }
   .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
   .nav-link:hover { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
   main { flex: 1; }
 
@@ -203,10 +204,16 @@
     <a class="brand" href="/" aria-label="Indigo Studio — úvod">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
-    <a class="nav-link" href="/projekty">
-      Případové studie, ukázky a&nbsp;reference
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
-    </a>
+    <nav class="site-nav" aria-label="Hlavní navigace">
+      <a class="nav-link" href="/skoleni">
+        Školení
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+      <a class="nav-link" href="/projekty">
+        Případové studie, ukázky a&nbsp;reference
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
   </div>
 </header>
 

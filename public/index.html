@@ -183,6 +183,7 @@
   }
   .nav-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
   .nav-link:hover { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .nav-link:hover svg { transform: translateX(2px); }
 
   /* ---- Úvod ---- */
@@ -429,10 +430,16 @@
     <a class="brand" href="/" aria-label="Indigo Studio — úvod">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
-    <a class="nav-link" href="/projekty">
-      Případové studie, ukázky a&nbsp;reference
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
-    </a>
+    <nav class="site-nav" aria-label="Hlavní navigace">
+      <a class="nav-link" href="/skoleni">
+        Školení
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+      <a class="nav-link" href="/projekty">
+        Případové studie, ukázky a&nbsp;reference
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
   </div>
 </header>
 
@@ -539,6 +546,7 @@
     </p>
     <nav class="footer-links" aria-label="Další odkazy">
       <a href="/projekty">Projekty a&nbsp;reference</a>
+      <a href="/skoleni">Školení Claude Code a&nbsp;Codex</a>
       <a href="/prevzeti-vyvoje">Převzetí vývoje po&nbsp;dodavateli</a>
       <a href="/cookies">Cookie lišta — a&nbsp;kdy ji nepotřebujete</a>
       <a href="https://github.com/junkycoder/indigostudio.cz" target="_blank" rel="noopener">
@@ -639,7 +647,7 @@
       { t: "Firemní e-maily a newslettery", d: "Schránky, webmail, SMTP, přeposílání, newslettery i automatické a AI e-maily (podpora).", k: "email e-mail mail maily posta schranka schranky webmail smtp imap forwarding preposilani presmerovani newsletter newslettery rozesilka hromadne transakcni automaticky autoresponder ai podpora notifikace zoho resend dkim spf" },
       { t: "Analýza a vizualizace dat", d: "Dashboardy, reporty, scraping a čištění dat.", k: "data analyza dashboard report statistika vizualizace scraping excel bi sql postgres postgresql mysql bigquery looker" },
       { t: "Rozšíření do prohlížeče", d: "Doplňky a pluginy pro Chrome, Edge i Firefox.", k: "rozsireni plugin doplnek extension addon prohlizec browser chrome edge firefox" },
-      { t: "Školení a konzultace", d: "Workshopy a konzultace pro firmy i začátečníky.", k: "skoleni konzultace workshop kurz vyuka mentoring zacatecnik" },
+      { t: "Školení a konzultace", d: "Workshopy a konzultace pro firmy i začátečníky. Připravujeme školení Claude Code a Codex.", k: "skoleni konzultace workshop kurz vyuka mentoring zacatecnik claude code codex ai asistent programovani tokeny benchmark" },
       { t: "Převzetí vývoje po dodavateli", d: "Převezmeme software po jiném dodavateli nebo vývojáři. Začínáme revizí zdarma.", k: "prevzeti prevzit vyvoj dodavatel vyvojar odesel skoncil legacy stary system sprava audit revize kod" },
       // hidden: najde se vyhledáváním, ale nepřidává se do výchozích štítků
       { t: "Cloud a infrastruktura", d: "Nejraději stavíme na Cloudflare, běžně i na Firebase, Google Cloud a AWS. Umíme i vlastní servery (on-premise) a Docker.", k: "cloud cloudflare workers pages r2 d1 firebase firestore google cloud gcp cloud run aws azure onprem on-prem on-premise vlastni server docker kontejner kubernetes k8s vps infrastruktura", hidden: true },

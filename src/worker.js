@@ -3,6 +3,7 @@
 
 import { EmailMessage } from "cloudflare:email";
 import { handleStatusboard } from "./statusboard.js";
+import { handleOdber } from "./odber.js";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -37,6 +38,11 @@ export default {
         return Response.redirect(new URL("/statusboard", url.origin), 302);
       }
       return handleStatusboard(request, env, url);
+    }
+
+    // odběr novinek o školeních (double opt-in, D1 + Resend)
+    if (url.pathname === "/api/odber" || url.pathname.startsWith("/api/odber/")) {
+      return handleOdber(request, env, url);
     }
 
     if (url.pathname === "/api/poptavka") {
