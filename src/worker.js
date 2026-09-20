@@ -4,6 +4,7 @@
 import { EmailMessage } from "cloudflare:email";
 import { handleStatusboard } from "./statusboard.js";
 import { handleOdber } from "./odber.js";
+import WEED_PAGE from "./weed.page.html";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -38,6 +39,12 @@ export default {
         return Response.redirect(new URL("/statusboard", url.origin), 302);
       }
       return handleStatusboard(request, env, url);
+    }
+
+    // Weed má vlastní subdoménu. Dokud nemá obsah, odpovídá tam jen krátký
+    // rozcestník — vizitka ani API firmy na cizí adresu nepatří.
+    if (url.hostname === "weed.indigostudio.cz") {
+      return handleWeed(request, env, url);
     }
 
     // odběr novinek o školeních (double opt-in, D1 + Resend)
@@ -78,6 +85,32 @@ export default {
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
   },
 };
+
+// ikonu a apple-touch pustíme i na weed., ať stránka nevypadá rozbitě;
+// všechno ostatní je tam zatím 404.
+const WEED_ASSETS = new Set(["/favicon.svg", "/apple-touch-icon.png"]);
+
+async function handleWeed(request, env, url) {
+  const base = { ...SECURITY_HEADERS, "X-Robots-Tag": "noindex, follow" };
+
+  if (url.pathname === "/" || url.pathname === "") {
+    return new Response(WEED_PAGE, {
+      headers: { ...base, "Content-Type": "text/html; charset=utf-8" },
+    });
+  }
+
+  if (WEED_ASSETS.has(url.pathname)) {
+    const res = await env.ASSETS.fetch(request);
+    const headers = new Headers(res.headers);
+    for (const [k, v] of Object.entries(base)) headers.set(k, v);
+    return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+  }
+
+  return new Response("Stránka nenalezena", {
+    status: 404,
+    headers: { ...base, "Content-Type": "text/plain; charset=utf-8" },
+  });
+}
 
 async function handlePoptavka(request, env) {
   let body;

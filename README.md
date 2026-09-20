@@ -118,6 +118,19 @@ Email Routingu (`*.mx.cloudflare.net`), smazat je.
    Bez nastaveného `RESEND_API_KEY` spadne na CF `send_email` fallback
    (`hromada.dan@gmail.com`) — žádný výpadek během migrace.
 
+## Weed (weed.indigostudio.cz)
+
+Weed je samostatný nástroj (vlastní repozitář). Tady z něj žije jen adresa:
+prompt, který Weed skládá, na ni odkazuje jako na svůj domov — je to jediné
+místo, kam se cizí vývojář může podívat, odkud zadání je.
+
+- route drží `wrangler.toml` (`custom_domain = true`, DNS si Cloudflare založí
+  sám při prvním deploy)
+- `src/weed.page.html` — dočasný rozcestník; na jiných cestách je 404, aby se
+  vizitka firmy neservírovala na cizí adrese
+- subdoména schválně místo vlastní domény — název produktu ještě není jistý
+- až bude obsah, nahradí rozcestník a projekt se doplní do `/projekty`
+
 ## Statusboard mBlue (mblue.indigostudio.cz)
 
 Neveřejná ministránka pro tým projektu mBlue: seznam funkcí aplikace se zjištěným

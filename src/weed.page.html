@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Weed | Indigo Studio</title>
+<meta name="description" content="Weed je nástroj Indigo Studia. Stránka se připravuje.">
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#16162d" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6fe" media="(prefers-color-scheme: light)">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  :root {
+    --indigo: #6366f1; --indigo-2: #818cf8;
+    --ease: cubic-bezier(.22,1,.36,1);
+    --bg: #0b0b12; --bg-top: rgba(99,102,241,.12);
+    --fg: #f4f4f6; --fg-muted: #a1a1ad; --fg-faint: #6b6b78;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #ffffff; --bg-top: rgba(99,102,241,.06);
+      --fg: #15161d; --fg-muted: #5a5b6a; --fg-faint: #9a9ba8;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: linear-gradient(180deg, var(--bg-top), transparent 320px) no-repeat, var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; line-height: 1.6; min-height: 100svh;
+    display: grid; place-items: center;
+  }
+  a { color: var(--indigo-2); }
+  :focus-visible { outline: 2px solid var(--indigo-2); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { width: 100%; max-width: 480px; text-align: center;
+    padding: max(2rem, env(safe-area-inset-top)) max(1.4rem, env(safe-area-inset-right))
+             3rem max(1.4rem, env(safe-area-inset-left)); }
+
+  .mark { width: 40px; height: 40px; border-radius: 12px; margin: 0 auto 1.6rem;
+    background: linear-gradient(135deg, var(--indigo), var(--indigo-2)); box-shadow: 0 8px 30px -6px var(--indigo); }
+
+  h1 { font-size: clamp(1.8rem, 7vw, 2.4rem); font-weight: 650; letter-spacing: -.03em; margin: 0 0 .6rem; }
+  p { color: var(--fg-muted); max-width: 36ch; margin: 0 auto 2rem; }
+
+  .cta { display: inline-flex; align-items: center; gap: .5rem;
+    text-decoration: none; color: #ffffff; font-weight: 550; font-size: .92rem;
+    background: var(--indigo); border-radius: 6px; padding: .7rem 1.1rem;
+    transition: filter .2s var(--ease); }
+  .cta:hover { filter: brightness(1.08); }
+  .cta svg { width: 16px; height: 16px; }
+
+  footer { margin-top: 2.4rem; color: var(--fg-faint); font-size: .82rem; }
+  footer a { color: var(--fg-muted); text-decoration: none; }
+  footer a:hover { color: var(--indigo-2); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <span class="mark" aria-hidden="true"></span>
+  <h1>Weed</h1>
+  <p>Nástroj, na&nbsp;kterém pracujeme v&nbsp;Indigo Studiu. Stránka se&nbsp;připravuje.</p>
+  <a class="cta" href="https://indigostudio.cz/">
+    Indigo Studio
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+  </a>
+
+  <footer>
+    Napište na <a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a>
+  </footer>
+</main>
+</body>
+</html>

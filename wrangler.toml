@@ -29,6 +29,15 @@ pattern = "mblue.indigostudio.cz"
 zone_name = "indigostudio.cz"
 custom_domain = true
 
+# ----- Weed (weed.indigostudio.cz) -----
+# Nástroj Weed odkazuje na tuhle adresu z promptu, který skládá. Subdoména
+# schválně místo vlastní domény — název produktu ještě není jistý a takhle
+# se dá levně změnit. DNS si Cloudflare u custom_domain založí sám při deploy.
+[[routes]]
+pattern = "weed.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
+
 # Hodnocení, členové a přihlášení statusboardu.
 [[d1_databases]]
 binding = "DB"
