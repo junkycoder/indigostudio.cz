@@ -1,12 +1,13 @@
 # Indigo Studio s.r.o.
 
-> Softwarové studio z Prahy. Vyvíjíme software na míru pro firmy: interní aplikace pro web, iOS a Android, integrace (Slack, Shoptet a další), rozšíření pro Chrome a Safari, veřejné služby a produkty. Přebíráme vývoj existujícího softwaru po jiném dodavateli.
+> Softwarové studio z Prahy. Vyvíjíme software na míru pro firmy: interní aplikace pro web, iOS a Android, integrace (Slack, Shoptet a další), rozšíření pro Chrome a Safari, veřejné služby a produkty. Přebíráme vývoj existujícího softwaru po jiném dodavateli a provozujeme hosting statických webů včetně domény a firemního e-mailu.
 
 Studio vedou dva partneři, na projektech spolupracujeme s prověřenou sítí specialistů. Na poptávku odpovídáme nejpozději do několika hodin.
 
 ## Stránky
 
 - [Úvod](https://indigostudio.cz/): služby, poptávka a kontakty
+- [Hosting](https://indigostudio.cz/hosting): hosting statických webů s gitem, verzováním a nasazením na pozadí; převod nebo registrace domény, migrace webu od současného poskytovatele (do jisté velikosti zdarma), firemní e-mail včetně SPF/DKIM/DMARC; nezávazná nabídka e-mailem zdarma
 - [Převzetí vývoje](https://indigostudio.cz/prevzeti-vyvoje): převzetí vývoje a správy softwaru po předchozím dodavateli, postup a revize zdarma
 - [Školení](https://indigostudio.cz/skoleni): školení Claude Code a OpenAI Codex (v přípravě); tipy ověřené měřením tokenů, ceny a úspěšnosti na několika modelech, veřejný benchmark a data; záznamy proběhlých školení
 - [Projekty](https://indigostudio.cz/projekty): případové studie, aplikace a reference

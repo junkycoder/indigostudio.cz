@@ -18,6 +18,9 @@ Jedna stránka, žádný build step, žádné frameworky.
 - `public/projekty.html` — feed: aplikace, případové studie, reference, ukázky
   (položka = `<li class="item" data-kind="app|case|reference|sample">`, šablony v komentáři;
   filtr ukazuje jen neprázdné kategorie)
+- `public/hosting.html` — nabídka hostingu statických webů (doména, migrace, firemní e-mail,
+  konektor na Weed); poptávkový formulář posílá na `POST /api/poptavka` (stejný endpoint
+  jako poptávka na úvodu) — pole se skládají do textu zprávy
 - `public/skoleni.html` — školení: nahoře vždy jedno aktuální (stav v `.status`), pod ním
   „Proběhlá školení" (záznam za ½ ceny, účastníci zdarma + článek; šablona v komentáři)
   a odběr novinek → `src/odber.js` (double opt-in, D1 `indigostudio-odber`, schéma

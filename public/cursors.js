@@ -63,7 +63,7 @@
   // karta → plný kurzor s hotspotem (nebo null = šipka s odznakem), odznak
   var CARDS = [
     [".cap-block", ["magnifier", 12, 12], "magnifier"],
-    ['[aria-labelledby="poptavka"], .closing', ["plane", 3, 3], "plane"],
+    ['[aria-labelledby="poptavka"], .offer, .closing', ["plane", 3, 3], "plane"],
     [".card", null, "envelope"],
     ['.item[data-kind="app"]', null, "phone"],
     ['.item[data-kind="case"]', null, "chart"],

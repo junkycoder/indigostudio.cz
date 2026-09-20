@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Rychlý hosting webu s gitem na pozadí | Indigo Studio</title>
+<meta name="description" content="Hosting statických webů: rychlé načítání, HTTPS, zálohy a git na pozadí. Web z původního hostingu přeneseme, do jisté velikosti zdarma. Pošlete adresu webu a kolik za něj platíte — nabídku dostanete e-mailem zdarma.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/hosting">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Rychlý hosting webu s gitem na pozadí">
+<meta property="og:description" content="Vystavíme váš web, git vedeme za vás. Migrace do jisté velikosti zdarma. Pošlete adresu webu a kolik platíte — nabídku dostanete e-mailem zdarma.">
+<meta property="og:url" content="https://indigostudio.cz/hosting">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://indigostudio.cz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rychlý hosting webu s gitem na pozadí">
+<meta name="twitter:description" content="Vystavíme váš web, git vedeme za vás. Migrace do jisté velikosti zdarma. Pošlete adresu webu a kolik platíte — nabídku dostanete e-mailem zdarma.">
+<meta name="twitter:image" content="https://indigostudio.cz/og.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a prevzeti-vyvoje.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+  .nav-link[aria-current="page"] { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 20ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 62ch; }
+  .hero .lead + .lead { margin-top: 0.8rem; }
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose a { color: var(--accent); text-underline-offset: 0.2em; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+  .module.link { display: flex; flex-direction: column; gap: 0.2rem; text-decoration: none; color: inherit; transition: border-color 0.2s var(--ease); }
+  .module.link:hover { border-color: var(--accent); }
+  .module.link .more { font-size: 0.85rem; font-weight: 550; color: var(--accent); margin-top: 0.5rem; }
+
+  /* ---- Postup ---- */
+  .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 0.6rem; }
+  .step { counter-increment: step; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.2rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.1rem 1.2rem; }
+  .step::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: 0.9rem; }
+  .step h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; align-self: center; }
+  .step h3 .badge { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-left: 0.5rem; }
+  .step p { font-size: 0.9rem; color: var(--fg-muted); line-height: 1.55; }
+
+  /* ---- Pro koho se hodí a pro koho ne ---- */
+  .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .col { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.2rem 1.3rem; }
+  .col h3 { font-size: 0.78rem; font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 0.8rem; }
+  .col.yes h3 { color: var(--accent); }
+  .col ul { list-style: none; display: grid; gap: 0.45rem; }
+  .col li { color: var(--fg-muted); font-size: 0.92rem; padding-left: 1.2rem; position: relative; }
+  .col li::before { content: "—"; position: absolute; left: 0; color: var(--fg-faint); }
+  .col.yes li::before { content: "✓"; color: var(--accent); font-size: 0.85rem; }
+  .col p.after { font-size: 0.85rem; color: var(--fg-faint); margin-top: 0.9rem; line-height: 1.5; }
+
+  /* otázky */
+  .faq { display: flex; flex-direction: column; gap: 1.1rem; max-width: 64ch; }
+  .faq h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+  .faq p { color: var(--fg-muted); }
+  .faq a { color: var(--accent); }
+
+  /* ---- Nabídka: formulář ---- */
+  .offer {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow); padding: 1.6rem; margin-top: clamp(2.2rem, 5vh, 3rem);
+    scroll-margin-top: 1rem;
+    display: grid; grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: 1.2rem 2.4rem;
+  }
+  .offer h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+  .offer-text p { color: var(--fg-muted); font-size: 0.93rem; margin-bottom: 0.7rem; }
+  .offer-text p:last-child { margin-bottom: 0; }
+  .offer-text .alt { font-size: 0.87rem; color: var(--fg-faint); }
+  .offer-text .alt a { color: var(--fg-muted); }
+  .offer-text .alt a:hover { color: var(--accent); }
+
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+  .field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .field.wide { grid-column: 1 / -1; }
+  .field label { font-size: 0.82rem; font-weight: 600; color: var(--fg); }
+  .field label .opt { font-weight: 500; color: var(--fg-faint); }
+  .field input, .field textarea {
+    font: inherit; font-size: 0.93rem; color: var(--fg); background: var(--bg);
+    border: 1px solid var(--border-strong); border-radius: 6px; padding: 0.6rem 0.75rem; width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 4.5rem; line-height: 1.5; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  /* honeypot — člověk nevidí, bot vyplní */
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .form-foot { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1rem; margin-top: 0.9rem; }
+  .form-note { font-size: 0.8rem; color: var(--fg-faint); line-height: 1.5; margin-top: 0.6rem; }
+  .form-msg { font-size: 0.88rem; }
+  .form-msg:empty { display: none; }
+  .form-msg.ok { color: var(--accent); }
+  .form-msg.err { color: #e5484d; }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border: 0; border-radius: 6px; padding: 0.7rem 1.1rem; font-family: inherit; cursor: pointer; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button:disabled { opacity: 0.6; cursor: progress; }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+    .offer { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules, .cols, .fields { grid-template-columns: 1fr; }
+    .closing, .offer { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script src="/doodles.js"></script>
+<script src="/cursors.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Hlavní navigace">
+      <a class="nav-link" href="/hosting" aria-current="page">
+        Hosting
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+      <a class="nav-link" href="/skoleni">
+        Školení
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+      <a class="nav-link" href="/projekty">
+        Případové studie, ukázky a&nbsp;reference
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Drobečková navigace">
+      <a href="/">Úvod</a><span class="sep">/</span><span aria-current="page">Hosting</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Hosting, doména a&nbsp;firemní e-mail</p>
+      <h1>Rychlý hosting webu. Git vedeme za&nbsp;vás.</h1>
+      <p class="lead">Váš web vystavíme na&nbsp;síti, která stránku doručí z&nbsp;uzlu nejblíž návštěvníkovi. Žádné čekání na&nbsp;sdílený server, žádný administrační panel, do&nbsp;kterého se jednou za&nbsp;rok přihlásíte a&nbsp;nevíte, co&nbsp;kde je.</p>
+      <p class="lead">Verzování, nasazení, HTTPS i&nbsp;zálohy běží na&nbsp;pozadí. Stačí se zaregistrovat a&nbsp;převést nebo koupit doménu. Stávající web přeneseme — do&nbsp;jisté velikosti zdarma — nebo vám postavíme nový.</p>
+      <div class="actions" style="margin-top:1.4rem">
+        <a class="button" href="#poptavka">Chci nabídku zdarma</a>
+        <a class="button ghost" data-mail href="mailto:info@indigostudio.cz?subject=Hosting">Napsat e-mail</a>
+      </div>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><strong>Migrace zdarma</strong><span>běžnou prezentaci přeneseme bez&nbsp;účtování; u&nbsp;rozsáhlých webů se domluvíme předem</span></div>
+      <div class="stat"><strong>Git na&nbsp;pozadí</strong><span>každá změna má historii a&nbsp;jde vrátit; repozitář je&nbsp;váš a&nbsp;kdykoli si&nbsp;ho odvezete</span></div>
+      <div class="stat"><strong>Nabídka do&nbsp;e-mailu</strong><span>pošlete adresu webu a&nbsp;kolik za&nbsp;něj dnes platíte; srovnání dostanete zdarma a&nbsp;nezávazně</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1"><span class="num">01</span>Kdy se nám ozvat</h2>
+      <div class="modules">
+        <div class="module"><h3>Web se načítá pomalu</h3><p>Stránka čeká na&nbsp;přetížený sdílený server. U&nbsp;statického webu není co&nbsp;počítat — soubor se vydá rovnou.</p></div>
+        <div class="module"><h3>Faktura roste a&nbsp;nevíte za&nbsp;co</h3><p>Hosting, doména, certifikát, zálohy a&nbsp;správa zvlášť. Pošlete nám, co&nbsp;platíte, a&nbsp;my vám to srovnáme.</p></div>
+        <div class="module"><h3>Nikdo neví, kdo co&nbsp;změnil</h3><p>Soubory se přepisují přes FTP, poslední verze existuje na&nbsp;něčím disku. U&nbsp;nás má každá změna autora, čas a&nbsp;návrat zpět.</p></div>
+        <div class="module"><h3>Web dlouho nikdo neaktualizoval</h3><p>Starý redakční systém a&nbsp;neaktualizované doplňky jsou nejčastější cesta k&nbsp;napadení webu. Statický web nemá co&nbsp;napadnout.</p></div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2"><span class="num">02</span>Jak to funguje</h2>
+      <ol class="steps">
+        <li class="step"><h3>Registrace</h3><p>Pár údajů, žádná instalace. Účet slouží k&nbsp;fakturaci a&nbsp;k&nbsp;přehledu o&nbsp;tom, co&nbsp;na&nbsp;webu běží.</p></li>
+        <li class="step"><h3>Doména</h3><p>Převedeme ji od&nbsp;kteréhokoli registrátora — Subreg (Gransy), Wedos, Banán, Forpsi i&nbsp;zahraničních — nebo pro&nbsp;vás zaregistrujeme novou. Platíte jen registrační poplatek za&nbsp;doménu, certifikát pro&nbsp;HTTPS je v&nbsp;ceně.</p></li>
+        <li class="step"><h3>Migrace, nebo stavba<span class="badge">zdarma do&nbsp;jisté velikosti</span></h3><p>Stávající web přeneseme tak, aby adresy zůstaly stejné a&nbsp;vyhledávače o&nbsp;nic nepřišly. Když web nemáte nebo doslouží, postavíme nový.</p></li>
+        <li class="step"><h3>Provoz</h3><p>Běh, HTTPS, zálohy a&nbsp;sledování dostupnosti jsou na&nbsp;nás. Změny nám napíšete, nebo si je řídíte sami přes&nbsp;Weed.</p></li>
+      </ol>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3"><span class="num">03</span>Změny přes&nbsp;Weed</h2>
+      <div class="prose">
+        <p><strong>Weed</strong> je náš nástroj, ve&nbsp;kterém ukážete na&nbsp;prvek svého webu a&nbsp;řeknete, co&nbsp;s&nbsp;ním. K&nbsp;hostingu k&nbsp;němu dostanete konektor, takže úprava nezůstane u&nbsp;popisu: projde rovnou do&nbsp;webu.</p>
+        <ul class="list">
+          <li><strong>Nejdřív náhled.</strong> Každá změna se nasadí na&nbsp;vlastní náhledovou adresu, kde si ji v&nbsp;klidu projdete. Ostrý web se zatím nehne.</li>
+          <li><strong>Potom produkce.</strong> Když náhled schválíte, změna jde na&nbsp;ostrý web sama. Bez nasazování, bez čekání na&nbsp;vývojáře.</li>
+          <li><strong>Vždy je cesta zpět.</strong> Každé nasazení je v&nbsp;historii. Návrat na&nbsp;předchozí verzi je otázka chvíle.</li>
+        </ul>
+        <p>Weed je zatím ve&nbsp;vývoji a&nbsp;testuje se na&nbsp;pozvánky. Hosting na&nbsp;něm nestojí — běží i&nbsp;bez&nbsp;něj a&nbsp;změny za&nbsp;vás uděláme my. <a href="https://weed.indigostudio.cz/">Víc o&nbsp;Weedu</a>.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4"><span class="num">04</span>Firemní e-mail</h2>
+      <div class="prose">
+        <p>K&nbsp;doméně patří i&nbsp;pošta. Nastavíme vám schránky na&nbsp;vlastní doméně včetně záznamů, na&nbsp;kterých stojí doručitelnost — <strong>SPF, DKIM a&nbsp;DMARC</strong>. Bez nich vaše zprávy končí ve&nbsp;spamu a&nbsp;vaší doménou se dá podepsat kdokoli.</p>
+        <ul class="list">
+          <li><strong>Na&nbsp;vašem účtu.</strong> Schránky založíme u&nbsp;ověřeného poskytovatele, smlouva i&nbsp;data jsou vaše. My je jen nastavíme a&nbsp;předáme.</li>
+          <li><strong>Nebo pod&nbsp;námi.</strong> Pošta jede jako služba od&nbsp;nás a&nbsp;řešíte ji jedním e-mailem. Domluvíme se podle toho, co&nbsp;vám vyhovuje.</li>
+        </ul>
+        <p>Umíme k&nbsp;tomu i&nbsp;newslettery a&nbsp;automatické e-maily z&nbsp;webu — potvrzení objednávky, odpověď z&nbsp;formuláře, upozornění.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5"><span class="num">05</span>Pro koho se hodí</h2>
+      <div class="cols">
+        <div class="col yes">
+          <h3>Ano</h3>
+          <ul>
+            <li>Firemní prezentace a&nbsp;vizitky</li>
+            <li>Landing pages a&nbsp;kampaňové weby</li>
+            <li>Blogy, magazíny a&nbsp;dokumentace</li>
+            <li>Katalogy a&nbsp;ceníky bez&nbsp;objednávek</li>
+            <li>Weby, které mají jen zobrazit obsah a&nbsp;sebrat poptávku</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h3>Sem nepatří</h3>
+          <ul>
+            <li>Weby závislé na&nbsp;PHP a&nbsp;databázi na&nbsp;serveru</li>
+            <li>E-shopy se skladem a&nbsp;platbami</li>
+            <li>Portály s&nbsp;přihlášením a&nbsp;uživatelským obsahem</li>
+          </ul>
+          <p class="after">Neznamená to, že vám neporadíme. Buď web převedeme na&nbsp;statický, nebo navrhneme jiné řešení — aplikace na&nbsp;míru děláme celou dobu.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s6">
+      <h2 id="s6"><span class="num">06</span>Časté otázky</h2>
+      <div class="faq">
+        <div><h3>Co znamená „zdarma do&nbsp;jisté velikosti"?</h3><p>Běžnou prezentaci o&nbsp;jednotkách až desítkách stránek přeneseme bez&nbsp;účtování. U&nbsp;rozsáhlých webů nebo webů, které je potřeba nejdřív vytáhnout ze&nbsp;starého systému, vám cenu řekneme předem — nikdy zpětně.</p></div>
+        <div><h3>Kolik hosting stojí?</h3><p>Cenu stavíme podle velikosti webu a&nbsp;toho, co&nbsp;k&nbsp;němu chcete. Pošlete adresu webu a&nbsp;co&nbsp;za&nbsp;něj dnes platíte; dostanete srovnání a&nbsp;konkrétní nabídku e-mailem, zdarma a&nbsp;nezávazně.</p></div>
+        <div><h3>Přijdeme o&nbsp;pozice ve&nbsp;vyhledávačích?</h3><p>Ne. Adresy stránek zachováme, a&nbsp;kde to nejde, nastavíme trvalé přesměrování. Web po&nbsp;migraci bývá rychlejší, což vyhledávačům spíš pomáhá.</p></div>
+        <div><h3>Musíme umět git?</h3><p>Ne. Git je pod&nbsp;kapotou proto, aby šlo dohledat a&nbsp;vrátit každou změnu. Pracovat s&nbsp;ním nemusíte — když chcete, přístup do&nbsp;repozitáře vám dáme.</p></div>
+        <div><h3>Jak rychle se dá web přenést?</h3><p>Samotné přenesení bývá otázka jednoho až dvou dnů. Déle většinou trvá převod domény u&nbsp;původního registrátora — po&nbsp;celou dobu web běží dál na&nbsp;staré adrese, výpadek neřešíte.</p></div>
+        <div><h3>Co když od&nbsp;vás budeme chtít odejít?</h3><p>Dostanete obsah webu i&nbsp;celou historii v&nbsp;repozitáři a&nbsp;doménu si převedete jinam. Nedržíme vás ničím jiným než tím, že vám služba vyhovuje.</p></div>
+      </div>
+    </section>
+
+    <!-- Nabídka: POST /api/poptavka (stejný endpoint jako poptávka na úvodu) -->
+    <section class="offer" id="poptavka" aria-labelledby="poptavka-title">
+      <div class="offer-text">
+        <h2 id="poptavka-title">Pošleme vám nabídku zdarma</h2>
+        <p>Napište adresu svého webu a&nbsp;kolik za&nbsp;něj dnes platíte. Podíváme se na&nbsp;něj a&nbsp;e-mailem pošleme srovnání a&nbsp;cenu — nezávazně a&nbsp;bez&nbsp;účtování.</p>
+        <p>Když web zatím nemáte, napište to do&nbsp;poznámky. Nabídku pošleme na&nbsp;stavbu nového.</p>
+        <p class="alt">Raději napřímo? <a data-mail href="mailto:info@indigostudio.cz?subject=Hosting">info@indigostudio.cz</a> nebo <a data-wa href="https://wa.me/420770371535" target="_blank" rel="noopener">WhatsApp</a>.</p>
+      </div>
+      <form class="offer-form" novalidate>
+        <div class="fields">
+          <div class="field">
+            <label for="f-name">Jméno</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Jan Novák" required>
+          </div>
+          <div class="field">
+            <label for="f-email">E-mail</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="vas@email.cz" required>
+          </div>
+          <div class="field">
+            <label for="f-web">Adresa webu <span class="opt">(nepovinné)</span></label>
+            <input id="f-web" name="web" type="text" autocomplete="url" inputmode="url" placeholder="vasefirma.cz">
+          </div>
+          <div class="field">
+            <label for="f-price">Kolik dnes platíte <span class="opt">(nepovinné)</span></label>
+            <input id="f-price" name="price" type="text" placeholder="např. 4 000 Kč ročně">
+          </div>
+          <div class="field wide">
+            <label for="f-note">Poznámka <span class="opt">(nepovinné)</span></label>
+            <textarea id="f-note" name="note" rows="3" placeholder="Co na webu řešíte, co vás na dnešním hostingu štve, kdy chcete přejít."></textarea>
+          </div>
+        </div>
+        <!-- honeypot: člověk nevidí, bot vyplní -->
+        <input class="hp" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="form-foot">
+          <button class="button" type="submit">Chci nabídku zdarma</button>
+          <p class="form-msg" role="status" aria-live="polite"></p>
+        </div>
+        <p class="form-note">Údaje použijeme jen k&nbsp;přípravě nabídky a&nbsp;odpovědi. Nikam je nepředáváme a&nbsp;do&nbsp;žádné rozesílky vás nepřidáváme.</p>
+      </form>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Máte web u&nbsp;někoho jiného?</h2>
+        <p>Napište, kde běží a&nbsp;co&nbsp;za&nbsp;něj platíte. Ozveme se nejpozději do&nbsp;několika hodin.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" data-wa href="https://wa.me/420770371535" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="button" data-mail href="mailto:info@indigostudio.cz?subject=Hosting">Napsat na&nbsp;info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
+    <p><a href="/">Zpět na&nbsp;úvod</a></p>
+  </div>
+</footer>
+
+<script>
+  // Zdroj kampaně bez cookies: ?k=gads|sklik|li se propíše do předmětu e-mailu a textu zprávy
+  (function () {
+    var k = new URLSearchParams(location.search).get("k");
+    k = k && /^[a-z0-9-]{1,20}$/.test(k) ? " [" + k + "]" : "";
+    document.querySelectorAll("[data-mail]").forEach(function (a) {
+      a.href = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent("Hosting" + k);
+    });
+    document.querySelectorAll("[data-wa]").forEach(function (a) {
+      a.href = "https://wa.me/420770371535?text=" + encodeURIComponent("Dobrý den, mám dotaz k hostingu." + k);
+    });
+
+    // Formulář: z polí složíme text zprávy a pošleme na stejný endpoint jako poptávku z úvodu
+    var form = document.querySelector(".offer-form");
+    if (!form) return;
+    var msg = form.querySelector(".form-msg");
+    var btn = form.querySelector("button");
+    // pozor: form.name je jméno formuláře, ne pole — pole se berou přes form.elements
+    var f = form.elements;
+    function say(text, kind) { msg.textContent = text; msg.className = "form-msg " + (kind || ""); }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = f.name.value.trim();
+      var email = f.email.value.trim();
+      if (!name) { say("Vyplňte prosím jméno.", "err"); f.name.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Zadejte prosím platný e-mail.", "err"); f.email.focus(); return; }
+
+      var lines = ["Zájem o hosting" + k, ""];
+      lines.push("Web: " + (f.web.value.trim() || "neuveden"));
+      lines.push("Platí dnes: " + (f.price.value.trim() || "neuvedeno"));
+      var note = f.note.value.trim();
+      if (note) lines.push("", "Poznámka:", note);
+
+      btn.disabled = true;
+      say("Odesíláme…");
+      fetch("/api/poptavka", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, email: email, message: lines.join("\n"), company: f.company.value })
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (d) {
+          if (d.ok) { say("Máme to. Nabídku vám pošleme e-mailem, nejpozději do několika hodin.", "ok"); form.reset(); }
+          else say(d.error || "Odeslání se nezdařilo. Napište prosím na info@indigostudio.cz.", "err");
+        })
+        .catch(function () { say("Odeslání se nezdařilo. Zkontrolujte připojení a zkuste to znovu.", "err"); })
+        .then(function () { btn.disabled = false; });
+    });
+  })();
+</script>
+</body>
+</html>
