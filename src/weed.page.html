@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Weed — nástroj Indigo Studia</title>
 <meta name="description" content="Weed je prohlížeč, ve kterém ukážete na prvek svého webu a řeknete, co s ním. Z toho složí zadání pro vašeho agenta. Ve vývoji, testování přes TestFlight na pozvánku.">
+<!-- noindex schválně: dokud není jisté jméno produktu. Až se jméno potvrdí,
+     tenhle řádek smazat — jinak stránka zůstane neviditelná i ve chvíli,
+     kdy už viditelná být má. -->
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
@@ -99,6 +102,12 @@
   h1 { font-size: clamp(2.1rem, 6vw, 3.1rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 0.9rem; }
   .lead { font-size: clamp(1.02rem, 1.6vw, 1.15rem); color: var(--fg-muted); max-width: 54ch; }
   .lead + .lead { margin-top: 0.8rem; }
+  /* pro člověka, který sem přišel z odkazu v promptu — jiný návštěvník než ten z vizitky */
+  .from-prompt {
+    margin-top: 1.8rem; padding-left: 0.9rem; border-left: 2px solid var(--accent);
+    color: var(--fg-muted); font-size: 0.93rem; max-width: 52ch;
+  }
+  .from-prompt strong { color: var(--fg); font-weight: 600; }
 
   /* ---- Výzva k testování ---- */
   .cta-box {
@@ -184,6 +193,8 @@
     <p class="lead">Weed je prohlížeč, ve&nbsp;kterém ukážete na&nbsp;prvek svého webu a&nbsp;řeknete, co&nbsp;s&nbsp;ním. Z&nbsp;toho složí přesné zadání pro vašeho agenta — se&nbsp;selektorem, styly, okolím prvku a&nbsp;systémem, na&nbsp;kterém web běží.</p>
     <p class="lead">Kontext se čte z&nbsp;vykreslené stránky, ne ze&nbsp;zdrojáku. Nemusíte popisovat, který prvek myslíte, ani hledat, kde v&nbsp;kódu bydlí. Cíl je jediný: aby agent trefil napoprvé a&nbsp;nemusel se doptávat. Běžnou úpravu Weed vyřídí pravidlem přímo ve&nbsp;stránce — bez modelu a&nbsp;bez jediného tokenu.</p>
     <p class="lead">Do&nbsp;kódu sám nezapisuje a&nbsp;na&nbsp;žádný git se nepřipojuje. Hotové zadání jde do&nbsp;schránky a&nbsp;vy si ho vložíte svému agentovi, typicky v&nbsp;terminálu. Nebo se agent napojí na&nbsp;živou stránku přímo přes MCP most.</p>
+
+    <p class="from-prompt">Držíte zadání, které začíná větou <strong>„Vzniklo ve&nbsp;Weedu"</strong>? Složil ho tenhle nástroj — někdo ukázal na&nbsp;prvek stránky a&nbsp;Weed z&nbsp;toho poskládal to, co&nbsp;máte před sebou.</p>
   </div>
 
   <div class="container">
