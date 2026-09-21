@@ -41,8 +41,8 @@ export default {
       return handleStatusboard(request, env, url);
     }
 
-    // Weed má vlastní subdoménu. Dokud nemá obsah, odpovídá tam jen krátký
-    // rozcestník — vizitka ani API firmy na cizí adresu nepatří.
+    // Web Editor má vlastní subdoménu; `weed` v adrese drží SKU aplikace
+    // (bundle ID cz.indigostudio.weed). Vizitka ani API firmy sem nepatří.
     if (url.hostname === "weed.indigostudio.cz") {
       return handleWeed(request, env, url);
     }
