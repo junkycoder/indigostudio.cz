@@ -190,14 +190,47 @@
   <div class="container intro">
     <p class="status"><span class="dot" aria-hidden="true"></span>Ve vývoji · interní testování</p>
     <h1>Weed</h1>
-    <p class="lead">Weed je prohlížeč, ve&nbsp;kterém ukážete na&nbsp;prvek svého webu a&nbsp;řeknete, co&nbsp;s&nbsp;ním. Z&nbsp;toho složí přesné zadání pro vašeho agenta — se&nbsp;selektorem, styly, okolím prvku a&nbsp;systémem, na&nbsp;kterém web běží.</p>
+    <p class="lead">Weed je prohlížeč, ve&nbsp;kterém ukážete na&nbsp;prvek svého webu a&nbsp;řeknete, co&nbsp;s&nbsp;ním. Z&nbsp;toho složí přesné zadání pro vašeho agenta — se&nbsp;selektorem, styly, okolím prvku a&nbsp;systémem, na&nbsp;kterém web běží. Jméno je zkratka: web editor.</p>
     <p class="lead">Kontext se čte z&nbsp;vykreslené stránky, ne ze&nbsp;zdrojáku. Nemusíte popisovat, který prvek myslíte, ani hledat, kde v&nbsp;kódu bydlí. Cíl je jediný: aby agent trefil napoprvé a&nbsp;nemusel se doptávat. Weed sám nevolá žádný model — co&nbsp;jde rozhodnout jistě, rozhodne pravidlem v&nbsp;prohlížeči: „zvětši nadpis" se v&nbsp;zadání promění v&nbsp;konkrétní operaci nad&nbsp;konkrétním prvkem, aby to agent nemusel hádat. Co&nbsp;jisté není, jde do&nbsp;zadání doslova.</p>
-    <p class="lead">Weed nic nepřepisuje: do&nbsp;kódu nezapisuje, na&nbsp;žádný git se nepřipojuje a&nbsp;stránku, na&nbsp;kterou se díváte, nechává být — jen ji čte. Hotové zadání z&nbsp;aplikace sdílíte rovnou do&nbsp;aplikace svého agenta; jedině touhle cestou projdou i&nbsp;přílohy. Agenta můžete taky napojit na&nbsp;živou stránku přes MCP most nebo si zadání vzít do&nbsp;CLI. Z&nbsp;rozšíření v&nbsp;prohlížeči vede ven schránka, která funguje vždycky.</p>
+    <p class="lead">Hotové zadání z&nbsp;aplikace sdílíte rovnou do&nbsp;aplikace svého agenta; jedině touhle cestou projdou i&nbsp;přílohy. Agenta můžete taky napojit na&nbsp;živou stránku přes MCP most nebo si zadání vzít do&nbsp;CLI. Z&nbsp;rozšíření v&nbsp;prohlížeči vede ven schránka, která funguje vždycky.</p>
 
     <p class="from-prompt">Držíte zadání, které začíná větou <strong>„Vzniklo ve&nbsp;Weedu"</strong>? Složil ho tenhle nástroj — někdo ukázal na&nbsp;prvek stránky a&nbsp;Weed z&nbsp;toho poskládal to, co&nbsp;máte před sebou.</p>
   </div>
 
   <div class="container">
+    <h2 class="section">Jak to chodí</h2>
+    <ol class="steps">
+      <li><strong>Otevřete svůj web</strong> ve&nbsp;Weedu na&nbsp;telefonu, nebo si ho projdete v&nbsp;Chromiu s&nbsp;rozšířením.</li>
+      <li><strong>Vyberete prvek</strong> zaměřovačem a&nbsp;napíšete nebo nadiktujete, co&nbsp;s&nbsp;ním.</li>
+      <li><strong>Zadání přidáte do&nbsp;seznamu.</strong> Kolik jich bude, než seznam předáte, je na&nbsp;vás.</li>
+      <li><strong>Předáte agentovi</strong> — schránkou, sdílením s&nbsp;přílohami na&nbsp;telefonu, nebo lokálním MCP na&nbsp;počítači.</li>
+      <li><strong>Agent upraví váš zdroják.</strong> Obnovíte stránku a&nbsp;zkontrolujete výsledek.</li>
+    </ol>
+
+    <h2 class="section">Co agent dostane a&nbsp;co&nbsp;Weed nedělá</h2>
+    <div class="cols">
+      <div class="col yes">
+        <h3>V zadání je</h3>
+        <ul>
+          <li>Kotva a&nbsp;selektor, které na&nbsp;prvek sedí i&nbsp;po&nbsp;překreslení stránky</li>
+          <li>Styly, které na&nbsp;prvek opravdu platí</li>
+          <li>Okolí prvku, jeho rozměry a&nbsp;poloha v&nbsp;okně</li>
+          <li>Systém, na&nbsp;kterém web běží — WordPress, Shopify, Shoptet, Webflow nebo Wix, pokud to jde ze&nbsp;stránky poznat</li>
+          <li>Výřez prvku jako obrázek — na&nbsp;telefonu přes Sdílet, na&nbsp;počítači si ho agent vyžádá přes MCP</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>Weed nedělá</h3>
+        <ul>
+          <li>Nezapisuje do&nbsp;kódu a&nbsp;na&nbsp;žádný git se nepřipojuje</li>
+          <li>Nemění stránku, na&nbsp;kterou se díváte — jen ji čte</li>
+          <li>Nevolá žádný model; toho si platíte u&nbsp;svého agenta</li>
+          <li>Neposílá obsah stránky k&nbsp;nám; zůstává ve&nbsp;vašem zařízení</li>
+          <li>Nehostuje ani nespravuje cizí weby</li>
+        </ul>
+      </div>
+    </div>
+
     <section class="cta-box" aria-labelledby="test-title">
       <h2 id="test-title">Vyzkoušet Weed</h2>
       <p>Testování běží na&nbsp;pozvánky. Napište nám a&nbsp;pošleme vám ji do&nbsp;TestFlightu — obratem, ručně, žádná fronta.</p>
@@ -224,19 +257,19 @@
           <li>Zaměřovač prvků přímo ve&nbsp;stránce</li>
           <li>Pravidla a&nbsp;kotvy, aby zadání sedělo na&nbsp;prvek</li>
           <li>Rozepsaný seznam zadání a&nbsp;sdílení z&nbsp;aplikace</li>
-          <li>Rozšíření pro desktopové prohlížeče</li>
-          <li>MCP most na&nbsp;živou stránku</li>
           <li>Aplikace pro iPhone</li>
+          <li>Rozšíření pro Chrome a&nbsp;Chromium; zatím mimo obchod, instaluje se ručně</li>
+          <li>MCP most na&nbsp;živou stránku, pro agenta na&nbsp;macOS nebo Linuxu</li>
         </ul>
       </div>
       <div class="col">
         <h3>Zatím ne</h3>
         <ul>
+          <li>App Store a&nbsp;obchod s&nbsp;rozšířeními</li>
           <li>Účty, předplatné a&nbsp;platby</li>
-          <li>Párování s&nbsp;počítačem a&nbsp;vzdálený konektor</li>
+          <li>Párování telefonu s&nbsp;počítačem a&nbsp;vzdálený konektor</li>
           <li>Sety, naučený design a&nbsp;rutiny</li>
-          <li>Safari rozšíření</li>
-          <li>Android a&nbsp;Windows</li>
+          <li>Safari rozšíření, Android a&nbsp;Windows</li>
         </ul>
       </div>
     </div>
