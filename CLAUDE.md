@@ -27,6 +27,8 @@ Jedna stránka, žádný build step, žádné frameworky.
   `migrations/odber/`, potvrzovací e-mail přes Resend)
 - `public/doodles.js` — sdílené animované pozadí (malůvky), připojit `<script src="/doodles.js" defer>`;
   pro čtečky jeden statický popis motivů na konci `<body>` (bez aria-live)
+- `public/nav.js` — rozbalovací nabídka „Naše služby" v horní liště (`<details class="nav-group">`,
+  uvnitř Hosting a Školení); skript jen zavírá menu kliknutím mimo a Escapem, bez něj funguje dál
 - `public/cursors.js` — kurzory ve stylu malůvek jen nad kartami (motiv podle typu karty),
   připojit hned za doodles.js; nová karta = řádek v `CARDS`
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`

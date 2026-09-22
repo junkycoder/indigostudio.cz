@@ -97,6 +97,31 @@
   .nav-link:hover { border-color: var(--accent); }
   .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+
   main { flex: 1; }
 
   /* ---- Úvod ---- */
@@ -189,6 +214,7 @@
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 <script src="/doodles.js"></script>
+<script src="/nav.js" defer></script>
 </head>
 <body>
 <header class="site-header">
@@ -197,10 +223,22 @@
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Hlavní navigace">
-      <a class="nav-link" href="/skoleni">
-        Školení
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
-      </a>
+      <details class="nav-group">
+        <summary class="nav-link">
+          Naše služby
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/hosting">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/skoleni">
+            Školení
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
       <a class="nav-link" href="/projekty">
         Případové studie, ukázky a&nbsp;reference
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>

@@ -75,7 +75,7 @@
   var TEXT = 'input:not([type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="reset"]), textarea, [contenteditable]';
 
   // prvky s animovanou rukou místo kurzoru
-  var HAND = '.site-header .nav-link, [aria-labelledby="poptavka"] .cta';
+  var HAND = '.site-header .nav-link, .site-header .nav-menu-link, [aria-labelledby="poptavka"] .cta';
   var HAND_CSS = `
   .cursor-hand {
     --hc: ${COLORS.dark[1]}; --hr: ${COLORS.dark[4]}; --hh: ${COLORS.dark.halo};
