@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy Policy — Web Editor</title>
+<meta name="description" content="What stays on your device, what leaves only when you send it, and how long we keep it. The Web Editor app.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+  /* Tokeny jsou shodné s produktovou stránkou — je to týž web. */
+  :root {
+    --accent: #8b8ef8; --accent-soft: rgba(129, 140, 248, 0.12);
+    --bg: #0d0e13; --surface: #14151c;
+    --border: rgba(255, 255, 255, 0.08);
+    --fg: #ededf1; --fg-muted: #a3a4ae; --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5; --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8; --surface: #ffffff;
+      --border: rgba(16, 18, 32, 0.09);
+      --fg: #14151b; --fg-muted: #555766; --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column;
+  }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  .container {
+    width: 100%; max-width: 680px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.5rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; color: var(--fg); text-decoration: none; }
+  .brand .by { color: var(--fg-faint); font-weight: 500; font-size: 0.82rem; }
+  .lang { font-size: 0.85rem; color: var(--fg-muted); text-decoration: none; }
+  .lang:hover { color: var(--accent); }
+  main { flex: 1; padding-block: clamp(2rem, 6vh, 3.5rem) 1rem; }
+  h1 { font-size: clamp(1.7rem, 4.5vw, 2.3rem); font-weight: 650; line-height: 1.15; letter-spacing: -0.025em; }
+  .updated { margin-top: 0.6rem; color: var(--fg-faint); font-size: 0.85rem; }
+  .lead { margin-top: 1.3rem; color: var(--fg-muted); font-size: 1.02rem; }
+  h2 { font-size: 1.1rem; font-weight: 650; letter-spacing: -0.015em; margin-top: 2.2rem; }
+  h3 { font-size: 0.95rem; font-weight: 650; margin-top: 1.4rem; }
+  p { margin-top: 0.8rem; color: var(--fg-muted); }
+  ul { margin-top: 0.8rem; list-style: none; display: grid; gap: 0.5rem; }
+  li { color: var(--fg-muted); padding-left: 1.1rem; position: relative; }
+  li::before { content: "—"; position: absolute; left: 0; color: var(--fg-faint); }
+  strong { color: var(--fg); font-weight: 600; }
+  .box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow); padding: 1.3rem; margin-top: 1.4rem;
+  }
+  .box p:first-child { margin-top: 0; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em; background: var(--accent-soft); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.1em 0.35em; color: var(--fg);
+  }
+  .site-footer { border-top: 1px solid var(--border); margin-top: clamp(2.5rem, 7vh, 4rem); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer .container {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem;
+    padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7;
+  }
+  .site-footer strong { color: var(--fg); }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .sep { opacity: 0.4; padding: 0 0.4rem; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">Web Editor <span class="by">by Indigo Studio</span></a>
+    <a class="lang" href="/soukromi" hreflang="cs">Česky</a>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <h1>Privacy Policy</h1>
+    <p class="updated">Web Editor app · last updated 22 September 2026</p>
+
+    <p class="lead">Web Editor is a pass-through, not an archive. A request is created on a page element, goes to your own agent and is gone. You create no account with us, the app runs no analytics, and nothing from the page you are viewing leaves your device on its own.</p>
+
+    <div class="box">
+      <p><strong>In short.</strong> The content of the pages you browse stays on your device. The only way anything leaves the app for our server is the remote MCP relay — and you are the one who switches it on. Leave it off and we receive nothing.</p>
+    </div>
+
+    <h2>Who controls the data</h2>
+    <p>Indigo Studio s.r.o., Company No. 14389096, Chudenická 1059/30, Hostivař, 102&nbsp;00 Prague, Czech Republic. Contact: <a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a>.</p>
+
+    <h2>What stays on your device</h2>
+    <p>The app is a browser. It keeps the following locally, and we cannot see any of it:</p>
+    <ul>
+      <li>the sites you add, their addresses and recently opened pages</li>
+      <li>draft requests and lists, until you send them</li>
+      <li>attachments and screen crops you attach yourself</li>
+      <li>logins and cookies of the sites you open — kept separately per site; <em>forget site</em> deletes them with it</li>
+      <li>app settings, including the key that addresses your request list</li>
+    </ul>
+    <p>Deleting the app removes all of the above.</p>
+
+    <h2>What leaves, and only when you do it</h2>
+    <h3>Clipboard, zip and share</h3>
+    <p>A request goes wherever you send it — your agent's app, mail, a file. We are not part of that and no copy reaches us. What your agent does with the request is governed by that provider's terms, not ours.</p>
+
+    <h3>Remote MCP (relay)</h3>
+    <p>Off by default. When you turn on <em>Send requests</em> in the <strong>Connections</strong> section, the following — and nothing else — goes to our server (a Cloudflare Worker at <code>mcp.weed.indigostudio.cz</code>):</p>
+    <ul>
+      <li>the request text you typed or dictated</li>
+      <li>the address and title of the page the request was made on</li>
+      <li>the anchor, selector and context of the selected element</li>
+      <li>a downscaled screen crop, if you attached one to the request</li>
+    </ul>
+    <p>No account is created. The list is addressed by a key generated on your device; anyone who knows the key can reach the list, so treat the address as a secret.</p>
+    <p><strong>How long we keep it.</strong> The whole list disappears one week after the last write. An attached crop is deleted once the agent fetches it, and with the list at the latest. Turning the switch off first deletes what is held on our side, and only then stops sending.</p>
+    <p><strong>What we do not do with it.</strong> We do not read it, do not learn from it, do not pass it on and do not combine it with anything else. The content does not end up in logs or statistics; we measure counts and sizes, not what the request says.</p>
+    <p>The server runs on Cloudflare, acting as our processor, which sees the technical details of the connection — IP address, time and request size. We do not build a profile from them.</p>
+
+    <h2>Microphone and dictation</h2>
+    <p>You start dictation yourself. <strong>Transcription runs on the device</strong> using the system speech recogniser; audio is not stored and is not sent to us or to anyone else. Only the text remains, visible in the sentence and editable by you.</p>
+
+    <h2>Photos</h2>
+    <p>We touch your photo library only at the moment you attach your latest screenshot, and only for that image. Nothing else is read, and the image stays on the device until you send the request.</p>
+
+    <h2>What the app does not have</h2>
+    <ul>
+      <li>no accounts, no sign-up, no login with us</li>
+      <li>no analytics, no third-party SDKs, no advertising identifiers</li>
+      <li>no selling or sharing of data with third parties</li>
+      <li>no inference on our account — you pay your own agent for the model</li>
+      <li>no git integration and no access to your website's source code</li>
+    </ul>
+
+    <h2>Payments</h2>
+    <p>The app is purchased through the App Store. Apple handles the payment under its own terms; your payment details never reach us and we do not see them.</p>
+
+    <h2>Children</h2>
+    <p>Web Editor is a tool for working on websites and is not directed at children. We do not knowingly collect data about children.</p>
+
+    <h2>Your rights</h2>
+    <p>Until you send a request, we hold nothing about you — there is nothing to access and nothing to delete. When you do use the relay:</p>
+    <ul>
+      <li><strong>withdraw consent</strong> — turn off <em>Send requests</em>; this deletes what is held on our side</li>
+      <li><strong>delete sooner</strong> — write to <a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a> and we will delete the list; do not put the full address with the key in the message</li>
+      <li><strong>complain</strong> — you may lodge a complaint with the Czech Data Protection Authority (uoou.gov.cz) or your local supervisory authority</li>
+    </ul>
+    <p>The legal basis for sending requests through the relay is your consent; without it nothing is sent and the app keeps working through the clipboard.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes, the date above changes with it. A substantive change — above all, anything that would start leaving the device that stays on it today — is stated in the app before it happens.</p>
+
+    <h2>Contact</h2>
+    <p><a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a></p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>Company No. 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Prague, Czech Republic</p>
+    <p><a href="/">Web Editor</a><span class="sep">·</span><a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a></p>
+  </div>
+</footer>
+</body>
+</html>

@@ -5,6 +5,10 @@ import { EmailMessage } from "cloudflare:email";
 import { handleStatusboard } from "./statusboard.js";
 import { handleOdber } from "./odber.js";
 import WEED_PAGE from "./weed.page.html";
+import WEED_PRIVACY_CS from "./weed.privacy.cs.html";
+import WEED_PRIVACY_EN from "./weed.privacy.en.html";
+import WEED_SUPPORT_CS from "./weed.support.cs.html";
+import WEED_SUPPORT_EN from "./weed.support.en.html";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -96,11 +100,32 @@ const WEED_ASSETS = new Set(["/favicon.svg", "/apple-touch-icon.png"]);
 // adrese. Celá složka, ne výčet: vedle zipu leží otisk k ověření stažení.
 const WEED_DOWNLOADS = "/stahnout/";
 
+// Stránky, na které se odkazuje App Store Connect: Privacy Policy a Support
+// musí být veřejné a bez přihlášení, jinak Apple verzi nepustí do review.
+// Anglická verze je povinná víc než česká — primární jazyk záznamu je
+// English (U.S.) a reviewer čte tu. Adresy se nesmí měnit: v App Store Connect
+// jsou vyplněné u každé verze a rozbitý odkaz je důvod k zamítnutí.
+const WEED_PAGES = new Map([
+  ["/soukromi", WEED_PRIVACY_CS],
+  ["/en/privacy", WEED_PRIVACY_EN],
+  ["/podpora", WEED_SUPPORT_CS],
+  ["/en/support", WEED_SUPPORT_EN],
+]);
+
 async function handleWeed(request, env, url) {
   const base = { ...SECURITY_HEADERS, "X-Robots-Tag": "noindex, follow" };
 
   if (url.pathname === "/" || url.pathname === "") {
     return new Response(WEED_PAGE, {
+      headers: { ...base, "Content-Type": "text/html; charset=utf-8" },
+    });
+  }
+
+  // Lomítko na konci adresu nerozbije — odkaz opsaný z dokumentu ho mívá.
+  const path = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, "") : url.pathname;
+  const doc = WEED_PAGES.get(path);
+  if (doc) {
+    return new Response(doc, {
       headers: { ...base, "Content-Type": "text/html; charset=utf-8" },
     });
   }

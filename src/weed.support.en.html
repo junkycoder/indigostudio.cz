@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Support — Web Editor</title>
+<meta name="description" content="Contact, common problems and what to include in your message. The Web Editor app by Indigo Studio.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+  /* Tokeny jsou shodné s produktovou stránkou — je to týž web. */
+  :root {
+    --accent: #8b8ef8; --accent-soft: rgba(129, 140, 248, 0.12);
+    --bg: #0d0e13; --surface: #14151c;
+    --border: rgba(255, 255, 255, 0.08);
+    --fg: #ededf1; --fg-muted: #a3a4ae; --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5; --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8; --surface: #ffffff;
+      --border: rgba(16, 18, 32, 0.09);
+      --fg: #14151b; --fg-muted: #555766; --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column;
+  }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  .container {
+    width: 100%; max-width: 680px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.5rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; color: var(--fg); text-decoration: none; }
+  .brand .by { color: var(--fg-faint); font-weight: 500; font-size: 0.82rem; }
+  .lang { font-size: 0.85rem; color: var(--fg-muted); text-decoration: none; }
+  .lang:hover { color: var(--accent); }
+  main { flex: 1; padding-block: clamp(2rem, 6vh, 3.5rem) 1rem; }
+  h1 { font-size: clamp(1.7rem, 4.5vw, 2.3rem); font-weight: 650; line-height: 1.15; letter-spacing: -0.025em; }
+  .updated { margin-top: 0.6rem; color: var(--fg-faint); font-size: 0.85rem; }
+  .lead { margin-top: 1.3rem; color: var(--fg-muted); font-size: 1.02rem; }
+  h2 { font-size: 1.1rem; font-weight: 650; letter-spacing: -0.015em; margin-top: 2.2rem; }
+  h3 { font-size: 0.95rem; font-weight: 650; margin-top: 1.4rem; }
+  p { margin-top: 0.8rem; color: var(--fg-muted); }
+  ul { margin-top: 0.8rem; list-style: none; display: grid; gap: 0.5rem; }
+  li { color: var(--fg-muted); padding-left: 1.1rem; position: relative; }
+  li::before { content: "—"; position: absolute; left: 0; color: var(--fg-faint); }
+  strong { color: var(--fg); font-weight: 600; }
+  .box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow); padding: 1.3rem; margin-top: 1.4rem;
+  }
+  .box p:first-child { margin-top: 0; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em; background: var(--accent-soft); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.1em 0.35em; color: var(--fg);
+  }
+  .site-footer { border-top: 1px solid var(--border); margin-top: clamp(2.5rem, 7vh, 4rem); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer .container {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem;
+    padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7;
+  }
+  .site-footer strong { color: var(--fg); }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .sep { opacity: 0.4; padding: 0 0.4rem; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">Web Editor <span class="by">by Indigo Studio</span></a>
+    <a class="lang" href="/podpora" hreflang="cs">Česky</a>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <h1>Support</h1>
+    <p class="updated">Web Editor app · a person answers, not a form</p>
+
+    <p class="lead">Something broken, missing or confusing? Write to <a href="mailto:info@indigostudio.cz?subject=Web%20Editor%20%E2%80%94%20support">info@indigostudio.cz</a>. We reply within two working days, usually sooner.</p>
+
+    <div class="box">
+      <p><strong>What to include.</strong> The app version, your iPhone model and iOS version, the address of the page where it went wrong, and what you expected to happen. A screenshot helps most. Do not send your MCP address — it contains the key to your request list.</p>
+    </div>
+
+    <h2>What Web Editor does</h2>
+    <p>You point at an element of your website, say what should change, and Web Editor assembles a request for your own agent — with the selector, the styles that actually apply, the element's surroundings and the system the site runs on. It never writes to your site and never alters the page in front of you. Your agent makes the change in your source code, and you see it when you reload the page. More on the <a href="/">product page</a> (in Czech).</p>
+
+    <h2>Common problems</h2>
+    <h3>The request never reached my agent</h3>
+    <p>Via the clipboard: check that the whole request was pasted — it is long and some apps paste only part of it. Via remote MCP: <em>Send requests</em> must be on in the <strong>Connections</strong> section, and the address in your client must match the one the app shows. After <em>New key</em> the address changes and has to be pasted into the client again.</p>
+
+    <h3>The agent changed something other than what I pointed at</h3>
+    <p>The request describes what is visible on the page, not what is in the source — the agent is told to verify it in the code. When it lands in the wrong place, attaching a crop of the element and writing a more specific sentence helps. Send us the case; this is exactly what we are tuning.</p>
+
+    <h3>Dictation does not start</h3>
+    <p>It needs iOS&nbsp;26 and microphone access in Settings → Web Editor. Transcription runs on the device, so it will not start without system speech recognition for your language.</p>
+
+    <h3>I want to stop sending and delete what you hold</h3>
+    <p>Turn off <em>Send requests</em> — this first deletes the list on our side and only then stops sending. If the app reports that the cleanup failed, try again next launch or write to us. Details in the <a href="/en/privacy">privacy policy</a>.</p>
+
+    <h3>A site logged me out, or remembers something it should not</h3>
+    <p>Logins belong to the site, not the window — they survive closing it and restarting the app. <em>Forget site</em> deletes the site together with its logins, cookies and attachments. It cannot be undone.</p>
+
+    <h2>Browser extension</h2>
+    <p>The same tool exists as an extension for Chrome and other Chromium browsers. It is not in the store yet and is installed manually from an unpacked folder; the file and the instructions are on the <a href="/">product page</a>.</p>
+
+    <h2>Contact</h2>
+    <p>Indigo Studio s.r.o.<br>
+    <a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a><br>
+    Chudenická 1059/30, Hostivař, 102&nbsp;00 Prague, Czech Republic</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>Company No. 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Prague, Czech Republic</p>
+    <p><a href="/">Web Editor</a><span class="sep">·</span><a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a></p>
+  </div>
+</footer>
+</body>
+</html>
