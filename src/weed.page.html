@@ -6,8 +6,8 @@
 <title>Web Editor — nástroj Indigo Studia</title>
 <meta name="description" content="Web Editor je prohlížeč, ve kterém ukážete na prvek svého webu a řeknete, co s ním. Z toho složí zadání pro vašeho agenta. Ve vývoji, testování přes TestFlight na pozvánku.">
 <!-- noindex schválně: dokud není jisté jméno produktu. Navenek je to Web
-     Editor (tak se appka jmenuje i na ploše), „Weed" zůstalo pracovní jméno
-     v kódu a v generovaném zadání. Až se jméno potvrdí, tenhle řádek smazat
+     Editor (tak se appka jmenuje i na ploše i v hlavičce generovaného zadání),
+     „Weed" zůstalo jen v kódu a v adrese. Až se jméno potvrdí, tenhle řádek smazat
      — jinak stránka zůstane neviditelná i ve chvíli, kdy už viditelná být má. -->
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
@@ -216,10 +216,10 @@
     <p class="status"><span class="dot" aria-hidden="true"></span>Ve vývoji · interní testování</p>
     <h1>Web Editor</h1>
     <p class="lead">Web Editor je prohlížeč, ve&nbsp;kterém ukážete na&nbsp;prvek svého webu a&nbsp;řeknete, co&nbsp;s&nbsp;ním. Z&nbsp;toho složí přesné zadání pro vašeho agenta — se&nbsp;selektorem, styly, okolím prvku a&nbsp;systémem, na&nbsp;kterém web běží.</p>
-    <p class="lead">Kontext se čte z&nbsp;vykreslené stránky, ne ze&nbsp;zdrojáku. Nemusíte popisovat, který prvek myslíte, ani hledat, kde v&nbsp;kódu bydlí. Cíl je jediný: aby agent trefil napoprvé a&nbsp;nemusel se doptávat. Sám nevolá žádný model — co&nbsp;jde rozhodnout jistě, rozhodne pravidlem v&nbsp;prohlížeči: „zvětši nadpis" se v&nbsp;zadání promění v&nbsp;konkrétní operaci nad&nbsp;konkrétním prvkem, aby to agent nemusel hádat. Co&nbsp;jisté není, jde do&nbsp;zadání doslova.</p>
-    <p class="lead">Hotové zadání z&nbsp;aplikace sdílíte rovnou do&nbsp;aplikace svého agenta; jedině touhle cestou projdou i&nbsp;přílohy. Agenta můžete taky napojit na&nbsp;živou stránku přes MCP most nebo si zadání vzít do&nbsp;CLI. Z&nbsp;rozšíření v&nbsp;prohlížeči vede ven schránka, která funguje vždycky.</p>
+    <p class="lead">Kontext se čte z&nbsp;vykreslené stránky, ne ze&nbsp;zdrojáku. Nemusíte popisovat, který prvek myslíte, ani hledat, kde v&nbsp;kódu bydlí. Cíl je jediný: aby agent trefil napoprvé a&nbsp;nemusel se doptávat. Vaši větu přitom nikdo nepřekládá — jde ven tak, jak jste ji řekli. Web Editor k&nbsp;ní přibalí popis toho, co&nbsp;ze&nbsp;stránky vidí a&nbsp;agent ne; rozhodnutí, co&nbsp;se má stát, nechává na&nbsp;vás a&nbsp;na&nbsp;něm. Co&nbsp;neumí doložit ze&nbsp;stránky, raději vynechá: nejistá vrstva stojí agenta kolo navíc.</p>
+    <p class="lead">Hotové zadání z&nbsp;aplikace sdílíte rovnou do&nbsp;aplikace svého agenta, nebo ho odešlete na&nbsp;vzdálené MCP: agentovi pak stačí jedna adresa, zadání si z&nbsp;ní přečte sám a&nbsp;hotová odškrtne. Schránka a&nbsp;zip fungují vždycky, nepotřebují souhlas ani nás — z&nbsp;rozšíření v&nbsp;prohlížeči vede ven právě ta cesta.</p>
 
-    <p class="from-prompt">Držíte zadání s&nbsp;hlavičkou <strong>„Zadání z&nbsp;prohlížeče (Weed)"</strong>? Složil ho tenhle nástroj. Weed je jeho pracovní jméno v&nbsp;kódu, navenek je to Web Editor — někdo ukázal na&nbsp;prvek stránky a&nbsp;on z&nbsp;toho poskládal to, co&nbsp;máte před sebou.</p>
+    <p class="from-prompt">Držíte zadání s&nbsp;hlavičkou <strong>„Zadání z&nbsp;prohlížeče (Web&nbsp;Editor)"</strong>? Složil ho tenhle nástroj: někdo ukázal na&nbsp;prvek stránky, řekl, co&nbsp;s&nbsp;ním, a&nbsp;zbytek — selektor, styly, okolí — je odečtený z&nbsp;vykreslené stránky, ne ze&nbsp;zdrojáku. Ověřte si to v&nbsp;kódu, je to popis toho, co&nbsp;je vidět.</p>
   </div>
 
   <div class="container">
@@ -288,7 +288,7 @@
       <li><strong>Otevřete svůj web</strong> ve&nbsp;Web Editoru na&nbsp;telefonu, nebo si ho projdete v&nbsp;Chromiu s&nbsp;rozšířením.</li>
       <li><strong>Vyberete prvek</strong> zaměřovačem a&nbsp;napíšete nebo nadiktujete, co&nbsp;s&nbsp;ním.</li>
       <li><strong>Zadání přidáte do&nbsp;seznamu.</strong> Kolik jich bude, než seznam předáte, je na&nbsp;vás.</li>
-      <li><strong>Předáte agentovi</strong> — schránkou, sdílením s&nbsp;přílohami na&nbsp;telefonu, nebo lokálním MCP na&nbsp;počítači.</li>
+      <li><strong>Předáte agentovi</strong> — schránkou, zipem, sdílením z&nbsp;telefonu, nebo odesláním na&nbsp;vzdálené MCP, které si v&nbsp;aplikaci zapnete.</li>
       <li><strong>Agent upraví váš zdroják.</strong> Obnovíte stránku a&nbsp;zkontrolujete výsledek.</li>
     </ol>
 
@@ -301,7 +301,8 @@
           <li>Styly, které na&nbsp;prvek opravdu platí</li>
           <li>Okolí prvku, jeho rozměry a&nbsp;poloha v&nbsp;okně</li>
           <li>Systém, na&nbsp;kterém web běží — WordPress, Shopify, Shoptet, Webflow nebo Wix, pokud to jde ze&nbsp;stránky poznat</li>
-          <li>Výřez prvku jako obrázek — na&nbsp;telefonu přes Sdílet, na&nbsp;počítači si ho agent vyžádá přes MCP</li>
+          <li>Výřez prvku jako obrázek — přes Sdílet a&nbsp;v&nbsp;zipu, přes MCP si ho agent stáhne z&nbsp;adresy uvedené v&nbsp;zadání</li>
+          <li>Volitelně rychlost stránky — přenos a&nbsp;Web Vitals; pomalý nebo poskakující prvek jde ven s&nbsp;kotvou, ne jako holé číslo</li>
         </ul>
       </div>
       <div class="col">
@@ -310,11 +311,13 @@
           <li>Nezapisuje do&nbsp;kódu a&nbsp;na&nbsp;žádný git se nepřipojuje</li>
           <li>Nemění stránku, na&nbsp;kterou se díváte — jen ji čte</li>
           <li>Nevolá žádný model; toho si platíte u&nbsp;svého agenta</li>
-          <li>Neposílá obsah stránky k&nbsp;nám; zůstává ve&nbsp;vašem zařízení</li>
+          <li>Neodesílá nic sám od&nbsp;sebe; obsah stránky zůstává ve&nbsp;vašem zařízení</li>
           <li>Nehostuje ani nespravuje cizí weby</li>
         </ul>
       </div>
     </div>
+
+    <p class="note" style="color:var(--fg-muted);margin-top:1.1rem">Jediná cesta ven vede přes vzdálené MCP a&nbsp;zapínáte ji vy. Jde po&nbsp;ní jen to, co&nbsp;jste odeslali — věta, kotva a&nbsp;výřez, který jste přiložili — nic dalšího ze&nbsp;stránky. Seznam u&nbsp;nás leží týden od&nbsp;posledního zadání a&nbsp;pak zmizí; vypnutím přepínače se smaže hned. Nečteme ho a&nbsp;nic se z&nbsp;něj neučíme.</p>
 
     <section class="cta-box" aria-labelledby="test-title">
       <h2 id="test-title">Vyzkoušet Web Editor</h2>
@@ -332,6 +335,9 @@
       <li><strong>Pošleme pozvánku</strong> do&nbsp;TestFlightu. Přijde e-mailem od&nbsp;Applu.</li>
       <li><strong>Nainstalujete přes TestFlight</strong> na&nbsp;iPhonu. Aktualizace pak chodí samy.</li>
     </ol>
+
+    <h2 class="section">Napojení na&nbsp;agenta</h2>
+    <p class="lead" style="margin-top:.7rem">Schránka, zip a&nbsp;sdílení fungují bez&nbsp;nastavování. Kdo chce mít zadání u&nbsp;agenta rovnou, zapne v&nbsp;aplikaci v&nbsp;sekci <strong>Připojení</strong> posílání zadání a&nbsp;zkopíruje si odtud adresu MCP — vloží ji jednou do&nbsp;svého klienta (Claude Code, Cursor, VS&nbsp;Code, Windsurf, Zed, Cline) a&nbsp;agent si zadání přečte i&nbsp;odškrtne sám. Instalovat není co&nbsp;a&nbsp;účet k&nbsp;tomu nevzniká: adresa v&nbsp;sobě nese klíč k&nbsp;vašemu seznamu, a&nbsp;je to tajemství, ne přihlášení.</p>
 
     <h2 class="section">Rozšíření do&nbsp;prohlížeče</h2>
     <p class="lead" style="margin-top:.7rem">Pro Chrome a&nbsp;ostatní Chromium prohlížeče — Edge, Brave, Arc, Vivaldi. V&nbsp;obchodě zatím není, takže se nahrává ručně z&nbsp;rozbalené složky. Je to na&nbsp;minutu a&nbsp;pozvánku k&nbsp;tomu nepotřebujete.</p>
@@ -360,19 +366,21 @@
         <h3>Dnes běží</h3>
         <ul>
           <li>Zaměřovač prvků přímo ve&nbsp;stránce</li>
-          <li>Pravidla a&nbsp;kotvy, aby zadání sedělo na&nbsp;prvek</li>
-          <li>Rozepsaný seznam zadání a&nbsp;sdílení z&nbsp;aplikace</li>
-          <li>Aplikace pro iPhone</li>
+          <li>Kotvy a&nbsp;kontext, aby zadání sedělo na&nbsp;prvek i&nbsp;po&nbsp;překreslení</li>
+          <li>Rozepsaný seznam zadání, balíček se&nbsp;zipem a&nbsp;sdílení z&nbsp;aplikace</li>
+          <li>Aplikace pro iPhone — prohlížeč, výběr prstem, diktát</li>
           <li>Rozšíření pro Chrome a&nbsp;Chromium; zatím mimo obchod, instaluje se ručně</li>
-          <li>MCP most na&nbsp;živou stránku, pro agenta na&nbsp;macOS nebo Linuxu</li>
+          <li>Vzdálené MCP: jedna adresa do&nbsp;klienta, agent zadání čte a&nbsp;odškrtává</li>
+          <li>Rychlost stránky jako vrstva zadání — přenos a&nbsp;Web Vitals s&nbsp;kotvou u&nbsp;prvku</li>
         </ul>
       </div>
       <div class="col">
         <h3>Zatím ne</h3>
         <ul>
           <li>App Store a&nbsp;obchod s&nbsp;rozšířeními</li>
-          <li>Účty, předplatné a&nbsp;platby</li>
-          <li>Párování telefonu s&nbsp;počítačem a&nbsp;vzdálený konektor</li>
+          <li>Předplatné a&nbsp;platby; účet nebude vůbec, nárok bude z&nbsp;účtenky</li>
+          <li>Posílání zadání na&nbsp;naše MCP z&nbsp;rozšíření — zatím jen z&nbsp;aplikace</li>
+          <li>Kontrola hotového v&nbsp;aplikaci: před a&nbsp;po&nbsp;u&nbsp;téhož prvku</li>
           <li>Sety, naučený design a&nbsp;rutiny</li>
           <li>Safari rozšíření, Android a&nbsp;Windows</li>
         </ul>
