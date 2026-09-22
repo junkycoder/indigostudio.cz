@@ -5,6 +5,7 @@ import { EmailMessage } from "cloudflare:email";
 import { handleStatusboard } from "./statusboard.js";
 import { handleOdber } from "./odber.js";
 import WEED_PAGE from "./weed.page.html";
+import WEED_PAGE_EN from "./weed.page.en.html";
 import WEED_PRIVACY_CS from "./weed.privacy.cs.html";
 import WEED_PRIVACY_EN from "./weed.privacy.en.html";
 import WEED_SUPPORT_CS from "./weed.support.cs.html";
@@ -105,19 +106,64 @@ const WEED_DOWNLOADS = "/stahnout/";
 // Anglická verze je povinná víc než česká — primární jazyk záznamu je
 // English (U.S.) a reviewer čte tu. Adresy se nesmí měnit: v App Store Connect
 // jsou vyplněné u každé verze a rozbitý odkaz je důvod k zamítnutí.
+//
+// **Jazyk je na těchhle adresách natvrdo, ne podle prohlížeče.** Reviewer
+// otevře adresu, kterou jsme u lokalizace slíbili, a musí na ní najít ten
+// jazyk — anglickou stránku i s `Accept-Language: cs`, českou i s `en`.
+// Vyjednává se jen na kořeni (`/`), kam nikdo nic neslíbil.
 const WEED_PAGES = new Map([
-  ["/soukromi", WEED_PRIVACY_CS],
-  ["/en/privacy", WEED_PRIVACY_EN],
-  ["/podpora", WEED_SUPPORT_CS],
-  ["/en/support", WEED_SUPPORT_EN],
+  ["/soukromi", { html: WEED_PRIVACY_CS, lang: "cs" }],
+  ["/en/privacy", { html: WEED_PRIVACY_EN, lang: "en" }],
+  ["/podpora", { html: WEED_SUPPORT_CS, lang: "cs" }],
+  ["/en/support", { html: WEED_SUPPORT_EN, lang: "en" }],
+  ["/en", { html: WEED_PAGE_EN, lang: "en" }],
 ]);
+
+/* Jazyk podle prohlížeče (`Accept-Language`), bez přepínače a bez cookie —
+   stejně jako appka jede podle jazyka systému. Obsah se liší na téže adrese,
+   ne redirectem: přesměrování podle hlavičky zamíchá karty reviewerovi
+   i vyhledávači a špatně se ladí.
+
+   Slovenština padá k češtině, ne k angličtině — je jí blíž a nikdo si
+   nestěžoval na opačné pořadí. Kdo nechce ani jedno, dostane angličtinu:
+   je to jazyk, ve kterém je appka v App Storu primárně. */
+function weedLanguage(header) {
+  if (!header) return "en";
+  let best = null;
+  for (const part of header.split(",")) {
+    const [tag, ...params] = part.trim().split(";");
+    const primary = tag.trim().toLowerCase().split("-")[0];
+    if (!primary) continue;
+    const q = params
+      .map((x) => x.trim())
+      .filter((x) => x.startsWith("q="))
+      .map((x) => Number.parseFloat(x.slice(2)))
+      .find((x) => Number.isFinite(x));
+    const weight = q === undefined ? 1 : q;
+    if (weight <= 0) continue;
+    const lang = primary === "cs" || primary === "sk" ? "cs" : primary === "en" ? "en" : null;
+    // `*` znamená „cokoliv" — bereme ho, až když nic konkrétního nevyhrálo.
+    const pick = lang || (primary === "*" ? "en" : null);
+    if (!pick) continue;
+    if (!best || weight > best.weight) best = { lang: pick, weight };
+  }
+  return best ? best.lang : "en";
+}
 
 async function handleWeed(request, env, url) {
   const base = { ...SECURITY_HEADERS, "X-Robots-Tag": "noindex, follow" };
 
+  // Kořen mluví jazykem prohlížeče. `Vary` je podmínka, ne ozdoba: bez něj by
+  // cache podala českou stránku anglickému návštěvníkovi a naopak.
   if (url.pathname === "/" || url.pathname === "") {
-    return new Response(WEED_PAGE, {
-      headers: { ...base, "Content-Type": "text/html; charset=utf-8" },
+    const lang = weedLanguage(request.headers.get("Accept-Language"));
+    return new Response(lang === "en" ? WEED_PAGE_EN : WEED_PAGE, {
+      headers: {
+        ...base,
+        "Content-Type": "text/html; charset=utf-8",
+        "Content-Language": lang,
+        Vary: "Accept-Language",
+      },
     });
   }
 
@@ -125,8 +171,8 @@ async function handleWeed(request, env, url) {
   const path = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, "") : url.pathname;
   const doc = WEED_PAGES.get(path);
   if (doc) {
-    return new Response(doc, {
-      headers: { ...base, "Content-Type": "text/html; charset=utf-8" },
+    return new Response(doc.html, {
+      headers: { ...base, "Content-Type": "text/html; charset=utf-8", "Content-Language": doc.lang },
     });
   }
 

@@ -1,25 +1,29 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Web Editor — nástroj Indigo Studia</title>
-<meta name="description" content="Web Editor je prohlížeč, ve kterém ukážete na prvek svého webu a řeknete, co s ním. Z toho složí zadání pro vašeho agenta. Ve vývoji, testování přes TestFlight na pozvánku.">
-<!-- noindex schválně: dokud není jisté jméno produktu. Navenek je to Web
-     Editor (tak se appka jmenuje i na ploše i v hlavičce generovaného zadání),
-     „Weed" zůstalo jen v kódu a v adrese. Až se jméno potvrdí, tenhle řádek smazat
-     — jinak stránka zůstane neviditelná i ve chvíli, kdy už viditelná být má. -->
+<title>Web Editor — a tool by Indigo Studio</title>
+<meta name="description" content="Web Editor is a browser where you point at an element of your site and say what should change. It assembles a request for your own agent. In development, TestFlight testing by invitation.">
+<!-- Anglické dvojče české produktové stránky (`weed.page.html`). Obsah musí
+     sedět na obě strany: co se mění tam, mění se i tady, jinak si dvě adresy
+     téhož produktu začnou odporovat. Vzniklo kvůli App Storu — primární jazyk
+     záznamu je English (U.S.) a na snímcích appky je tahle stránka vidět
+     v prohlížeči.
+
+     noindex je společný se zbytkem subdomény a je schválně: dokud není jisté
+     jméno produktu, do vyhledávačů to nepatří. -->
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Indigo Studio">
-<meta property="og:title" content="Web Editor — nástroj Indigo Studia">
-<meta property="og:description" content="Ukážete na prvek svého webu, řeknete, co s ním, a Web Editor z toho složí zadání pro vašeho agenta. Ve vývoji, testování na pozvánku.">
-<meta property="og:url" content="https://weed.indigostudio.cz/">
-<meta property="og:locale" content="cs_CZ">
-<meta property="og:locale:alternate" content="en_US">
+<meta property="og:title" content="Web Editor — a tool by Indigo Studio">
+<meta property="og:description" content="Point at an element of your site, say what should change, and Web Editor assembles a request for your own agent. In development, testing by invitation.">
+<meta property="og:url" content="https://weed.indigostudio.cz/en/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="cs_CZ">
 <link rel="alternate" hreflang="cs" href="https://weed.indigostudio.cz/">
 <link rel="alternate" hreflang="en" href="https://weed.indigostudio.cz/en/">
 
@@ -206,9 +210,9 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <span class="brand">Web Editor <span class="by">od <a href="https://indigostudio.cz/">Indigo Studia</a></span></span>
-    <a class="nav-link" href="mailto:info@indigostudio.cz?subject=Web%20Editor%20%E2%80%94%20pozv%C3%A1nka%20do%20TestFlightu">
-      Chci vyzkoušet
+    <span class="brand">Web Editor <span class="by">by <a href="https://indigostudio.cz/">Indigo Studio</a></span></span>
+    <a class="nav-link" href="mailto:info@indigostudio.cz?subject=Web%20Editor%20%E2%80%94%20TestFlight%20invite">
+      Ask for access
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
     </a>
   </div>
@@ -216,20 +220,20 @@
 
 <main>
   <div class="container intro">
-    <p class="status"><span class="dot" aria-hidden="true"></span>Ve vývoji · interní testování</p>
+    <p class="status"><span class="dot" aria-hidden="true"></span>In development · internal testing</p>
     <h1>Web Editor</h1>
-    <p class="lead">Web Editor je prohlížeč, ve&nbsp;kterém ukážete na&nbsp;prvek svého webu a&nbsp;řeknete, co&nbsp;s&nbsp;ním. Z&nbsp;toho složí přesné zadání pro vašeho agenta — se&nbsp;selektorem, styly, okolím prvku a&nbsp;systémem, na&nbsp;kterém web běží.</p>
-    <p class="lead">Kontext se čte z&nbsp;vykreslené stránky, ne ze&nbsp;zdrojáku. Nemusíte popisovat, který prvek myslíte, ani hledat, kde v&nbsp;kódu bydlí. Cíl je jediný: aby agent trefil napoprvé a&nbsp;nemusel se doptávat. Vaši větu přitom nikdo nepřekládá — jde ven tak, jak jste ji řekli. Web Editor k&nbsp;ní přibalí popis toho, co&nbsp;ze&nbsp;stránky vidí a&nbsp;agent ne; rozhodnutí, co&nbsp;se má stát, nechává na&nbsp;vás a&nbsp;na&nbsp;něm. Co&nbsp;neumí doložit ze&nbsp;stránky, raději vynechá: nejistá vrstva stojí agenta kolo navíc.</p>
-    <p class="lead">Hotové zadání z&nbsp;aplikace sdílíte rovnou do&nbsp;aplikace svého agenta, nebo ho odešlete na&nbsp;vzdálené MCP: agentovi pak stačí jedna adresa, zadání si z&nbsp;ní přečte sám a&nbsp;hotová odškrtne. Schránka a&nbsp;zip fungují vždycky, nepotřebují souhlas ani nás — z&nbsp;rozšíření v&nbsp;prohlížeči vede ven právě ta cesta.</p>
+    <p class="lead">Web Editor is a&nbsp;browser in&nbsp;which you point at&nbsp;an element of&nbsp;your website and say what should change. Out of&nbsp;that it assembles a&nbsp;precise request for your own agent — with the selector, the styles, the element's surroundings and the system the site runs on.</p>
+    <p class="lead">The context is read from the rendered page, not from your source code. You don't have to describe which element you mean, or find where it lives in&nbsp;the code. There is one goal: that the agent gets it right the first time and doesn't have to ask. Your sentence is never translated — it goes out exactly as you said it. Web Editor adds a&nbsp;description of&nbsp;what it sees on&nbsp;the page and the agent does not; the decision about what should happen stays with you and with&nbsp;it. Anything it cannot evidence from the page is left out: an&nbsp;uncertain layer costs the agent an&nbsp;extra round.</p>
+    <p class="lead">You share a&nbsp;finished request straight from the app into your agent's app, or send it to&nbsp;the remote MCP: then one address is all the agent needs — it reads the requests itself and ticks off the ones it has done. The clipboard and the zip always work, need no consent and no&nbsp;us — and that is the way out of&nbsp;the browser extension.</p>
 
-    <p class="from-prompt">Držíte zadání s&nbsp;hlavičkou <strong>„Zadání z&nbsp;prohlížeče (Web&nbsp;Editor)"</strong>? Složil ho tenhle nástroj: někdo ukázal na&nbsp;prvek stránky, řekl, co&nbsp;s&nbsp;ním, a&nbsp;zbytek — selektor, styly, okolí — je odečtený z&nbsp;vykreslené stránky, ne ze&nbsp;zdrojáku. Ověřte si to v&nbsp;kódu, je to popis toho, co&nbsp;je vidět.</p>
+    <p class="from-prompt">Holding a&nbsp;request headed <strong>“Zadání z&nbsp;prohlížeče (Web&nbsp;Editor)”</strong>? This tool assembled it: someone pointed at&nbsp;an element of&nbsp;a&nbsp;page and said what should change, and the rest — selector, styles, surroundings — is read off the rendered page, not the source. Verify it in&nbsp;the code; it is a&nbsp;description of&nbsp;what is visible.</p>
   </div>
 
   <div class="container">
-    <h2 class="section">Jak to chodí</h2>
+    <h2 class="section">How it goes</h2>
     <figure class="flow">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 352" fill="none" role="img" aria-labelledby="title desc">
-      <title id="title">Jak to funguje</title><desc id="desc">Vybereš prvek webu a zadáš změnu. Po zapnutí sdílení se zadání uloží do schránky MCP. Tvůj agent jej převezme, upraví a nasadí web. Změnu zkontroluješ po načtení stránky.</desc>
+      <title id="title">How it works</title><desc id="desc">You select an element of the site and say what should change. Once sending is on, the request lands in the MCP mailbox. Your agent picks it up, edits and deploys the site. You check the change by reloading the page.</desc>
       <style>
       svg{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       .label{fill:#f2f1f7;font-size:14px;font-weight:550}.sub{fill:#a6a4b3;font-size:11px}.line{stroke:#484450;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
@@ -263,140 +267,140 @@
       <rect x="42" y="68" width="29" height="39" rx="4" fill="#383046"/><path d="M79 71h39M79 78h28" stroke="#797086" stroke-width="3" stroke-linecap="round"/>
       <rect class="selection" x="77" y="88" width="44" height="20" rx="5" fill="#5841c6" stroke="#a898ff" stroke-width="1.5"/><path d="M85 98h26" stroke="#d7ceff" stroke-width="2" stroke-linecap="round"/>
       <path class="cursor" d="m110 102 3 19 4-6 7-2-14-11Z" fill="#eeeaff" stroke="#211e2d" stroke-width="2" stroke-linejoin="round"/>
-      <text class="label" x="81" y="141" text-anchor="middle">Ukážeš. Řekneš.</text>
+      <text class="label" x="81" y="141" text-anchor="middle">Point. Say it.</text>
       </g>
       <!-- MCP is a mailbox, not the model. -->
       <g class="stage mail"><path d="M247 62c0-15 12-27 27-27 12 0 22 7 26 18 15-2 27 9 27 23 0 13-10 24-24 24h-57c-12 0-22-9-22-21 0-11 9-20 20-20h3" fill="#23212d" stroke="#8170bb" stroke-width="1.5"/>
       <g class="document"><rect x="258" y="67" width="37" height="42" rx="6" fill="#342a54" stroke="#aa97e7" stroke-width="1.5"/>
       <path d="M266 78h21M266 85h21M266 92h13" stroke="#bdb0e1" stroke-width="2" stroke-linecap="round"/>
-      </g><text class="label" x="276" y="131" text-anchor="middle">MCP schránka</text><text class="sub" x="276" y="146" text-anchor="middle">Předá tvoje zadání</text></g>
+      </g><text class="label" x="276" y="131" text-anchor="middle">MCP mailbox</text><text class="sub" x="276" y="146" text-anchor="middle">Hands over your request</text></g>
       <!-- User's agent owns source edits and deployment. -->
       <g class="stage agent"><rect x="234" y="224" width="85" height="62" rx="8" fill="#202832" stroke="#548aaa" stroke-width="1.5"/>
       <path d="m226 290 8-4h85l9 4v3c0 4-4 6-8 6h-86c-4 0-8-2-8-6v-3Z" fill="#27333e" stroke="#548aaa" stroke-width="1.5"/>
       <path class="code" pathLength="100" d="m254 245-7 7 7 7m44-14 7 7-7 7m-19-17-7 20" stroke="#80c9fb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M268 290h17" stroke="#80a9c5" stroke-width="2" stroke-linecap="round"/>
-      <text class="label" x="276" y="322" text-anchor="middle">Tvůj agent</text><text class="sub" x="276" y="339" text-anchor="middle">Upraví a nasadí web</text></g>
+      <text class="label" x="276" y="322" text-anchor="middle">Your agent</text><text class="sub" x="276" y="339" text-anchor="middle">Edits and deploys</text></g>
       <!-- The user closes the loop. -->
       <g class="stage review">
       <rect x="55" y="214" width="52" height="86" rx="11" fill="#20272a" stroke="#6b9292" stroke-width="1.5"/>
       <path d="M74 222h14M74 292h14" stroke="#829b9c" stroke-width="2" stroke-linecap="round"/>
       <rect class="updated" x="63" y="233" width="36" height="20" rx="4" fill="#304144"/><path d="M64 260h32M64 266h23" stroke="#637e81" stroke-width="2" stroke-linecap="round"/>
       <circle cx="103" cy="278" r="15" fill="#283e39" stroke="#86c8b3" stroke-width="1.5"/><path class="check" d="m96 278 5 5 9-10" stroke="#a9ebd3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <text class="label" x="81" y="322" text-anchor="middle">Zkontroluješ</text><text class="sub" x="81" y="339" text-anchor="middle">Načteš změněný web</text>
+      <text class="label" x="81" y="322" text-anchor="middle">You check</text><text class="sub" x="81" y="339" text-anchor="middle">Reload the changed site</text>
       </g>
       </svg>
     </figure>
 
     <ol class="steps">
-      <li><strong>Otevřete svůj web</strong> ve&nbsp;Web Editoru na&nbsp;telefonu, nebo si ho projdete v&nbsp;Chromiu s&nbsp;rozšířením.</li>
-      <li><strong>Vyberete prvek</strong> zaměřovačem a&nbsp;napíšete nebo nadiktujete, co&nbsp;s&nbsp;ním.</li>
-      <li><strong>Zadání přidáte do&nbsp;seznamu.</strong> Kolik jich bude, než seznam předáte, je na&nbsp;vás.</li>
-      <li><strong>Předáte agentovi</strong> — schránkou, zipem, sdílením z&nbsp;telefonu, nebo odesláním na&nbsp;vzdálené MCP, které si v&nbsp;aplikaci zapnete.</li>
-      <li><strong>Agent upraví váš zdroják.</strong> Obnovíte stránku a&nbsp;zkontrolujete výsledek.</li>
+      <li><strong>Open your website</strong> in&nbsp;Web Editor on&nbsp;your phone, or browse it in&nbsp;Chromium with the extension.</li>
+      <li><strong>Select an element</strong> with the crosshair and type or dictate what should change.</li>
+      <li><strong>Add the request to&nbsp;the list.</strong> How many there are before you hand the list over is up to&nbsp;you.</li>
+      <li><strong>Hand it to&nbsp;your agent</strong> — clipboard, zip, share sheet on&nbsp;the phone, or by sending it to&nbsp;the remote MCP you switch on&nbsp;in the app.</li>
+      <li><strong>The agent edits your source.</strong> You reload the page and check the result.</li>
     </ol>
 
-    <h2 class="section">Co agent dostane a&nbsp;co&nbsp;nástroj nedělá</h2>
+    <h2 class="section">What the agent gets, and what the tool never does</h2>
     <div class="cols">
       <div class="col yes">
-        <h3>V zadání je</h3>
+        <h3>The request carries</h3>
         <ul>
-          <li>Kotva a&nbsp;selektor, které na&nbsp;prvek sedí i&nbsp;po&nbsp;překreslení stránky</li>
-          <li>Styly, které na&nbsp;prvek opravdu platí</li>
-          <li>Okolí prvku, jeho rozměry a&nbsp;poloha v&nbsp;okně</li>
-          <li>Systém, na&nbsp;kterém web běží — WordPress, Shopify, Shoptet, Webflow nebo Wix, pokud to jde ze&nbsp;stránky poznat</li>
-          <li>Výřez prvku jako obrázek — přes Sdílet a&nbsp;v&nbsp;zipu, přes MCP si ho agent stáhne z&nbsp;adresy uvedené v&nbsp;zadání</li>
-          <li>Volitelně rychlost stránky — přenos a&nbsp;Web Vitals; pomalý nebo poskakující prvek jde ven s&nbsp;kotvou, ne jako holé číslo</li>
+          <li>An anchor and a&nbsp;selector that still fit the element after the page re-renders</li>
+          <li>The styles that actually apply to&nbsp;it</li>
+          <li>The element's surroundings, its size and position in&nbsp;the viewport</li>
+          <li>The system the site runs on — WordPress, Shopify, Shoptet, Webflow or Wix, when the page makes it knowable</li>
+          <li>A crop of&nbsp;the element as&nbsp;an image — through the share sheet and in&nbsp;the zip; over MCP the agent downloads it from the address in&nbsp;the request</li>
+          <li>Optionally the page's speed — transfer and Web Vitals; a&nbsp;slow or shifting element goes out with an&nbsp;anchor, not as&nbsp;a&nbsp;bare number</li>
         </ul>
       </div>
       <div class="col">
-        <h3>Co nedělá</h3>
+        <h3>What it never does</h3>
         <ul>
-          <li>Nezapisuje do&nbsp;kódu a&nbsp;na&nbsp;žádný git se nepřipojuje</li>
-          <li>Nemění stránku, na&nbsp;kterou se díváte — jen ji čte</li>
-          <li>Nevolá žádný model; toho si platíte u&nbsp;svého agenta</li>
-          <li>Neodesílá nic sám od&nbsp;sebe; obsah stránky zůstává ve&nbsp;vašem zařízení</li>
-          <li>Nehostuje ani nespravuje cizí weby</li>
+          <li>Never writes to&nbsp;your code and connects to&nbsp;no git</li>
+          <li>Never alters the page you are looking at — it only reads it</li>
+          <li>Calls no model; you pay for that at&nbsp;your own agent</li>
+          <li>Sends nothing on&nbsp;its own; the page content stays on&nbsp;your device</li>
+          <li>Neither hosts nor maintains anyone's website</li>
         </ul>
       </div>
     </div>
 
-    <p class="note" style="color:var(--fg-muted);margin-top:1.1rem">Jediná cesta ven vede přes vzdálené MCP a&nbsp;zapínáte ji vy. Jde po&nbsp;ní jen to, co&nbsp;jste odeslali — věta, kotva a&nbsp;výřez, který jste přiložili — nic dalšího ze&nbsp;stránky. Seznam u&nbsp;nás leží týden od&nbsp;posledního zadání a&nbsp;pak zmizí; vypnutím přepínače se smaže hned. Nečteme ho a&nbsp;nic se z&nbsp;něj neučíme.</p>
+    <p class="note" style="color:var(--fg-muted);margin-top:1.1rem">The only way out leads through the remote MCP, and you are the one who switches it on. Only what you sent travels that way — the sentence, the anchor and the crop you attached — nothing else from the page. The list sits with us for a&nbsp;week after the last request and then disappears; turning the switch off deletes it at&nbsp;once. We don't read it and we learn nothing from it. <a href="/en/privacy">Privacy policy</a>.</p>
 
     <section class="cta-box" aria-labelledby="test-title">
-      <h2 id="test-title">Vyzkoušet Web Editor</h2>
-      <p>Testování běží na&nbsp;pozvánky. Napište nám a&nbsp;pošleme vám ji do&nbsp;TestFlightu — obratem, ručně, žádná fronta.</p>
-      <a class="button" href="mailto:info@indigostudio.cz?subject=Web%20Editor%20%E2%80%94%20pozv%C3%A1nka%20do%20TestFlightu&amp;body=Dobr%C3%BD%20den%2C%0A%0Am%C3%A1m%20z%C3%A1jem%20o%20testov%C3%A1n%C3%AD%20Web%20Editoru.%0A%0AApple%20ID%20pro%20pozv%C3%A1nku%3A%20%0A%0AD%C4%9Bkuji%0A">
-        Napsat si o&nbsp;pozvánku
+      <h2 id="test-title">Try Web Editor</h2>
+      <p>Testing runs on&nbsp;invitations. Write to&nbsp;us and we'll send you one for TestFlight — by hand, right away, no queue.</p>
+      <a class="button" href="mailto:info@indigostudio.cz?subject=Web%20Editor%20%E2%80%94%20TestFlight%20invite&amp;body=Hello%2C%0A%0AI%27d%20like%20to%20test%20Web%20Editor.%0A%0AApple%20ID%20for%20the%20invite%3A%20%0A%0AThank%20you%0A">
+        Ask for an&nbsp;invitation
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
       </a>
-      <p class="note">Testujeme zatím na&nbsp;iPhonu. Rozšíření pro desktopové prohlížeče vzniká souběžně — napište, jestli vás zajímá spíš ono. Nebo rovnou na&nbsp;<a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a>.</p>
+      <p class="note">We test on&nbsp;the iPhone for now. The desktop browser extension is being built alongside it — tell us if&nbsp;that's the one you want. Or write straight to&nbsp;<a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a>.</p>
     </section>
 
-    <h2 class="section">Jak se k&nbsp;němu dostanete</h2>
+    <h2 class="section">How you get it</h2>
     <ol class="steps">
-      <li><strong>Napíšete nám</strong> a&nbsp;přiložíte Apple ID, na&nbsp;které má pozvánka dorazit.</li>
-      <li><strong>Pošleme pozvánku</strong> do&nbsp;TestFlightu. Přijde e-mailem od&nbsp;Applu.</li>
-      <li><strong>Nainstalujete přes TestFlight</strong> na&nbsp;iPhonu. Aktualizace pak chodí samy.</li>
+      <li><strong>Write to&nbsp;us</strong> and include the Apple ID the invitation should go to.</li>
+      <li><strong>We send the invitation</strong> to&nbsp;TestFlight. It arrives as&nbsp;an e-mail from Apple.</li>
+      <li><strong>You install through TestFlight</strong> on&nbsp;the iPhone. Updates then arrive on&nbsp;their own.</li>
     </ol>
 
-    <h2 class="section">Napojení na&nbsp;agenta</h2>
-    <p class="lead" style="margin-top:.7rem">Schránka, zip a&nbsp;sdílení fungují bez&nbsp;nastavování. Kdo chce mít zadání u&nbsp;agenta rovnou, zapne v&nbsp;aplikaci v&nbsp;sekci <strong>Připojení</strong> posílání zadání a&nbsp;zkopíruje si odtud adresu MCP — vloží ji jednou do&nbsp;svého klienta (Claude Code, Cursor, VS&nbsp;Code, Windsurf, Zed, Cline) a&nbsp;agent si zadání přečte i&nbsp;odškrtne sám. Instalovat není co&nbsp;a&nbsp;účet k&nbsp;tomu nevzniká: adresa v&nbsp;sobě nese klíč k&nbsp;vašemu seznamu, a&nbsp;je to tajemství, ne přihlášení.</p>
+    <h2 class="section">Connecting your agent</h2>
+    <p class="lead" style="margin-top:.7rem">The clipboard, the zip and the share sheet work with no setup. If&nbsp;you want the requests to&nbsp;land at&nbsp;your agent directly, switch on&nbsp;sending in&nbsp;the app's <strong>Connections</strong> section and copy the MCP address from there — paste it once into your client (Claude Code, Cursor, VS&nbsp;Code, Windsurf, Zed, Cline) and the agent reads the requests and ticks them off itself. There is nothing to&nbsp;install and no account is created: the address carries the key to&nbsp;your list, and that is a&nbsp;secret, not a&nbsp;login.</p>
 
-    <h2 class="section">Rozšíření do&nbsp;prohlížeče</h2>
-    <p class="lead" style="margin-top:.7rem">Pro Chrome a&nbsp;ostatní Chromium prohlížeče — Edge, Brave, Arc, Vivaldi. V&nbsp;obchodě zatím není, takže se nahrává ručně z&nbsp;rozbalené složky. Je to na&nbsp;minutu a&nbsp;pozvánku k&nbsp;tomu nepotřebujete.</p>
+    <h2 class="section">The browser extension</h2>
+    <p class="lead" style="margin-top:.7rem">For Chrome and the other Chromium browsers — Edge, Brave, Arc, Vivaldi. It isn't in&nbsp;the store yet, so it is loaded by hand from an&nbsp;unpacked folder. That takes a&nbsp;minute and needs no invitation.</p>
 
     <section class="cta-box" aria-labelledby="ext-title">
-      <h2 id="ext-title">Nainstalovat ručně</h2>
-      <p>Stáhnete zip, rozbalíte ho a&nbsp;ukážete na&nbsp;něj prohlížeči. Složka musí zůstat, kde je — prohlížeč si ji načítá z&nbsp;disku při&nbsp;každém spuštění.</p>
+      <h2 id="ext-title">Install it by hand</h2>
+      <p>Download the zip, unpack it and point the browser at&nbsp;it. The folder has to&nbsp;stay where it is — the browser loads it from disk at&nbsp;every start.</p>
       <a class="button" href="/stahnout/web-editor.zip" download>
-        Stáhnout rozšíření (.zip)
+        Download the extension (.zip)
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
       </a>
       <ol class="steps">
-        <li><strong>Rozbalte zip</strong> do&nbsp;složky, kterou nebudete mazat ani přesouvat.</li>
-        <li><strong>Otevřete <code>chrome://extensions</code></strong> — v&nbsp;Edgi <code>edge://extensions</code>, v&nbsp;Brave <code>brave://extensions</code>.</li>
-        <li><strong>Zapněte Vývojářský režim</strong> přepínačem vpravo nahoře.</li>
-        <li><strong>Klepněte na&nbsp;Načíst rozbalené</strong> a&nbsp;vyberte rozbalenou složku.</li>
-        <li><strong>Otevřete svůj web</strong> a&nbsp;paletu vyvolejte ikonou v&nbsp;liště nebo zkratkou <kbd>⌘⇧E</kbd> (<kbd>Ctrl+Shift+E</kbd>).</li>
+        <li><strong>Unpack the zip</strong> into a&nbsp;folder you will not delete or move.</li>
+        <li><strong>Open <code>chrome://extensions</code></strong> — in&nbsp;Edge <code>edge://extensions</code>, in&nbsp;Brave <code>brave://extensions</code>.</li>
+        <li><strong>Turn on&nbsp;Developer mode</strong> with the switch at&nbsp;the top right.</li>
+        <li><strong>Click Load unpacked</strong> and pick the unpacked folder.</li>
+        <li><strong>Open your website</strong> and call up the palette with the toolbar icon or the <kbd>⌘⇧E</kbd> (<kbd>Ctrl+Shift+E</kbd>) shortcut.</li>
       </ol>
-      <p class="note">Aktualizace: stáhnout znovu, přepsat obsah složky a&nbsp;v&nbsp;<code>chrome://extensions</code> dát rozšíření Znovu načíst. Prohlížeč se při&nbsp;každém startu zeptá, jestli má rozšíření ve&nbsp;vývojářském režimu nechat běžet — to k&nbsp;ruční instalaci patří a&nbsp;zmizí to, až&nbsp;bude rozšíření v&nbsp;obchodě.</p>
+      <p class="note">To update: download again, overwrite the folder's contents and hit Reload on&nbsp;the extension in&nbsp;<code>chrome://extensions</code>. At&nbsp;every start the browser asks whether to&nbsp;keep running an&nbsp;extension in&nbsp;developer mode — that comes with installing by hand and goes away once the extension is in&nbsp;the store.</p>
     </section>
 
-    <h2 class="section">Co dostanete a&nbsp;co&nbsp;ne</h2>
-    <p class="lead" style="margin-top:.7rem">Testujete rozestavěnou aplikaci, ne hotový produkt. Ať víte předem, co&nbsp;po&nbsp;instalaci najdete.</p>
+    <h2 class="section">What you get and what you don't</h2>
+    <p class="lead" style="margin-top:.7rem">You are testing an&nbsp;app under construction, not a&nbsp;finished product. So you know in&nbsp;advance what you will find after installing.</p>
     <div class="cols">
       <div class="col yes">
-        <h3>Dnes běží</h3>
+        <h3>Running today</h3>
         <ul>
-          <li>Zaměřovač prvků přímo ve&nbsp;stránce</li>
-          <li>Kotvy a&nbsp;kontext, aby zadání sedělo na&nbsp;prvek i&nbsp;po&nbsp;překreslení</li>
-          <li>Rozepsaný seznam zadání, balíček se&nbsp;zipem a&nbsp;sdílení z&nbsp;aplikace</li>
-          <li>Aplikace pro iPhone — prohlížeč, výběr prstem, diktát</li>
-          <li>Rozšíření pro Chrome a&nbsp;Chromium; zatím mimo obchod, instaluje se ručně</li>
-          <li>Vzdálené MCP: jedna adresa do&nbsp;klienta, agent zadání čte a&nbsp;odškrtává</li>
-          <li>Rychlost stránky jako vrstva zadání — přenos a&nbsp;Web Vitals s&nbsp;kotvou u&nbsp;prvku</li>
+          <li>The element crosshair, right inside the page</li>
+          <li>Anchors and context, so the request still fits the element after a&nbsp;re-render</li>
+          <li>A running list of&nbsp;requests, the zip package and sharing from the app</li>
+          <li>The iPhone app — browser, selection by finger, dictation</li>
+          <li>The extension for Chrome and Chromium; outside the store for now, installed by hand</li>
+          <li>Remote MCP: one address into your client, the agent reads and ticks off requests</li>
+          <li>Page speed as&nbsp;a&nbsp;layer of&nbsp;the request — transfer and Web Vitals, anchored to&nbsp;the element</li>
         </ul>
       </div>
       <div class="col">
-        <h3>Zatím ne</h3>
+        <h3>Not yet</h3>
         <ul>
-          <li>App Store a&nbsp;obchod s&nbsp;rozšířeními</li>
-          <li>Předplatné a&nbsp;platby; účet nebude vůbec, nárok bude z&nbsp;účtenky</li>
-          <li>Posílání zadání na&nbsp;naše MCP z&nbsp;rozšíření — zatím jen z&nbsp;aplikace</li>
-          <li>Kontrola hotového v&nbsp;aplikaci: před a&nbsp;po&nbsp;u&nbsp;téhož prvku</li>
-          <li>Sety, naučený design a&nbsp;rutiny</li>
-          <li>Safari rozšíření, Android a&nbsp;Windows</li>
+          <li>The App Store and the extension store</li>
+          <li>Subscription and payments; there will be no account at&nbsp;all, entitlement will come from the receipt</li>
+          <li>Sending requests to&nbsp;our MCP from the extension — from the app only for now</li>
+          <li>Reviewing finished work in&nbsp;the app: before and after on&nbsp;the same element</li>
+          <li>Prompt sets, learned design and routines</li>
+          <li>The Safari extension, Android and Windows</li>
         </ul>
       </div>
     </div>
 
     <div class="later">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <p>Až bude Web Editor v&nbsp;App Storu, odkaz na&nbsp;něj najdete tady.</p>
+      <p>Once Web Editor is in&nbsp;the App Store, the link to&nbsp;it will be here.</p>
       <!--
         Až aplikace vyjde, nahradit tenhle blok tlačítkem:
-        <a class="button" href="https://apps.apple.com/cz/app/…">Stáhnout v App Storu</a>
-        a ve `.status` přepsat stav („Ve vývoji · interní testování").
+        <a class="button" href="https://apps.apple.com/us/app/…">Download on the App Store</a>
+        a ve `.status` přepsat stav („In development · internal testing").
       -->
     </div>
   </div>
@@ -404,8 +408,8 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p><strong>Indigo Studio s.r.o.</strong><span class="sep">·</span>IČO 14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
-    <p><a href="/soukromi">Soukromí</a><span class="sep">·</span><a href="/podpora">Podpora</a><span class="sep">·</span><a href="/en/" hreflang="en">English</a><span class="sep">·</span><a href="https://indigostudio.cz/">indigostudio.cz</a><span class="sep">·</span><a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a></p>
+    <p><strong>Web Editor</strong><span class="sep">·</span>published by Daniel Hromada<br>Prosečnice 2, 257 42 Krhanice, Czech Republic</p>
+    <p><a href="/en/privacy">Privacy</a><span class="sep">·</span><a href="/en/support">Support</a><span class="sep">·</span><a href="/">Česky</a><span class="sep">·</span><a href="mailto:info@indigostudio.cz">info@indigostudio.cz</a></p>
   </div>
 </footer>
 </body>
