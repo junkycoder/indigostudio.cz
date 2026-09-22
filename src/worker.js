@@ -90,6 +90,12 @@ export default {
 // všechno ostatní je tam zatím 404.
 const WEED_ASSETS = new Set(["/favicon.svg", "/apple-touch-icon.png"]);
 
+// Rozšíření ke stažení. Soubory sem vozí CI z repozitáře Web Editoru při každé
+// změně rozšíření (.github/workflows/extension.yml) — ten repozitář je private,
+// takže odkaz na GitHub by pozvaným nefungoval a zip musí stát na veřejné
+// adrese. Celá složka, ne výčet: vedle zipu leží otisk k ověření stažení.
+const WEED_DOWNLOADS = "/stahnout/";
+
 async function handleWeed(request, env, url) {
   const base = { ...SECURITY_HEADERS, "X-Robots-Tag": "noindex, follow" };
 
@@ -99,7 +105,7 @@ async function handleWeed(request, env, url) {
     });
   }
 
-  if (WEED_ASSETS.has(url.pathname)) {
+  if (WEED_ASSETS.has(url.pathname) || url.pathname.startsWith(WEED_DOWNLOADS)) {
     const res = await env.ASSETS.fetch(request);
     const headers = new Headers(res.headers);
     for (const [k, v] of Object.entries(base)) headers.set(k, v);

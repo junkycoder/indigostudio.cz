@@ -142,6 +142,15 @@
 
   h2.section { font-size: 1.15rem; font-weight: 650; letter-spacing: -0.015em; margin-top: 2.6rem; }
 
+  /* Adresa a zkratka v návodu k instalaci — vypsat je jako text by svádělo
+     k tomu hledat je v nabídce; tohle se opisuje do řádku prohlížeče. */
+  code, kbd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em; background: var(--accent-soft);
+    border: 1px solid var(--border); border-radius: 3px; padding: 0.1em 0.35em;
+    color: var(--fg); white-space: nowrap;
+  }
+
   /* ---- Co běží a co ne ---- */
   .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; margin-top: 1.4rem; }
   .col { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.3rem; }
@@ -248,6 +257,26 @@
       <li><strong>Pošleme pozvánku</strong> do&nbsp;TestFlightu. Přijde e-mailem od&nbsp;Applu.</li>
       <li><strong>Nainstalujete přes TestFlight</strong> na&nbsp;iPhonu. Aktualizace pak chodí samy.</li>
     </ol>
+
+    <h2 class="section">Rozšíření do&nbsp;prohlížeče</h2>
+    <p class="lead" style="margin-top:.7rem">Pro Chrome a&nbsp;ostatní Chromium prohlížeče — Edge, Brave, Arc, Vivaldi. V&nbsp;obchodě zatím není, takže se nahrává ručně z&nbsp;rozbalené složky. Je to na&nbsp;minutu a&nbsp;pozvánku k&nbsp;tomu nepotřebujete.</p>
+
+    <section class="cta-box" aria-labelledby="ext-title">
+      <h2 id="ext-title">Nainstalovat ručně</h2>
+      <p>Stáhnete zip, rozbalíte ho a&nbsp;ukážete na&nbsp;něj prohlížeči. Složka musí zůstat, kde je — prohlížeč si ji načítá z&nbsp;disku při&nbsp;každém spuštění.</p>
+      <a class="button" href="/stahnout/web-editor.zip" download>
+        Stáhnout rozšíření (.zip)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      </a>
+      <ol class="steps">
+        <li><strong>Rozbalte zip</strong> do&nbsp;složky, kterou nebudete mazat ani přesouvat.</li>
+        <li><strong>Otevřete <code>chrome://extensions</code></strong> — v&nbsp;Edgi <code>edge://extensions</code>, v&nbsp;Brave <code>brave://extensions</code>.</li>
+        <li><strong>Zapněte Vývojářský režim</strong> přepínačem vpravo nahoře.</li>
+        <li><strong>Klepněte na&nbsp;Načíst rozbalené</strong> a&nbsp;vyberte rozbalenou složku.</li>
+        <li><strong>Otevřete svůj web</strong> a&nbsp;paletu vyvolejte ikonou v&nbsp;liště nebo zkratkou <kbd>⌘⇧E</kbd> (<kbd>Ctrl+Shift+E</kbd>).</li>
+      </ol>
+      <p class="note">Aktualizace: stáhnout znovu, přepsat obsah složky a&nbsp;v&nbsp;<code>chrome://extensions</code> dát rozšíření Znovu načíst. Prohlížeč se při&nbsp;každém startu zeptá, jestli má rozšíření ve&nbsp;vývojářském režimu nechat běžet — to k&nbsp;ruční instalaci patří a&nbsp;zmizí to, až&nbsp;bude rozšíření v&nbsp;obchodě.</p>
+    </section>
 
     <h2 class="section">Co dostanete a&nbsp;co&nbsp;ne</h2>
     <p class="lead" style="margin-top:.7rem">Testujete rozestavěnou aplikaci, ne hotový produkt. Ať víte předem, co&nbsp;po&nbsp;instalaci najdete.</p>

@@ -128,6 +128,11 @@ místo, kam se cizí vývojář může podívat, odkud zadání je.
   sám při prvním deploy)
 - `src/weed.page.html` — dočasný rozcestník; na jiných cestách je 404, aby se
   vizitka firmy neservírovala na cizí adrese
+- `public/stahnout/` — rozšíření do prohlížeče ke stažení (`web-editor.zip`
+  + `web-editor.sha256`). **Needitovat ručně:** soubory sem vozí CI z repozitáře
+  Web Editoru (`.github/workflows/extension.yml`) při každé změně rozšíření.
+  Ten repozitář je private, takže odkaz na GitHub by pozvaným nefungoval — zip
+  musí stát na veřejné adrese. Commit z CI spustí Workers Builds jako každý jiný
 - subdoména schválně místo vlastní domény — název produktu ještě není jistý
 - až bude obsah, nahradí rozcestník a projekt se doplní do `/projekty`
 
