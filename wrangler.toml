@@ -29,11 +29,9 @@ pattern = "mblue.indigostudio.cz"
 zone_name = "indigostudio.cz"
 custom_domain = true
 
-# ----- Web Editor (weed.indigostudio.cz) -----
-# Adresa vždycky ladí se SKU aplikace: bundle ID je cz.indigostudio.weed,
-# proto v subdoméně zůstává `weed` i po přejmenování produktu na Web Editor.
-# Nepřejmenovávat na webeditor. Nástroj odkazuje na tuhle adresu z promptu,
-# který skládá. DNS si Cloudflare u custom_domain založí sám při deploy.
+# ----- Web Editor (stará adresa) -----
+# Web Editor se přestěhoval na webeditor.click. Stará subdoména jen
+# přesměruje (src/worker.js) — vedou na ni starší buildy appky a opsané odkazy.
 [[routes]]
 pattern = "weed.indigostudio.cz"
 zone_name = "indigostudio.cz"

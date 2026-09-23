@@ -4,12 +4,6 @@
 import { EmailMessage } from "cloudflare:email";
 import { handleStatusboard } from "./statusboard.js";
 import { handleOdber } from "./odber.js";
-import WEED_PAGE from "./weed.page.html";
-import WEED_PAGE_EN from "./weed.page.en.html";
-import WEED_PRIVACY_CS from "./weed.privacy.cs.html";
-import WEED_PRIVACY_EN from "./weed.privacy.en.html";
-import WEED_SUPPORT_CS from "./weed.support.cs.html";
-import WEED_SUPPORT_EN from "./weed.support.en.html";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -46,10 +40,11 @@ export default {
       return handleStatusboard(request, env, url);
     }
 
-    // Web Editor má vlastní subdoménu; `weed` v adrese drží SKU aplikace
-    // (bundle ID cz.indigostudio.weed). Vizitka ani API firmy sem nepatří.
+    // Web Editor se odstěhoval na vlastní doménu. Stará adresa jen přesměruje
+    // se zachovanou cestou — starší buildy appky a opsané odkazy na ni vedou
+    // dál a nový web si staré cesty (/soukromi, /stahnout/…) přeloží sám.
     if (url.hostname === "weed.indigostudio.cz") {
-      return handleWeed(request, env, url);
+      return Response.redirect(`https://webeditor.click${url.pathname}${url.search}`, 301);
     }
 
     // odběr novinek o školeních (double opt-in, D1 + Resend)
@@ -90,104 +85,6 @@ export default {
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
   },
 };
-
-// ikonu a apple-touch pustíme i na weed., ať stránka nevypadá rozbitě;
-// všechno ostatní je tam zatím 404.
-const WEED_ASSETS = new Set(["/favicon.svg", "/apple-touch-icon.png"]);
-
-// Rozšíření ke stažení. Soubory sem vozí CI z repozitáře Web Editoru při každé
-// změně rozšíření (.github/workflows/extension.yml) — ten repozitář je private,
-// takže odkaz na GitHub by pozvaným nefungoval a zip musí stát na veřejné
-// adrese. Celá složka, ne výčet: vedle zipu leží otisk k ověření stažení.
-const WEED_DOWNLOADS = "/stahnout/";
-
-// Stránky, na které se odkazuje App Store Connect: Privacy Policy a Support
-// musí být veřejné a bez přihlášení, jinak Apple verzi nepustí do review.
-// Anglická verze je povinná víc než česká — primární jazyk záznamu je
-// English (U.S.) a reviewer čte tu. Adresy se nesmí měnit: v App Store Connect
-// jsou vyplněné u každé verze a rozbitý odkaz je důvod k zamítnutí.
-//
-// **Jazyk je na těchhle adresách natvrdo, ne podle prohlížeče.** Reviewer
-// otevře adresu, kterou jsme u lokalizace slíbili, a musí na ní najít ten
-// jazyk — anglickou stránku i s `Accept-Language: cs`, českou i s `en`.
-// Vyjednává se jen na kořeni (`/`), kam nikdo nic neslíbil.
-const WEED_PAGES = new Map([
-  ["/soukromi", { html: WEED_PRIVACY_CS, lang: "cs" }],
-  ["/en/privacy", { html: WEED_PRIVACY_EN, lang: "en" }],
-  ["/podpora", { html: WEED_SUPPORT_CS, lang: "cs" }],
-  ["/en/support", { html: WEED_SUPPORT_EN, lang: "en" }],
-  ["/en", { html: WEED_PAGE_EN, lang: "en" }],
-]);
-
-/* Jazyk podle prohlížeče (`Accept-Language`), bez přepínače a bez cookie —
-   stejně jako appka jede podle jazyka systému. Obsah se liší na téže adrese,
-   ne redirectem: přesměrování podle hlavičky zamíchá karty reviewerovi
-   i vyhledávači a špatně se ladí.
-
-   Slovenština padá k češtině, ne k angličtině — je jí blíž a nikdo si
-   nestěžoval na opačné pořadí. Kdo nechce ani jedno, dostane angličtinu:
-   je to jazyk, ve kterém je appka v App Storu primárně. */
-function weedLanguage(header) {
-  if (!header) return "en";
-  let best = null;
-  for (const part of header.split(",")) {
-    const [tag, ...params] = part.trim().split(";");
-    const primary = tag.trim().toLowerCase().split("-")[0];
-    if (!primary) continue;
-    const q = params
-      .map((x) => x.trim())
-      .filter((x) => x.startsWith("q="))
-      .map((x) => Number.parseFloat(x.slice(2)))
-      .find((x) => Number.isFinite(x));
-    const weight = q === undefined ? 1 : q;
-    if (weight <= 0) continue;
-    const lang = primary === "cs" || primary === "sk" ? "cs" : primary === "en" ? "en" : null;
-    // `*` znamená „cokoliv" — bereme ho, až když nic konkrétního nevyhrálo.
-    const pick = lang || (primary === "*" ? "en" : null);
-    if (!pick) continue;
-    if (!best || weight > best.weight) best = { lang: pick, weight };
-  }
-  return best ? best.lang : "en";
-}
-
-async function handleWeed(request, env, url) {
-  const base = { ...SECURITY_HEADERS, "X-Robots-Tag": "noindex, follow" };
-
-  // Kořen mluví jazykem prohlížeče. `Vary` je podmínka, ne ozdoba: bez něj by
-  // cache podala českou stránku anglickému návštěvníkovi a naopak.
-  if (url.pathname === "/" || url.pathname === "") {
-    const lang = weedLanguage(request.headers.get("Accept-Language"));
-    return new Response(lang === "en" ? WEED_PAGE_EN : WEED_PAGE, {
-      headers: {
-        ...base,
-        "Content-Type": "text/html; charset=utf-8",
-        "Content-Language": lang,
-        Vary: "Accept-Language",
-      },
-    });
-  }
-
-  // Lomítko na konci adresu nerozbije — odkaz opsaný z dokumentu ho mívá.
-  const path = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, "") : url.pathname;
-  const doc = WEED_PAGES.get(path);
-  if (doc) {
-    return new Response(doc.html, {
-      headers: { ...base, "Content-Type": "text/html; charset=utf-8", "Content-Language": doc.lang },
-    });
-  }
-
-  if (WEED_ASSETS.has(url.pathname) || url.pathname.startsWith(WEED_DOWNLOADS)) {
-    const res = await env.ASSETS.fetch(request);
-    const headers = new Headers(res.headers);
-    for (const [k, v] of Object.entries(base)) headers.set(k, v);
-    return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
-  }
-
-  return new Response("Stránka nenalezena", {
-    status: 404,
-    headers: { ...base, "Content-Type": "text/plain; charset=utf-8" },
-  });
-}
 
 async function handlePoptavka(request, env) {
   let body;
