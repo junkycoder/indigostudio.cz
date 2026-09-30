@@ -47,25 +47,25 @@ function calculator() {
 }
 
 function percentages() {
-  root.innerHTML = panel(`<div class="tabs"><button class="active" data-mode="part">Kolik je % z čísla</button><button data-mode="share">Jaký je podíl</button><button data-mode="change">Procentní změna</button></div><div class="grid">${field('a','První hodnota',20)}${field('b','Druhá hodnota',150)}</div>${result()}`);
+  root.innerHTML = panel(`<div class="tabs"><button class="active" aria-pressed="true" data-mode="part">Kolik je % z čísla</button><button aria-pressed="false" data-mode="share">Jaký je podíl</button><button aria-pressed="false" data-mode="change">Procentní změna</button></div><div class="grid">${field('a','První hodnota',20)}${field('b','Druhá hodnota',150)}</div>${result()}`);
   let mode = 'part';
   const update = () => { const a=num('a'),b=num('b'); const n=mode==='part'?b*a/100:mode==='share'?(b?100*a/b:NaN):(a?100*(b-a)/a:NaN); out(Number.isFinite(n) ? `${nf.format(n)}${mode==='part'?'':' %'}` : 'Nelze dělit nulou.'); };
-  root.addEventListener('click', e => { if (!e.target.dataset.mode) return; mode=e.target.dataset.mode; root.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active',b.dataset.mode===mode)); const labels={part:['Procenta (%)','Základ'],share:['Část','Celek'],change:['Původní hodnota','Nová hodnota']}; document.querySelectorAll('.field span').forEach((s,i)=>s.textContent=labels[mode][i]); update(); });
+  root.addEventListener('click', e => { if (!e.target.dataset.mode) return; mode=e.target.dataset.mode; root.querySelectorAll('[data-mode]').forEach(b => { const active=b.dataset.mode===mode; b.classList.toggle('active',active); b.setAttribute('aria-pressed',String(active)); }); const labels={part:['Procenta (%)','Základ'],share:['Část','Celek'],change:['Původní hodnota','Nová hodnota']}; document.querySelectorAll('.field span').forEach((s,i)=>s.textContent=labels[mode][i]); update(); });
   updateOnInput(update);
 }
 
 function ruleOfThree() {
-  root.innerHTML = panel(`<div class="tabs"><button data-mode="direct" class="active">Přímá úměra</button><button data-mode="inverse">Nepřímá úměra</button></div><div class="grid three">${field('a','A odpovídá',2)}${field('b','B',6)}${field('c','C odpovídá',5)}</div><p class="hint">Když A odpovídá B, kolik odpovídá C?</p>${result()}`);
+  root.innerHTML = panel(`<div class="tabs"><button data-mode="direct" class="active" aria-pressed="true">Přímá úměra</button><button data-mode="inverse" aria-pressed="false">Nepřímá úměra</button></div><div class="grid three">${field('a','A odpovídá',2)}${field('b','B',6)}${field('c','C odpovídá',5)}</div><p class="hint">Když A odpovídá B, kolik odpovídá C?</p>${result()}`);
   let inverse=false;
   const update=()=>{let denominator=inverse?num('c'):num('a');out(denominator?nf.format(inverse?num('a')*num('b')/denominator:num('c')*num('b')/denominator):'Zadejte nenulovou hodnotu.');};
-  root.addEventListener('click',e=>{if(!e.target.dataset.mode)return;inverse=e.target.dataset.mode==='inverse';root.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b===e.target));update();});
+  root.addEventListener('click',e=>{if(!e.target.dataset.mode)return;inverse=e.target.dataset.mode==='inverse';root.querySelectorAll('[data-mode]').forEach(b=>{const active=b===e.target;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});update();});
   updateOnInput(update);
 }
 
 function vat() {
-  root.innerHTML=panel(`<div class="grid">${field('amount','Částka',1000)}${select('rate','Sazba DPH',[['21','21 %'],['12','12 %'],['0','0 %']])}</div><div class="tabs" style="margin-top:1.2rem"><button data-mode="add" class="active">Přičíst DPH</button><button data-mode="remove">Odečíst DPH</button></div>${result()}`)+'<p class="note">Sazby pro ČR. Ověřte, která sazba se vztahuje k vašemu zboží nebo službě. <a href="https://financnisprava.gov.cz/cs/dane/danovy-system-cr/popis-systemu">Zdroj: Finanční správa</a>.</p>';
+  root.innerHTML=panel(`<div class="grid">${field('amount','Částka',1000)}${select('rate','Sazba DPH',[['21','21 %'],['12','12 %'],['0','0 %']])}</div><div class="tabs" style="margin-top:1.2rem"><button data-mode="add" class="active" aria-pressed="true">Přičíst DPH</button><button data-mode="remove" aria-pressed="false">Odečíst DPH</button></div>${result()}`)+'<p class="note">Sazby pro ČR. Ověřte, která sazba se vztahuje k vašemu zboží nebo službě. <a href="https://financnisprava.gov.cz/cs/dane/danovy-system-cr/popis-systemu">Zdroj: Finanční správa</a>.</p>';
   let add=true; const update=()=>{let n=num('amount'),r=num('rate')/100,b=add?n:n/(1+r),t=add?n*(1+r):n;out(money(add?t:b),row('Základ',money(b))+row('DPH',money(t-b))+row('Celkem s DPH',money(t)));};
-  root.addEventListener('click',e=>{if(!e.target.dataset.mode)return;add=e.target.dataset.mode==='add';root.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b===e.target));update();});updateOnInput(update);
+  root.addEventListener('click',e=>{if(!e.target.dataset.mode)return;add=e.target.dataset.mode==='add';root.querySelectorAll('[data-mode]').forEach(b=>{const active=b===e.target;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});update();});updateOnInput(update);
 }
 
 function tip() {
