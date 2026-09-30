@@ -17,6 +17,10 @@ const SECURITY_HEADERS = {
   "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
 };
 
+// Náhledy lze vložit výhradně do přehledu nástrojů Indigo Studio.
+const EMBED_HEADERS = { ...SECURITY_HEADERS, "Content-Security-Policy": "frame-ancestors https://nastroje.indigostudio.cz" };
+delete EMBED_HEADERS["X-Frame-Options"];
+
 // odesílatel — adresa v naší doméně, ověřená v Resendu (DKIM)
 const MAIL_FROM = "poptavka@indigostudio.cz";
 // příjemce poptávek přes Resend — reálná schránka v Zoho
@@ -39,6 +43,7 @@ export default {
     if (url.hostname === "ceska-republika.indigostudio.cz") {
       if (url.pathname === "/" || url.pathname === "/index.html") {
         const html = czechRepublicPage
+          .replace("__EMBED_CLASS__", url.searchParams.get("embed") === "1" ? "embed" : "")
           .replace("__COUNT__", String(DIRECTORY_COUNT))
           .replace("__CATEGORY_COUNT__", String(DIRECTORY.length))
           .replace("__NAV__", renderDirectoryNavigation())
@@ -47,7 +52,7 @@ export default {
           headers: {
             "Content-Type": "text/html; charset=utf-8",
             "Cache-Control": "public, max-age=300",
-            ...SECURITY_HEADERS,
+            ...(url.searchParams.get("embed") === "1" ? EMBED_HEADERS : SECURITY_HEADERS),
           },
         });
       }
@@ -70,12 +75,13 @@ export default {
         const html = toolsPage
           .replaceAll("__TITLE__", escapeHtml(tool.title))
           .replaceAll("__DESCRIPTION__", escapeHtml(tool.description))
+          .replace("__EMBED_CLASS__", url.searchParams.get("embed") === "1" ? "embed" : "")
           .replaceAll("__SLUG__", tool.slug);
         return new Response(html, {
           headers: {
             "Content-Type": "text/html; charset=utf-8",
             "Cache-Control": "public, max-age=300",
-            ...SECURITY_HEADERS,
+            ...(url.searchParams.get("embed") === "1" ? EMBED_HEADERS : SECURITY_HEADERS),
           },
         });
       }

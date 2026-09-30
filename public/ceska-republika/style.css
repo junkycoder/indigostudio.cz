@@ -12,3 +12,22 @@
 @media(max-width:880px){.hero{grid-template-columns:1fr}.hero-aside{display:flex;align-items:center;gap:1rem}.hero-aside p{margin:0}.hero-aside small{margin-left:auto}.directory-layout{grid-template-columns:1fr;gap:1.5rem}.section-nav{position:static}.section-nav h2{margin-bottom:.5rem}.section-nav ul{display:flex;gap:.4rem;overflow-x:auto;border:0;padding-bottom:.5rem;scrollbar-width:thin}.section-nav li{border:0;flex:0 0 auto}.section-nav a{border:1px solid var(--line);border-radius:99px;padding:.5rem .8rem;background:var(--white)}.section-nav a.active{border:1px solid var(--red);padding:.5rem .8rem}}
 @media(max-width:600px){.site-header{height:64px}.hero{gap:2rem;padding-top:3rem;padding-bottom:3rem}.hero-copy h1{font-size:clamp(3.15rem,13vw,5rem);letter-spacing:-.035em;margin-bottom:1.3rem}.hero-copy p{font-size:1.05rem}.hero-aside{flex-wrap:wrap;gap:.8rem}.hero-aside .flag{width:62px;height:40px}.hero-aside p{font-size:.86rem}.hero-aside strong{font-size:1rem}.hero-aside small{width:100%;margin-left:0}.finder{padding-top:1.7rem;padding-bottom:1.8rem}.search-wrap input{height:58px;font-size:1rem}.search-wrap kbd{display:none}.service-list{grid-template-columns:1fr}.section-head h2{font-size:2rem}.directory-section{margin-bottom:3.25rem}.shortcuts{margin-bottom:2.7rem}.site-footer{flex-direction:column;gap:1rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.service{transition:none}}
+
+/* Kratší úvod ponechá v náhledu místo pro hledání a odkazy. */
+body.embed .site-header,body.embed .site-footer,body.embed .section-nav{display:none}
+body.embed .hero{grid-template-columns:1fr;gap:.6rem;padding-top:1.2rem;padding-bottom:1.2rem}
+body.embed .hero-copy h1{font-size:1.8rem;letter-spacing:-.02em;margin-bottom:.35rem}
+body.embed .hero-copy h1 br{display:none}
+body.embed .hero-copy p{font-size:.83rem}
+body.embed .hero-aside{display:none}
+body.embed .finder{padding-top:1rem;padding-bottom:1rem}
+body.embed .finder label{margin-bottom:.4rem}
+body.embed .search-wrap input{height:48px;font-size:.9rem}
+body.embed .directory-layout{display:block;padding-top:.5rem;padding-bottom:1rem}
+body.embed .shortcuts{display:none}
+body.embed .directory-section{margin-bottom:1.5rem}
+body.embed .section-head h2{font-size:1.3rem}
+body.embed .section-head p,body.embed .section-head small{display:none}
+body.embed .service-list{grid-template-columns:1fr}
+body.embed .service{padding:.7rem 0}
+body.embed .service em,body.embed .service small{display:none}

@@ -38,3 +38,31 @@ body[data-tool=kalendar] .panel,body[data-tool=pracovni-dny] .panel,body[data-to
 body[data-tool=nastroje] .all-tools{display:none}
 @media(max-width:640px){.topbar,.footer{padding:1rem 1.25rem}.main{padding:2.5rem 1.25rem 4rem}.grid,.grid.three,.catalog{grid-template-columns:1fr}.footer{align-items:flex-start;flex-direction:column}.intro{margin-bottom:2rem}}
 @media print{body{background:#fff;color:#000}.topbar,.footer,.intro,.tool>.panel,.tool>.note,.no-print{display:none!important}.main{padding:0;width:100%;max-width:none}.tool{max-width:none}.invoice-print{display:block;padding:1.5cm;font:12pt Arial,sans-serif;color:#000}.invoice-print h1{font-size:25pt}.invoice-print table{width:100%;border-collapse:collapse;margin-top:2rem}.invoice-print th,.invoice-print td{border-bottom:1px solid #bbb;text-align:left;padding:.5rem}.invoice-print .total{text-align:right;font-size:20pt;margin-top:2rem}}
+
+/* Přehled: živé náhledy jsou použitelné přímo v mřížce. */
+body[data-tool=nastroje] .main{max-width:1500px;padding-top:clamp(2.5rem,5vw,5rem)}
+body[data-tool=nastroje] .tool{max-width:none}
+body[data-tool=nastroje] .intro{max-width:950px}
+body[data-tool=nastroje] .intro h1{max-width:13ch}
+.catalog-section{margin-top:3.5rem}
+.catalog-section>h2{font:600 clamp(1.65rem,3vw,2.25rem)/1.2 var(--display);letter-spacing:-.025em;margin:0 0 1.2rem}
+.catalog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.25rem}
+.catalog-card{min-width:0;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.catalog-card-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.95rem 1.15rem;border-bottom:1px solid var(--line)}
+.catalog-card h3{font-size:1.06rem;line-height:1.25;margin:0}
+.catalog-card-head a{display:inline-flex;align-items:center;gap:.3rem;flex:none;color:var(--accent);font-size:.83rem;font-weight:700;text-decoration:none}
+.catalog-card-head a:hover{text-decoration:underline}
+.catalog-card-head svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.catalog-card iframe{display:block;width:100%;height:410px;border:0;background:var(--paper)}
+body.embed .topbar,body.embed .footer,body.embed .all-tools{display:none}
+body.embed .page{min-height:0}
+body.embed .main{width:100%;max-width:none;min-height:0;margin:0;padding:1.2rem}
+body.embed .intro{margin-bottom:1rem}
+body.embed .intro h1{font:600 1.55rem/1.2 var(--display);letter-spacing:-.02em;margin-bottom:.3rem}
+body.embed .intro p{font-size:.84rem;line-height:1.35}
+body.embed .tool{max-width:none}
+body.embed .panel{padding:1rem}
+body.embed .result{margin-top:1rem;padding-top:1rem}
+body.embed .result strong{font-size:clamp(1.8rem,4vw,2.5rem)}
+@media(max-width:760px){.catalog-grid{grid-template-columns:1fr}.catalog-card iframe{height:430px}}
+@media(max-width:640px){body[data-tool=nastroje] .main{padding-top:2.5rem}.catalog-section{margin-top:2.7rem}}

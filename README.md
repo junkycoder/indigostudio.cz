@@ -224,6 +224,8 @@ Repo dřív obsahovalo projekt **fakan**. Je zazálohovaný:
 # Online nástroje
 
 Worker obsluhuje 29 samostatných nástrojů a rozcestník na `nastroje.indigostudio.cz`.
+Rozcestník zobrazuje nástroje jako interaktivní náhledy v iframe. Varianta
+`?embed=1` skrývá navigaci a lze ji vložit pouze z tohoto rozcestníku.
 Subdomény jsou uvedené v `wrangler.toml`; názvy a popisy jsou v `src/tools-data.js`.
 Společný HTML obal je v `src/tools.page.html`, vzhled a logika v `public/tools/`.
 Každá stránka má odkaz na Indigo Studio v patičce.
