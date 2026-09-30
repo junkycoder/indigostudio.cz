@@ -30,6 +30,11 @@ export const TOOLS = [
   ["rozmery-obrazku", "Rozměry obrázku", "Zjistěte rozměry a poměr stran obrázku."],
   ["komprese-obrazku", "Komprese obrázku", "Zmenšete obrázek v prohlížeči."],
   ["metadata", "Metadata souboru", "Základní údaje a metadata vybraného souboru."],
+  ["exif", "EXIF fotografií", "Přečtěte a upravte údaje EXIF ve fotografii přímo v prohlížeči."],
+  ["upravy-obrazku", "Úpravy obrázku", "Otočte, ořízněte, zmenšete nebo převeďte obrázek v prohlížeči."],
+  ["prevod-formatu", "Převod formátů", "Převod dat mezi JSON, YAML, CSV, XML a dalšími formáty."],
+  ["prohlizec", "Prohlížeč a zařízení", "Co o vašem zařízení ví prohlížeč a které funkce podporuje."],
+  ["bluetooth", "Bluetooth", "Vyhledejte zařízení Bluetooth LE a přečtěte jejich údaje."],
 ];
 
 export const TOOL_BY_HOST = new Map(TOOLS.map(([slug, title, description]) => [

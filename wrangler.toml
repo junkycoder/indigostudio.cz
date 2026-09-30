@@ -159,6 +159,26 @@ custom_domain = true
 pattern = "metadata.indigostudio.cz"
 zone_name = "indigostudio.cz"
 custom_domain = true
+[[routes]]
+pattern = "exif.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
+[[routes]]
+pattern = "upravy-obrazku.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
+[[routes]]
+pattern = "prevod-formatu.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
+[[routes]]
+pattern = "prohlizec.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
+[[routes]]
+pattern = "bluetooth.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
 
 # ----- Česká republika: rozcestník veřejných a komerčních online služeb -----
 [[routes]]

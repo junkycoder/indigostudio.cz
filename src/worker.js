@@ -91,7 +91,7 @@ export default {
       if (url.pathname === "/robots.txt") {
         return new Response("User-agent: *\nAllow: /\n", { headers: { "Content-Type": "text/plain; charset=utf-8" } });
       }
-      if (!["/tools/app.js", "/tools/style.css", "/tools/qr.js", "/favicon.svg", "/apple-touch-icon.png"].includes(url.pathname) && !url.pathname.startsWith("/tools/fonts/")) {
+      if (!["/tools/app.js", "/tools/style.css", "/tools/qr.js", "/tools/exif.js", "/tools/js-yaml.js", "/favicon.svg", "/apple-touch-icon.png"].includes(url.pathname) && !url.pathname.startsWith("/tools/fonts/")) {
         return new Response("Stránka nenalezena.", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
       }
       const res = await env.ASSETS.fetch(request);

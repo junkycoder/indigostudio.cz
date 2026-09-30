@@ -223,9 +223,12 @@ Repo dřív obsahovalo projekt **fakan**. Je zazálohovaný:
 
 # Online nástroje
 
-Worker obsluhuje 29 samostatných nástrojů a rozcestník na `nastroje.indigostudio.cz`.
+Worker obsluhuje 34 samostatných nástrojů a rozcestník na `nastroje.indigostudio.cz`.
 Rozcestník zobrazuje nástroje jako interaktivní náhledy v iframe. Varianta
 `?embed=1` skrývá navigaci a lze ji vložit pouze z tohoto rozcestníku.
+Náhled posílá rozcestníku výšku svého obsahu (`postMessage`), karta proto roste
+bez posuvníku. Rozvržení nástrojů řídí container queries podle šířky `.tool`,
+ne okna: krátká pole (čísla, data, výběry) zůstávají ve sloupcích i v úzké kartě.
 Subdomény jsou uvedené v `wrangler.toml`; názvy a popisy jsou v `src/tools-data.js`.
 Společný HTML obal je v `src/tools.page.html`, vzhled a logika v `public/tools/`.
 Každá stránka má odkaz na Indigo Studio v patičce.
@@ -233,8 +236,12 @@ Každá stránka má odkaz na Indigo Studio v patičce.
 Převod měn načítá referenční denní kurzy z ECB přes `/api/kurzy` a zobrazuje
 datum kurzu. Výpočet čisté mzdy je omezen na běžný pracovní poměr v ČR a rok
 2026; před použitím pro další rok je nutné sazby a hranici v `app.js` ověřit.
-QR knihovna (`public/tools/qr.js`) je MIT, fonty DM Sans a Literata jsou OFL;
-licence jsou uložené vedle těchto souborů.
+QR knihovna (`public/tools/qr.js`) a YAML knihovna js-yaml 4.3.2
+(`public/tools/js-yaml.js`, načítá ji jen Převod formátů) jsou MIT, fonty DM Sans
+a Literata jsou OFL; licence jsou uložené vedle těchto souborů.
+EXIF (`public/tools/exif.js`) čte a zapisuje metadata JPEG bez knihoven; údaje
+výrobce (MakerNote) přenáší beze změny. Bluetooth používá Web Bluetooth (jen
+Chrome a Edge), v náhledu na rozcestníku mu to povoluje `allow="bluetooth"`.
 
 Rozcestník `ceska-republika.indigostudio.cz` přidává odkazy na veřejné i
 komerční online služby. Seznam se spravuje v `src/ceska-republika-data.js`,
