@@ -4,3 +4,5 @@ Disallow: /contact-list.html
 Allow: /
 
 Sitemap: https://indigostudio.cz/sitemap.xml
+Sitemap: https://nastroje.indigostudio.cz/sitemap.xml
+Sitemap: https://ceska-republika.indigostudio.cz/sitemap.xml
