@@ -160,6 +160,12 @@ pattern = "metadata.indigostudio.cz"
 zone_name = "indigostudio.cz"
 custom_domain = true
 
+# ----- Česká republika: rozcestník veřejných a komerčních online služeb -----
+[[routes]]
+pattern = "ceska-republika.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
+
 # Hodnocení, členové a přihlášení statusboardu.
 [[d1_databases]]
 binding = "DB"

@@ -6,6 +6,8 @@ import { handleStatusboard } from "./statusboard.js";
 import { handleOdber } from "./odber.js";
 import toolsPage from "./tools.page.html";
 import { TOOL_BY_HOST } from "./tools-data.js";
+import czechRepublicPage from "./ceska-republika.page.html";
+import { DIRECTORY, DIRECTORY_COUNT } from "./ceska-republika-data.js";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -32,6 +34,34 @@ const json = (obj, status = 200) =>
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // Veřejný rozcestník českých online služeb žije na vlastní subdoméně.
+    if (url.hostname === "ceska-republika.indigostudio.cz") {
+      if (url.pathname === "/" || url.pathname === "/index.html") {
+        const html = czechRepublicPage
+          .replace("__COUNT__", String(DIRECTORY_COUNT))
+          .replace("__CATEGORY_COUNT__", String(DIRECTORY.length))
+          .replace("__NAV__", renderDirectoryNavigation())
+          .replace("__SECTIONS__", renderDirectorySections());
+        return new Response(html, {
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Cache-Control": "public, max-age=300",
+            ...SECURITY_HEADERS,
+          },
+        });
+      }
+      if (url.pathname === "/robots.txt") {
+        return new Response("User-agent: *\nAllow: /\n", { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+      }
+      if (!["/ceska-republika/style.css", "/ceska-republika/app.js", "/favicon.svg", "/apple-touch-icon.png"].includes(url.pathname) && !url.pathname.startsWith("/tools/fonts/")) {
+        return new Response("Stránka nenalezena.", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+      }
+      const res = await env.ASSETS.fetch(request);
+      const headers = new Headers(res.headers);
+      for (const [key, value] of Object.entries(SECURITY_HEADERS)) headers.set(key, value);
+      return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+    }
 
     // Každý veřejný nástroj má vlastní subdoménu, stránku a metadata.
     const tool = TOOL_BY_HOST.get(url.hostname);
@@ -121,6 +151,21 @@ export default {
 
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+}
+
+function renderDirectoryNavigation() {
+  return `<ul>${DIRECTORY.map(section => `<li data-nav-id="${escapeHtml(section.id)}"><a href="#${escapeHtml(section.id)}">${escapeHtml(section.title)}</a></li>`).join("")}</ul>`;
+}
+
+function renderDirectorySections() {
+  const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M8 5h11v11"/></svg>';
+  return DIRECTORY.map(section => {
+    const items = section.items.map(([name, href, description]) => {
+      const domain = new URL(href).hostname.replace(/^www\./, "");
+      return `<a class="service" href="${escapeHtml(href)}"><span><strong>${escapeHtml(name)}</strong><em>${escapeHtml(description)}</em><small>${escapeHtml(domain)}</small></span>${arrow}</a>`;
+    }).join("");
+    return `<section class="directory-section" id="${escapeHtml(section.id)}" aria-labelledby="${escapeHtml(section.id)}-title"><div class="section-head"><div><h2 id="${escapeHtml(section.id)}-title">${escapeHtml(section.title)}</h2><p>${escapeHtml(section.intro)}</p></div><small>${section.items.length} odkazů</small></div><div class="service-list">${items}</div></section>`;
+  }).join("");
 }
 
 // ECB vydává referenční kurzy v pracovní dny. Krátká cache šetří požadavky.

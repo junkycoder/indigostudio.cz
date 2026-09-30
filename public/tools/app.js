@@ -17,6 +17,7 @@ const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&
 const today = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 
 const catalog = [
+  ['Rozcestníky', [['ceska-republika','Česká republika']]],
   ['Výpočty', [['kalkulacka','Kalkulačka'],['procenta','Procenta'],['trojclenka','Trojčlenka'],['dph','DPH'],['spropitne','Spropitné']]],
   ['Převody', [['prevody-jednotek','Převody jednotek'],['prevody-men','Převody měn'],['casova-pasma','Časová pásma'],['velikosti-obleceni','Velikosti oblečení']]],
   ['Práce a finance', [['cista-mzda','Čistá mzda'],['hodinova-sazba','Hodinová sazba'],['fakturace','Fakturace'],['uroky','Úroky'],['splatky','Splátky']]],

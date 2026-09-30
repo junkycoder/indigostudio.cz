@@ -233,3 +233,8 @@ datum kurzu. Výpočet čisté mzdy je omezen na běžný pracovní poměr v ČR
 2026; před použitím pro další rok je nutné sazby a hranici v `app.js` ověřit.
 QR knihovna (`public/tools/qr.js`) je MIT, fonty DM Sans a Literata jsou OFL;
 licence jsou uložené vedle těchto souborů.
+
+Rozcestník `ceska-republika.indigostudio.cz` přidává odkazy na veřejné i
+komerční online služby. Seznam se spravuje v `src/ceska-republika-data.js`,
+stránka je v `src/ceska-republika.page.html` a její vzhled a vyhledávání
+v `public/ceska-republika/`. Po úpravě odkazů ověřte cílové adresy.
