@@ -5,7 +5,7 @@ import { EmailMessage } from "cloudflare:email";
 import { handleStatusboard } from "./statusboard.js";
 import { handleOdber } from "./odber.js";
 import toolsPage from "./tools.page.html";
-import { TOOL_BY_HOST } from "./tools-data.js";
+import { TOOL_BY_HOST, TOOL_CATALOG, TOOLS } from "./tools-data.js";
 import czechRepublicPage from "./ceska-republika.page.html";
 import { DIRECTORY, DIRECTORY_COUNT } from "./ceska-republika-data.js";
 
@@ -20,6 +20,7 @@ const SECURITY_HEADERS = {
 // Náhledy lze vložit výhradně do přehledu nástrojů Indigo Studio.
 const EMBED_HEADERS = { ...SECURITY_HEADERS, "Content-Security-Policy": "frame-ancestors https://nastroje.indigostudio.cz" };
 delete EMBED_HEADERS["X-Frame-Options"];
+EMBED_HEADERS["X-Robots-Tag"] = "noindex, follow";
 
 // odesílatel — adresa v naší doméně, ověřená v Resendu (DKIM)
 const MAIL_FROM = "poptavka@indigostudio.cz";
@@ -47,6 +48,7 @@ export default {
           .replace("__COUNT__", String(DIRECTORY_COUNT))
           .replace("__CATEGORY_COUNT__", String(DIRECTORY.length))
           .replace("__NAV__", renderDirectoryNavigation())
+          .replace("__STRUCTURED_DATA__", directoryStructuredData())
           .replace("__SECTIONS__", renderDirectorySections());
         return new Response(html, {
           headers: {
@@ -57,7 +59,10 @@ export default {
         });
       }
       if (url.pathname === "/robots.txt") {
-        return new Response("User-agent: *\nAllow: /\n", { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+        return siteRobots(url.hostname);
+      }
+      if (url.pathname === "/sitemap.xml") {
+        return siteSitemap(url.hostname);
       }
       if (!["/ceska-republika/style.css", "/ceska-republika/app.js", "/favicon.svg", "/apple-touch-icon.png"].includes(url.pathname) && !url.pathname.startsWith("/tools/fonts/")) {
         return new Response("Stránka nenalezena.", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
@@ -72,10 +77,15 @@ export default {
     const tool = TOOL_BY_HOST.get(url.hostname);
     if (tool) {
       if (url.pathname === "/" || url.pathname === "/index.html") {
+        const description = tool.slug === "nastroje" ? `${TOOLS.length} online nástrojů a služeb Indigo Studio s interaktivními náhledy.` : tool.description;
         const html = toolsPage
           .replaceAll("__TITLE__", escapeHtml(tool.title))
-          .replaceAll("__DESCRIPTION__", escapeHtml(tool.description))
+          .replaceAll("__DESCRIPTION__", escapeHtml(description))
           .replace("__EMBED_CLASS__", url.searchParams.get("embed") === "1" ? "embed" : "")
+          .replace("__CATALOG__", tool.slug === "nastroje" ? renderToolCatalog() : "")
+          .replaceAll("__OG_IMAGE__", `https://indigostudio.cz/tools/og/${tool.slug}.png`)
+          .replaceAll("__OG_ALT__", escapeHtml(`${tool.title} — online nástroj Indigo Studio`))
+          .replace("__STRUCTURED_DATA__", structuredData(tool, description))
           .replaceAll("__SLUG__", tool.slug);
         return new Response(html, {
           headers: {
@@ -89,7 +99,10 @@ export default {
         return getExchangeRates();
       }
       if (url.pathname === "/robots.txt") {
-        return new Response("User-agent: *\nAllow: /\n", { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+        return siteRobots(url.hostname);
+      }
+      if (url.pathname === "/sitemap.xml") {
+        return siteSitemap(url.hostname);
       }
       if (!["/tools/app.js", "/tools/style.css", "/tools/qr.js", "/tools/exif.js", "/tools/js-yaml.js", "/favicon.svg", "/apple-touch-icon.png"].includes(url.pathname) && !url.pathname.startsWith("/tools/fonts/")) {
         return new Response("Stránka nenalezena.", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
@@ -157,6 +170,58 @@ export default {
 
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+}
+
+function siteRobots(hostname) {
+  return new Response(`User-agent: *\nAllow: /\n\nSitemap: https://${hostname}/sitemap.xml\n`, {
+    headers: { "Content-Type": "text/plain; charset=utf-8", ...SECURITY_HEADERS },
+  });
+}
+
+function siteSitemap(hostname) {
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://${hostname}/</loc></url></urlset>`, {
+    headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=86400", ...SECURITY_HEADERS },
+  });
+}
+
+function renderToolCatalog() {
+  const names = new Map(TOOLS.map(([slug, title]) => [slug, title]));
+  names.set("ceska-republika", "Česká republika");
+  return TOOL_CATALOG.map(([group, slugs]) => `<section class="catalog-section"><h2>${escapeHtml(group)}</h2><div class="catalog-grid">${slugs.map(slug => {
+    const title = names.get(slug);
+    const url = `https://${slug}.indigostudio.cz/`;
+    return `<article class="catalog-card"><div class="catalog-card-head"><h3>${escapeHtml(title)}</h3><a href="${url}" aria-label="Otevřít ${escapeHtml(title)} samostatně">Otevřít <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M8 5h7v7"/></svg></a></div><iframe src="${url}?embed=1" title="${escapeHtml(title)} — živý náhled" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-write; bluetooth" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"></iframe></article>`;
+  }).join("")}</div></section>`).join("");
+}
+
+function structuredData(tool, description) {
+  const url = `https://${tool.slug}.indigostudio.cz/`;
+  const publisher = { "@type": "Organization", name: "Indigo Studio", url: "https://indigostudio.cz/" };
+  const data = tool.slug === "nastroje" ? {
+    "@context": "https://schema.org", "@type": "CollectionPage", name: tool.title, description, url,
+    inLanguage: "cs-CZ", publisher,
+    mainEntity: { "@type": "ItemList", itemListElement: TOOL_CATALOG.flatMap(([, slugs]) => slugs).map((slug, index) => ({
+      "@type": "ListItem", position: index + 1, name: slug === "ceska-republika" ? "Česká republika" : TOOLS.find(item => item[0] === slug)?.[1], url: `https://${slug}.indigostudio.cz/`,
+    })) },
+  } : {
+    "@context": "https://schema.org", "@type": "WebApplication", name: tool.title, description, url,
+    inLanguage: "cs-CZ", browserRequirements: "Moderní webový prohlížeč", applicationCategory: "UtilitiesApplication",
+    operatingSystem: "Web", isAccessibleForFree: true, offers: { "@type": "Offer", price: "0", priceCurrency: "CZK" }, publisher,
+  };
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+function directoryStructuredData() {
+  const data = {
+    "@context": "https://schema.org", "@type": "CollectionPage", name: "Česká republika — rozcestník online služeb",
+    description: "Odkazy na české úřady, zdravotní a komerční pojišťovny, dopravu, operátory a streamovací služby.",
+    url: "https://ceska-republika.indigostudio.cz/", inLanguage: "cs-CZ",
+    publisher: { "@type": "Organization", name: "Indigo Studio", url: "https://indigostudio.cz/" },
+    mainEntity: { "@type": "ItemList", itemListElement: DIRECTORY.flatMap(section => section.items).map(([name, url], index) => ({
+      "@type": "ListItem", position: index + 1, name, url,
+    })) },
+  };
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
 function renderDirectoryNavigation() {

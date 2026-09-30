@@ -24,24 +24,7 @@ if (document.body.classList.contains('embed') && parent !== window) {
   new ResizeObserver(() => parent.postMessage({ type: 'tool-height', height: Math.ceil(page.getBoundingClientRect().height) }, HUB_ORIGIN)).observe(page);
 }
 
-const catalog = [
-  ['Rozcestníky', [['ceska-republika','Česká republika']]],
-  ['Výpočty', [['kalkulacka','Kalkulačka'],['procenta','Procenta'],['trojclenka','Trojčlenka'],['dph','DPH'],['spropitne','Spropitné']]],
-  ['Převody', [['prevody-jednotek','Převody jednotek'],['prevody-men','Převody měn'],['casova-pasma','Časová pásma'],['velikosti-obleceni','Velikosti oblečení']]],
-  ['Práce a finance', [['cista-mzda','Čistá mzda'],['hodinova-sazba','Hodinová sazba'],['fakturace','Fakturace'],['uroky','Úroky'],['splatky','Splátky']]],
-  ['Čas a plánování', [['kalendar','Kalendář'],['datum','Datum'],['pracovni-dny','Pracovní dny'],['odpocet','Odpočet'],['stopky','Stopky'],['casovac','Časovač']]],
-  ['Text a obsah', [['pocitadlo-slov','Počítadlo slov'],['formatovani-textu','Formátování textu'],['qr-kod','QR kód'],['generator-hesel','Generátor hesel']]],
-  ['Web a soubory', [['barvy','Barvy'],['kontrast','Kontrast'],['upravy-obrazku','Úpravy obrázku'],['rozmery-obrazku','Rozměry obrázku'],['komprese-obrazku','Komprese obrázku'],['exif','EXIF fotografií'],['metadata','Metadata souboru']]],
-  ['Vývoj a zařízení', [['prevod-formatu','Převod formátů'],['prohlizec','Prohlížeč a zařízení'],['bluetooth','Bluetooth']]],
-];
-
 function showCatalog() {
-  const count = catalog.reduce((sum, [, items]) => sum + items.length, 0);
-  document.querySelector('#description').textContent = `${count} služeb na jednom místě. Každý nástroj můžete rovnou použít v náhledu nebo otevřít samostatně.`;
-  root.innerHTML = catalog.map(([group, items]) => `<section class="catalog-section"><h2>${group}</h2><div class="catalog-grid">${items.map(([slug, name]) => {
-    const url = `https://${slug}.indigostudio.cz/`;
-    return `<article class="catalog-card"><div class="catalog-card-head"><h3>${name}</h3><a href="${url}" aria-label="Otevřít ${name} samostatně">Otevřít <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M8 5h7v7"/></svg></a></div><iframe src="${url}?embed=1" title="${name} — živý náhled" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-write; bluetooth" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"></iframe></article>`;
-  }).join('')}</div></section>`).join('');
   addEventListener('message', e => {
     if (!TOOL_ORIGIN.test(e.origin) || e.data?.type !== 'tool-height' || !Number.isFinite(e.data.height)) return;
     const frame = [...root.querySelectorAll('iframe')].find(f => f.contentWindow === e.source);

@@ -226,6 +226,10 @@ Repo dřív obsahovalo projekt **fakan**. Je zazálohovaný:
 Worker obsluhuje 34 samostatných nástrojů a rozcestník na `nastroje.indigostudio.cz`.
 Rozcestník zobrazuje nástroje jako interaktivní náhledy v iframe. Varianta
 `?embed=1` skrývá navigaci a lze ji vložit pouze z tohoto rozcestníku.
+Katalog odkazů vykresluje Worker přímo do HTML; každá subdoména má vlastní
+`robots.txt`, `sitemap.xml`, strukturovaná data a obrázek OG v `public/tools/og/`.
+Po změně názvu nebo popisu nástroje přegenerujte obrázky příkazem
+`node scripts/generate-tool-og.mjs` (vyžaduje `rsvg-convert`).
 Náhled posílá rozcestníku výšku svého obsahu (`postMessage`), karta proto roste
 bez posuvníku. Rozvržení nástrojů řídí container queries podle šířky `.tool`,
 ne okna: krátká pole (čísla, data, výběry) zůstávají ve sloupcích i v úzké kartě.

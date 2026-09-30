@@ -40,3 +40,15 @@ export const TOOLS = [
 export const TOOL_BY_HOST = new Map(TOOLS.map(([slug, title, description]) => [
   `${slug}.indigostudio.cz`, { slug, title, description },
 ]));
+
+// Pořadí a skupiny katalogu pro serverové vykreslení.
+export const TOOL_CATALOG = [
+  ["Rozcestníky", ["ceska-republika"]],
+  ["Výpočty", ["kalkulacka", "procenta", "trojclenka", "dph", "spropitne"]],
+  ["Převody", ["prevody-jednotek", "prevody-men", "casova-pasma", "velikosti-obleceni"]],
+  ["Práce a finance", ["cista-mzda", "hodinova-sazba", "fakturace", "uroky", "splatky"]],
+  ["Čas a plánování", ["kalendar", "datum", "pracovni-dny", "odpocet", "stopky", "casovac"]],
+  ["Text a obsah", ["pocitadlo-slov", "formatovani-textu", "qr-kod", "generator-hesel"]],
+  ["Web a soubory", ["barvy", "kontrast", "upravy-obrazku", "rozmery-obrazku", "komprese-obrazku", "exif", "metadata"]],
+  ["Vývoj a zařízení", ["prevod-formatu", "prohlizec", "bluetooth"]],
+];
