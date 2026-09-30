@@ -4,6 +4,8 @@
 import { EmailMessage } from "cloudflare:email";
 import { handleStatusboard } from "./statusboard.js";
 import { handleOdber } from "./odber.js";
+import toolsPage from "./tools.page.html";
+import { TOOL_BY_HOST } from "./tools-data.js";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -30,6 +32,37 @@ const json = (obj, status = 200) =>
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // Každý veřejný nástroj má vlastní subdoménu, stránku a metadata.
+    const tool = TOOL_BY_HOST.get(url.hostname);
+    if (tool) {
+      if (url.pathname === "/" || url.pathname === "/index.html") {
+        const html = toolsPage
+          .replaceAll("__TITLE__", escapeHtml(tool.title))
+          .replaceAll("__DESCRIPTION__", escapeHtml(tool.description))
+          .replaceAll("__SLUG__", tool.slug);
+        return new Response(html, {
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Cache-Control": "public, max-age=300",
+            ...SECURITY_HEADERS,
+          },
+        });
+      }
+      if (tool.slug === "prevody-men" && url.pathname === "/api/kurzy") {
+        return getExchangeRates();
+      }
+      if (url.pathname === "/robots.txt") {
+        return new Response("User-agent: *\nAllow: /\n", { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+      }
+      if (!["/tools/app.js", "/tools/style.css", "/tools/qr.js", "/favicon.svg", "/apple-touch-icon.png"].includes(url.pathname) && !url.pathname.startsWith("/tools/fonts/")) {
+        return new Response("Stránka nenalezena.", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+      }
+      const res = await env.ASSETS.fetch(request);
+      const headers = new Headers(res.headers);
+      for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+      return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+    }
 
     // Statusboard mBlue žije na vlastní subdoméně a je celý za přihlášením.
     // Na apexu ho schválně nespouštíme — jedna adresa, jedno místo.
@@ -85,6 +118,31 @@ export default {
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
   },
 };
+
+function escapeHtml(value) {
+  return value.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+}
+
+// ECB vydává referenční kurzy v pracovní dny. Krátká cache šetří požadavky.
+async function getExchangeRates() {
+  try {
+    const response = await fetch("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml");
+    if (!response.ok) throw new Error("ECB nedostupná");
+    const xml = await response.text();
+    const date = xml.match(/time=['"]([^'"]+)['"]/i)?.[1];
+    const rates = { EUR: 1 };
+    for (const match of xml.matchAll(/currency=['"]([A-Z]{3})['"]\s+rate=['"]([0-9.]+)['"]/g)) {
+      rates[match[1]] = Number(match[2]);
+    }
+    if (!date || !rates.CZK || !rates.USD) throw new Error("Neplatná data ECB");
+    return new Response(JSON.stringify({ date, rates }), {
+      headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=3600", ...SECURITY_HEADERS },
+    });
+  } catch (error) {
+    console.error("ECB rates:", error?.message || error);
+    return json({ error: "Kurzy se nyní nepodařilo načíst." }, 503);
+  }
+}
 
 async function handlePoptavka(request, env) {
   let body;

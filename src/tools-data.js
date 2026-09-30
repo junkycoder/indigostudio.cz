@@ -1,0 +1,37 @@
+// Veřejné nástroje: subdoména, název a krátký popis pro HTML metadata.
+export const TOOLS = [
+  ["nastroje", "Online nástroje", "Praktické nástroje Indigo Studio na jednom místě."],
+  ["kalkulacka", "Kalkulačka", "Rychlé výpočty přímo v prohlížeči."],
+  ["procenta", "Procenta", "Vypočítejte procenta, změnu i podíl."],
+  ["trojclenka", "Trojčlenka", "Přímá i nepřímá úměra bez zdržování."],
+  ["dph", "DPH", "Přičtěte nebo odečtěte českou DPH."],
+  ["spropitne", "Spropitné", "Rozdělte účet a spočítejte spropitné."],
+  ["prevody-jednotek", "Převody jednotek", "Délka, hmotnost, objem, plocha a teplota."],
+  ["prevody-men", "Převody měn", "Orientační převody podle referenčních kurzů ECB."],
+  ["casova-pasma", "Časová pásma", "Zjistěte čas v různých městech světa."],
+  ["velikosti-obleceni", "Velikosti oblečení", "Orientační převod běžných velikostí."],
+  ["cista-mzda", "Čistá mzda", "Orientační výpočet čisté mzdy v ČR pro rok 2026."],
+  ["hodinova-sazba", "Hodinová sazba", "Přepočet měsíčního cíle na hodinovou sazbu."],
+  ["fakturace", "Fakturace", "Jednoduchá faktura k vytištění nebo uložení jako PDF."],
+  ["uroky", "Úroky", "Výpočet jednoduchého a složeného úročení."],
+  ["splatky", "Splátky", "Orientační výpočet měsíční splátky úvěru."],
+  ["kalendar", "Kalendář", "Přehledný měsíční kalendář."],
+  ["datum", "Datum", "Rozdíl mezi daty a posun o dny."],
+  ["pracovni-dny", "Pracovní dny", "Počet pracovních dnů mezi dvěma daty."],
+  ["odpocet", "Odpočet", "Odpočet do vybraného dne a času."],
+  ["stopky", "Stopky", "Jednoduché stopky s mezičasy."],
+  ["casovac", "Časovač", "Odpočet nastaveného času s upozorněním."],
+  ["pocitadlo-slov", "Počítadlo slov", "Počet slov, znaků, vět a odhad čtení."],
+  ["formatovani-textu", "Formátování textu", "Úprava velikosti písmen, mezer a řádků."],
+  ["qr-kod", "QR kód", "Vytvořte QR kód pro odkaz nebo krátký text."],
+  ["generator-hesel", "Generátor hesel", "Bezpečná hesla vytvořená ve vašem zařízení."],
+  ["barvy", "Barvy", "Barvy, odstíny a kódy HEX, RGB a HSL."],
+  ["kontrast", "Kontrast", "Porovnejte čitelnost dvou barev podle WCAG."],
+  ["rozmery-obrazku", "Rozměry obrázku", "Zjistěte rozměry a poměr stran obrázku."],
+  ["komprese-obrazku", "Komprese obrázku", "Zmenšete obrázek v prohlížeči."],
+  ["metadata", "Metadata souboru", "Základní údaje a metadata vybraného souboru."],
+];
+
+export const TOOL_BY_HOST = new Map(TOOLS.map(([slug, title, description]) => [
+  `${slug}.indigostudio.cz`, { slug, title, description },
+]));

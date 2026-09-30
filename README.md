@@ -220,3 +220,16 @@ změnu: klik doběhne dřív než odpověď a další zápis by poslal starou ho
 Repo dřív obsahovalo projekt **fakan**. Je zazálohovaný:
 - větev `archive/fakan`
 - tag `archive-fakan-2026-06-02`
+
+# Online nástroje
+
+Worker obsluhuje 29 samostatných nástrojů a rozcestník na `nastroje.indigostudio.cz`.
+Subdomény jsou uvedené v `wrangler.toml`; názvy a popisy jsou v `src/tools-data.js`.
+Společný HTML obal je v `src/tools.page.html`, vzhled a logika v `public/tools/`.
+Každá stránka má odkaz na Indigo Studio v patičce.
+
+Převod měn načítá referenční denní kurzy z ECB přes `/api/kurzy` a zobrazuje
+datum kurzu. Výpočet čisté mzdy je omezen na běžný pracovní poměr v ČR a rok
+2026; před použitím pro další rok je nutné sazby a hranici v `app.js` ověřit.
+QR knihovna (`public/tools/qr.js`) je MIT, fonty DM Sans a Literata jsou OFL;
+licence jsou uložené vedle těchto souborů.
