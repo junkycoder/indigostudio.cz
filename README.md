@@ -223,7 +223,7 @@ Repo dřív obsahovalo projekt **fakan**. Je zazálohovaný:
 
 # Online nástroje
 
-Worker obsluhuje 34 samostatných nástrojů a rozcestník na `nastroje.indigostudio.cz`.
+Worker obsluhuje 35 samostatných nástrojů a rozcestník na `nastroje.indigostudio.cz`.
 Rozcestník zobrazuje nástroje jako interaktivní náhledy v iframe. Varianta
 `?embed=1` skrývá navigaci a lze ji vložit pouze z tohoto rozcestníku.
 Katalog odkazů vykresluje Worker přímo do HTML; každá subdoména má vlastní
@@ -233,6 +233,9 @@ Po změně názvu nebo popisu nástroje přegenerujte obrázky příkazem
 Náhled posílá rozcestníku výšku svého obsahu (`postMessage`), karta proto roste
 bez posuvníku. Rozvržení nástrojů řídí container queries podle šířky `.tool`,
 ne okna: krátká pole (čísla, data, výběry) zůstávají ve sloupcích i v úzké kartě.
+Vpravo je svislá lišta s tečkou pro každou kartu (`renderToolNav` ve Workeru):
+po najetí ukáže názvy, tažením po ní se rychle listuje a karty mají kotvy
+podle slugu (např. `#klakson`).
 Subdomény jsou uvedené v `wrangler.toml`; názvy a popisy jsou v `src/tools-data.js`.
 Společný HTML obal je v `src/tools.page.html`, vzhled a logika v `public/tools/`.
 Každá stránka má odkaz na Indigo Studio v patičce.

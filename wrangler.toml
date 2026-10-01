@@ -179,6 +179,10 @@ custom_domain = true
 pattern = "bluetooth.indigostudio.cz"
 zone_name = "indigostudio.cz"
 custom_domain = true
+[[routes]]
+pattern = "klakson.indigostudio.cz"
+zone_name = "indigostudio.cz"
+custom_domain = true
 
 # ----- Česká republika: rozcestník veřejných a komerčních online služeb -----
 [[routes]]

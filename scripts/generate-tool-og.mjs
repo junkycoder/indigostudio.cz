@@ -11,7 +11,7 @@ mkdirSync(destination, { recursive: true });
 const palettes = [
   ["#1d2938", "#e9b0a2"], ["#171f31", "#f0a868"], ["#253d68", "#c1cdfb"],
   ["#183d32", "#bde3cd"], ["#492d41", "#f4c6d9"], ["#3e362d", "#efd5a7"],
-  ["#183c45", "#b9e0e1"], ["#343150", "#d4cbf3"],
+  ["#183c45", "#b9e0e1"], ["#343150", "#d4cbf3"], ["#4a2316", "#f5b98f"],
 ];
 const names = new Map(TOOLS.map(([slug, title, description]) => [slug, { title, description }]));
 names.set("nastroje", { title: "Online nástroje", description: "Praktické nástroje Indigo Studio na jednom místě." });

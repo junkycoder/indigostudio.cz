@@ -83,6 +83,7 @@ export default {
           .replaceAll("__DESCRIPTION__", escapeHtml(description))
           .replace("__EMBED_CLASS__", url.searchParams.get("embed") === "1" ? "embed" : "")
           .replace("__CATALOG__", tool.slug === "nastroje" ? renderToolCatalog() : "")
+          .replace("__CATALOG_NAV__", tool.slug === "nastroje" ? renderToolNav() : "")
           .replaceAll("__OG_IMAGE__", `https://indigostudio.cz/tools/og/${tool.slug}.png`)
           .replaceAll("__OG_ALT__", escapeHtml(`${tool.title} — online nástroj Indigo Studio`))
           .replace("__STRUCTURED_DATA__", structuredData(tool, description))
@@ -184,14 +185,19 @@ function siteSitemap(hostname) {
   });
 }
 
+const CATALOG_NAMES = new Map([...TOOLS.map(([slug, title]) => [slug, title]), ["ceska-republika", "Česká republika"]]);
+
 function renderToolCatalog() {
-  const names = new Map(TOOLS.map(([slug, title]) => [slug, title]));
-  names.set("ceska-republika", "Česká republika");
   return TOOL_CATALOG.map(([group, slugs]) => `<section class="catalog-section"><h2>${escapeHtml(group)}</h2><div class="catalog-grid">${slugs.map(slug => {
-    const title = names.get(slug);
+    const title = CATALOG_NAMES.get(slug);
     const url = `https://${slug}.indigostudio.cz/`;
-    return `<article class="catalog-card"><div class="catalog-card-head"><h3>${escapeHtml(title)}</h3><a href="${url}" aria-label="Otevřít ${escapeHtml(title)} samostatně">Otevřít <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M8 5h7v7"/></svg></a></div><iframe src="${url}?embed=1" title="${escapeHtml(title)} — živý náhled" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-write; bluetooth" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"></iframe></article>`;
+    return `<article class="catalog-card" id="${slug}"><div class="catalog-card-head"><h3>${escapeHtml(title)}</h3><a href="${url}" aria-label="Otevřít ${escapeHtml(title)} samostatně">Otevřít <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M8 5h7v7"/></svg></a></div><iframe src="${url}?embed=1" title="${escapeHtml(title)} — živý náhled" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-write; bluetooth; autoplay" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"></iframe></article>`;
   }).join("")}</div></section>`).join("");
+}
+
+// Svislá lišta pro rychlý přesun mezi kartami; skupiny odděluje mezera.
+function renderToolNav() {
+  return `<nav class="rail" aria-label="Rychlá navigace mezi nástroji"><ol>${TOOL_CATALOG.map(([group, slugs]) => `<li><ol aria-label="${escapeHtml(group)}">${slugs.map(slug => `<li><a href="#${slug}"><span>${escapeHtml(CATALOG_NAMES.get(slug))}</span></a></li>`).join("")}</ol></li>`).join("")}</ol></nav>`;
 }
 
 function structuredData(tool, description) {

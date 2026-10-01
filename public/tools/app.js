@@ -30,6 +30,28 @@ function showCatalog() {
     const frame = [...root.querySelectorAll('iframe')].find(f => f.contentWindow === e.source);
     if (frame) frame.style.height = `${e.data.height}px`;
   });
+  // Lišta zvýrazní kartu v polovině okna; tažením po liště se rychle listuje (i prstem).
+  const rail = document.querySelector('.rail');
+  if (!rail) return;
+  const links = [...rail.querySelectorAll('a')], cards = links.map(a => document.getElementById(a.hash.slice(1))), visible = new Set();
+  let current = null, scrubbing = false;
+  const mark = link => { if (!link || link === current) return; current?.removeAttribute('aria-current'); current = link; link.setAttribute('aria-current', 'location'); };
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(e => e.isIntersecting ? visible.add(e.target) : visible.delete(e.target));
+    if (!scrubbing) mark(links[cards.findIndex(c => visible.has(c))]);
+  }, { rootMargin: '-35% 0px -60% 0px' });
+  cards.forEach(card => spy.observe(card));
+  const jump = (y, force) => {
+    const link = links.reduce((best, a) => { const r = a.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - y); return d < best.d ? { a, d } : best; }, { d: Infinity }).a;
+    if (link === current && !force) return;
+    mark(link);
+    cards[links.indexOf(link)].scrollIntoView({ block: 'start', behavior: 'instant' });
+  };
+  const end = () => { if (!scrubbing) return; scrubbing = false; rail.classList.remove('scrubbing'); if (current) history.replaceState(null, '', current.hash); };
+  rail.addEventListener('pointerdown', e => { if (e.button) return; e.preventDefault(); scrubbing = true; rail.setPointerCapture(e.pointerId); rail.classList.add('scrubbing'); jump(e.clientY, true); });
+  rail.addEventListener('pointermove', e => { if (scrubbing) jump(e.clientY); });
+  rail.addEventListener('pointerup', end);
+  rail.addEventListener('pointercancel', end);
 }
 
 function calculator() {
@@ -494,6 +516,116 @@ async function formatConverter() {
   convert();
 }
 
+// Klaksony se skládají z oscilátorů přes Web Audio, nejde o nahrávky.
+// hold: zní, dokud je tlačítko stisknuté; notes: [začátek, délka, tóny] se přehrají celé.
+const CAR_HORN = { wave: 'square', tones: [415, 523], cutoff: 3200, q: 1.5, drive: 3, attack: .012, release: .05 };
+const TRAIN_HORN = { wave: 'sawtooth', cutoff: 2800, q: .8, drive: 1.5, attack: .18, release: .35, rise: .04, wobble: 5 };
+const CUCARACHA = [0, 1.3].flatMap(t => [[t, .1, [392]], [t + .14, .1, [392]], [t + .28, .1, [392]], [t + .42, .32, [523.3]], [t + .8, t ? .45 : .3, [659.3]]]);
+const HORNS = [
+  { name: 'Osobní auto', hint: 'Dvoutónový', hold: true, ...CAR_HORN },
+  { name: 'Zamčení auta', hint: 'Dvě krátká pípnutí', ...CAR_HORN, notes: [[0, .06], [.15, .06]] },
+  { name: 'Skútr a motorka', hint: 'Vysoký tón', hold: true, wave: 'square', tones: [587], filterType: 'bandpass', cutoff: 2400, q: 3, drive: 4, attack: .01, release: .04 },
+  { name: 'Kamion', hint: 'Vzduchová houkačka', hold: true, wave: 'sawtooth', tones: [185, 233, 277], cutoff: 2200, q: 2, drive: 2.5, attack: .08, release: .15, rise: .06, wobble: 8 },
+  { name: 'Americký vlak', hint: 'Pětitónový akord', hold: true, ...TRAIN_HORN, tones: [311.1, 370, 415.3, 493.9, 622.3] },
+  { name: 'Evropská lokomotiva', hint: 'Vysoký a nízký tón', ...TRAIN_HORN, attack: .08, release: .25, notes: [[0, .5, [415.3]], [.62, .75, [329.6]]] },
+  { name: 'Loď', hint: 'Hluboký lodní roh', hold: true, wave: 'sawtooth', tones: [87, 174], cutoff: 900, q: 1.2, drive: 2, attack: .45, release: .9, rise: .08, fall: .8, wobble: 4 },
+  { name: 'Plynová fanfára', hint: 'Stadion a oslavy', hold: true, wave: 'sawtooth', tones: [440, 444], cutoff: 6000, drive: 6, attack: .03, release: .08, rise: .03, wobble: 12 },
+  { name: 'Klaxon „aúga“', hint: 'Historický klakson', play: klaxon },
+  { name: 'Balónková houkačka', hint: 'Klaunská', play: bulbHorn },
+  { name: 'La Cucaracha', hint: 'Hudební klakson', wave: 'square', cutoff: 3500, drive: 2, attack: .01, release: .04, notes: CUCARACHA },
+  { name: 'Tramvaj', hint: 'Zvonec', play: tramBell },
+];
+let audioCtx, hornOut, hornEcho;
+function hornAudio() {
+  if (audioCtx) return;
+  audioCtx = new AudioContext();
+  const limiter = audioCtx.createDynamicsCompressor(), delay = audioCtx.createDelay(1), feedback = audioCtx.createGain(), damping = audioCtx.createBiquadFilter();
+  limiter.threshold.value = -8; limiter.ratio.value = 12;
+  delay.delayTime.value = .24; feedback.gain.value = .35; damping.frequency.value = 2500;
+  hornOut = audioCtx.createGain(); hornEcho = audioCtx.createGain(); hornEcho.gain.value = 0;
+  // Ozvěna: zpožděná kopie se zpětnou vazbou, výšky se s každým odrazem ztlumí.
+  hornOut.connect(limiter); hornOut.connect(hornEcho).connect(delay).connect(damping).connect(feedback).connect(delay); damping.connect(limiter);
+  limiter.connect(audioCtx.destination);
+}
+// Jeden hlas: oscilátory → zkreslení → filtr → obálka hlasitosti. Vrací stop() pro uvolnění.
+function voice(p, at, pitch) {
+  const c = audioCtx, env = c.createGain(), filter = c.createBiquadFilter(), drive = c.createWaveShaper(), k = p.drive || 1, hz = p.tones.map(f => f * pitch);
+  drive.curve = Float32Array.from({ length: 1024 }, (_, i) => Math.tanh(k * (i / 511.5 - 1)) / Math.tanh(k));
+  filter.type = p.filterType || 'lowpass'; filter.frequency.value = p.cutoff || 3000; filter.Q.value = p.q ?? 1;
+  drive.connect(filter).connect(env).connect(hornOut);
+  env.gain.setValueAtTime(0, at); env.gain.linearRampToValueAtTime(1, at + p.attack);
+  const lfo = p.wobble ? c.createOscillator() : null, depth = c.createGain();
+  if (lfo) { lfo.frequency.value = 5.5; depth.gain.value = p.wobble; lfo.connect(depth); lfo.start(at); }
+  const oscs = hz.map(f => {
+    const o = c.createOscillator(), level = c.createGain();
+    o.type = p.wave; o.detune.value = Math.random() * 8 - 4;
+    o.frequency.setValueAtTime(f * (1 - (p.rise || 0)), at); o.frequency.linearRampToValueAtTime(f, at + p.attack);
+    if (lfo) depth.connect(o.detune);
+    level.gain.value = .6 / Math.sqrt(hz.length);
+    o.connect(level).connect(drive); o.start(at);
+    return o;
+  });
+  return { oscs, filter, stop(t = c.currentTime) {
+    t = Math.max(t, at + p.attack + .06);
+    env.gain.setTargetAtTime(0, t, p.release / 4);
+    if (p.fall) oscs.forEach((o, i) => o.frequency.setTargetAtTime(hz[i] * p.fall, t, p.release / 2));
+    [...oscs, lfo].forEach(o => o?.stop(t + p.release * 1.5));
+    oscs[0].onended = () => env.disconnect();
+  } };
+}
+function playHorn(h, pitch) {
+  const at = audioCtx.currentTime + .01;
+  if (h.play) { h.play(at, pitch); return null; }
+  if (h.notes) { h.notes.forEach(([start, length, tones]) => voice({ ...h, tones: tones || h.tones }, at + start, pitch).stop(at + start + length)); return null; }
+  return voice(h, at, pitch);
+}
+// Klaxon: membránu roztáčí motor, tón proto stoupá („aú“) a na konci spadne („ga“).
+function klaxon(at, pitch) {
+  const v = voice({ wave: 'sawtooth', tones: [110], filterType: 'bandpass', cutoff: 1200, q: 2.5, drive: 5, attack: .04, release: .12 }, at, pitch), f = v.oscs[0].frequency, band = v.filter.frequency;
+  f.cancelScheduledValues(at); f.setValueAtTime(110 * pitch, at); f.exponentialRampToValueAtTime(330 * pitch, at + .38); f.setValueAtTime(330 * pitch, at + .62); f.exponentialRampToValueAtTime(165 * pitch, at + .9);
+  band.setValueAtTime(1400, at); band.linearRampToValueAtTime(650, at + .45); band.linearRampToValueAtTime(1000, at + .85);
+  v.stop(at + .85);
+}
+function bulbHorn(at, pitch) {
+  const v = voice({ wave: 'sawtooth', tones: [360], filterType: 'bandpass', cutoff: 1300, q: 4, drive: 6, attack: .02, release: .06 }, at, pitch), f = v.oscs[0].frequency;
+  f.cancelScheduledValues(at); f.setValueAtTime(360 * pitch, at); f.exponentialRampToValueAtTime(290 * pitch, at + .24);
+  v.filter.frequency.setValueAtTime(1500, at); v.filter.frequency.linearRampToValueAtTime(900, at + .24);
+  v.stop(at + .22);
+}
+// Zvonec: nesouzvučné alikvóty kovu, každý doznívá jinak rychle.
+function tramBell(at, pitch) {
+  for (const strike of [0, .24]) for (const [ratio, level, decay] of [[1, .45, 1.4], [2.76, .25, .7], [5.4, .12, .35], [8.93, .06, .2]]) {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t = at + strike;
+    o.frequency.value = 1180 * ratio * pitch;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(level, t + .003); g.gain.exponentialRampToValueAtTime(.0001, t + decay);
+    o.connect(g).connect(hornOut); o.start(t); o.stop(t + decay + .05);
+  }
+}
+function horns() {
+  root.innerHTML=panel(`<div class="horns">${HORNS.map((h, i) => `<button type="button" class="horn" data-horn="${i}"><b>${h.name}</b><small>${h.hint}${h.hold ? ', držte' : ''}</small></button>`).join('')}</div><div class="grid" style="margin-top:1.2rem"><label class="field"><span>Hlasitost <output id="volume-value"></output></span><input id="volume" type="range" min="0" max="100" value="70"></label><label class="field"><span>Ladění <output id="pitch-value"></output></span><input id="pitch" type="range" min="-7" max="7" step="1" value="0"></label></div><div class="actions"><label><input id="echo" type="checkbox"> Ozvěna mezi domy</label></div>`)+'<p class="note">Zvuky vznikají přímo v prohlížeči syntézou, nejde o nahrávky. Klaksony s poznámkou „držte“ znějí, dokud tlačítko držíte. Z klávesnice funguje mezerník nebo Enter. Ve sluchátkách začněte s nižší hlasitostí.</p>';
+  const settings = () => {
+    const p = num('pitch'), n = Math.abs(p);
+    document.querySelector('#volume-value').textContent = `${num('volume')} %`;
+    document.querySelector('#pitch-value').textContent = `${p > 0 ? '+' : p < 0 ? '−' : ''}${n} ${n === 1 ? 'půltón' : n >= 2 && n <= 4 ? 'půltóny' : 'půltónů'}`;
+    if (audioCtx) { hornOut.gain.value = (num('volume') / 100) ** 2; hornEcho.gain.value = document.querySelector('#echo').checked ? .5 : 0; }
+  };
+  const playing = new Map();
+  const press = (button, key) => {
+    if (playing.has(key)) return;
+    hornAudio(); audioCtx.resume(); settings();
+    playing.set(key, { button, voice: playHorn(HORNS[button.dataset.horn], 2 ** (num('pitch') / 12)) });
+    button.classList.add('active');
+  };
+  const release = key => { const p = playing.get(key); if (!p) return; playing.delete(key); p.voice?.stop(); p.button.classList.remove('active'); };
+  root.addEventListener('pointerdown', e => { const b = e.target.closest('[data-horn]'); if (!b || e.button) return; b.setPointerCapture(e.pointerId); press(b, e.pointerId); });
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) root.addEventListener(type, e => release(e.pointerId));
+  root.addEventListener('keydown', e => { const b = e.target.closest('[data-horn]'); if (!b || (e.key !== ' ' && e.key !== 'Enter')) return; e.preventDefault(); if (!e.repeat) press(b, 'key'); });
+  root.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') release('key'); });
+  root.addEventListener('contextmenu', e => { if (e.target.closest('[data-horn]')) e.preventDefault(); });
+  addEventListener('blur', () => [...playing.keys()].forEach(release));
+  root.addEventListener('input', settings); root.addEventListener('change', settings); settings();
+}
+
 const tools={
   nastroje:showCatalog,kalkulacka:calculator,procenta:percentages,trojclenka:ruleOfThree,dph:vat,spropitne:tip,
   'prevody-jednotek':unitConverter,'prevody-men':currencies,'casova-pasma':timeZones,'velikosti-obleceni':clothing,
@@ -502,6 +634,7 @@ const tools={
   'pocitadlo-slov':wordCounter,'formatovani-textu':textFormat,'qr-kod':qrCode,'generator-hesel':password,
   barvy:colors,kontrast:contrast,'rozmery-obrazku':imageDimensions,'komprese-obrazku':compressImage,metadata,
   exif:exifTool,'upravy-obrazku':imageEditor,'prevod-formatu':formatConverter,prohlizec:deviceInfo,bluetooth,
+  klakson:horns,
 };
 
 const fail = error => { console.error(error); root.innerHTML=panel('<p>Nástroj se nepodařilo spustit. Obnovte prosím stránku.</p>'); };

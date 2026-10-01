@@ -35,6 +35,7 @@ export const TOOLS = [
   ["prevod-formatu", "Převod formátů", "Převod dat mezi JSON, YAML, CSV, XML a dalšími formáty."],
   ["prohlizec", "Prohlížeč a zařízení", "Co o vašem zařízení ví prohlížeč a které funkce podporuje."],
   ["bluetooth", "Bluetooth", "Vyhledejte zařízení Bluetooth LE a přečtěte jejich údaje."],
+  ["klakson", "Klakson", "Zatrubte jako auto, kamion, vlak, loď nebo historický klaxon."],
 ];
 
 export const TOOL_BY_HOST = new Map(TOOLS.map(([slug, title, description]) => [
@@ -51,4 +52,5 @@ export const TOOL_CATALOG = [
   ["Text a obsah", ["pocitadlo-slov", "formatovani-textu", "qr-kod", "generator-hesel"]],
   ["Web a soubory", ["barvy", "kontrast", "upravy-obrazku", "rozmery-obrazku", "komprese-obrazku", "exif", "metadata"]],
   ["Vývoj a zařízení", ["prevod-formatu", "prohlizec", "bluetooth"]],
+  ["Zábava", ["klakson"]],
 ];
