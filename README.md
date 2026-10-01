@@ -221,36 +221,11 @@ Repo dřív obsahovalo projekt **fakan**. Je zazálohovaný:
 - větev `archive/fakan`
 - tag `archive-fakan-2026-06-02`
 
-# Online nástroje
+## Online nástroje
 
-Worker obsluhuje 35 samostatných nástrojů a rozcestník na `nastroje.indigostudio.cz`.
-Rozcestník zobrazuje nástroje jako interaktivní náhledy v iframe. Varianta
-`?embed=1` skrývá navigaci a lze ji vložit pouze z tohoto rozcestníku.
-Katalog odkazů vykresluje Worker přímo do HTML; každá subdoména má vlastní
-`robots.txt`, `sitemap.xml`, strukturovaná data a obrázek OG v `public/tools/og/`.
-Po změně názvu nebo popisu nástroje přegenerujte obrázky příkazem
-`node scripts/generate-tool-og.mjs` (vyžaduje `rsvg-convert`).
-Náhled posílá rozcestníku výšku svého obsahu (`postMessage`), karta proto roste
-bez posuvníku. Rozvržení nástrojů řídí container queries podle šířky `.tool`,
-ne okna: krátká pole (čísla, data, výběry) zůstávají ve sloupcích i v úzké kartě.
-Vpravo je svislá lišta s tečkou pro každou kartu (`renderToolNav` ve Workeru):
-po najetí ukáže názvy, tažením po ní se rychle listuje a karty mají kotvy
-podle slugu (např. `#klakson`).
-Subdomény jsou uvedené v `wrangler.toml`; názvy a popisy jsou v `src/tools-data.js`.
-Společný HTML obal je v `src/tools.page.html`, vzhled a logika v `public/tools/`.
-Každá stránka má odkaz na Indigo Studio v patičce.
-
-Převod měn načítá referenční denní kurzy z ECB přes `/api/kurzy` a zobrazuje
-datum kurzu. Výpočet čisté mzdy je omezen na běžný pracovní poměr v ČR a rok
-2026; před použitím pro další rok je nutné sazby a hranici v `app.js` ověřit.
-QR knihovna (`public/tools/qr.js`) a YAML knihovna js-yaml 4.3.2
-(`public/tools/js-yaml.js`, načítá ji jen Převod formátů) jsou MIT, fonty DM Sans
-a Literata jsou OFL; licence jsou uložené vedle těchto souborů.
-EXIF (`public/tools/exif.js`) čte a zapisuje metadata JPEG bez knihoven; údaje
-výrobce (MakerNote) přenáší beze změny. Bluetooth používá Web Bluetooth (jen
-Chrome a Edge), v náhledu na rozcestníku mu to povoluje `allow="bluetooth"`.
-
-Rozcestník `ceska-republika.indigostudio.cz` přidává odkazy na veřejné i
-komerční online služby. Seznam se spravuje v `src/ceska-republika-data.js`,
-stránka je v `src/ceska-republika.page.html` a její vzhled a vyhledávání
-v `public/ceska-republika/`. Po úpravě odkazů ověřte cílové adresy.
+Přehled `nastroje.indigostudio.cz`, 35 nástrojů na vlastních subdoménách a rozcestník
+`ceska-republika.indigostudio.cz` se 1. 10. 2026 přestěhovaly i s historií do repozitáře
+[IndigoStudioCZ/nastroje](https://github.com/IndigoStudioCZ/nastroje) a nasazuje je
+samostatný Worker `nastroje`. Tady z nich zůstaly jen odkazy v patičce `index.html`,
+sitemapy v `robots.txt` a přesměrování starých obrázků `/tools/og/*` na novou adresu.
+Jejich domény do `wrangler.toml` vizitky nepatří: nasazení by si je přetáhlo zpátky.

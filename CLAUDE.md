@@ -34,6 +34,9 @@ Jedna stránka, žádný build step, žádné frameworky.
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`
+- Online nástroje (`nastroje.`, subdomény nástrojů, `ceska-republika.`) tady nejsou: žijí
+  v repozitáři `IndigoStudioCZ/nastroje` (`~/nastroje.indigostudio.cz`) na vlastním Workeru
+  `nastroje`. Jejich domény do `wrangler.toml` nepřidávat — nasazení vizitky by si je přetáhlo.
 - `wrangler.toml` — Worker config (route `indigostudio.cz`, custom_domain, `send_email` binding)
 - auto-deploy: Cloudflare Workers Builds (git push → CF nasadí, bez tokenu)
 
