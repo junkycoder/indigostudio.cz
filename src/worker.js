@@ -83,6 +83,14 @@ export default {
       assetRequest = new Request(assetUrl, request);
     }
 
+    // Ověřovací soubor Google Search Console musí odpovědět 200 přesně na /googleXXXX.html.
+    // Assets by .html přesměrovaly na adresu bez přípony, proto se ptáme rovnou na ni.
+    if (/^\/google[0-9a-f]+\.html$/.test(url.pathname)) {
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = url.pathname.slice(0, -".html".length);
+      assetRequest = new Request(assetUrl, request);
+    }
+
     // statika + bezpečnostní hlavičky
     const res = await env.ASSETS.fetch(assetRequest);
     const headers = new Headers(res.headers);
