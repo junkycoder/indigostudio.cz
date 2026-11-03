@@ -42,7 +42,7 @@ Jedna stránka, žádný build step, žádné frameworky.
 
 ## Firemní údaje (zdroj pravdy pro texty na webu)
 
-- Indigo Studio s.r.o., IČO 14389096
+- Indigo Studio s.r.o., IČO 14389096, DIČ CZ14389096 (plátce DPH)
 - Sídlo: Chudenická 1059/30, Hostivař, 102 00 Praha
 - BÚ: 2802169026/2010 (Fio)
 - Kontakty: info@ / veronika@ / daniel@ — reálné schránky v Zoho Mail (EU DC, free).
