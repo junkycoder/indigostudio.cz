@@ -29,8 +29,8 @@ Jedna stránka, žádný build step, žádné frameworky.
   pro čtečky jeden statický popis motivů na konci `<body>` (bez aria-live)
 - `public/nav.js` — rozbalovací nabídka „Naše služby" v horní liště (`<details class="nav-group">`,
   uvnitř Hosting a Školení); skript jen zavírá menu kliknutím mimo a Escapem, bez něj funguje dál
-- `public/cursors.js` — kurzory ve stylu malůvek jen nad kartami (motiv podle typu karty),
-  připojit hned za doodles.js; nová karta = řádek v `CARDS`
+- `public/cursors.js` — kurzory jen nad kartami: klasická šipka / ruka s kulatým odznakem
+  (značka podle typu karty), připojit hned za doodles.js; nová karta = řádek v `CARDS`
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`
@@ -45,6 +45,8 @@ Jedna stránka, žádný build step, žádné frameworky.
 - Indigo Studio s.r.o., IČO 14389096, DIČ CZ14389096 (plátce DPH)
 - Sídlo: Chudenická 1059/30, Hostivař, 102 00 Praha
 - BÚ: 2802169026/2010 (Fio)
+- Telefon (firemní, i WhatsApp): +420 777 407 690; Daniel +420 604 690 539,
+  Veronika +420 737 176 622
 - Kontakty: info@ / veronika@ / daniel@ — reálné schránky v Zoho Mail (EU DC, free).
   Webmail mail.zoho.eu, IMAP/SMTP smtp.zoho.eu. (Dřív forwarding přes CF Email
   Routing — nahrazeno, viz README „Email".)
@@ -61,7 +63,6 @@ Jedna stránka, žádný build step, žádné frameworky.
 ## TODO od zadavatele
 
 - Dodat fotky do `public/team/` (info/veronika/daniel.jpg).
-- Doplnit telefon na info (v `index.html` připravený zakomentovaný `.phone` řádek).
 - Mail (Zoho + Resend) — runbook v README „Email (Zoho Mail + Resend)":
   1. Zoho Mail (EU DC, free): ověřit doménu, založit schránky info@/veronika@/daniel@.
   2. Vypnout CF Email Routing → nastavit MX na Zoho (mx*.zoho.eu) + SPF/DKIM/DMARC.

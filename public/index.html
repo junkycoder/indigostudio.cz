@@ -42,6 +42,7 @@
   "logo": "https://indigostudio.cz/apple-touch-icon.png",
   "image": "https://indigostudio.cz/og.png",
   "email": "info@indigostudio.cz",
+  "telephone": "+420777407690",
   "description": "Softwarové studio. Od interních nástrojů po veřejné produkty.",
   "taxID": "14389096",
   "vatID": "CZ14389096",
@@ -94,6 +95,7 @@
     "@type": "ContactPoint",
     "contactType": "customer service",
     "email": "info@indigostudio.cz",
+    "telephone": "+420777407690",
     "areaServed": "CZ",
     "availableLanguage": ["cs"]
   }
@@ -118,6 +120,10 @@
     --fg-muted: #a3a4ae;
     --fg-faint: #6f707b;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --cta-bg: #4f46e5;
+    --cta-bg-hover: #5a52ee;
+    --wa: #25d366;
+    --wa-soft: rgba(37, 211, 102, 0.12);
   }
   @media (prefers-color-scheme: light) {
     :root {
@@ -132,6 +138,9 @@
       --fg-muted: #555766;
       --fg-faint: #8b8c98;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+      --cta-bg-hover: #4338ca;
+      --wa: #16a34a;
+      --wa-soft: rgba(22, 163, 74, 0.1);
     }
   }
 
@@ -263,28 +272,52 @@
   .panel-sub { font-size: 0.9rem; color: var(--fg-muted); margin: 0.3rem 0 1.1rem; line-height: 1.5; }
 
   /* ---- Poptávka (rychlé kontaktní cesty) ---- */
-  .cta-group { display: flex; flex-direction: column; gap: 0.6rem; }
+  /* e-mail = hlavní tlačítko (plné), WhatsApp = vedlejší (obrys); v popisku adresa / číslo */
+  .cta-group { display: grid; gap: 0.6rem; }
   .cta {
-    display: flex; align-items: flex-start; gap: 0.9rem;
-    text-decoration: none; color: inherit;
+    display: flex; align-items: center; gap: 0.9rem;
+    min-height: 4.25rem; padding: 0.8rem 1.1rem 0.8rem 0.8rem;
+    text-decoration: none; color: var(--fg);
     background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem 1.1rem;
-    transition: border-color 0.2s var(--ease);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease), transform 0.2s var(--ease);
   }
   .cta:hover { border-color: var(--accent); }
+  .cta:active { transform: translateY(1px); }
   .cta-ico {
-    flex: 0 0 auto; width: 36px; height: 36px;
+    flex: 0 0 auto; width: 42px; height: 42px;
     display: grid; place-items: center;
-    border-radius: 4px;
-    background: var(--accent-soft); color: var(--accent);
+    border-radius: 6px;
   }
-  .cta-ico svg { width: 19px; height: 19px; }
-  .cta-text { display: flex; flex-direction: column; gap: 0.2rem; }
+  .cta-ico svg { width: 20px; height: 20px; }
+  .cta-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
   .cta-title { font-weight: 600; font-size: 0.98rem; letter-spacing: -0.01em; }
-  .cta-desc { color: var(--fg-muted); font-size: 0.86rem; line-height: 1.5; }
-  .cta-note { font-size: 0.84rem; color: var(--fg-faint); margin-top: 1rem; line-height: 1.55; }
+  .cta-desc { color: var(--fg-muted); font-size: 0.86rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .cta-arrow { flex: 0 0 auto; width: 18px; height: 18px; color: var(--fg-faint); transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .cta:hover .cta-arrow { color: var(--accent); transform: translateX(3px); }
+
+  .cta-primary {
+    color: #fff; background: var(--cta-bg); border-color: transparent;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .cta-primary:hover { background: var(--cta-bg-hover); border-color: transparent; }
+  .cta-primary .cta-ico { background: rgba(255, 255, 255, 0.14); color: #fff; }
+  .cta-primary .cta-desc { color: rgba(255, 255, 255, 0.8); }
+  .cta-primary .cta-arrow, .cta-primary:hover .cta-arrow { color: #fff; }
+
+  .cta-wa .cta-ico { background: var(--wa-soft); color: var(--wa); }
+  .cta-wa:hover .cta-arrow { transform: translate(2px, -2px); }
+
+  .cta-note { display: flex; gap: 0.6rem; font-size: 0.84rem; color: var(--fg-muted); margin-top: 1.1rem; line-height: 1.55; }
+  /* zelená tečka = jsme k zastižení */
+  .cta-note::before {
+    content: ""; flex: 0 0 auto; width: 7px; height: 7px; margin-top: 0.5em; border-radius: 50%;
+    background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  }
+  .cta-call { font-size: 0.84rem; color: var(--fg-faint); margin: 0.35rem 0 0 calc(7px + 0.6rem); }
+  .cta-call a { color: var(--fg-muted); text-decoration: none; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--border-strong); transition: color 0.2s var(--ease), border-color 0.2s var(--ease); }
+  .cta-call a:hover { color: var(--accent); border-color: var(--accent); }
 
   /* ---- Co umíme (živé vyhledávání schopností) ---- */
   .cap-search {
@@ -353,8 +386,14 @@
   .meta { display: flex; flex-direction: column; min-width: 0; }
   .card .name { font-weight: 600; font-size: 0.95rem; }
   .card .role { color: var(--fg-faint); font-size: 0.8rem; margin-bottom: 0.15rem; }
-  .card .email { color: var(--fg-muted); font-size: 0.85rem; overflow-wrap: anywhere; }
-  .card-main:hover .email { color: var(--accent); }
+  /* e-mail a telefon = samostatné odkazy, karta sama odkazem není */
+  .card .email, .card .phone {
+    width: fit-content; color: var(--fg-muted); font-size: 0.85rem; text-decoration: none;
+    transition: color 0.2s var(--ease);
+  }
+  .card .email { overflow-wrap: anywhere; }
+  .card .phone { font-variant-numeric: tabular-nums; }
+  .card .email:hover, .card .phone:hover { color: var(--accent); }
   .card .databox { color: var(--fg-faint); font-size: 0.78rem; margin-top: 0.1rem; }
   /* „Uložit kontakt" — stažení vCard (.vcf), funguje i bez JS */
   .vcf {
@@ -437,7 +476,7 @@
     .business-card .bc-contacts .bc-web { font-size: 2.7mm; font-weight: 700; color: #15161d; }
     .business-card .bc-contacts .bc-person { margin-top: 1.4mm; font-size: 3.2mm; font-weight: 700; color: #6366f1; letter-spacing: -0.01em; }
     .business-card .bc-contacts .bc-role { font-size: 2.4mm; color: #5a5b6a; }
-    .business-card .bc-contacts .bc-mail { font-size: 2.7mm; color: #15161d; }
+    .business-card .bc-contacts :is(.bc-mail, .bc-tel) { font-size: 2.7mm; color: #15161d; }
     .business-card .bc-legal { font-size: 2.1mm; color: #9a9ba8; text-align: right; line-height: 1.45; white-space: nowrap; }
     /* Ořezové značky v rozích — leží v okraji mimo vizitku, ať se snadno stříhá */
     .business-card .crop { position: absolute; width: 3mm; height: 3mm; }
@@ -509,29 +548,32 @@
 
     <section class="panel" aria-labelledby="poptavka">
       <h2 id="poptavka">Poptávka</h2>
-      <p class="panel-sub">Zvolte si způsob komunikace, který vám nejvíce vyhovuje:</p>
+      <p class="panel-sub">Stačí v&nbsp;několika větách popsat, co řešíte. Vyberte cestu, která vám vyhovuje.</p>
       <div class="cta-group">
-        <a class="cta" data-mail href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">
+        <a class="cta cta-primary" data-mail href="mailto:info@indigostudio.cz?subject=Popt%C3%A1vka">
           <span class="cta-ico" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
           </span>
           <span class="cta-text">
             <span class="cta-title">Napsat e-mail</span>
-            <span class="cta-desc">Kliknutím otevřete zprávu s&nbsp;předpřipraveným předmětem, stačí jen stručně uvést vaše zadání.</span>
+            <span class="cta-desc">info@indigostudio.cz</span>
           </span>
+          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
         </a>
         <!-- WhatsApp: mezinárodní formát bez +, mezer a 0 na začátku -->
-        <a class="cta" data-wa href="https://wa.me/420770371535" target="_blank" rel="noopener">
+        <a class="cta cta-wa" data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">
           <span class="cta-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
           </span>
           <span class="cta-text">
             <span class="cta-title">Napsat přes WhatsApp</span>
-            <span class="cta-desc">Rychlá cesta pro operativní zadání nebo v&nbsp;případě, že web prohlížíte z&nbsp;mobilního telefonu.</span>
+            <span class="cta-desc">+420&nbsp;777&nbsp;407&nbsp;690</span>
           </span>
+          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
         </a>
       </div>
       <p class="cta-note">Na vaši zprávu odpovím nebo vás telefonicky kontaktuji nejpozději do několika hodin.</p>
+      <p class="cta-call">Raději telefonicky? <a href="tel:+420777407690">+420&nbsp;777&nbsp;407&nbsp;690</a></p>
     </section>
   </div>
 
@@ -539,38 +581,40 @@
     <h2 class="section-label">Kontakty</h2>
     <nav class="contacts" aria-label="Kontakty">
       <div class="card">
-        <a class="card-main" href="mailto:info@indigostudio.cz">
+        <div class="card-main">
           <span class="avatar"><img src="/team/info.jpg" alt="" loading="lazy" onerror="this.remove()"><span>IS</span></span>
           <span class="meta">
             <span class="name">Office</span>
             <span class="role">Obecné dotazy a&nbsp;opravy</span>
-            <span class="email">info@indigostudio.cz</span>
-            <!-- <span class="phone">+420 XXX XXX XXX</span> -->
+            <a class="email" href="mailto:info@indigostudio.cz">info@indigostudio.cz</a>
+            <a class="phone" href="tel:+420777407690">+420&nbsp;777&nbsp;407&nbsp;690</a>
             <span class="databox"><abbr title="Datová schránka">fi4uxhj</abbr></span>
           </span>
-        </a>
+        </div>
         <a class="vcf" href="/team/info.vcf" download="Indigo Studio – Office.vcf" aria-label="Uložit kontakt Office"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Uložit kontakt</a>
       </div>
       <div class="card">
-        <a class="card-main" href="mailto:veronika@indigostudio.cz">
+        <div class="card-main">
           <span class="avatar"><img src="/team/veronika.jpg" alt="" loading="lazy" onerror="this.remove()"><span>VH</span></span>
           <span class="meta">
             <span class="name">Veronika</span>
             <span class="role">Fakturace a&nbsp;podpora</span>
-            <span class="email">veronika@indigostudio.cz</span>
+            <a class="email" href="mailto:veronika@indigostudio.cz">veronika@indigostudio.cz</a>
+            <a class="phone" href="tel:+420737176622">+420&nbsp;737&nbsp;176&nbsp;622</a>
           </span>
-        </a>
+        </div>
         <a class="vcf" href="/team/veronika.vcf" download="Indigo Studio – Veronika Hallerová.vcf" aria-label="Uložit kontakt na Veroniku"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Uložit kontakt</a>
       </div>
       <div class="card">
-        <a class="card-main" href="mailto:daniel@indigostudio.cz">
+        <div class="card-main">
           <span class="avatar"><img src="/team/daniel.jpg" alt="" loading="lazy" onerror="this.remove()"><span>DH</span></span>
           <span class="meta">
             <span class="name">Daniel</span>
             <span class="role">Vývoj a&nbsp;DevOps</span>
-            <span class="email">daniel@indigostudio.cz</span>
+            <a class="email" href="mailto:daniel@indigostudio.cz">daniel@indigostudio.cz</a>
+            <a class="phone" href="tel:+420604690539">+420&nbsp;604&nbsp;690&nbsp;539</a>
           </span>
-        </a>
+        </div>
         <a class="vcf" href="/team/daniel.vcf" download="Indigo Studio – Daniel Hromada.vcf" aria-label="Uložit kontakt na Daniela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Uložit kontakt</a>
       </div>
     </nav>
@@ -614,6 +658,7 @@
         <div class="bc-person">Office</div>
         <div class="bc-role">Obecné dotazy a opravy</div>
         <div class="bc-mail">info@indigostudio.cz</div>
+        <div class="bc-tel">+420 777 407 690</div>
       </div>
       <div class="bc-legal">
         Indigo Studio s.r.o.<br>
@@ -639,6 +684,7 @@
         <div class="bc-person">Veronika Hallerová</div>
         <div class="bc-role">Fakturace a podpora</div>
         <div class="bc-mail">veronika@indigostudio.cz</div>
+        <div class="bc-tel">+420 737 176 622</div>
       </div>
       <div class="bc-legal">
         Indigo Studio s.r.o.<br>
@@ -664,6 +710,7 @@
         <div class="bc-person">Daniel Hromada</div>
         <div class="bc-role">Vývoj a DevOps</div>
         <div class="bc-mail">daniel@indigostudio.cz</div>
+        <div class="bc-tel">+420 604 690 539</div>
       </div>
       <div class="bc-legal">
         Indigo Studio s.r.o.<br>
@@ -700,7 +747,8 @@
       { t: "Google Workspace a Apps Script", d: "Automatizace nad Tabulkami, Dokumenty, Diskem, Kalendářem a Gmailem přes Google Apps Script.", k: "google workspace gsuite g suite apps script appscript gas tabulky tabulka sheets sheet spreadsheet dokumenty docs disk drive soubory files kalendar calendar gmail email formulare forms sites stranky makro skript automatizace workflow", hidden: true },
       { t: "Google Ads", d: "Nastavení účtu, kampaní a měření konverzí.", k: "google ads adwords reklama ppc kampan kampane konverze analytics ga4 tag manager gtm mereni", hidden: true },
       { t: "Hosting webu", d: "Rychlý hosting statických webů, doména a firemní e-mail. Web od současného poskytovatele přeneseme, do jisté velikosti zdarma.", k: "hosting hosting webu web stranky server prenos migrace prevod stehovani domena registrator subreg gransy wedos banan forpsi certifikat https ssl zalohy staticky web rychlost cdn cloudflare git verzovani nasazeni preview email schranka posta mx spf dkim dmarc" },
-      { t: "Údržba a provoz", d: "Hosting, DevOps, opravy a dlouhodobá podpora.", k: "udrzba provoz hosting devops podpora oprava sprava server linux zalohy" }
+      { t: "Údržba a provoz", d: "Hosting, DevOps, opravy a dlouhodobá podpora.", k: "udrzba provoz hosting devops podpora oprava sprava server linux zalohy" },
+      { t: "Mytí aut", d: "Software pro myčky a autokosmetiku: rezervace, objednávky, věrnostní program i&nbsp;evidence zakázek.", k: "myti aut auto automobil vuz mycka mycky autokosmetika detailing rucni myti rezervace objednavky vernostni program zakazky" }
     ];
     // Zdroj kampaně bez cookies: ?k=… se propíše do předmětu e-mailu a textu zprávy
     var src = new URLSearchParams(location.search).get("k");
@@ -709,7 +757,7 @@
     if (src) {
       document.querySelectorAll("[data-mail]").forEach(function (a) { a.href = MAIL; });
       document.querySelectorAll("[data-wa]").forEach(function (a) {
-        a.href = "https://wa.me/420770371535?text=" + encodeURIComponent("Dobrý den, mám poptávku." + src);
+        a.href = "https://wa.me/420777407690?text=" + encodeURIComponent("Dobrý den, mám poptávku." + src);
       });
     }
     var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
