@@ -16,6 +16,14 @@ Studio vedou dva partneři, na projektech spolupracujeme s prověřenou sítí s
 - [Pásek](https://indigostudio.cz/projekty/pasek): MVP aplikace pro digitální pas nemovitosti z iPhonu (Swift, RoomPlan, ARKit)
 - [Cookie lišta](https://indigostudio.cz/cookies): kdy web cookie lištu nepotřebuje
 
+## Jazykové verze
+
+Celý web je i anglicky a vietnamsky se stejným obsahem. České adresy jsou na kořeni,
+ostatní pod předponou jazyka se společnými anglickými adresami (`/skoleni` → `/en/training`, `/vi/training`).
+
+- [English](https://indigostudio.cz/en/): https://indigostudio.cz/en/hosting, /en/development-takeover, /en/training, /en/projects, /en/cookies
+- [Tiếng Việt](https://indigostudio.cz/vi/): https://indigostudio.cz/vi/hosting, /vi/development-takeover, /vi/training, /vi/projects, /vi/cookies
+
 ## Technologie a nástroje
 
 - Infrastruktura: nejraději Cloudflare (Workers, Pages, R2), dále Firebase, Google Cloud a AWS; také on-premise a Docker

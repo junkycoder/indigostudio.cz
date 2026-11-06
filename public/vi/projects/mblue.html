@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>mBlue — CRM và ATS theo yêu cầu cho công ty tuyển dụng nhân sự | Indigo Studio</title>
+<meta name="description" content="Dự án tiêu biểu: hệ thống CRM và tuyển dụng riêng cho công ty nhân sự mBlue. Kinh doanh, tuyển dụng, bảng chấm công, hóa đơn và báo cáo trong một ứng dụng, thay cho hệ thống đã dùng nhiều năm.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/vi/projects/mblue">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/mblue">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/mblue">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/mblue">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/mblue">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="mBlue — CRM và ATS theo yêu cầu cho công ty tuyển dụng nhân sự">
+<meta property="og:description" content="Kinh doanh, tuyển dụng, bảng chấm công, hóa đơn và báo cáo trong một ứng dụng, thay cho hệ thống đã dùng nhiều năm.">
+<meta property="og:url" content="https://indigostudio.cz/vi/projects/mblue">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://indigostudio.cz/og-vi.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="mBlue — CRM và ATS theo yêu cầu cho công ty tuyển dụng nhân sự">
+<meta name="twitter:description" content="Kinh doanh, tuyển dụng, bảng chấm công, hóa đơn và báo cáo trong một ứng dụng, thay cho hệ thống đã dùng nhiều năm.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-vi.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 22ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 60ch; }
+
+  /* fakta o projektu */
+  .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); }
+  .facts div { padding: 1rem 1.2rem; border-left: 1px solid var(--border); }
+  .facts div:first-child { border-left: 0; }
+  .facts dt { font-size: 0.76rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 0.25rem; }
+  .facts dd { font-size: 0.92rem; font-weight: 550; }
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+
+  /* výzvy */
+  .challenges { display: flex; flex-direction: column; gap: 0.75rem; }
+  .challenge { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.2rem 1.3rem; }
+  .challenge h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+  .challenge dl { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 0.35rem 1rem; }
+  .challenge dt { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-faint); padding-top: 0.2rem; }
+  .challenge dd { font-size: 0.92rem; color: var(--fg-muted); }
+
+  .tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.2rem 0 1.1rem; }
+  .tags li { font-size: 0.8rem; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 3px; padding: 0.15rem 0.55rem; background: var(--surface); }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .facts div:nth-child(3) { border-left: 0; }
+    .facts div:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules { grid-template-columns: 1fr; }
+    .challenge dl { grid-template-columns: 1fr; gap: 0.1rem; }
+    .challenge dd + dt { margin-top: 0.5rem; }
+    .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script src="/doodles.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Điều hướng chính">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Dịch vụ
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/vi/hosting">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/vi/training">
+            Đào tạo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/vi/projects">
+        Dự án tiêu biểu, sản phẩm mẫu và khách hàng
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Ngôn ngữ: </span>Tiếng Việt
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/projekty/mblue" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/projects/mblue" hreflang="en" lang="en">English</a>
+        <a class="nav-menu-link" href="/vi/projects/mblue" hreflang="vi" lang="vi" aria-current="true">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Đường dẫn điều hướng">
+      <a href="/vi/">Trang chủ</a><span class="sep">/</span><a href="/vi/projects">Dự án</a><span class="sep">/</span><span aria-current="page">mBlue</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Dự án tiêu biểu · Nhân sự và tuyển dụng</p>
+      <h1>Hệ thống CRM và tuyển dụng theo yêu cầu cho công ty tuyển dụng nhân sự mBlue</h1>
+      <p class="lead">mBlue Czech tìm kiếm nhân sự cho các doanh nghiệp khách hàng và cung cấp dịch vụ tư vấn nhân sự. Trong nhiều năm, công ty làm việc trên một hệ thống không còn đáp ứng được nhu cầu. Chúng tôi đã thiết kế và phát triển một ứng dụng giúp đội ngũ quản lý kinh doanh, tuyển dụng, bảng chấm công và báo cáo tại một nơi — đồng thời chuyển toàn bộ dữ liệu lịch sử của công ty sang ứng dụng này.</p>
+    </header>
+
+    <dl class="facts">
+      <div><dt>Khách hàng</dt><dd>mBlue Czech s.r.o.</dd></div>
+      <div><dt>Lĩnh vực</dt><dd>Tuyển dụng nhân sự</dd></div>
+      <div><dt>Phạm vi</dt><dd>Thiết kế, phát triển, chuyển đổi dữ liệu</dd></div>
+      <div><dt>Thời gian</dt><dd>Tháng 4 – tháng 9 năm 2026</dd></div>
+    </dl>
+
+    <div class="stats">
+      <div class="stat"><strong>250&nbsp;nghìn</strong><span>bản ghi trong kiểm thử tải cho tìm kiếm và danh sách</span></div>
+      <div class="stat"><strong>2.500+</strong><span>bài kiểm thử tự động, bao gồm các kịch bản end-to-end</span></div>
+      <div class="stat"><strong>5,5&nbsp;tháng</strong><span>từ dòng code đầu tiên đến giai đoạn kiểm thử tại khách hàng</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1"><span class="num">01</span>Tình hình ban đầu</h2>
+      <div class="prose">
+        <p>Công ty quản lý khách hàng, ứng viên và đơn hàng tuyển dụng trong một hệ thống đa năng đã sử dụng nhiều năm. Hệ thống này không còn phù hợp với cách làm việc của công ty:</p>
+        <ul class="list">
+          <li><strong>Không thể ghi nhận nhiều người cùng phụ trách một đơn hàng</strong>, dù việc tuyển dụng thường do cả một nhóm thực hiện.</li>
+          <li><strong>Không có chức năng xóa hẳn dữ liệu cá nhân</strong> theo GDPR kèm ghi nhận ai đã xóa và vào lúc nào.</li>
+          <li><strong>Kinh doanh, tuyển dụng và hóa đơn tách rời nhau</strong> — số liệu cho ban lãnh đạo phải tổng hợp thủ công.</li>
+        </ul>
+        <p>Mục tiêu không phải là thêm một phần mềm đóng gói, mà là một hệ thống được xây dựng đúng theo cách công ty kinh doanh, tuyển người cho các vị trí và đánh giá kết quả.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2"><span class="num">02</span>Những gì chúng tôi đã xây dựng</h2>
+      <div class="prose">
+        <p>Một ứng dụng duy nhất cho toàn công ty — cho chuyên viên tư vấn, trưởng nhóm, bộ phận back office và ban lãnh đạo. Công việc dựa trên giao diện danh sách–chi tiết nhanh, nơi mọi thay đổi được cập nhật ngay mà không cần tải lại trang.</p>
+        <div class="modules">
+          <div class="module"><h3>Cơ sở dữ liệu ứng viên</h3><p>Tìm kiếm toàn văn cả trong nội dung CV, kiểm tra trùng lặp, nhãn và ngôn ngữ. CV được tải lên sẽ tự điền sẵn biểu mẫu.</p></div>
+          <div class="module"><h3>Khách hàng và người liên hệ</h3><p>Hồ sơ doanh nghiệp với tra cứu trong ARES (cơ sở dữ liệu doanh nghiệp của Séc), ngành nghề, phân khúc và quan hệ trong tập đoàn.</p></div>
+          <div class="module"><h3>Pipeline kinh doanh</h3><p>Tìm kiếm khách hàng mới và giữ chân khách hàng hiện có, kèm báo giá. Hợp đồng đã ký sẽ tự động tạo dự án tuyển dụng.</p></div>
+          <div class="module"><h3>Tuyển dụng và tuyển chọn</h3><p>Các giai đoạn tuyển dụng tùy chỉnh trên một khung báo cáo cố định, phễu tuyển dụng, lý do từ chối và ngày nhận việc.</p></div>
+          <div class="module"><h3>Tính giá</h3><p>Báo giá dịch vụ theo danh mục và điều kiện thương mại, chỉ các vai trò được chỉ định mới có quyền sử dụng.</p></div>
+          <div class="module"><h3>Bảng chấm công và hóa đơn</h3><p>Timesheet, xuất dữ liệu, hóa đơn PDF có mã QR thanh toán và kế hoạch tài chính.</p></div>
+          <div class="module"><h3>Tài liệu và bản ghi âm</h3><p>Trích xuất văn bản từ PDF, tệp văn phòng và bản quét (OCR), chuyển bản ghi âm thành văn bản.</p></div>
+          <div class="module"><h3>Báo cáo</h3><p>Báo cáo quản trị, kinh doanh, kế toán và delivery trên cùng một nguồn dữ liệu thống nhất.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3"><span class="num">03</span>Chuyển đổi dữ liệu lịch sử</h2>
+      <div class="prose">
+        <p>Nếu không có dữ liệu lịch sử, ứng dụng mới sẽ không có giá trị đối với công ty. Chúng tôi đã chuyển khách hàng, ứng viên, đơn hàng và diễn biến các quy trình tuyển chọn từ hệ thống cũ sang. Khách hàng quyết định dữ liệu nào cần chuyển và dữ liệu nào giữ lại trong kho lưu trữ.</p>
+        <p>Quá trình chuyển đổi <strong>có thể chạy lặp lại</strong> — lần chạy tiếp theo không tạo bản trùng — và nêu rõ lý do cho mỗi bản ghi bị bỏ qua. Nhờ đó khách hàng nắm được dữ liệu nào đã được chuyển và vì sao, còn lịch sử có thể tra cứu trong ứng dụng mới ngay từ ngày đầu tiên.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4"><span class="num">04</span>Thách thức và giải pháp</h2>
+      <div class="challenges">
+        <article class="challenge">
+          <h3>Báo cáo phản ánh đúng thực tế</h3>
+          <dl>
+            <dt>Vấn đề</dt><dd>Mỗi nhóm đặt tên các giai đoạn tuyển dụng theo cách riêng. Vì vậy các hệ thống thông thường không thể so sánh kết quả giữa các dự án.</dd>
+            <dt>Giải pháp</dt><dd>Tên giai đoạn tùy chỉnh được ánh xạ vào tám bước cố định dùng cho báo cáo. Khi ứng viên quay lại một bước, lịch sử không bị mất — hệ thống phân biệt ứng viên hiện đang ở đâu và đã tiến xa nhất đến bước nào.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Tìm kiếm và sắp xếp theo tiếng Séc</h3>
+          <dl>
+            <dt>Vấn đề</dt><dd>Cơ sở dữ liệu lớn, chữ có dấu và họ tên phải được sắp xếp đúng theo quy tắc tiếng Séc.</dd>
+            <dt>Giải pháp</dt><dd>Tìm kiếm toàn văn tìm được bản ghi theo phần đầu của từ, dù có dấu hay không dấu; sắp xếp theo tiếng Séc hoạt động trong toàn bộ ứng dụng và người được sắp xếp theo họ. Chúng tôi đã kiểm chứng tốc độ bằng kiểm thử tải trên 250&nbsp;nghìn bản ghi, còn tính chính xác của việc sắp xếp được kiểm thử tự động giám sát.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Giao diện thống nhất và dễ tiếp cận</h3>
+          <dl>
+            <dt>Vấn đề</dt><dd>Hàng chục màn hình mà người dùng làm việc suốt cả ngày.</dd>
+            <dt>Giải pháp</dt><dd>Hệ thống thiết kế (design system) riêng với danh mục thành phần trực quan, hiển thị trực tiếp chính các thành phần đang chạy trong ứng dụng thực tế. Kiểm thử tự động kiểm tra độ tương phản, kích thước các nút điều khiển và nhãn cho trình đọc màn hình.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Dữ liệu cá nhân trong tầm kiểm soát</h3>
+          <dl>
+            <dt>Vấn đề</dt><dd>Công ty quản lý dữ liệu cá nhân nhạy cảm của ứng viên và người liên hệ phía khách hàng.</dd>
+            <dt>Giải pháp</dt><dd>Xóa vĩnh viễn dữ liệu cá nhân kèm bản ghi lưu vết, đăng nhập bằng liên kết dùng một lần không cần mật khẩu, chính sách bảo mật nội dung (Content Security Policy) và chỉ cho phép gửi email đi tới các địa chỉ được phép.</dd>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5"><span class="num">05</span>Công nghệ và chất lượng</h2>
+      <div class="prose">
+        <ul class="tags">
+          <li>Ruby on Rails 8</li><li>Solid Queue</li><li>Design system riêng</li><li>Playwright</li><li>Minitest</li><li>ARES</li><li>Teamio</li><li>AWS S3</li><li>Sentry</li>
+        </ul>
+        <p>Vận hành đơn giản có chủ đích: tác vụ nền không cần thêm dịch vụ nào khác và không dùng framework frontend. Nhờ vậy ứng dụng có thể được bảo trì lâu dài mà chi phí hạ tầng không tăng lên.</p>
+        <p>Chất lượng được đảm bảo bởi hơn 2.000 bài kiểm thử unit và tích hợp cùng gần 500 kịch bản end-to-end trên trình duyệt, phân tích bảo mật tĩnh và các môi trường tách biệt cho phát triển, kiểm thử và vận hành.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s6">
+      <h2 id="s6"><span class="num">06</span>Kết quả</h2>
+      <div class="prose">
+        <p>Trong năm tháng rưỡi, chúng tôi đã xây dựng một ứng dụng bao quát toàn bộ chu trình hoạt động của công ty — từ cơ hội kinh doanh, qua tuyển dụng và bảng chấm công, đến hóa đơn và báo cáo cho ban lãnh đạo. Dữ liệu lịch sử đã được chuyển đổi và có thể tra cứu.</p>
+        <p>Từ cuối tháng 8 năm 2026, đội ngũ của khách hàng đang kiểm tra ứng dụng và việc phát triển tiếp tục dựa trên phản hồi của họ — hiện tại là báo cáo quản trị, đăng tin tuyển dụng lên các cổng việc làm và trang tổng quan mới trên màn hình chính.</p>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Quý khách cần một hệ thống theo yêu cầu?</h2>
+        <p>Hãy cho chúng tôi biết cách Quý khách đang làm việc hiện nay, chúng tôi sẽ đề xuất giải pháp.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" href="/vi/projects">Dự án khác</a>
+        <a class="button" href="mailto:info@indigostudio.cz?subject=Y%C3%AAu%20c%E1%BA%A7u%20b%C3%A1o%20gi%C3%A1">Gửi email tới info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Mã số doanh nghiệp&nbsp;14389096<span class="sep">·</span><wbr>Mã số thuế VAT&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha, Cộng hòa Séc</p>
+    <p><a href="/vi/">Về trang chủ</a></p>
+  </div>
+</footer>
+</body>
+</html>

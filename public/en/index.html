@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- ať iOS nedělá tel: odkazy z IČO a čísla účtu -->
+<meta name="format-detection" content="telephone=no">
+<title>Indigo Studio — custom software: from internal tools to public products</title>
+<meta name="description" content="Indigo Studio s.r.o. — custom software. Web, iOS and Android app development, integrations with Slack, Shoptet and other services, Chrome and Safari extensions.">
+<!-- theme-color = barva pozadí, ať status bar splývá se stránkou -->
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/en/">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/">
+
+<!-- Open Graph / share preview -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Indigo Studio — custom software: from internal tools to public products">
+<meta property="og:description" content="Web, iOS and Android app development for your business. Integrations with Slack, Shoptet and other services, Chrome and Safari extensions.">
+<meta property="og:url" content="https://indigostudio.cz/en/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="vi_VN">
+<meta property="og:image" content="https://indigostudio.cz/og-en.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Indigo Studio — custom software">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Indigo Studio — custom software: from internal tools to public products">
+<meta name="twitter:description" content="Web, iOS and Android app development for your business. Integrations with Slack, Shoptet and other services, Chrome and Safari extensions.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-en.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- JSON-LD pro vyhledávače -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Organization", "ProfessionalService"],
+  "name": "Indigo Studio",
+  "legalName": "Indigo Studio s.r.o.",
+  "url": "https://indigostudio.cz",
+  "logo": "https://indigostudio.cz/apple-touch-icon.png",
+  "image": "https://indigostudio.cz/og-en.png",
+  "email": "info@indigostudio.cz",
+  "telephone": "+420777407690",
+  "description": "Software studio. From internal tools to public products.",
+  "taxID": "14389096",
+  "vatID": "CZ14389096",
+  "duns": "986792603",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Chudenická 1059/30, Hostivař",
+    "addressLocality": "Prague",
+    "addressRegion": "Prague",
+    "postalCode": "102 00",
+    "addressCountry": "CZ"
+  },
+  "areaServed": "CZ",
+  "knowsAbout": [
+    "Website development",
+    "Mobile app development",
+    "Agentic AI workflows",
+    "Business email (mailboxes, webmail, SMTP, forwarding)",
+    "Newsletters and bulk mailings",
+    "Automated and AI emails (customer support)",
+    "AI training for businesses and beginners",
+    "Custom internal applications (CRM, CSM)",
+    "Cloudflare (Workers, Pages, R2)",
+    "Firebase",
+    "Google Cloud",
+    "AWS",
+    "On-premise deployment",
+    "Docker",
+    "CI/CD",
+    "GitHub, GitLab, Gitea",
+    "Monitoring and error tracking (Sentry)",
+    "Publishing to Google Play and the App Store",
+    "Google Workspace and Google Apps Script (Sheets, Docs, Drive, Calendar, Gmail)",
+    "Google Ads"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Services",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Websites" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile apps" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agentic AI workflows" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Business email (mailboxes, webmail, SMTP)" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Newsletters and automated emails" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "AI training for beginners and businesses" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Custom internal applications (CRM, CSM)" } }
+    ]
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "info@indigostudio.cz",
+    "telephone": "+420777407690",
+    "areaServed": "CZ",
+    "availableLanguage": ["cs"]
+  }
+}
+</script>
+
+<style>
+  /* ---- Téma: čistě podle systému (prefers-color-scheme), bez přepínače ---- */
+  :root {
+    --accent: #8b8ef8;          /* odkazy, ikony, zvýraznění */
+    --accent-strong: #6366f1;   /* značka */
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* dark = výchozí */
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --cta-bg: #4f46e5;
+    --cta-bg-hover: #5a52ee;
+    --wa: #25d366;
+    --wa-soft: rgba(37, 211, 102, 0.12);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+      --cta-bg-hover: #4338ca;
+      --wa: #16a34a;
+      --wa-soft: rgba(22, 163, 74, 0.1);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.5;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  /* společný obal — respektuje notch / home indicator (viewport-fit=cover) */
+  .container {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem;
+    min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; letter-spacing: -0.005em;
+    color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem;
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface);
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-link:hover { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .nav-link:hover svg { transform: translateX(2px); }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  /* ---- Úvod ---- */
+  main { flex: 1; }
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+    padding-block: clamp(2.5rem, 7vh, 5rem) clamp(2rem, 5vh, 3.5rem);
+  }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 1rem; }
+  .hero h1 {
+    font-size: clamp(2rem, 4.6vw, 3.1rem);
+    font-weight: 650; line-height: 1.1; letter-spacing: -0.03em;
+    max-width: 16ch; margin-bottom: 1.1rem;
+  }
+  .lead { font-size: clamp(1.02rem, 1.6vw, 1.15rem); color: var(--fg-muted); max-width: 44ch; margin-bottom: 1rem; }
+  .lead a, .lead-note a { color: var(--accent); text-underline-offset: 0.18em; }
+  /* doplněk pod úvodem — menší a tlumenější, ať úvod nepřehluší */
+  .lead-note { font-size: 0.88rem; color: var(--fg-faint); max-width: 52ch; line-height: 1.6; margin-bottom: 2rem; }
+  /* tooltip s vysvětlením (hover i fokus — funguje i na dotyk) */
+  .tip {
+    position: relative; cursor: help; outline-offset: 2px;
+    text-decoration: underline dotted; text-decoration-color: var(--border-strong); text-underline-offset: 0.2em;
+    transition: color 0.2s var(--ease);
+  }
+  .tip:hover, .tip:focus { color: var(--fg-muted); }
+  .tip-text {
+    position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 10;
+    translate: -50% 4px;
+    width: max-content; max-width: min(260px, 80vw);
+    padding: 0.55rem 0.75rem;
+    background: var(--surface); color: var(--fg-muted);
+    border: 1px solid var(--border-strong); border-radius: 6px; box-shadow: var(--shadow);
+    font-size: 0.8rem; line-height: 1.45; text-align: left;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.15s var(--ease), translate 0.15s var(--ease), visibility 0.15s;
+  }
+  .tip:hover .tip-text, .tip:focus .tip-text { opacity: 1; visibility: visible; translate: -50% 0; }
+
+  /* ---- Karty (sdílený vzhled) ---- */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+  }
+  .panel h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
+  .panel-sub { font-size: 0.9rem; color: var(--fg-muted); margin: 0.3rem 0 1.1rem; line-height: 1.5; }
+
+  /* ---- Poptávka (rychlé kontaktní cesty) ---- */
+  /* e-mail = hlavní tlačítko (plné), WhatsApp = vedlejší (obrys); v popisku adresa / číslo */
+  .cta-group { display: grid; gap: 0.6rem; }
+  .cta {
+    display: flex; align-items: center; gap: 0.9rem;
+    min-height: 4.25rem; padding: 0.8rem 1.1rem 0.8rem 0.8rem;
+    text-decoration: none; color: var(--fg);
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .cta:hover { border-color: var(--accent); }
+  .cta:active { transform: translateY(1px); }
+  .cta-ico {
+    flex: 0 0 auto; width: 42px; height: 42px;
+    display: grid; place-items: center;
+    border-radius: 6px;
+  }
+  .cta-ico svg { width: 20px; height: 20px; }
+  .cta-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+  .cta-title { font-weight: 600; font-size: 0.98rem; letter-spacing: -0.01em; }
+  .cta-desc { color: var(--fg-muted); font-size: 0.86rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .cta-arrow { flex: 0 0 auto; width: 18px; height: 18px; color: var(--fg-faint); transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .cta:hover .cta-arrow { color: var(--accent); transform: translateX(3px); }
+
+  .cta-primary {
+    color: #fff; background: var(--cta-bg); border-color: transparent;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .cta-primary:hover { background: var(--cta-bg-hover); border-color: transparent; }
+  .cta-primary .cta-ico { background: rgba(255, 255, 255, 0.14); color: #fff; }
+  .cta-primary .cta-desc { color: rgba(255, 255, 255, 0.8); }
+  .cta-primary .cta-arrow, .cta-primary:hover .cta-arrow { color: #fff; }
+
+  .cta-wa .cta-ico { background: var(--wa-soft); color: var(--wa); }
+  .cta-wa:hover .cta-arrow { transform: translate(2px, -2px); }
+
+  .cta-note { display: flex; gap: 0.6rem; font-size: 0.84rem; color: var(--fg-muted); margin-top: 1.1rem; line-height: 1.55; }
+  /* zelená tečka = jsme k zastižení */
+  .cta-note::before {
+    content: ""; flex: 0 0 auto; width: 7px; height: 7px; margin-top: 0.5em; border-radius: 50%;
+    background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  }
+  .cta-call { font-size: 0.84rem; color: var(--fg-faint); margin: 0.35rem 0 0 calc(7px + 0.6rem); }
+  .cta-call a { color: var(--fg-muted); text-decoration: none; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--border-strong); transition: color 0.2s var(--ease), border-color 0.2s var(--ease); }
+  .cta-call a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ---- Co umíme (živé vyhledávání schopností) ---- */
+  .cap-search {
+    display: flex; align-items: center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0 0.9rem;
+    transition: border-color 0.2s var(--ease);
+  }
+  .cap-search:focus-within { border-color: var(--accent); }
+  .cap-search svg { width: 18px; height: 18px; color: var(--fg-faint); flex: 0 0 auto; }
+  .cap-search input {
+    flex: 1; min-width: 0;
+    background: none; border: 0; outline: none;
+    color: var(--fg); font: inherit;
+    /* min. 16px, jinak iOS Safari při fokusu auto-zoomne („cukne") stránku */
+    font-size: 16px;
+    padding: 0.8rem 0.65rem;
+  }
+  .cap-search input::placeholder { color: var(--fg-faint); }
+  .cap-search input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+  .cap-answer { display: flex; align-items: baseline; gap: 0.45rem; margin-top: 0.9rem; font-size: 0.9rem; line-height: 1.5; color: var(--fg-muted); }
+  .cap-answer .cap-verdict { flex: 0 0 auto; font-weight: 650; color: var(--accent); }
+  .cap-answer a { color: var(--accent); text-decoration: underline; text-underline-offset: 0.18em; }
+
+  .cap-list { list-style: none; margin: 0.9rem 0 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  .cap-list.chips { flex-direction: row; flex-wrap: wrap; gap: 0.4rem; }
+  .cap-chip {
+    font: inherit; font-size: 0.82rem; color: var(--fg-muted);
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.35rem 0.75rem; cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .cap-chip:hover { border-color: var(--accent); color: var(--fg); }
+  .cap-row { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.65rem 0.85rem; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); }
+  .cap-row .cap-title { font-weight: 600; font-size: 0.92rem; }
+  .cap-row .cap-desc { color: var(--fg-muted); font-size: 0.82rem; line-height: 1.45; }
+  .cap-row mark { background: var(--accent-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .cap-empty { font-size: 0.86rem; color: var(--fg-faint); padding: 0.3rem 0; }
+
+  /* ---- Kontakty ---- */
+  .section { padding-block: 0 clamp(2.5rem, 6vh, 4rem); }
+  .section-label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 1rem; }
+  .contacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+  .card {
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: border-color 0.2s var(--ease);
+  }
+  .card:hover { border-color: var(--border-strong); }
+  .card-main { display: flex; align-items: center; gap: 0.95rem; padding: 1.1rem 1.2rem; text-decoration: none; color: inherit; }
+  .avatar {
+    width: 48px; height: 48px; border-radius: 50%; flex: 0 0 auto;
+    position: relative; overflow: hidden;
+    display: grid; place-items: center;
+    background: var(--accent-soft);
+    color: var(--accent); font-weight: 600; font-size: 0.92rem; letter-spacing: 0.02em;
+  }
+  .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .meta { display: flex; flex-direction: column; min-width: 0; }
+  .card .name { font-weight: 600; font-size: 0.95rem; }
+  .card .role { color: var(--fg-faint); font-size: 0.8rem; margin-bottom: 0.15rem; }
+  /* e-mail a telefon = samostatné odkazy, karta sama odkazem není */
+  .card .email, .card .phone {
+    width: fit-content; color: var(--fg-muted); font-size: 0.85rem; text-decoration: none;
+    transition: color 0.2s var(--ease);
+  }
+  .card .email { overflow-wrap: anywhere; }
+  .card .phone { font-variant-numeric: tabular-nums; }
+  .card .email:hover, .card .phone:hover { color: var(--accent); }
+  .card .databox { color: var(--fg-faint); font-size: 0.78rem; margin-top: 0.1rem; }
+  /* „Uložit kontakt" — stažení vCard (.vcf), funguje i bez JS */
+  .vcf {
+    display: flex; align-items: center; gap: 0.4rem;
+    margin-top: auto; padding: 0.55rem 1.2rem;
+    border-top: 1px solid var(--border);
+    color: var(--fg-faint); font-size: 0.78rem;
+    text-decoration: none;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .vcf svg { width: 13px; height: 13px; flex: 0 0 auto; }
+  .vcf:hover { color: var(--accent); background: var(--accent-soft); }
+  /* datová schránka: jen kód, vysvětlení v tooltipu (lidi ten formát znají) */
+  abbr[title] { text-decoration: underline dotted; text-underline-offset: 0.18em; cursor: help; }
+
+  /* ---- Patička: firemní údaje + odkazy ---- */
+  /* průsvitné pozadí — malůvky prosvítají */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 1rem 2rem;
+    padding-block: 1.6rem 2rem;
+    font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7;
+  }
+  .company strong { color: var(--fg); font-weight: 600; }
+  .sep { opacity: 0.4; padding: 0 0.4rem; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; }
+  .footer-links a { color: var(--fg-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-links svg { width: 14px; height: 14px; }
+
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero h1 { max-width: 20ch; }
+    .contacts { grid-template-columns: 1fr; max-width: 520px; }
+  }
+  @media (max-width: 560px) {
+    /* na telefonu dostane odkaz vlastní řádek přes celou šířku */
+    .nav-link { width: 100%; justify-content: space-between; }
+    .nav-group { width: 100%; }
+    .panel { padding: 1.2rem; }
+  }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  /* ---- Tisk = vizitka 90×50 mm ---- */
+  .business-card { display: none; }
+  @media print {
+    /* Všechny tři vizitky na jeden list A4, pod sebou, vystřihnout podle značek */
+    @page { size: A4; margin: 12mm; }
+    html, body { background: #ffffff !important; min-height: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .site-header, main, .site-footer { display: none !important; }
+    .business-card {
+      display: grid !important;
+      place-items: center;
+      width: 98mm; height: 58mm; box-sizing: border-box;
+      margin: 0 auto 8mm;        /* vycentrovat + mezera mezi vizitkami */
+      break-inside: avoid;       /* vizitku nikdy nezalomit přes stránky */
+    }
+    .business-card:last-of-type { margin-bottom: 0; }
+    /* Vlastní vizitka 90×50 mm, vycentrovaná v okraji */
+    .business-card .bc-trim {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      width: 90mm; height: 50mm; padding: 5mm 6mm; box-sizing: border-box;
+      color: #15161d;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .business-card .bc-brand { display: flex; align-items: center; gap: 2.4mm; }
+    .business-card .bc-mark { width: 7mm; height: 7mm; border-radius: 2mm; background: linear-gradient(135deg, #6366f1, #818cf8); }
+    .business-card .bc-name { font-size: 4.6mm; font-weight: 700; letter-spacing: -0.02em; }
+    .business-card .bc-name .accent { color: #6366f1; }
+    .business-card .bc-tagline { font-size: 2.7mm; color: #5a5b6a; margin-top: 1mm; }
+    .business-card .bc-foot { align-self: end; display: flex; justify-content: space-between; align-items: flex-end; gap: 5mm; }
+    .business-card .bc-contacts { line-height: 1.4; }
+    .business-card .bc-contacts .bc-web { font-size: 2.7mm; font-weight: 700; color: #15161d; }
+    .business-card .bc-contacts .bc-person { margin-top: 1.4mm; font-size: 3.2mm; font-weight: 700; color: #6366f1; letter-spacing: -0.01em; }
+    .business-card .bc-contacts .bc-role { font-size: 2.4mm; color: #5a5b6a; }
+    .business-card .bc-contacts :is(.bc-mail, .bc-tel) { font-size: 2.7mm; color: #15161d; }
+    .business-card .bc-legal { font-size: 2.1mm; color: #9a9ba8; text-align: right; line-height: 1.45; white-space: nowrap; }
+    /* Ořezové značky v rozích — leží v okraji mimo vizitku, ať se snadno stříhá */
+    .business-card .crop { position: absolute; width: 3mm; height: 3mm; }
+    .business-card .crop.tl { top: -3mm; left: -3mm; border-right: 0.2mm solid #15161d; border-bottom: 0.2mm solid #15161d; }
+    .business-card .crop.tr { top: -3mm; right: -3mm; border-left: 0.2mm solid #15161d; border-bottom: 0.2mm solid #15161d; }
+    .business-card .crop.bl { bottom: -3mm; left: -3mm; border-right: 0.2mm solid #15161d; border-top: 0.2mm solid #15161d; }
+    .business-card .crop.br { bottom: -3mm; right: -3mm; border-left: 0.2mm solid #15161d; border-top: 0.2mm solid #15161d; }
+  }
+</style>
+<script src="/doodles.js"></script>
+<script src="/cursors.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/en/" aria-label="Indigo Studio — home">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Our services
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/en/hosting">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/en/training">
+            Training
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/en/projects">
+        Case studies, samples and references
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Language: </span>English
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/" hreflang="en" lang="en" aria-current="true">English</a>
+        <a class="nav-menu-link" href="/vi/" hreflang="vi" lang="vi">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container hero">
+    <div>
+      <p class="eyebrow">Software studio · Prague</p>
+      <h1>Custom software: from internal tools to public products</h1>
+      <p class="lead">Web, iOS and Android app development for your business. We connect your systems with Slack, Shoptet and many other services, or build extensions for Chrome and Safari. From complete public products to simple brochure sites — websites are the easy part for us.</p>
+      <p class="lead-note">We will also gladly <a href="/en/development-takeover">take over development from a previous supplier</a>. We treat
+        <span class="tip" tabindex="0" aria-describedby="tip-privacy">privacy<span class="tip-text" role="tooltip" id="tip-privacy">We protect your data and collect as little personal information as possible.</span></span>,
+        <span class="tip" tabindex="0" aria-describedby="tip-security">security<span class="tip-text" role="tooltip" id="tip-security">We build applications to the latest security standards.</span></span>
+        and <span class="tip" tabindex="0" aria-describedby="tip-a11y">accessibility<span class="tip-text" role="tooltip" id="tip-a11y">Our code meets WCAG standards, so the website is accessible to everyone.</span></span> as a given.<br><br>
+        PS: Did you know that <a href="/en/cookies">your website may not need a cookie banner at all</a>?</p>
+
+      <section class="panel cap-block" aria-label="What we can do for you">
+        <h2>What can we do for you?</h2>
+        <p class="panel-sub">Type what you need. If you cannot find it on the list, we can almost certainly handle it anyway.</p>
+        <div class="cap-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="capQ" type="search" autocomplete="off" placeholder="website, mobile app, automation, AI…" aria-label="What you need">
+        </div>
+        <p id="capAnswer" class="cap-answer" aria-live="polite" hidden></p>
+        <ul id="capList" class="cap-list chips"></ul>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="poptavka">
+      <h2 id="poptavka">Inquiry</h2>
+      <p class="panel-sub">Just describe what you need in a few sentences. Choose whichever channel suits you.</p>
+      <div class="cta-group">
+        <a class="cta cta-primary" data-mail href="mailto:info@indigostudio.cz?subject=Inquiry">
+          <span class="cta-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </span>
+          <span class="cta-text">
+            <span class="cta-title">Send an email</span>
+            <span class="cta-desc">info@indigostudio.cz</span>
+          </span>
+          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        </a>
+        <!-- WhatsApp: mezinárodní formát bez +, mezer a 0 na začátku -->
+        <a class="cta cta-wa" data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">
+          <span class="cta-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          </span>
+          <span class="cta-text">
+            <span class="cta-title">Message on WhatsApp</span>
+            <span class="cta-desc">+420&nbsp;777&nbsp;407&nbsp;690</span>
+          </span>
+          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </div>
+      <p class="cta-note">I will reply to your message or call you within a few hours at the latest.</p>
+      <p class="cta-call">Prefer to talk by phone? <a href="tel:+420777407690">+420&nbsp;777&nbsp;407&nbsp;690</a></p>
+    </section>
+  </div>
+
+  <div class="container section">
+    <h2 class="section-label">Contacts</h2>
+    <nav class="contacts" aria-label="Contacts">
+      <div class="card">
+        <div class="card-main">
+          <span class="avatar"><img src="/team/info.jpg" alt="" loading="lazy" onerror="this.remove()"><span>IS</span></span>
+          <span class="meta">
+            <span class="name">Office</span>
+            <span class="role">General questions and fixes</span>
+            <a class="email" href="mailto:info@indigostudio.cz">info@indigostudio.cz</a>
+            <a class="phone" href="tel:+420777407690">+420&nbsp;777&nbsp;407&nbsp;690</a>
+            <span class="databox"><abbr title="Data box (Czech e-government mailbox)">fi4uxhj</abbr></span>
+          </span>
+        </div>
+        <a class="vcf" href="/team/info.vcf" download="Indigo Studio – Office.vcf" aria-label="Save Office contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Save contact</a>
+      </div>
+      <div class="card">
+        <div class="card-main">
+          <span class="avatar"><img src="/team/veronika.jpg" alt="" loading="lazy" onerror="this.remove()"><span>VH</span></span>
+          <span class="meta">
+            <span class="name">Veronika</span>
+            <span class="role">Invoicing and support</span>
+            <a class="email" href="mailto:veronika@indigostudio.cz">veronika@indigostudio.cz</a>
+            <a class="phone" href="tel:+420737176622">+420&nbsp;737&nbsp;176&nbsp;622</a>
+          </span>
+        </div>
+        <a class="vcf" href="/team/veronika.vcf" download="Indigo Studio – Veronika Hallerová.vcf" aria-label="Save Veronika's contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Save contact</a>
+      </div>
+      <div class="card">
+        <div class="card-main">
+          <span class="avatar"><img src="/team/daniel.jpg" alt="" loading="lazy" onerror="this.remove()"><span>DH</span></span>
+          <span class="meta">
+            <span class="name">Daniel</span>
+            <span class="role">Development and DevOps</span>
+            <a class="email" href="mailto:daniel@indigostudio.cz">daniel@indigostudio.cz</a>
+            <a class="phone" href="tel:+420604690539">+420&nbsp;604&nbsp;690&nbsp;539</a>
+          </span>
+        </div>
+        <a class="vcf" href="/team/daniel.vcf" download="Indigo Studio – Daniel Hromada.vcf" aria-label="Save Daniel's contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Save contact</a>
+      </div>
+    </nav>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="company">
+      <strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Company ID&nbsp;14389096<span class="sep">·</span><wbr>VAT ID&nbsp;CZ14389096<span class="sep">·</span><wbr><abbr title="Data box (Czech e-government mailbox)">fi4uxhj</abbr><br>
+      Chudenická 1059/30, Hostivař, 102 00 Prague, Czech Republic<br>
+      Bank account 2802169026/2010 (Fio)<span class="sep">·</span>D‑U‑N‑S® 986792603
+    </p>
+    <nav class="footer-links" aria-label="More links">
+      <a href="https://nastroje.indigostudio.cz/">Online tools (in Czech)</a>
+      <a href="https://ceska-republika.indigostudio.cz/">Czech Republic: online services (in Czech)</a>
+      <a href="/en/projects">Projects and references</a>
+      <a href="/en/hosting">Website hosting with Git behind the scenes</a>
+      <a href="/en/training">Claude Code and Codex training</a>
+      <a href="/en/development-takeover">Taking over development from another supplier</a>
+      <a href="/en/cookies">Cookie banners — and when you don't need one</a>
+      <a href="https://github.com/junkycoder/indigostudio.cz" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        Source code
+      </a>
+    </nav>
+  </div>
+</footer>
+
+<!-- Vytiskne se jen při tisku (Ctrl/Cmd+P) — 3 vizitky 90×50 mm, každá na své stránce -->
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+    </div>
+    <div class="bc-tagline">Web studio · AI integration for businesses</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Office</div>
+        <div class="bc-role">General questions and fixes</div>
+        <div class="bc-mail">info@indigostudio.cz</div>
+        <div class="bc-tel">+420 777 407 690</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        Company ID 14389096<br>
+        Data box fi4uxhj<br>
+        2802169026/2010
+      </div>
+    </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
+  </div>
+</aside>
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+    </div>
+    <div class="bc-tagline">Web studio · AI integration for businesses</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Veronika Hallerová</div>
+        <div class="bc-role">Invoicing and support</div>
+        <div class="bc-mail">veronika@indigostudio.cz</div>
+        <div class="bc-tel">+420 737 176 622</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        Company ID 14389096<br>
+        Data box fi4uxhj<br>
+        2802169026/2010
+      </div>
+    </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
+  </div>
+</aside>
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+    </div>
+    <div class="bc-tagline">Web studio · AI integration for businesses</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Daniel Hromada</div>
+        <div class="bc-role">Development and DevOps</div>
+        <div class="bc-mail">daniel@indigostudio.cz</div>
+        <div class="bc-tel">+420 604 690 539</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        Company ID 14389096<br>
+        Data box fi4uxhj<br>
+        2802169026/2010
+      </div>
+    </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
+  </div>
+</aside>
+
+<script>
+  // „Co umíme" — živé vyhledávání schopností + asertivní odpověď ano/ne
+  (function () {
+    var CAPS = [
+      { t: "Websites and web apps", d: "Company websites, e-shops, portals, landing pages.", k: "web website websites webpage webpages site sites page pages eshop e-shop ecommerce e-commerce online store shop presentation brochure landing portal wordpress app application react vue nuxt next nextjs node nodejs typescript javascript php laravel ruby rails python django graphql html css" },
+      { t: "Mobile apps", d: "iOS and Android, native and cross-platform.", k: "mobile mobile app mobile apps phone smartphone app apps application ios android iphone swift swiftui kotlin flutter react native expo capacitor ionic arkit cross-platform" },
+      { t: "Custom internal systems", d: "CRM, CSM, record keeping, inventory, bookings, admin.", k: "internal system systems custom crm csm records record keeping registry inventory warehouse stock booking bookings reservation reservations scheduling agenda database admin back office backoffice" },
+      { t: "AI agents and workflows", d: "Agents, chatbots, assistants and document processing.", k: "ai artificial intelligence chatbot chat bot agent agents assistant assistants workflow workflows llm gpt openai chatgpt claude anthropic gemini mcp rag automation documents document processing" },
+      { t: "Process automation", d: "Connecting tools via APIs, integrations, macros.", k: "automation automate automated integration integrations api connect connecting macro macros workflow zapier n8n" },
+      { t: "Integrations with other services", d: "Connections to Slack, Stripe, Google, ERP and more via APIs.", k: "integration integrations connect connection connector service services slack stripe google erp api webhook webhooks" },
+      { t: "Business email and newsletters", d: "Mailboxes, webmail, SMTP, forwarding, newsletters, plus automated and AI emails (support).", k: "email e-mail mail mails mailbox mailboxes inbox webmail smtp imap forwarding forward redirect redirection newsletter newsletters mailing mailings bulk mass transactional automated automatic autoresponder auto reply ai support notifications zoho resend dkim spf" },
+      { t: "Data analysis and visualization", d: "Dashboards, reports, scraping and data cleaning.", k: "data analysis analytics dashboard dashboards report reports reporting statistics stats visualization visualisation scraping cleaning excel bi sql postgres postgresql mysql bigquery looker" },
+      { t: "Browser extensions", d: "Add-ons and plugins for Chrome, Edge and Firefox.", k: "extension extensions plugin plugins add-on add-ons addon addons browser chrome edge firefox" },
+      { t: "Training and consulting", d: "Workshops and consulting for businesses and beginners. We are preparing Claude Code and Codex training.", k: "training consulting consultation consultancy workshop workshops course courses teaching lessons mentoring beginner beginners claude code codex ai assistant programming coding tokens benchmark" },
+      { t: "Taking over development from another supplier", d: "We take over software from another supplier or developer. We start with a free review.", k: "takeover take over taking over handover hand over development developer supplier vendor agency contractor left quit legacy old system maintenance audit review code" },
+      // hidden: najde se vyhledáváním, ale nepřidává se do výchozích štítků
+      { t: "Cloud and infrastructure", d: "We prefer to build on Cloudflare and regularly use Firebase, Google Cloud and AWS. We also handle your own servers (on-premise) and Docker.", k: "cloud cloudflare workers pages r2 d1 firebase firestore google cloud gcp cloud run aws azure onprem on-prem on-premise own server servers self-hosted docker container containers kubernetes k8s vps infrastructure", hidden: true },
+      { t: "CI/CD and code management", d: "Automated builds, tests and deployments. GitHub, GitLab and Gitea.", k: "ci cd ci/cd cicd pipeline pipelines build builds deploy deployment deployments github actions gitlab gitea git repository repo version control versioning tests testing", hidden: true },
+      { t: "Monitoring and error tracking", d: "Sentry and similar tools, logs and outage alerts.", k: "monitoring error errors handler handling bug bugs sentry logs logging alert alerts outage outages downtime uptime crash reporting", hidden: true },
+      { t: "Publishing to Google Play and the App Store", d: "App releases, developer account management and updates.", k: "google play play store app store appstore publishing publish release releases testflight developer account updates", hidden: true },
+      { t: "Google Workspace and Apps Script", d: "Automation across Sheets, Docs, Drive, Calendar and Gmail with Google Apps Script.", k: "google workspace gsuite g suite apps script appscript gas sheets sheet spreadsheet spreadsheets docs documents drive files calendar gmail email forms sites pages macro script automation workflow", hidden: true },
+      { t: "Google Ads", d: "Account and campaign setup and conversion tracking.", k: "google ads adwords ads advertising ppc campaign campaigns conversion conversions analytics ga4 tag manager gtm tracking measurement", hidden: true },
+      { t: "Website hosting", d: "Fast static website hosting, domain and business email. We move your website from your current provider, free of charge up to a certain size.", k: "hosting web hosting website site pages server transfer migration migrate move moving domain registrar subreg gransy wedos banan forpsi certificate https ssl backups static website speed cdn cloudflare git version control deployment preview email mailbox mail mx spf dkim dmarc" },
+      { t: "Maintenance and operations", d: "Hosting, DevOps, fixes and long-term support.", k: "maintenance operations ops hosting devops support fix fixes repair management server linux backups" },
+      { t: "Car wash", d: "Software for car washes and car detailing: bookings, orders, a loyalty program and job records.", k: "car wash carwash washing car auto automobile vehicle car washes detailing car care booking bookings reservations orders loyalty program jobs job records" }
+    ];
+    // Zdroj kampaně bez cookies: ?k=… se propíše do předmětu e-mailu a textu zprávy
+    var src = new URLSearchParams(location.search).get("k");
+    src = src && /^[a-z0-9-]{1,20}$/.test(src) ? " [" + src + "]" : "";
+    var MAIL = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent("Inquiry" + src);
+    if (src) {
+      document.querySelectorAll("[data-mail]").forEach(function (a) { a.href = MAIL; });
+      document.querySelectorAll("[data-wa]").forEach(function (a) {
+        a.href = "https://wa.me/420777407690?text=" + encodeURIComponent("Hello, I have an inquiry." + src);
+      });
+    }
+    var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+
+    var input = document.getElementById("capQ");
+    var list = document.getElementById("capList");
+    var answer = document.getElementById("capAnswer");
+    if (!input || !list || !answer) return;
+
+    function hl(text, q) {
+      var i = norm(text).indexOf(q);
+      if (!q || i < 0) return text;
+      return text.slice(0, i) + "<mark>" + text.slice(i, i + q.length) + "</mark>" + text.slice(i + q.length);
+    }
+
+    function renderChips() {
+      answer.hidden = true;
+      list.className = "cap-list chips";
+      list.innerHTML = "";
+      CAPS.forEach(function (c) {
+        if (c.hidden) return;
+        var li = document.createElement("li");
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cap-chip";
+        b.textContent = c.t;
+        b.addEventListener("click", function () { input.value = c.t; run(); input.focus(); });
+        li.appendChild(b);
+        list.appendChild(li);
+      });
+    }
+
+    function run() {
+      var q = norm(input.value.trim());
+      if (!q) { renderChips(); return; }
+      var hits = CAPS.filter(function (c) {
+        return norm(c.t).indexOf(q) >= 0 || norm(c.d).indexOf(q) >= 0 || c.k.indexOf(q) >= 0;
+      });
+      list.className = "cap-list";
+      list.innerHTML = "";
+      answer.hidden = false;
+      if (hits.length) {
+        answer.innerHTML = '<span class="cap-verdict">Yes.</span><span>We do this — send us your brief and we will get back to you.</span>';
+        hits.forEach(function (c) {
+          var li = document.createElement("li");
+          li.className = "cap-row";
+          li.innerHTML = '<span class="cap-title">' + hl(c.t, q) + '</span><span class="cap-desc">' + c.d + '</span>';
+          list.appendChild(li);
+        });
+      } else {
+        answer.innerHTML = '<span class="cap-verdict">Most likely.</span><span>It is not on the list, but we build software across industries. <a href="' + MAIL + '">Email us</a> and we will work out the details.</span>';
+        var li = document.createElement("li");
+        li.className = "cap-empty";
+        li.textContent = "Tip: try a more general word — website, app, system, automation, data, AI.";
+        list.appendChild(li);
+      }
+    }
+
+    // Sekce je sbalená; výpis schopností se ukáže až při fokusu (nebo když je něco napsané)
+    var block = document.querySelector(".cap-block");
+    function sync() {
+      var open = block.contains(document.activeElement) || input.value.trim() !== "";
+      if (!open) { list.hidden = true; answer.hidden = true; return; }
+      list.hidden = false;
+      run();
+    }
+    input.addEventListener("input", sync);
+    block.addEventListener("focusin", sync);
+    // po blur necháme activeElement ustálit, pak vyhodnotíme (klik na chip drží fokus uvnitř)
+    block.addEventListener("focusout", function () { setTimeout(sync, 0); });
+    list.hidden = true;
+    answer.hidden = true;
+  })();
+</script>
+</body>
+</html>

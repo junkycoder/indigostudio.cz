@@ -14,7 +14,9 @@ public/            statika (servíruje asset binding)
   apple-touch-icon.png
   robots.txt, sitemap.xml
   team/            fotky týmu (info.jpg / veronika.jpg / daniel.jpg) — viz team/README.txt
+  en/, vi/         anglická a vietnamská verze všech stránek (/en/training, /vi/training …)
 src/worker.js      Worker: servíruje public/ + bezpečnostní hlavičky + POST /api/poptavka
+                   + přesměrování podle jazyka
 scripts/og.svg     zdroj pro og.png (regenerace viz níž)
 wrangler.toml      Worker config (route, send_email binding)
 ```
@@ -53,9 +55,26 @@ pole `company` + validace proti spamu. Adresy se mění v `src/worker.js`
 
 ### Regenerace OG obrázku
 
-Po úpravě `scripts/og.svg`:
+Po úpravě `scripts/og.svg` (a jazykových kopií `og-en.svg`, `og-vi.svg`):
 ```bash
-node -e "const s=require('sharp');s(require('fs').readFileSync('scripts/og.svg')).png().toFile('public/og.png')"
+for f in og og-en og-vi; do node -e "const s=require('sharp');s(require('fs').readFileSync('scripts/$f.svg')).png().toFile('public/$f.png')"; done
+```
+
+## Jazykové verze
+
+Čeština je na kořeni, angličtina pod `/en/`, vietnamština pod `/vi/` (stejné anglické
+slugy: `/skoleni` → `/en/training`, `/vi/training`). Mapování drží `PAGES` v `src/worker.js`.
+
+Worker přesměruje **českou** adresu otevřenou zvenku (302): podle cookie `lang` z přepínače
+v liště, jinak podle `Accept-Language` (cs/sk → čeština, vi → vietnamština, ostatní →
+angličtina). Proklik uvnitř webu, roboti a náhledy odkazů se nepřesměrovávají; `/en/…`
+a `/vi/…` nikdy. Stránky mají `hreflang` a `sitemap.xml` alternativy pro vyhledávače.
+
+Cookie `lang` je technicky nezbytná (uživatelem zvolený jazyk) — lištu nepotřebuje.
+
+Lokální test: `npm run dev` a třeba
+```bash
+curl -sI -H "Accept-Language: vi" http://localhost:8787/skoleni | grep -i location
 ```
 
 ## Doména + DNS (Cloudflare)

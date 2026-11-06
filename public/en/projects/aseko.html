@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Aseko — taking over software development for pool equipment | Indigo Studio</title>
+<meta name="description" content="Case study: working as a team with Telion, we took over development of all of Aseko’s software. We delivered the frontend of the Aseko Live and Aseko Remote apps, the white-label versions and the back office, including App Store and Google Play releases and automated tests.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/en/projects/aseko">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/aseko">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/aseko">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/aseko">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/aseko">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Aseko — taking over software development for pool equipment">
+<meta property="og:description" content="Aseko builds the hardware; we took over the software together with Telion. One app for web, iOS and Android, white-label versions and one-click releases.">
+<meta property="og:url" content="https://indigostudio.cz/en/projects/aseko">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="vi_VN">
+<meta property="og:image" content="https://indigostudio.cz/og-en.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Aseko — taking over software development for pool equipment">
+<meta name="twitter:description" content="Aseko builds the hardware; we took over the software together with Telion. One app for web, iOS and Android, white-label versions and one-click releases.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-en.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 22ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 60ch; }
+
+
+  /* fakta o projektu */
+  .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); }
+  .facts div { padding: 1rem 1.2rem; border-left: 1px solid var(--border); }
+  .facts div:first-child { border-left: 0; }
+  .facts dt { font-size: 0.76rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 0.25rem; }
+  .facts dd { font-size: 0.92rem; font-weight: 550; }
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose a { color: var(--accent); text-underline-offset: 0.2em; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+
+  /* výzvy */
+  .challenges { display: flex; flex-direction: column; gap: 0.75rem; }
+  .challenge { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.2rem 1.3rem; }
+  .challenge h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+  .challenge dl { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 0.35rem 1rem; }
+  .challenge dt { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-faint); padding-top: 0.2rem; }
+  .challenge dd { font-size: 0.92rem; color: var(--fg-muted); }
+
+  .tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.2rem 0 1.1rem; }
+  .tags li { font-size: 0.8rem; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 3px; padding: 0.15rem 0.55rem; background: var(--surface); }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .facts div:nth-child(3) { border-left: 0; }
+    .facts div:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules { grid-template-columns: 1fr; }
+    .challenge dl { grid-template-columns: 1fr; gap: 0.1rem; }
+    .challenge dd + dt { margin-top: 0.5rem; }
+    .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script src="/doodles.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/en/" aria-label="Indigo Studio — home">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Our services
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/en/hosting">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/en/training">
+            Training
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/en/projects">
+        Case studies, samples and references
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Language: </span>English
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/projekty/aseko" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/projects/aseko" hreflang="en" lang="en" aria-current="true">English</a>
+        <a class="nav-menu-link" href="/vi/projects/aseko" hreflang="vi" lang="vi">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/en/">Home</a><span class="sep">/</span><a href="/en/projects">Projects</a><span class="sep">/</span><span aria-current="page">Aseko</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Case study · Mobile and web apps · IoT</p>
+      <h1>Aseko: taking over all software development</h1>
+      <p class="lead">Aseko makes control units for swimming pools — dosing stations, water quality and temperature measurement, filtration control and cover drives — under its own brand and for partners. The company focuses on the hardware itself; software development was taken over by a team of two suppliers. As the second supplier alongside Telion, we delivered the frontend of all the apps, their releases to the App Store and Google Play, and automated tests.</p>
+    </header>
+
+    <dl class="facts">
+      <div><dt>Client</dt><dd>ASEKO, spol. s&nbsp;r.o.</dd></div>
+      <div><dt>Industry</dt><dd>Pool equipment and IoT</dd></div>
+      <div><dt>Our role</dt><dd>Frontend, releases, testing</dd></div>
+      <div><dt>Engagement</dt><dd>2022–2024</dd></div>
+    </dl>
+
+    <div class="stats">
+      <div class="stat"><strong>1&nbsp;codebase</strong><span>for web, iOS and Android — Aseko Live runs in the browser and can be downloaded from the App Store and Google Play</span></div>
+      <div class="stat"><strong>4&nbsp;apps</strong><span>for pool owners, partners and Aseko staff, built on a single component library</span></div>
+      <div class="stat"><strong>1&nbsp;click</strong><span>and a new version goes out to the App Store and Google Play, including under the customer’s own accounts</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1"><span class="num">01</span>From a small project to all of the software</h2>
+      <div class="prose">
+        <p>The collaboration began in 2022 with a small offline app, Pool Cover Controller, which lets a technician configure the drive of a roller pool cover over Bluetooth. The app was also built in a version under a partner’s brand.</p>
+        <p>Aseko then decided to replace the old infrastructure and apps from its previous supplier with a new cloud platform, ACS, and to hand software development over to an external team. <strong>Aseko kept the hardware; the software was taken over by Telion’s team and ours.</strong></p>
+        <ul class="list">
+          <li><strong>Indigo Studio</strong> — app frontends, App Store and Google Play releases including automation, end-to-end and regression tests.</li>
+          <li><strong><a href="https://telion.cz/en" target="_blank" rel="noopener">Telion</a></strong> — the rest of the ACS platform: backend, infrastructure and API. Their designer and front-end coder built the shared UI component library with us, for both hybrid and web apps.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2"><span class="num">02</span>What we delivered</h2>
+      <div class="prose">
+        <p>Apps that display and control real hardware around the pool. We took over the original apps and consolidated them onto a single hybrid platform, so the same code runs on the web, on iPhone and on Android.</p>
+        <div class="modules">
+          <div class="module"><h3>Aseko Live</h3><p>Online monitoring of pool parameters, alerts when limits are exceeded, and history. Available as an iOS and Android app and as the aseko.cloud website.</p></div>
+          <div class="module"><h3>Aseko Remote</h3><p>Remote control of pool components: operating modes, filter backwash, relays, heating, water top-up.</p></div>
+          <div class="module"><h3>Pool Control for T&amp;A</h3><p>A version of the remote control app for Technics and Applications in their colors, published under their own Apple and Google developer accounts.</p></div>
+          <div class="module"><h3>Back office</h3><p>An internal app for Aseko and its employees.</p></div>
+          <div class="module"><h3>Shared UI library</h3><p>Components, data layer, translations and permissions in one internal package for all the apps.</p></div>
+          <div class="module"><h3>Releases and testing</h3><p>Automated builds, test and production environments, TestFlight, Google Play internal testing, end-to-end and regression tests.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3"><span class="num">03</span>Challenges and solutions</h2>
+      <div class="challenges">
+        <article class="challenge">
+          <h3>One app on web, iOS and Android</h3>
+          <dl>
+            <dt>Problem</dt><dd>The apps we inherited took a separate path for each platform. Every change had to be made several times, and releases were laborious.</dd>
+            <dt>Solution</dt><dd>Hybrid apps built with Capacitor and Vue on a shared component library. We released Aseko Live from a single codebase as a website and to both the App Store and Google Play.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>The same app under another company’s brand and accounts</h3>
+          <dl>
+            <dt>Problem</dt><dd>An Aseko customer wanted the remote control app under its own brand and in its own App Store and Google Play accounts.</dd>
+            <dt>Solution</dt><dd>Colors, icons, names and signing keys are configuration, not separate code. Fixes and new features reach the Aseko version and the customer’s version at the same time.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Who can control what</h3>
+          <dl>
+            <dt>Problem</dt><dd>Several people access a single unit, and each of them is allowed to do something different. The app must not offer an action that the server will reject.</dd>
+            <dt>Solution</dt><dd>Per-unit permissions — 64 separate rules — determine what the app displays and allows the user to change. The rules live in the shared library and apply the same way in every app.</dd>
+          </dl>
+        </article>
+        <article class="challenge">
+          <h3>Old versions on phones</h3>
+          <dl>
+            <dt>Problem</dt><dd>The platform keeps evolving, but some users don’t update their apps. An old version then stops understanding the server.</dd>
+            <dt>Solution</dt><dd>Forced updates: the app detects that it is too old and sends the user to the App Store or Google Play before they run into an error.</dd>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4"><span class="num">04</span>Technology and quality</h2>
+      <div class="prose">
+        <ul class="tags">
+          <li>Vue.js</li><li>Capacitor</li><li>Pinia</li><li>GraphQL</li><li>WebSocket</li><li>Firebase Cloud Messaging</li><li>Sentry</li><li>Playwright</li><li>GitLab CI</li><li>Xcode Cloud</li><li>TestFlight</li><li>Google Play</li><li>Bluetooth LE</li>
+        </ul>
+        <p>The apps are built on Vue and a custom shared component library, which we distributed as an internal package. Data comes from the ACS platform via GraphQL and WebSocket, alerts arrive as push notifications, and Sentry tracks errors in production.</p>
+        <p>Every version went through end-to-end and regression tests. Builds for the test and production environments ran automatically from GitLab via Xcode Cloud to TestFlight and to Google Play internal testing, from where a version could go out to users with one click.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5"><span class="num">05</span>Outcome</h2>
+      <div class="prose">
+        <p>A small offline app grew into a two-year collaboration in which we and Telion handled the software for all of Aseko. Aseko could focus on hardware, and its devices got apps on the web, iOS and Android — under its own brand and under its customers’ brands.</p>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Do you manufacture devices and need software for them?</h2>
+        <p>Tell us what the app needs to control, and we will propose how to build it.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" href="/en/projects">More projects</a>
+        <a class="button" href="mailto:info@indigostudio.cz?subject=Inquiry">Email info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Company ID&nbsp;14389096<span class="sep">·</span><wbr>VAT ID&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Prague, Czech Republic</p>
+    <p><a href="/en/">Back to home</a></p>
+  </div>
+</footer>
+</body>
+</html>

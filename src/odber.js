@@ -4,13 +4,75 @@
 //   GET  /api/odber/potvrdit?t= → ověří e-mail, přesměruje zpět na stránku
 //   GET|POST /api/odber/odhlasit?u= → odhlásí (POST kvůli List-Unsubscribe-Post)
 //
+// Jazyk (cs/en/vi) přijde v těle POST jako `lang` a dál jede v odkazech jako `&l=` —
+// podle něj se píše potvrzovací e-mail, hlášky a kam se člověk vrátí. Do databáze se neukládá.
+//
 // Adresa se počítá jako odběratel až po kliknutí na odkaz (confirmed_at).
 // Potvrzovací token ukládáme jen jako hash; odhlašovací je trvalý a stačí na odhlášení.
 
 const MAIL_FROM = "skoleni@indigostudio.cz";
-const TOPICS = { skoleni: { page: "/skoleni", label: "školeních" } };
+const TOPICS = { skoleni: { page: { cs: "/skoleni", en: "/en/training", vi: "/vi/training" } } };
+const LANGS = ["cs", "en", "vi"];
 const CONFIRM_DAYS = 7;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// texty pro odběratele podle jazyka stránky
+const T = {
+  cs: {
+    sent: "Poslali jsme vám e-mail s potvrzovacím odkazem. Odběr začne platit po kliknutí na něj.",
+    invalid: "Neplatný požadavek.",
+    topic: "Neznámý odběr.",
+    email: "Zadejte prosím platný e-mail.",
+    unavailable: "Odběr teď nejde spustit. Napište nám prosím na info@indigostudio.cz.",
+    tooMany: "Odkazů už odešlo hodně. Zkuste to prosím za hodinu.",
+    sendFailed: "E-mail se nepodařilo odeslat. Zkuste to prosím znovu, nebo napište na info@indigostudio.cz.",
+    subject: "Potvrďte odběr novinek o školeních",
+    body: (link, page) =>
+      `Dobrý den,\n\n` +
+      `děkujeme za zájem o novinky o školeních Indigo Studia. ` +
+      `Odběr potvrdíte kliknutím na odkaz:\n\n${link}\n\n` +
+      `Odkaz platí ${CONFIRM_DAYS} dní. Pokud jste o odběr nežádali, e-mail ignorujte ` +
+      `a nic dalšího vám nepošleme.\n\n` +
+      `Indigo Studio s.r.o.\nhttps://indigostudio.cz${page}\n`,
+  },
+  en: {
+    sent: "We have sent you an email with a confirmation link. Your subscription starts once you click it.",
+    invalid: "Invalid request.",
+    topic: "Unknown subscription.",
+    email: "Please enter a valid email address.",
+    unavailable: "The subscription cannot be started right now. Please write to info@indigostudio.cz.",
+    tooMany: "Too many links have been sent. Please try again in an hour.",
+    sendFailed: "The email could not be sent. Please try again or write to info@indigostudio.cz.",
+    subject: "Confirm your subscription to training updates",
+    body: (link, page) =>
+      `Hello,\n\n` +
+      `thank you for your interest in updates about Indigo Studio training. ` +
+      `Confirm your subscription by clicking the link:\n\n${link}\n\n` +
+      `The link is valid for ${CONFIRM_DAYS} days. If you did not ask to subscribe, ignore this email ` +
+      `and we will not send you anything else.\n\n` +
+      `Indigo Studio s.r.o.\nhttps://indigostudio.cz${page}\n`,
+  },
+  vi: {
+    sent: "Chúng tôi đã gửi email kèm liên kết xác nhận. Đăng ký có hiệu lực sau khi Quý khách nhấp vào liên kết.",
+    invalid: "Yêu cầu không hợp lệ.",
+    topic: "Loại đăng ký không xác định.",
+    email: "Vui lòng nhập địa chỉ email hợp lệ.",
+    unavailable: "Hiện không thể đăng ký. Vui lòng viết thư tới info@indigostudio.cz.",
+    tooMany: "Đã gửi quá nhiều liên kết. Vui lòng thử lại sau một giờ.",
+    sendFailed: "Không gửi được email. Vui lòng thử lại hoặc viết thư tới info@indigostudio.cz.",
+    subject: "Xác nhận đăng ký nhận tin về các khóa đào tạo",
+    body: (link, page) =>
+      `Xin chào,\n\n` +
+      `cảm ơn Quý khách đã quan tâm đến tin tức về các khóa đào tạo của Indigo Studio. ` +
+      `Vui lòng xác nhận đăng ký bằng cách nhấp vào liên kết:\n\n${link}\n\n` +
+      `Liên kết có hiệu lực trong ${CONFIRM_DAYS} ngày. Nếu Quý khách không yêu cầu đăng ký, ` +
+      `vui lòng bỏ qua email này, chúng tôi sẽ không gửi thêm gì.\n\n` +
+      `Indigo Studio s.r.o.\nhttps://indigostudio.cz${page}\n`,
+  },
+};
+const pickLang = (value) => (LANGS.includes(value) ? value : "cs");
+// jazyk do odkazu v e-mailu; čeština je výchozí, tu nepřidáváme
+const langParam = (lang) => (lang === "cs" ? "" : `&l=${lang}`);
 
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj), {
@@ -31,26 +93,27 @@ export async function handleOdber(request, env, url) {
 }
 
 async function subscribe(request, env, url) {
-  const SENT = { ok: true, message: "Poslali jsme vám e-mail s potvrzovacím odkazem. Odběr začne platit po kliknutí na něj." };
-
   let body;
   try {
     body = await request.json();
   } catch {
-    return json({ error: "Neplatný požadavek." }, 400);
+    return json({ error: T.cs.invalid }, 400);
   }
+  const lang = pickLang(body?.lang);
+  const t = T[lang];
+  const SENT = { ok: true, message: t.sent };
 
   // honeypot — bot vyplní skryté pole; tváříme se, že je odesláno
   if (body && typeof body.company === "string" && body.company.trim() !== "") return json(SENT);
 
   const email = String(body?.email ?? "").toLowerCase().trim().replace(/[\r\n]/g, "").slice(0, 200);
   const topic = String(body?.topic ?? "");
-  if (!TOPICS[topic]) return json({ error: "Neznámý odběr." }, 400);
-  if (!EMAIL_RE.test(email)) return json({ error: "Zadejte prosím platný e-mail." }, 400);
+  if (!TOPICS[topic]) return json({ error: t.topic }, 400);
+  if (!EMAIL_RE.test(email)) return json({ error: t.email }, 400);
 
   // bez databáze nebo Resendu nejde potvrzení doručit na libovolnou adresu
   if (!env.ODBER || !env.RESEND_API_KEY) {
-    return json({ error: "Odběr teď nejde spustit. Napište nám prosím na info@indigostudio.cz." }, 503);
+    return json({ error: t.unavailable }, 503);
   }
 
   const ip = request.headers.get("CF-Connecting-IP") || "";
@@ -73,7 +136,7 @@ async function subscribe(request, env, url) {
     )
       .bind(ip)
       .first();
-    if ((fromIp?.n || 0) >= 5) return json({ error: "Odkazů už odešlo hodně. Zkuste to prosím za hodinu." }, 429);
+    if ((fromIp?.n || 0) >= 5) return json({ error: t.tooMany }, 429);
   }
 
   const token = randomToken();
@@ -90,10 +153,10 @@ async function subscribe(request, env, url) {
     .run();
 
   try {
-    await sendConfirm(env, { email, topic, link: `${url.origin}/api/odber/potvrdit?t=${token}` });
+    await sendConfirm(env, { email, topic, lang, link: `${url.origin}/api/odber/potvrdit?t=${token}${langParam(lang)}` });
   } catch (err) {
     console.log("odber send error:", err && err.message);
-    return json({ error: "E-mail se nepodařilo odeslat. Zkuste to prosím znovu, nebo napište na info@indigostudio.cz." }, 502);
+    return json({ error: t.sendFailed }, 502);
   }
 
   return json(SENT);
@@ -101,7 +164,8 @@ async function subscribe(request, env, url) {
 
 async function confirm(env, url) {
   const token = url.searchParams.get("t") || "";
-  if (!env.ODBER || !/^[0-9a-f]{64}$/.test(token)) return back(url, "skoleni", "neplatny");
+  const lang = pickLang(url.searchParams.get("l"));
+  if (!env.ODBER || !/^[0-9a-f]{64}$/.test(token)) return back(url, "skoleni", "neplatny", lang);
 
   const row = await env.ODBER.prepare(
     `UPDATE subscribers
@@ -112,7 +176,7 @@ async function confirm(env, url) {
     .bind(await sha256(token))
     .first();
 
-  return back(url, row?.topic || "skoleni", row ? "potvrzeno" : "neplatny");
+  return back(url, row?.topic || "skoleni", row ? "potvrzeno" : "neplatny", lang);
 }
 
 async function unsubscribe(request, env, url) {
@@ -129,16 +193,17 @@ async function unsubscribe(request, env, url) {
 
   // one-click odhlášení z poštovního klienta (RFC 8058) čeká jen 200
   if (request.method === "POST") return json({ ok: Boolean(row) });
-  return back(url, row?.topic || "skoleni", row ? "odhlaseno" : "neplatny");
+  return back(url, row?.topic || "skoleni", row ? "odhlaseno" : "neplatny", pickLang(url.searchParams.get("l")));
 }
 
-// zpět na stránku tématu; výsledek ukáže formulář podle ?odber=
-function back(url, topic, state) {
-  const page = (TOPICS[topic] || TOPICS.skoleni).page;
+// zpět na stránku tématu v jazyce odběratele; výsledek ukáže formulář podle ?odber=
+function back(url, topic, state, lang) {
+  const page = (TOPICS[topic] || TOPICS.skoleni).page[lang];
   return Response.redirect(new URL(`${page}?odber=${state}#odber`, url.origin), 303);
 }
 
-async function sendConfirm(env, { email, topic, link }) {
+async function sendConfirm(env, { email, topic, lang, link }) {
+  const t = T[lang];
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
@@ -146,14 +211,8 @@ async function sendConfirm(env, { email, topic, link }) {
       from: `Indigo Studio <${MAIL_FROM}>`,
       to: [email],
       reply_to: "info@indigostudio.cz",
-      subject: "Potvrďte odběr novinek o školeních",
-      text:
-        `Dobrý den,\n\n` +
-        `děkujeme za zájem o novinky o ${TOPICS[topic].label} Indigo Studia. ` +
-        `Odběr potvrdíte kliknutím na odkaz:\n\n${link}\n\n` +
-        `Odkaz platí ${CONFIRM_DAYS} dní. Pokud jste o odběr nežádali, e-mail ignorujte ` +
-        `a nic dalšího vám nepošleme.\n\n` +
-        `Indigo Studio s.r.o.\nhttps://indigostudio.cz${TOPICS[topic].page}\n`,
+      subject: t.subject,
+      text: t.body(link, TOPICS[topic].page[lang]),
     }),
   });
   if (!res.ok) {

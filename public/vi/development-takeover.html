@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Tiếp quản phát triển phần mềm từ nhà cung cấp trước | Indigo Studio</title>
+<meta name="description" content="Chúng tôi tiếp quản việc phát triển và quản lý phần mềm của Quý khách từ nhà cung cấp hoặc lập trình viên trước đó. Bắt đầu bằng buổi đánh giá miễn phí: tình trạng mã nguồn, rủi ro và kế hoạch tiếp quản.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/vi/development-takeover">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/prevzeti-vyvoje">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/development-takeover">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/development-takeover">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/prevzeti-vyvoje">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Tiếp quản phát triển phần mềm từ nhà cung cấp trước">
+<meta property="og:description" content="Nhà cung cấp đã ngừng hợp tác hoặc lập trình viên đã nghỉ việc? Chúng tôi tiếp quản việc phát triển ứng dụng hoặc hệ thống nội bộ của Quý khách. Bắt đầu bằng buổi đánh giá miễn phí.">
+<meta property="og:url" content="https://indigostudio.cz/vi/development-takeover">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://indigostudio.cz/og-vi.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tiếp quản phát triển phần mềm từ nhà cung cấp trước">
+<meta name="twitter:description" content="Nhà cung cấp đã ngừng hợp tác hoặc lập trình viên đã nghỉ việc? Chúng tôi tiếp quản việc phát triển ứng dụng hoặc hệ thống nội bộ của Quý khách. Bắt đầu bằng buổi đánh giá miễn phí.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-vi.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 22ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 60ch; }
+
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose a { color: var(--accent); text-underline-offset: 0.2em; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+
+
+  /* ---- Převzetí: postup ---- */
+  .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 0.6rem; }
+  .step { counter-increment: step; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.2rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.1rem 1.2rem; }
+  .step::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: 0.9rem; }
+  .step h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; align-self: center; }
+  .step h3 .badge { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-left: 0.5rem; }
+  .step p { font-size: 0.9rem; color: var(--fg-muted); line-height: 1.55; }
+
+  /* reference */
+  .module.ref { display: flex; flex-direction: column; gap: 0.2rem; text-decoration: none; color: inherit; transition: border-color 0.2s var(--ease); }
+  .module.ref:hover { border-color: var(--accent); }
+  .module.ref .more { font-size: 0.85rem; font-weight: 550; color: var(--accent); margin-top: 0.5rem; }
+
+  /* otázky */
+  .faq { display: flex; flex-direction: column; gap: 1.1rem; max-width: 64ch; }
+  .faq h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+  .faq p { color: var(--fg-muted); }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules { grid-template-columns: 1fr; }
+    .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script src="/doodles.js"></script>
+<script src="/cursors.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Điều hướng chính">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Dịch vụ
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/vi/hosting">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/vi/training">
+            Đào tạo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/vi/projects">
+        Dự án tiêu biểu, sản phẩm mẫu và khách hàng
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Ngôn ngữ: </span>Tiếng Việt
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/prevzeti-vyvoje" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/development-takeover" hreflang="en" lang="en">English</a>
+        <a class="nav-menu-link" href="/vi/development-takeover" hreflang="vi" lang="vi" aria-current="true">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Đường dẫn điều hướng">
+      <a href="/vi/">Trang chủ</a><span class="sep">/</span><span aria-current="page">Tiếp quản phát triển</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Tiếp quản phát triển và quản lý phần mềm</p>
+      <h1>Khi nhà cung cấp phần mềm rời đi</h1>
+      <p class="lead">Chúng tôi tiếp quản việc phát triển ứng dụng hoặc hệ thống nội bộ của Quý khách từ nhà cung cấp hoặc lập trình viên trước đó. Trước tiên, chúng tôi tìm hiểu tình trạng của phần mềm, sau đó Quý khách mới quyết định bước tiếp theo. Buổi đánh giá trước khi tiếp quản là miễn phí.</p>
+    </header>
+
+    <div class="actions">
+      <a class="button" data-mail href="mailto:info@indigostudio.cz?subject=Ti%E1%BA%BFp%20qu%E1%BA%A3n%20ph%C3%A1t%20tri%E1%BB%83n">Đặt lịch đánh giá</a>
+      <a class="button ghost" data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">Nhắn tin qua WhatsApp</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><strong>2&nbsp;năm</strong><span>chúng tôi phát triển phần mềm cho Aseko, tiếp nối nhà cung cấp trước đó</span></div>
+      <div class="stat"><strong>4&nbsp;ứng dụng</strong><span>của Aseko trên cùng một mã nguồn cho web, iOS và Android</span></div>
+      <div class="stat"><strong>5,5&nbsp;tháng</strong><span>từ dòng code đầu tiên đến khi khách hàng thử nghiệm hệ thống mBlue mới</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1">Khi nào nên liên hệ với chúng tôi</h2>
+      <div class="modules">
+        <div class="module"><h3>Nhà cung cấp đã ngừng làm việc hoặc không phản hồi</h3><p>Agency đã giải thể, freelancer đã chuyển sang công việc khác, hoặc phải mất hàng tuần mới trả lời yêu cầu.</p></div>
+        <div class="module"><h3>Lập trình viên nội bộ đã nghỉ việc</h3><p>Chỉ có một người hiểu phần mềm và người đó không còn làm ở công ty. Không ai biết trong mã nguồn có gì.</p></div>
+        <div class="module"><h3>Hệ thống đã hết thời</h3><p>Không ai muốn chỉnh sửa hệ thống thông tin cũ, và công việc dần chuyển sang các bảng tính bên cạnh nó.</p></div>
+        <div class="module"><h3>Không thể phát hành ứng dụng</h3><p>Ứng dụng di động bị crash, không qua được vòng duyệt của App Store hoặc Google Play, hoặc mỗi nền tảng lại có mã nguồn riêng.</p></div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2">Quy trình tiếp quản</h2>
+      <ol class="steps">
+        <li class="step"><h3>Đánh giá<span class="badge">miễn phí</span></h3><p>Buổi gặp một giờ và xem xét mã nguồn, máy chủ, tài khoản; nếu Quý khách yêu cầu, chúng tôi ký NDA trước. Quý khách nhận được một báo cáo ngắn bằng văn bản: tình trạng mã nguồn, các rủi ro chính, ước tính chi phí tiếp quản và việc cần làm đầu tiên.</p></li>
+        <li class="step"><h3>Bàn giao quyền truy cập</h3><p>Chúng tôi lập danh sách và tiếp nhận mọi thứ mà phần mềm cần để vận hành: repository, máy chủ, cơ sở dữ liệu, tên miền, chứng chỉ, tài khoản App Store và Google Play cũng như các dịch vụ bên thứ ba. Chúng tôi kiểm tra để chắc chắn Quý khách có bản sao lưu hoạt động được.</p></li>
+        <li class="step"><h3>Ổn định hệ thống</h3><p>Chúng tôi thiết lập build và phát hành tự động, theo dõi lỗi phát sinh khi vận hành, và viết kiểm thử ở những chỗ dễ xảy ra lỗi hồi quy nhất. Chúng tôi sửa những lỗi gây trở ngại nhiều nhất cho Quý khách.</p></li>
+        <li class="step"><h3>Phát triển tiếp hay thay thế</h3><p>Dựa trên những gì tìm thấy trong mã nguồn, chúng tôi sẽ đề xuất nên tiếp tục phát triển, viết lại dần hay thay thế phần mềm. Quyết định thuộc về Quý khách.</p></li>
+      </ol>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3">Chúng tôi đã làm điều này ở đâu</h2>
+      <div class="modules">
+        <a class="module ref" href="/vi/projects/aseko">
+          <h3>Aseko</h3>
+          <p>Nhà sản xuất thiết bị hồ bơi đã thay thế các ứng dụng do nhà cung cấp trước để lại. Chúng tôi tiếp quản phần mềm cùng với Telion: frontend của các ứng dụng, phát hành lên App Store và Google Play, và kiểm thử tự động.</p>
+          <span class="more">Dự án tiêu biểu</span>
+        </a>
+        <a class="module ref" href="/vi/projects/mblue">
+          <h3>mBlue</h3>
+          <p>Một công ty nhân sự đã thay thế hệ thống sử dụng trong nhiều năm. Chúng tôi xây dựng CRM và hệ thống tuyển dụng theo yêu cầu, đồng thời chuyển dữ liệu lịch sử sang hệ thống mới.</p>
+          <span class="more">Dự án tiêu biểu</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4">Câu hỏi thường gặp</h2>
+      <div class="faq">
+        <div><h3>Studio có thông thạo công nghệ mà phần mềm đang sử dụng không?</h3><p>Chúng tôi làm việc với Vue.js, Ruby on Rails, Swift, Kotlin và ứng dụng hybrid trên Capacitor, cùng nhiều công nghệ khác. Nếu cả chúng tôi lẫn mạng lưới chuyên gia của chúng tôi đều không đảm nhận được công nghệ đó, chúng tôi sẽ nói rõ ngay tại buổi đánh giá.</p></div>
+        <div><h3>Nếu không có quyền truy cập mã nguồn thì sao?</h3><p>Việc này vẫn có thể giải quyết. Tại buổi đánh giá, chúng tôi sẽ tìm hiểu Quý khách đang có những gì, mã nguồn nhiều khả năng nằm ở đâu và làm sao để lấy được. Nếu không được, chúng tôi sẽ đề xuất phương án thay thế.</p></div>
+        <div><h3>Chi phí tiếp quản là bao nhiêu?</h3><p>Tùy thuộc vào quy mô và tình trạng của phần mềm. Buổi đánh giá miễn phí và bao gồm ước tính chi phí, vì vậy Quý khách biết giá trước khi cam kết bất cứ điều gì.</p></div>
+        <div><h3>Bao lâu thì có thể bắt đầu?</h3><p>Chúng tôi trả lời tin nhắn chậm nhất trong vòng vài giờ. Lịch đánh giá được sắp xếp tùy theo mức độ cấp bách của tình huống.</p></div>
+        <div><h3>Studio có nhận mọi dự án không?</h3><p>Không. Liên hệ với chúng tôi hoàn toàn miễn phí và không ràng buộc Quý khách điều gì. Tuy nhiên, chúng tôi có quyền từ chối yêu cầu nếu ngay từ tin nhắn hoặc buổi đánh giá đã nhận thấy việc tiếp quản sẽ không có lợi cho Quý khách cũng như cho chúng tôi. Khi đó, chúng tôi sẽ nói thẳng với Quý khách.</p></div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Quý khách cần tiếp quản phần mềm?</h2>
+        <p>Hãy cho chúng tôi biết đó là phần mềm gì và chuyện gì đã xảy ra. Chúng tôi sẽ phản hồi chậm nhất trong vòng vài giờ.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="button" data-mail href="mailto:info@indigostudio.cz?subject=Ti%E1%BA%BFp%20qu%E1%BA%A3n%20ph%C3%A1t%20tri%E1%BB%83n">Gửi email tới info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Mã số doanh nghiệp&nbsp;14389096<span class="sep">·</span><wbr>Mã số thuế VAT&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha, Cộng hòa Séc</p>
+    <p><a href="/vi/">Về trang chủ</a></p>
+  </div>
+</footer>
+
+<script>
+  // Zdroj kampaně bez cookies: ?k=gads|sklik|li se propíše do předmětu e-mailu a textu zprávy
+  (function () {
+    var k = new URLSearchParams(location.search).get("k");
+    k = k && /^[a-z0-9-]{1,20}$/.test(k) ? k : "";
+    var subject = "Tiếp quản phát triển" + (k ? " [" + k + "]" : "");
+    var text = "Xin chào, chúng tôi cần tìm đơn vị tiếp quản việc phát triển phần mềm." + (k ? " [" + k + "]" : "");
+    document.querySelectorAll("[data-mail]").forEach(function (a) {
+      a.href = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent(subject);
+    });
+    document.querySelectorAll("[data-wa]").forEach(function (a) {
+      a.href = "https://wa.me/420777407690?text=" + encodeURIComponent(text);
+    });
+  })();
+</script>
+</body>
+</html>

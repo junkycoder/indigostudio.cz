@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Đào tạo Claude Code và Codex dựa trên số liệu đo lường | Indigo Studio</title>
+<meta name="description" content="Đào tạo làm việc với Claude Code và OpenAI Codex. Mỗi mẹo đều được chúng tôi kiểm chứng bằng đo lường: lượng token tiêu thụ, chi phí và tỷ lệ thành công khi không có và khi có mẹo, trên nhiều mô hình. Chúng tôi sẽ công bố dữ liệu và benchmark.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/vi/training">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/skoleni">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/training">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/training">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/skoleni">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Claude Code và Codex: mẹo dựa trên số liệu đo lường">
+<meta property="og:description" content="Khóa đào tạo mà mỗi mẹo đều được chứng minh bằng số liệu: token, chi phí và tỷ lệ thành công khi không có và khi có mẹo. Dữ liệu và benchmark sẽ được công khai.">
+<meta property="og:url" content="https://indigostudio.cz/vi/training">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://indigostudio.cz/og-vi.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Claude Code và Codex: mẹo dựa trên số liệu đo lường">
+<meta name="twitter:description" content="Khóa đào tạo mà mỗi mẹo đều được chứng minh bằng số liệu: token, chi phí và tỷ lệ thành công khi không có và khi có mẹo. Dữ liệu và benchmark sẽ được công khai.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-vi.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+  .nav-link[aria-current="page"] { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 22ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 60ch; }
+
+  /* stav aktuálního školení: připravujeme / přihlášky / probíhá */
+  .status { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.72rem; letter-spacing: 0.06em; color: var(--accent); background: var(--accent-soft); border-radius: 3px; padding: 0.2rem 0.55rem; }
+  .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 2s var(--ease) infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* odběr novinek */
+  .signup { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 1rem 2rem; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.4rem 1.5rem; scroll-margin-top: 1rem; }
+  .signup h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+  .signup-text p { color: var(--fg-muted); font-size: 0.92rem; }
+  .signup-row { display: flex; gap: 0.5rem; }
+  .signup-row input[type="email"] { flex: 1; min-width: 0; font: inherit; font-size: 0.95rem; color: var(--fg); background: var(--bg); border: 1px solid var(--border-strong); border-radius: 6px; padding: 0.65rem 0.8rem; }
+  .signup-row input[type="email"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .signup-row .button { border: 0; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .signup-row .button:disabled { opacity: 0.6; cursor: progress; }
+  .signup-msg { font-size: 0.88rem; margin-top: 0.5rem; }
+  .signup-msg:empty { display: none; }
+  .signup-msg.ok { color: var(--accent); }
+  .signup-msg.err { color: #e5484d; }
+  .signup-note { font-size: 0.8rem; color: var(--fg-faint); margin-top: 0.5rem; line-height: 1.5; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* fakta o školení */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .sub { display: block; font-size: 0.88rem; font-weight: 500; letter-spacing: 0; color: var(--fg-muted); margin-top: 0.5rem; line-height: 1.5; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose a { color: var(--accent); text-underline-offset: 0.2em; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* měřené tipy */
+  .tips { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .tip-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .tip-row h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; }
+  .tip-row p { grid-column: 1 / -1; font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+  .tip-row .result { align-self: start; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-faint); white-space: nowrap; }
+  .tip-row .result.done { color: var(--accent); }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+
+  /* ---- Proběhlá školení: záznam + článek ---- */
+  .archive { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .past { display: flex; flex-direction: column; gap: 0.2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.1rem 1.2rem; }
+  .past .when { font-size: 0.8rem; color: var(--fg-faint); }
+  .past h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .past p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+  .past .links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-top: 0.6rem; }
+  .past .links a { font-size: 0.88rem; font-weight: 550; color: var(--accent); text-decoration: none; }
+  .past .links a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+  .past .links .soon { font-size: 0.88rem; color: var(--fg-faint); }
+  /* prázdný archiv → místo seznamu jedna věta */
+  .archive:has(li) + .archive-empty { display: none; }
+  .archive-empty { color: var(--fg-muted); max-width: 64ch; }
+
+  /* otázky */
+  .faq { display: flex; flex-direction: column; gap: 1.1rem; max-width: 64ch; }
+  .faq h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+  .faq p { color: var(--fg-muted); }
+  .faq a { color: var(--accent); text-underline-offset: 0.2em; }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+    .signup { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules { grid-template-columns: 1fr; }
+    .signup { padding: 1.2rem; }
+    .signup-row { flex-direction: column; }
+    .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<script src="/doodles.js"></script>
+<script src="/cursors.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Điều hướng chính">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Dịch vụ
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/vi/hosting">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/vi/training" aria-current="page">
+            Đào tạo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/vi/projects">
+        Dự án tiêu biểu, sản phẩm mẫu và khách hàng
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Ngôn ngữ: </span>Tiếng Việt
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/skoleni" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/training" hreflang="en" lang="en">English</a>
+        <a class="nav-menu-link" href="/vi/training" hreflang="vi" lang="vi" aria-current="true">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Đường dẫn điều hướng">
+      <a href="/vi/">Trang chủ</a><span class="sep">/</span><span aria-current="page">Đào tạo</span>
+    </nav>
+
+    <!--
+      Aktuální školení: vždy jen jedno, které běží nebo se připravuje.
+      Stav v .status: „Připravujeme" → „Přihlášky otevřené" → „Probíhá".
+      Po skončení přesunout do „Proběhlá školení" (šablona níže) a sem dát další.
+    -->
+    <header class="hero">
+      <p class="eyebrow">Đào tạo<span class="status">Đang chuẩn bị</span></p>
+      <h1>Claude Code và Codex: mẹo dựa trên số liệu đo lường</h1>
+      <p class="lead">Có rất nhiều lời khuyên về cách làm việc với trợ lý AI cho lập trình, nhưng ít lời khuyên được kiểm chứng. Vì vậy, chúng tôi đo lường từng mẹo trước khi đưa vào khóa đào tạo: cùng một bài toán được giải khi không có và khi có mẹo, trên nhiều mô hình, rồi so sánh lượng token tiêu thụ, chi phí và tỷ lệ thành công.</p>
+    </header>
+
+    <!-- Odběr: POST /api/odber → potvrzovací e-mail → /api/odber/potvrdit → zpět sem s ?odber= -->
+    <section class="signup" id="odber" aria-labelledby="odber-title">
+      <div class="signup-text">
+        <h2 id="odber-title">Khóa đào tạo đang được chuẩn bị</h2>
+        <p>Chúng tôi sẽ công bố thời gian tổ chức và học phí ngay khi hoàn tất các phép đo. Quý khách hãy để lại email, chúng tôi sẽ báo tin cho Quý khách đầu tiên.</p>
+      </div>
+      <form class="signup-form" novalidate>
+        <div class="signup-row">
+          <label class="sr-only" for="odber-email">Email</label>
+          <input id="odber-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="email@example.com" required>
+          <!-- honeypot: člověk nevidí, bot vyplní -->
+          <input class="hp" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="button" type="submit">Đăng ký nhận tin</button>
+        </div>
+        <p class="signup-msg" role="status" aria-live="polite"></p>
+        <p class="signup-note">Chúng tôi sẽ gửi Quý khách email kèm liên kết xác nhận. Địa chỉ email chỉ được dùng để gửi tin về các khóa đào tạo và Quý khách có thể hủy đăng ký chỉ bằng một cú nhấp.</p>
+      </form>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><strong>Không có mẹo và có mẹo</strong><span>cùng một bài toán, chạy lặp lại nhiều lần, kết quả đánh giá theo test</span></div>
+      <div class="stat"><strong>Claude và GPT</strong><span>cả Claude Code và OpenAI Codex, mô hình nhỏ và lớn</span></div>
+      <div class="stat"><strong>Dữ liệu công khai</strong><span>chúng tôi sẽ công bố bài toán, script và số liệu đo được để kiểm chứng</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1">Chúng tôi đo những gì<span class="sub">Các mẹo sẽ được trình bày trong khóa đào tạo. Kết quả sẽ được bổ sung ngay khi đo xong.</span></h2>
+      <!-- Po změření: .result → „−38 % tokenů" apod. a přidat třídu .done -->
+      <ul class="tips">
+        <li class="tip-row"><h3>CLAUDE.md và AGENTS.md ngắn gọn hay chi tiết</h3><span class="result">Đang đo</span><p>Các chỉ dẫn được nạp vào mỗi cuộc hội thoại tốn bao nhiêu token và khi nào điều đó đáng giá.</p></li>
+        <li class="tip-row"><h3>Cuộc hội thoại mới hay một luồng dài</h3><span class="result">Đang đo</span><p>Chi phí tăng thế nào theo độ dài ngữ cảnh và khi nào nên bắt đầu lại với một bản tóm tắt.</p></li>
+        <li class="tip-row"><h3>Lập kế hoạch trước, viết code sau</h3><span class="result">Đang đo</span><p>Chế độ lập kế hoạch so với chỉnh sửa ngay: số lần sửa, token và thời gian.</p></li>
+        <li class="tip-row"><h3>Subagent để khảo sát code</h3><span class="result">Đang đo</span><p>Tìm kiếm trong repository bên ngoài cuộc hội thoại chính so với đọc mọi thứ ngay trong đó.</p></li>
+        <li class="tip-row"><h3>Bao nhiêu MCP server là quá nhiều</h3><span class="result">Đang đo</span><p>Chi phí phụ trội của định nghĩa công cụ trong mỗi yêu cầu và ảnh hưởng đến việc chọn đúng công cụ.</p></li>
+        <li class="tip-row"><h3>Mức độ suy luận của mô hình</h3><span class="result">Đang đo</span><p>Mức nỗ lực thấp hay cao: khi nào token tăng thêm cải thiện tỷ lệ thành công và khi nào không.</p></li>
+        <li class="tip-row"><h3>Chọn mô hình theo loại bài toán</h3><span class="result">Đang đo</span><p>Khi nào mô hình nhỏ và rẻ hơn là đủ, và khi nào mô hình lớn hơn bù lại chi phí nhờ cần ít lần thử hơn.</p></li>
+        <li class="tip-row"><h3>Yêu cầu có thể kiểm chứng</h3><span class="result">Đang đo</span><p>Yêu cầu kèm test hoặc tiêu chí hoàn thành rõ ràng so với mô tả tự do.</p></li>
+      </ul>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2">Chúng tôi đo như thế nào</h2>
+      <div class="prose">
+        <ul class="list">
+          <li><strong>Bộ bài toán từ các repository thực tế.</strong> Sửa lỗi, tính năng mới và refactoring, mỗi bài toán đều có test để xác định đã hoàn thành hay chưa.</li>
+          <li><strong>Mỗi mẹo hai lần.</strong> Cùng một bài toán khi không có mẹo và khi có mẹo, lặp lại nhiều lần để kết quả không phải là sự ngẫu nhiên của một lần chạy.</li>
+          <li><strong>Những gì chúng tôi ghi lại.</strong> Token đầu vào, đầu ra và token được cache, chi phí, thời gian và tỷ lệ thành công theo kết quả test.</li>
+          <li><strong>Nhiều mô hình.</strong> Claude Code với các mô hình Claude và Codex với các mô hình GPT. Với mỗi kết quả, chúng tôi ghi rõ phiên bản công cụ, mô hình và ngày đo.</li>
+          <li><strong>Đặt trong bối cảnh các benchmark công khai.</strong> Chúng tôi sẽ so sánh số liệu của mình với các kết quả công khai như SWE-bench Verified và Terminal-Bench.</li>
+        </ul>
+        <p>Chúng tôi sẽ công bố bài toán, script và dữ liệu đo được để bất kỳ ai cũng có thể kiểm chứng kết quả hoặc thực hiện lại trên code của chính mình.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3">Quý khách nhận được gì</h2>
+      <div class="modules">
+        <div class="module"><h3>Đào tạo trực tiếp</h3><p>Các mẹo kèm số liệu đo được, minh họa trên code thực tế và thời gian dành cho câu hỏi của Quý khách.</p></div>
+        <div class="module"><h3>Tài liệu công khai</h3><p>Benchmark, script và dữ liệu vẫn sẵn có sau khóa đào tạo.</p></div>
+        <div class="module"><h3>Bản ghi miễn phí</h3><p>Học viên nhận bản ghi buổi đào tạo mà không phải trả thêm phí.</p></div>
+        <div class="module"><h3>Bài viết tổng kết</h3><p>Chúng tôi sẽ tổng hợp và công bố những phát hiện chính sau khóa đào tạo.</p></div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4">Các khóa đào tạo đã diễn ra<span class="sub">Quý khách có thể mua bản ghi một lần với giá bằng một nửa học phí của khóa đào tạo. Học viên được nhận miễn phí.</span></h2>
+      <div>
+        <!--
+          Šablona položky (nejnovější nahoře):
+          <li class="past">
+            <span class="when">září 2026</span>
+            <h3>Název školení</h3>
+            <p>Jedna věta o obsahu.</p>
+            <div class="links">
+              <a data-rec="Název školení" href="mailto:info@indigostudio.cz">Koupit záznam</a>
+              <a href="/vi/training/slug">Článek</a>   ← dokud není: <span class="soon">Článek připravujeme</span>
+              <a href="https://github.com/…">Podklady</a>
+            </div>
+          </li>
+        -->
+        <ul class="archive"></ul>
+        <p class="archive-empty">Hiện chưa có. Bản ghi và bài viết của khóa đào tạo đầu tiên sẽ được đăng tại đây ngay sau khi khóa học diễn ra.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5">Câu hỏi thường gặp</h2>
+      <div class="faq">
+        <div><h3>Khóa đào tạo dành cho ai?</h3><p>Dành cho lập trình viên và đội ngũ kỹ thuật đang sử dụng Claude Code hoặc Codex, hoặc muốn bắt đầu sử dụng, và quan tâm đến điều gì thực sự giúp tiết kiệm thời gian và tiền bạc.</p></div>
+        <div><h3>Khóa học diễn ra khi nào và ở đâu?</h3><p>Chúng tôi sẽ công bố thời gian tổ chức và học phí ngay khi hoàn tất các phép đo. <a href="#odber">Đăng ký nhận tin</a> để được thông báo trong số những người đầu tiên.</p></div>
+        <div><h3>Bản ghi được cung cấp như thế nào?</h3><p>Sau khóa đào tạo, Quý khách có thể mua bản ghi một lần với giá bằng một nửa học phí của khóa đào tạo. Học viên được nhận miễn phí.</p></div>
+        <div><h3>Chúng tôi có thể đặt khóa đào tạo riêng cho đội ngũ của mình không?</h3><p>Có. Chúng tôi cũng có thể thực hiện phép đo trên repository của Quý khách, để số liệu phản ánh đúng code của Quý khách.</p></div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Quý khách muốn biết thời gian tổ chức?</h2>
+        <p>Hãy đăng ký nhận tin hoặc viết cho chúng tôi điều Quý khách quan tâm.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" data-mail href="mailto:info@indigostudio.cz?subject=%C4%90%C3%A0o%20t%E1%BA%A1o%20Claude%20Code%20v%C3%A0%20Codex">Gửi câu hỏi</a>
+        <a class="button" href="#odber">Đăng ký nhận tin</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Mã số doanh nghiệp&nbsp;14389096<span class="sep">·</span><wbr>Mã số thuế VAT&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha, Cộng hòa Séc</p>
+    <p><a href="/vi/">Về trang chủ</a></p>
+  </div>
+</footer>
+
+<script>
+  // Zdroj kampaně bez cookies: ?k=gads|sklik|li se propíše do předmětu e-mailu a textu zprávy
+  (function () {
+    var k = new URLSearchParams(location.search).get("k");
+    k = k && /^[a-z0-9-]{1,20}$/.test(k) ? " [" + k + "]" : "";
+    var subject = "Đào tạo Claude Code và Codex" + k;
+    var text = "Xin chào, tôi quan tâm đến khóa đào tạo Claude Code và Codex." + k;
+    document.querySelectorAll("[data-mail]").forEach(function (a) {
+      a.href = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent(subject);
+    });
+    document.querySelectorAll("[data-wa]").forEach(function (a) {
+      a.href = "https://wa.me/420777407690?text=" + encodeURIComponent(text);
+    });
+    // Nákup záznamu proběhlého školení: předmět s názvem školení
+    document.querySelectorAll("[data-rec]").forEach(function (a) {
+      a.href = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent("Bản ghi: " + a.dataset.rec + k);
+    });
+  })();
+</script>
+<script>
+  // Odběr novinek: odeslání formuláře a výsledek po návratu z potvrzovacího odkazu
+  (function () {
+    var form = document.querySelector(".signup-form");
+    if (!form) return;
+    var msg = form.querySelector(".signup-msg");
+    var btn = form.querySelector("button");
+    function say(text, kind) { msg.textContent = text; msg.className = "signup-msg " + kind; }
+
+    var STATES = {
+      potvrzeno: ["Hoàn tất, đăng ký đã được xác nhận. Chúng tôi sẽ thông báo thời gian tổ chức qua email.", "ok"],
+      odhlaseno: ["Chúng tôi đã hủy đăng ký. Quý khách sẽ không nhận thêm email nào từ chúng tôi.", "ok"],
+      neplatny: ["Liên kết không hợp lệ hoặc đã hết hạn. Vui lòng nhập lại email, chúng tôi sẽ gửi liên kết mới.", "err"]
+    };
+    var state = STATES[new URLSearchParams(location.search).get("odber")];
+    if (state) {
+      say(state[0], state[1]);
+      // parametr z adresy uklidíme, ať se hláška neukazuje po obnovení stránky
+      history.replaceState(null, "", location.pathname + "#odber");
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Vui lòng nhập địa chỉ email hợp lệ.", "err"); form.email.focus(); return; }
+      btn.disabled = true;
+      say("Đang gửi…", "");
+      fetch("/api/odber", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, topic: "skoleni", company: form.company.value, lang: "vi" })
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (d) {
+          if (d.ok) { say(d.message || "Chúng tôi đã gửi email xác nhận cho Quý khách.", "ok"); form.reset(); }
+          else say(d.error || "Gửi không thành công. Vui lòng thử lại.", "err");
+        })
+        .catch(function () { say("Gửi không thành công. Vui lòng kiểm tra kết nối và thử lại.", "err"); })
+        .then(function () { btn.disabled = false; });
+    });
+  })();
+</script>
+</body>
+</html>

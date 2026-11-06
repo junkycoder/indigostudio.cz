@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Hosting website nhanh với Git phía sau | Indigo Studio</title>
+<meta name="description" content="Hosting website tĩnh: tải nhanh, HTTPS, sao lưu và Git phía sau. Chúng tôi chuyển website từ nhà cung cấp hosting hiện tại, miễn phí đến một quy mô nhất định. Gửi địa chỉ website và chi phí hiện tại — Quý khách sẽ nhận báo giá miễn phí qua email.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/vi/hosting">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/hosting">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/hosting">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/hosting">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/hosting">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Hosting website nhanh với Git phía sau">
+<meta property="og:description" content="Chúng tôi đưa website của Quý khách lên mạng và quản lý Git thay Quý khách. Chuyển website miễn phí đến một quy mô nhất định. Gửi địa chỉ website và chi phí hiện tại — Quý khách sẽ nhận báo giá miễn phí qua email.">
+<meta property="og:url" content="https://indigostudio.cz/vi/hosting">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://indigostudio.cz/og-vi.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hosting website nhanh với Git phía sau">
+<meta name="twitter:description" content="Chúng tôi đưa website của Quý khách lên mạng và quản lý Git thay Quý khách. Chuyển website miễn phí đến một quy mô nhất định. Gửi địa chỉ website và chi phí hiện tại — Quý khách sẽ nhận báo giá miễn phí qua email.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-vi.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a prevzeti-vyvoje.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+  .nav-link[aria-current="page"] { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 20ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 62ch; }
+  .hero .lead + .lead { margin-top: 0.8rem; }
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose a { color: var(--accent); text-underline-offset: 0.2em; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+  .module.link { display: flex; flex-direction: column; gap: 0.2rem; text-decoration: none; color: inherit; transition: border-color 0.2s var(--ease); }
+  .module.link:hover { border-color: var(--accent); }
+  .module.link .more { font-size: 0.85rem; font-weight: 550; color: var(--accent); margin-top: 0.5rem; }
+
+  /* ---- Postup ---- */
+  .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 0.6rem; }
+  .step { counter-increment: step; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.2rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.1rem 1.2rem; }
+  .step::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: 0.9rem; }
+  .step h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; align-self: center; }
+  .step h3 .badge { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-left: 0.5rem; }
+  .step p { font-size: 0.9rem; color: var(--fg-muted); line-height: 1.55; }
+
+  /* ---- Pro koho se hodí a pro koho ne ---- */
+  .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .col { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.2rem 1.3rem; }
+  .col h3 { font-size: 0.78rem; font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 0.8rem; }
+  .col.yes h3 { color: var(--accent); }
+  .col ul { list-style: none; display: grid; gap: 0.45rem; }
+  .col li { color: var(--fg-muted); font-size: 0.92rem; padding-left: 1.2rem; position: relative; }
+  .col li::before { content: "—"; position: absolute; left: 0; color: var(--fg-faint); }
+  .col.yes li::before { content: "✓"; color: var(--accent); font-size: 0.85rem; }
+  .col p.after { font-size: 0.85rem; color: var(--fg-faint); margin-top: 0.9rem; line-height: 1.5; }
+
+  /* otázky */
+  .faq { display: flex; flex-direction: column; gap: 1.1rem; max-width: 64ch; }
+  .faq h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+  .faq p { color: var(--fg-muted); }
+  .faq a { color: var(--accent); }
+
+  /* ---- Nabídka: formulář ---- */
+  .offer {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow); padding: 1.6rem; margin-top: clamp(2.2rem, 5vh, 3rem);
+    scroll-margin-top: 1rem;
+    display: grid; grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: 1.2rem 2.4rem;
+  }
+  .offer h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+  .offer-text p { color: var(--fg-muted); font-size: 0.93rem; margin-bottom: 0.7rem; }
+  .offer-text p:last-child { margin-bottom: 0; }
+  .offer-text .alt { font-size: 0.87rem; color: var(--fg-faint); }
+  .offer-text .alt a { color: var(--fg-muted); }
+  .offer-text .alt a:hover { color: var(--accent); }
+
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+  .field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .field.wide { grid-column: 1 / -1; }
+  .field label { font-size: 0.82rem; font-weight: 600; color: var(--fg); }
+  .field label .opt { font-weight: 500; color: var(--fg-faint); }
+  .field input, .field textarea {
+    font: inherit; font-size: 0.93rem; color: var(--fg); background: var(--bg);
+    border: 1px solid var(--border-strong); border-radius: 6px; padding: 0.6rem 0.75rem; width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 4.5rem; line-height: 1.5; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  /* honeypot — člověk nevidí, bot vyplní */
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .form-foot { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1rem; margin-top: 0.9rem; }
+  .form-note { font-size: 0.8rem; color: var(--fg-faint); line-height: 1.5; margin-top: 0.6rem; }
+  .form-msg { font-size: 0.88rem; }
+  .form-msg:empty { display: none; }
+  .form-msg.ok { color: var(--accent); }
+  .form-msg.err { color: #e5484d; }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border: 0; border-radius: 6px; padding: 0.7rem 1.1rem; font-family: inherit; cursor: pointer; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button:disabled { opacity: 0.6; cursor: progress; }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+    .offer { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules, .cols, .fields { grid-template-columns: 1fr; }
+    .closing, .offer { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script src="/doodles.js"></script>
+<script src="/cursors.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Điều hướng chính">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Dịch vụ
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/vi/hosting" aria-current="page">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/vi/training">
+            Đào tạo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/vi/projects">
+        Dự án tiêu biểu, sản phẩm mẫu và khách hàng
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Ngôn ngữ: </span>Tiếng Việt
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/hosting" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/hosting" hreflang="en" lang="en">English</a>
+        <a class="nav-menu-link" href="/vi/hosting" hreflang="vi" lang="vi" aria-current="true">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Đường dẫn điều hướng">
+      <a href="/vi/">Trang chủ</a><span class="sep">/</span><span aria-current="page">Hosting</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Hosting, tên miền và email doanh nghiệp</p>
+      <h1>Hosting website nhanh. Git để chúng tôi lo.</h1>
+      <p class="lead">Chúng tôi đưa website của Quý khách lên một mạng lưới phân phối trang từ máy chủ gần người truy cập nhất. Không phải chờ máy chủ dùng chung, không có trang quản trị mà mỗi năm đăng nhập một lần rồi chẳng biết thứ gì nằm ở đâu.</p>
+      <p class="lead">Quản lý phiên bản, triển khai, HTTPS và sao lưu đều chạy phía sau. Quý khách chỉ cần đăng ký và chuyển hoặc mua tên miền. Chúng tôi chuyển website hiện có sang — miễn phí đến một quy mô nhất định — hoặc xây dựng website mới cho Quý khách.</p>
+      <div class="actions" style="margin-top:1.4rem">
+        <a class="button" href="#poptavka">Nhận báo giá miễn phí</a>
+        <a class="button ghost" data-mail href="mailto:info@indigostudio.cz?subject=Hosting">Gửi email</a>
+      </div>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><strong>Chuyển website miễn phí</strong><span>website giới thiệu doanh nghiệp thông thường được chuyển không tính phí; với website lớn, chúng tôi thỏa thuận trước</span></div>
+      <div class="stat"><strong>Git phía sau</strong><span>mọi thay đổi đều có lịch sử và có thể hoàn tác; kho mã nguồn thuộc về Quý khách và có thể mang đi bất cứ lúc nào</span></div>
+      <div class="stat"><strong>Báo giá qua email</strong><span>gửi địa chỉ website và chi phí hiện tại; Quý khách nhận bảng so sánh miễn phí, không ràng buộc</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1"><span class="num">01</span>Khi nào nên liên hệ với chúng tôi</h2>
+      <div class="modules">
+        <div class="module"><h3>Website tải chậm</h3><p>Trang phải chờ một máy chủ dùng chung bị quá tải. Website tĩnh không cần xử lý gì — tệp được gửi đi ngay.</p></div>
+        <div class="module"><h3>Hóa đơn tăng dần mà không rõ trả cho khoản gì</h3><p>Hosting, tên miền, chứng chỉ, sao lưu và quản trị đều tính riêng. Hãy gửi cho chúng tôi những khoản Quý khách đang trả, chúng tôi sẽ so sánh giúp.</p></div>
+        <div class="module"><h3>Không ai biết ai đã sửa gì</h3><p>Tệp bị ghi đè qua FTP, phiên bản mới nhất nằm trên ổ cứng của ai đó. Ở chỗ chúng tôi, mỗi thay đổi đều có người thực hiện, thời điểm và cách quay lại.</p></div>
+        <div class="module"><h3>Website lâu rồi không ai cập nhật</h3><p>Hệ thống quản trị nội dung cũ và plugin không được cập nhật là con đường phổ biến nhất khiến website bị tấn công. Website tĩnh không có gì để tấn công.</p></div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2"><span class="num">02</span>Cách thức hoạt động</h2>
+      <ol class="steps">
+        <li class="step"><h3>Đăng ký</h3><p>Vài thông tin, không cần cài đặt. Tài khoản dùng để xuất hóa đơn và theo dõi những gì đang chạy trên website.</p></li>
+        <li class="step"><h3>Tên miền</h3><p>Chúng tôi chuyển tên miền từ bất kỳ nhà đăng ký nào — các nhà đăng ký tại Séc như Subreg (Gransy), Wedos, Banán, Forpsi hay nhà đăng ký ở nước ngoài — hoặc đăng ký tên miền mới cho Quý khách. Quý khách chỉ trả phí đăng ký tên miền, chứng chỉ HTTPS đã bao gồm trong giá.</p></li>
+        <li class="step"><h3>Chuyển website hoặc xây mới<span class="badge">miễn phí đến một quy mô nhất định</span></h3><p>Chúng tôi chuyển website hiện có sao cho địa chỉ các trang giữ nguyên và không mất gì trên công cụ tìm kiếm. Nếu Quý khách chưa có website hoặc website cũ đã hết thời, chúng tôi sẽ xây dựng website mới.</p></li>
+        <li class="step"><h3>Vận hành</h3><p>Vận hành website, HTTPS, sao lưu và giám sát tình trạng hoạt động do chúng tôi lo. Quý khách gửi yêu cầu thay đổi cho chúng tôi, hoặc tự quản lý qua Web&nbsp;Editor.</p></li>
+      </ol>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3"><span class="num">03</span>Thay đổi qua Web&nbsp;Editor</h2>
+      <div class="prose">
+        <p><strong>Web Editor</strong> là công cụ của chúng tôi: Quý khách chỉ vào một phần tử trên website và cho biết cần làm gì với nó. Đi kèm hosting, Quý khách nhận được bộ kết nối (connector) cho Web Editor, nhờ đó yêu cầu chỉnh sửa không chỉ dừng ở phần mô tả mà được đưa thẳng lên website.</p>
+        <ul class="list">
+          <li><strong>Trước hết là bản xem trước.</strong> Mỗi thay đổi được triển khai lên một địa chỉ xem trước riêng để Quý khách thong thả kiểm tra. Website chính thức vẫn giữ nguyên.</li>
+          <li><strong>Sau đó là bản chính thức.</strong> Khi Quý khách duyệt bản xem trước, thay đổi tự động được đưa lên website chính thức. Không cần triển khai thủ công, không phải chờ lập trình viên.</li>
+          <li><strong>Luôn có đường lui.</strong> Mỗi lần triển khai đều được lưu trong lịch sử. Quay lại phiên bản trước chỉ mất một lát.</li>
+        </ul>
+        <p>Web Editor hiện vẫn đang được phát triển và thử nghiệm theo lời mời. Hosting không phụ thuộc vào nó — website vẫn chạy bình thường khi không có Web Editor, và chúng tôi sẽ thực hiện thay đổi cho Quý khách. <a href="https://webeditor.click/">Tìm hiểu thêm về Web&nbsp;Editor</a>.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4"><span class="num">04</span>Email doanh nghiệp</h2>
+      <div class="prose">
+        <p>Có tên miền thì cũng cần email. Chúng tôi thiết lập hộp thư trên tên miền riêng của Quý khách, kèm các bản ghi quyết định việc thư có đến được hộp thư đến hay không — <strong>SPF, DKIM và DMARC</strong>. Thiếu chúng, email của Quý khách sẽ rơi vào thư rác và bất kỳ ai cũng có thể gửi thư mạo danh tên miền của Quý khách.</p>
+        <ul class="list">
+          <li><strong>Trên tài khoản của Quý khách.</strong> Chúng tôi tạo hộp thư tại một nhà cung cấp uy tín, hợp đồng và dữ liệu thuộc về Quý khách. Chúng tôi chỉ thiết lập và bàn giao.</li>
+          <li><strong>Hoặc do chúng tôi quản lý.</strong> Email chạy như một dịch vụ của chúng tôi, mọi việc chỉ cần một email là xong. Chúng tôi sẽ thống nhất theo phương án phù hợp với Quý khách.</li>
+        </ul>
+        <p>Chúng tôi cũng làm được bản tin (newsletter) và email tự động từ website — xác nhận đơn hàng, phản hồi từ biểu mẫu, thông báo.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5"><span class="num">05</span>Phù hợp với ai</h2>
+      <div class="cols">
+        <div class="col yes">
+          <h3>Phù hợp</h3>
+          <ul>
+            <li>Website giới thiệu doanh nghiệp và website danh thiếp</li>
+            <li>Landing page và website cho chiến dịch</li>
+            <li>Blog, tạp chí và tài liệu</li>
+            <li>Danh mục sản phẩm và bảng giá không có chức năng đặt hàng</li>
+            <li>Website chỉ cần hiển thị nội dung và nhận yêu cầu báo giá</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h3>Không phù hợp</h3>
+          <ul>
+            <li>Website phụ thuộc vào PHP và cơ sở dữ liệu trên máy chủ</li>
+            <li>Cửa hàng trực tuyến có quản lý kho và thanh toán</li>
+            <li>Cổng thông tin có đăng nhập và nội dung do người dùng tạo</li>
+          </ul>
+          <p class="after">Điều đó không có nghĩa là chúng tôi không thể tư vấn. Chúng tôi sẽ chuyển website sang dạng tĩnh hoặc đề xuất giải pháp khác — phát triển ứng dụng theo yêu cầu là công việc chúng tôi vẫn làm từ trước đến nay.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s6">
+      <h2 id="s6"><span class="num">06</span>Câu hỏi thường gặp</h2>
+      <div class="faq">
+        <div><h3>“Miễn phí đến một quy mô nhất định” nghĩa là gì?</h3><p>Website giới thiệu thông thường từ vài trang đến vài chục trang được chuyển không tính phí. Với website lớn hoặc website cần tách ra khỏi hệ thống cũ trước, chúng tôi báo giá trước — không bao giờ tính sau.</p></div>
+        <div><h3>Hosting giá bao nhiêu?</h3><p>Giá được tính theo quy mô website và những gì Quý khách cần kèm theo. Hãy gửi địa chỉ website và chi phí hiện tại; Quý khách sẽ nhận bảng so sánh và báo giá cụ thể qua email, miễn phí và không ràng buộc.</p></div>
+        <div><h3>Website có bị mất thứ hạng trên công cụ tìm kiếm không?</h3><p>Không. Chúng tôi giữ nguyên địa chỉ các trang, và ở chỗ nào không giữ được, chúng tôi thiết lập chuyển hướng vĩnh viễn. Sau khi chuyển, website thường nhanh hơn, điều này thường có lợi cho thứ hạng tìm kiếm.</p></div>
+        <div><h3>Có cần biết dùng Git không?</h3><p>Không. Git chạy ngầm bên dưới để mọi thay đổi đều có thể tra lại và hoàn tác. Quý khách không cần làm việc với Git — nếu muốn, chúng tôi sẽ cấp quyền truy cập kho mã nguồn.</p></div>
+        <div><h3>Chuyển website mất bao lâu?</h3><p>Bản thân việc chuyển thường chỉ mất một đến hai ngày. Lâu hơn thường là khâu chuyển tên miền tại nhà đăng ký cũ — trong suốt thời gian đó website vẫn chạy bình thường ở địa chỉ cũ, Quý khách không phải lo gián đoạn.</p></div>
+        <div><h3>Nếu muốn chuyển sang nơi khác thì sao?</h3><p>Quý khách nhận toàn bộ nội dung website cùng toàn bộ lịch sử trong kho mã nguồn và tự chuyển tên miền sang nơi khác. Điều duy nhất giữ Quý khách ở lại là dịch vụ phù hợp với Quý khách.</p></div>
+      </div>
+    </section>
+
+    <!-- Nabídka: POST /api/poptavka (stejný endpoint jako poptávka na úvodu) -->
+    <section class="offer" id="poptavka" aria-labelledby="poptavka-title">
+      <div class="offer-text">
+        <h2 id="poptavka-title">Nhận báo giá miễn phí</h2>
+        <p>Hãy cho chúng tôi biết địa chỉ website và chi phí Quý khách đang trả. Chúng tôi sẽ xem xét và gửi bảng so sánh cùng báo giá qua email — không ràng buộc, không tính phí.</p>
+        <p>Nếu Quý khách chưa có website, vui lòng ghi vào phần ghi chú. Chúng tôi sẽ gửi báo giá xây dựng website mới.</p>
+        <p class="alt">Muốn liên hệ trực tiếp? <a data-mail href="mailto:info@indigostudio.cz?subject=Hosting">info@indigostudio.cz</a> hoặc <a data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">WhatsApp</a>.</p>
+      </div>
+      <form class="offer-form" novalidate>
+        <div class="fields">
+          <div class="field">
+            <label for="f-name">Họ và tên</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Nguyễn Văn An" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="ten@email.cz" required>
+          </div>
+          <div class="field">
+            <label for="f-web">Địa chỉ website <span class="opt">(không bắt buộc)</span></label>
+            <input id="f-web" name="web" type="text" autocomplete="url" inputmode="url" placeholder="tencongty.cz">
+          </div>
+          <div class="field">
+            <label for="f-price">Chi phí hiện tại <span class="opt">(không bắt buộc)</span></label>
+            <input id="f-price" name="price" type="text" placeholder="ví dụ: 4.000 Kč mỗi năm">
+          </div>
+          <div class="field wide">
+            <label for="f-note">Ghi chú <span class="opt">(không bắt buộc)</span></label>
+            <textarea id="f-note" name="note" rows="3" placeholder="Website đang gặp vấn đề gì, điều gì chưa hài lòng ở hosting hiện tại, khi nào muốn chuyển."></textarea>
+          </div>
+        </div>
+        <!-- honeypot: člověk nevidí, bot vyplní -->
+        <input class="hp" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="form-foot">
+          <button class="button" type="submit">Nhận báo giá miễn phí</button>
+          <p class="form-msg" role="status" aria-live="polite"></p>
+        </div>
+        <p class="form-note">Thông tin chỉ được dùng để chuẩn bị báo giá và phản hồi. Chúng tôi không chuyển cho bất kỳ ai và không thêm Quý khách vào danh sách gửi thư nào.</p>
+      </form>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Website của Quý khách đang đặt ở nơi khác?</h2>
+        <p>Hãy cho chúng tôi biết website đang chạy ở đâu và chi phí bao nhiêu. Chúng tôi sẽ phản hồi chậm nhất trong vòng vài giờ.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="button" data-mail href="mailto:info@indigostudio.cz?subject=Hosting">Gửi email tới info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Mã số doanh nghiệp&nbsp;14389096<span class="sep">·</span><wbr>Mã số thuế VAT&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha, Cộng hòa Séc</p>
+    <p><a href="/vi/">Về trang chủ</a></p>
+  </div>
+</footer>
+
+<script>
+  // Zdroj kampaně bez cookies: ?k=gads|sklik|li se propíše do předmětu e-mailu a textu zprávy
+  (function () {
+    var k = new URLSearchParams(location.search).get("k");
+    k = k && /^[a-z0-9-]{1,20}$/.test(k) ? " [" + k + "]" : "";
+    document.querySelectorAll("[data-mail]").forEach(function (a) {
+      a.href = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent("Hosting" + k);
+    });
+    document.querySelectorAll("[data-wa]").forEach(function (a) {
+      a.href = "https://wa.me/420777407690?text=" + encodeURIComponent("Xin chào, tôi có câu hỏi về hosting." + k);
+    });
+
+    // Formulář: z polí složíme text zprávy a pošleme na stejný endpoint jako poptávku z úvodu
+    var form = document.querySelector(".offer-form");
+    if (!form) return;
+    var msg = form.querySelector(".form-msg");
+    var btn = form.querySelector("button");
+    // pozor: form.name je jméno formuláře, ne pole — pole se berou přes form.elements
+    var f = form.elements;
+    function say(text, kind) { msg.textContent = text; msg.className = "form-msg " + (kind || ""); }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = f.name.value.trim();
+      var email = f.email.value.trim();
+      if (!name) { say("Vui lòng nhập họ và tên.", "err"); f.name.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Vui lòng nhập địa chỉ email hợp lệ.", "err"); f.email.focus(); return; }
+
+      var lines = ["Quan tâm đến hosting" + k, ""];
+      lines.push("Website: " + (f.web.value.trim() || "không cung cấp"));
+      lines.push("Chi phí hiện tại: " + (f.price.value.trim() || "không cung cấp"));
+      var note = f.note.value.trim();
+      if (note) lines.push("", "Ghi chú:", note);
+
+      btn.disabled = true;
+      say("Đang gửi…");
+      fetch("/api/poptavka", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, email: email, message: lines.join("\n"), company: f.company.value, lang: "vi" })
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (d) {
+          if (d.ok) { say("Chúng tôi đã nhận được. Báo giá sẽ được gửi qua email chậm nhất trong vòng vài giờ.", "ok"); form.reset(); }
+          else say(d.error || "Gửi không thành công. Vui lòng gửi email tới info@indigostudio.cz.", "err");
+        })
+        .catch(function () { say("Gửi không thành công. Vui lòng kiểm tra kết nối và thử lại.", "err"); })
+        .then(function () { btn.disabled = false; });
+    });
+  })();
+</script>
+</body>
+</html>

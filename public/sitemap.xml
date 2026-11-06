@@ -1,47 +1,246 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!-- Každá stránka ve třech jazycích; xhtml:link = hreflang alternativy (stejné jako v <head> stránek) -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://indigostudio.cz/</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/"/>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/"/>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/"/>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://indigostudio.cz/hosting</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/hosting"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/hosting"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/hosting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/hosting"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/hosting</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/hosting"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/hosting"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/hosting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/hosting"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/hosting</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/hosting"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/hosting"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/hosting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/hosting"/>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://indigostudio.cz/prevzeti-vyvoje</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/prevzeti-vyvoje"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/development-takeover"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/development-takeover"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/prevzeti-vyvoje"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/development-takeover</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/prevzeti-vyvoje"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/development-takeover"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/development-takeover"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/prevzeti-vyvoje"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/development-takeover</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/prevzeti-vyvoje"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/development-takeover"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/development-takeover"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/prevzeti-vyvoje"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://indigostudio.cz/skoleni</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/skoleni"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/training"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/training"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/skoleni"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/training</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/skoleni"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/training"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/training"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/skoleni"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/training</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/skoleni"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/training"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/training"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/skoleni"/>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://indigostudio.cz/projekty</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/projects</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/projects</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://indigostudio.cz/projekty/mblue</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/mblue"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/mblue"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/mblue"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/mblue"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/projects/mblue</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/mblue"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/mblue"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/mblue"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/mblue"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/projects/mblue</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/mblue"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/mblue"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/mblue"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/mblue"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://indigostudio.cz/projekty/pasek</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/pasek"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/pasek"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/pasek"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/pasek"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/projects/pasek</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/pasek"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/pasek"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/pasek"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/pasek"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/projects/pasek</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/pasek"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/pasek"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/pasek"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/pasek"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://indigostudio.cz/projekty/aseko</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/aseko"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/aseko"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/aseko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/aseko"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/projects/aseko</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/aseko"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/aseko"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/aseko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/aseko"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/projects/aseko</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/aseko"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/aseko"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects/aseko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty/aseko"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://indigostudio.cz/cookies</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/cookies"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/cookies"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/cookies"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/cookies"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/cookies</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/cookies"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/cookies"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/cookies"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/cookies"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/cookies</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/cookies"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/cookies"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/cookies"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/cookies"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

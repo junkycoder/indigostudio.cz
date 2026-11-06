@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- ať iOS nedělá tel: odkazy z IČO a čísla účtu -->
+<meta name="format-detection" content="telephone=no">
+<title>Indigo Studio — phần mềm theo yêu cầu: từ công cụ nội bộ đến sản phẩm dành cho công chúng</title>
+<meta name="description" content="Indigo Studio s.r.o. — phần mềm theo yêu cầu. Phát triển ứng dụng web, iOS và Android, kết nối với Slack, Shoptet và nhiều dịch vụ khác, tiện ích mở rộng cho Chrome và Safari.">
+<!-- theme-color = barva pozadí, ať status bar splývá se stránkou -->
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/vi/">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/">
+
+<!-- Open Graph / share preview -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Indigo Studio — phần mềm theo yêu cầu: từ công cụ nội bộ đến sản phẩm dành cho công chúng">
+<meta property="og:description" content="Phát triển ứng dụng web, iOS và Android cho doanh nghiệp của Quý khách. Kết nối với Slack, Shoptet và nhiều dịch vụ khác, tiện ích mở rộng cho Chrome và Safari.">
+<meta property="og:url" content="https://indigostudio.cz/vi/">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://indigostudio.cz/og-vi.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Indigo Studio — phần mềm theo yêu cầu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Indigo Studio — phần mềm theo yêu cầu: từ công cụ nội bộ đến sản phẩm dành cho công chúng">
+<meta name="twitter:description" content="Phát triển ứng dụng web, iOS và Android cho doanh nghiệp của Quý khách. Kết nối với Slack, Shoptet và nhiều dịch vụ khác, tiện ích mở rộng cho Chrome và Safari.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-vi.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- JSON-LD pro vyhledávače -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Organization", "ProfessionalService"],
+  "name": "Indigo Studio",
+  "legalName": "Indigo Studio s.r.o.",
+  "url": "https://indigostudio.cz",
+  "logo": "https://indigostudio.cz/apple-touch-icon.png",
+  "image": "https://indigostudio.cz/og-vi.png",
+  "email": "info@indigostudio.cz",
+  "telephone": "+420777407690",
+  "description": "Studio phần mềm. Từ công cụ nội bộ đến sản phẩm dành cho công chúng.",
+  "taxID": "14389096",
+  "vatID": "CZ14389096",
+  "duns": "986792603",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Chudenická 1059/30, Hostivař",
+    "addressLocality": "Praha",
+    "addressRegion": "Praha",
+    "postalCode": "102 00",
+    "addressCountry": "CZ"
+  },
+  "areaServed": "CZ",
+  "knowsAbout": [
+    "Thiết kế website",
+    "Phát triển ứng dụng di động",
+    "Agentic AI workflows",
+    "Email doanh nghiệp (hộp thư, webmail, SMTP, chuyển tiếp thư)",
+    "Newsletter và gửi email hàng loạt",
+    "Email tự động và email AI (chăm sóc khách hàng)",
+    "Đào tạo AI cho doanh nghiệp và người mới bắt đầu",
+    "Ứng dụng nội bộ theo yêu cầu (CRM, CSM)",
+    "Cloudflare (Workers, Pages, R2)",
+    "Firebase",
+    "Google Cloud",
+    "AWS",
+    "Triển khai on-premise",
+    "Docker",
+    "CI/CD",
+    "GitHub, GitLab, Gitea",
+    "Giám sát và ghi nhận lỗi (Sentry)",
+    "Phát hành lên Google Play và App Store",
+    "Google Workspace và Google Apps Script (Sheets, Docs, Drive, Calendar, Gmail)",
+    "Google Ads"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Dịch vụ",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ứng dụng di động" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agentic AI workflows" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Email doanh nghiệp (hộp thư, webmail, SMTP)" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Newsletter và email tự động" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Đào tạo AI cho người mới bắt đầu và doanh nghiệp" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ứng dụng nội bộ theo yêu cầu (CRM, CSM)" } }
+    ]
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "info@indigostudio.cz",
+    "telephone": "+420777407690",
+    "areaServed": "CZ",
+    "availableLanguage": ["cs"]
+  }
+}
+</script>
+
+<style>
+  /* ---- Téma: čistě podle systému (prefers-color-scheme), bez přepínače ---- */
+  :root {
+    --accent: #8b8ef8;          /* odkazy, ikony, zvýraznění */
+    --accent-strong: #6366f1;   /* značka */
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* dark = výchozí */
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --cta-bg: #4f46e5;
+    --cta-bg-hover: #5a52ee;
+    --wa: #25d366;
+    --wa-soft: rgba(37, 211, 102, 0.12);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+      --cta-bg-hover: #4338ca;
+      --wa: #16a34a;
+      --wa-soft: rgba(22, 163, 74, 0.1);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.5;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  /* společný obal — respektuje notch / home indicator (viewport-fit=cover) */
+  .container {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem;
+    min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; letter-spacing: -0.005em;
+    color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem;
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface);
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-link:hover { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .nav-link:hover svg { transform: translateX(2px); }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  /* ---- Úvod ---- */
+  main { flex: 1; }
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+    padding-block: clamp(2.5rem, 7vh, 5rem) clamp(2rem, 5vh, 3.5rem);
+  }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 1rem; }
+  .hero h1 {
+    font-size: clamp(2rem, 4.6vw, 3.1rem);
+    font-weight: 650; line-height: 1.1; letter-spacing: -0.03em;
+    max-width: 16ch; margin-bottom: 1.1rem;
+  }
+  .lead { font-size: clamp(1.02rem, 1.6vw, 1.15rem); color: var(--fg-muted); max-width: 44ch; margin-bottom: 1rem; }
+  .lead a, .lead-note a { color: var(--accent); text-underline-offset: 0.18em; }
+  /* doplněk pod úvodem — menší a tlumenější, ať úvod nepřehluší */
+  .lead-note { font-size: 0.88rem; color: var(--fg-faint); max-width: 52ch; line-height: 1.6; margin-bottom: 2rem; }
+  /* tooltip s vysvětlením (hover i fokus — funguje i na dotyk) */
+  .tip {
+    position: relative; cursor: help; outline-offset: 2px;
+    text-decoration: underline dotted; text-decoration-color: var(--border-strong); text-underline-offset: 0.2em;
+    transition: color 0.2s var(--ease);
+  }
+  .tip:hover, .tip:focus { color: var(--fg-muted); }
+  .tip-text {
+    position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 10;
+    translate: -50% 4px;
+    width: max-content; max-width: min(260px, 80vw);
+    padding: 0.55rem 0.75rem;
+    background: var(--surface); color: var(--fg-muted);
+    border: 1px solid var(--border-strong); border-radius: 6px; box-shadow: var(--shadow);
+    font-size: 0.8rem; line-height: 1.45; text-align: left;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.15s var(--ease), translate 0.15s var(--ease), visibility 0.15s;
+  }
+  .tip:hover .tip-text, .tip:focus .tip-text { opacity: 1; visibility: visible; translate: -50% 0; }
+
+  /* ---- Karty (sdílený vzhled) ---- */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+  }
+  .panel h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
+  .panel-sub { font-size: 0.9rem; color: var(--fg-muted); margin: 0.3rem 0 1.1rem; line-height: 1.5; }
+
+  /* ---- Poptávka (rychlé kontaktní cesty) ---- */
+  /* e-mail = hlavní tlačítko (plné), WhatsApp = vedlejší (obrys); v popisku adresa / číslo */
+  .cta-group { display: grid; gap: 0.6rem; }
+  .cta {
+    display: flex; align-items: center; gap: 0.9rem;
+    min-height: 4.25rem; padding: 0.8rem 1.1rem 0.8rem 0.8rem;
+    text-decoration: none; color: var(--fg);
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .cta:hover { border-color: var(--accent); }
+  .cta:active { transform: translateY(1px); }
+  .cta-ico {
+    flex: 0 0 auto; width: 42px; height: 42px;
+    display: grid; place-items: center;
+    border-radius: 6px;
+  }
+  .cta-ico svg { width: 20px; height: 20px; }
+  .cta-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+  .cta-title { font-weight: 600; font-size: 0.98rem; letter-spacing: -0.01em; }
+  .cta-desc { color: var(--fg-muted); font-size: 0.86rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .cta-arrow { flex: 0 0 auto; width: 18px; height: 18px; color: var(--fg-faint); transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .cta:hover .cta-arrow { color: var(--accent); transform: translateX(3px); }
+
+  .cta-primary {
+    color: #fff; background: var(--cta-bg); border-color: transparent;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .cta-primary:hover { background: var(--cta-bg-hover); border-color: transparent; }
+  .cta-primary .cta-ico { background: rgba(255, 255, 255, 0.14); color: #fff; }
+  .cta-primary .cta-desc { color: rgba(255, 255, 255, 0.8); }
+  .cta-primary .cta-arrow, .cta-primary:hover .cta-arrow { color: #fff; }
+
+  .cta-wa .cta-ico { background: var(--wa-soft); color: var(--wa); }
+  .cta-wa:hover .cta-arrow { transform: translate(2px, -2px); }
+
+  .cta-note { display: flex; gap: 0.6rem; font-size: 0.84rem; color: var(--fg-muted); margin-top: 1.1rem; line-height: 1.55; }
+  /* zelená tečka = jsme k zastižení */
+  .cta-note::before {
+    content: ""; flex: 0 0 auto; width: 7px; height: 7px; margin-top: 0.5em; border-radius: 50%;
+    background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  }
+  .cta-call { font-size: 0.84rem; color: var(--fg-faint); margin: 0.35rem 0 0 calc(7px + 0.6rem); }
+  .cta-call a { color: var(--fg-muted); text-decoration: none; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--border-strong); transition: color 0.2s var(--ease), border-color 0.2s var(--ease); }
+  .cta-call a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ---- Co umíme (živé vyhledávání schopností) ---- */
+  .cap-search {
+    display: flex; align-items: center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0 0.9rem;
+    transition: border-color 0.2s var(--ease);
+  }
+  .cap-search:focus-within { border-color: var(--accent); }
+  .cap-search svg { width: 18px; height: 18px; color: var(--fg-faint); flex: 0 0 auto; }
+  .cap-search input {
+    flex: 1; min-width: 0;
+    background: none; border: 0; outline: none;
+    color: var(--fg); font: inherit;
+    /* min. 16px, jinak iOS Safari při fokusu auto-zoomne („cukne") stránku */
+    font-size: 16px;
+    padding: 0.8rem 0.65rem;
+  }
+  .cap-search input::placeholder { color: var(--fg-faint); }
+  .cap-search input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+  .cap-answer { display: flex; align-items: baseline; gap: 0.45rem; margin-top: 0.9rem; font-size: 0.9rem; line-height: 1.5; color: var(--fg-muted); }
+  .cap-answer .cap-verdict { flex: 0 0 auto; font-weight: 650; color: var(--accent); }
+  .cap-answer a { color: var(--accent); text-decoration: underline; text-underline-offset: 0.18em; }
+
+  .cap-list { list-style: none; margin: 0.9rem 0 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  .cap-list.chips { flex-direction: row; flex-wrap: wrap; gap: 0.4rem; }
+  .cap-chip {
+    font: inherit; font-size: 0.82rem; color: var(--fg-muted);
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.35rem 0.75rem; cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .cap-chip:hover { border-color: var(--accent); color: var(--fg); }
+  .cap-row { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.65rem 0.85rem; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); }
+  .cap-row .cap-title { font-weight: 600; font-size: 0.92rem; }
+  .cap-row .cap-desc { color: var(--fg-muted); font-size: 0.82rem; line-height: 1.45; }
+  .cap-row mark { background: var(--accent-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .cap-empty { font-size: 0.86rem; color: var(--fg-faint); padding: 0.3rem 0; }
+
+  /* ---- Kontakty ---- */
+  .section { padding-block: 0 clamp(2.5rem, 6vh, 4rem); }
+  .section-label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 1rem; }
+  .contacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+  .card {
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: border-color 0.2s var(--ease);
+  }
+  .card:hover { border-color: var(--border-strong); }
+  .card-main { display: flex; align-items: center; gap: 0.95rem; padding: 1.1rem 1.2rem; text-decoration: none; color: inherit; }
+  .avatar {
+    width: 48px; height: 48px; border-radius: 50%; flex: 0 0 auto;
+    position: relative; overflow: hidden;
+    display: grid; place-items: center;
+    background: var(--accent-soft);
+    color: var(--accent); font-weight: 600; font-size: 0.92rem; letter-spacing: 0.02em;
+  }
+  .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .meta { display: flex; flex-direction: column; min-width: 0; }
+  .card .name { font-weight: 600; font-size: 0.95rem; }
+  .card .role { color: var(--fg-faint); font-size: 0.8rem; margin-bottom: 0.15rem; }
+  /* e-mail a telefon = samostatné odkazy, karta sama odkazem není */
+  .card .email, .card .phone {
+    width: fit-content; color: var(--fg-muted); font-size: 0.85rem; text-decoration: none;
+    transition: color 0.2s var(--ease);
+  }
+  .card .email { overflow-wrap: anywhere; }
+  .card .phone { font-variant-numeric: tabular-nums; }
+  .card .email:hover, .card .phone:hover { color: var(--accent); }
+  .card .databox { color: var(--fg-faint); font-size: 0.78rem; margin-top: 0.1rem; }
+  /* „Uložit kontakt" — stažení vCard (.vcf), funguje i bez JS */
+  .vcf {
+    display: flex; align-items: center; gap: 0.4rem;
+    margin-top: auto; padding: 0.55rem 1.2rem;
+    border-top: 1px solid var(--border);
+    color: var(--fg-faint); font-size: 0.78rem;
+    text-decoration: none;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .vcf svg { width: 13px; height: 13px; flex: 0 0 auto; }
+  .vcf:hover { color: var(--accent); background: var(--accent-soft); }
+  /* datová schránka: jen kód, vysvětlení v tooltipu (lidi ten formát znají) */
+  abbr[title] { text-decoration: underline dotted; text-underline-offset: 0.18em; cursor: help; }
+
+  /* ---- Patička: firemní údaje + odkazy ---- */
+  /* průsvitné pozadí — malůvky prosvítají */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 1rem 2rem;
+    padding-block: 1.6rem 2rem;
+    font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7;
+  }
+  .company strong { color: var(--fg); font-weight: 600; }
+  .sep { opacity: 0.4; padding: 0 0.4rem; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; }
+  .footer-links a { color: var(--fg-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-links svg { width: 14px; height: 14px; }
+
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero h1 { max-width: 20ch; }
+    .contacts { grid-template-columns: 1fr; max-width: 520px; }
+  }
+  @media (max-width: 560px) {
+    /* na telefonu dostane odkaz vlastní řádek přes celou šířku */
+    .nav-link { width: 100%; justify-content: space-between; }
+    .nav-group { width: 100%; }
+    .panel { padding: 1.2rem; }
+  }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  /* ---- Tisk = vizitka 90×50 mm ---- */
+  .business-card { display: none; }
+  @media print {
+    /* Všechny tři vizitky na jeden list A4, pod sebou, vystřihnout podle značek */
+    @page { size: A4; margin: 12mm; }
+    html, body { background: #ffffff !important; min-height: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .site-header, main, .site-footer { display: none !important; }
+    .business-card {
+      display: grid !important;
+      place-items: center;
+      width: 98mm; height: 58mm; box-sizing: border-box;
+      margin: 0 auto 8mm;        /* vycentrovat + mezera mezi vizitkami */
+      break-inside: avoid;       /* vizitku nikdy nezalomit přes stránky */
+    }
+    .business-card:last-of-type { margin-bottom: 0; }
+    /* Vlastní vizitka 90×50 mm, vycentrovaná v okraji */
+    .business-card .bc-trim {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      width: 90mm; height: 50mm; padding: 5mm 6mm; box-sizing: border-box;
+      color: #15161d;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .business-card .bc-brand { display: flex; align-items: center; gap: 2.4mm; }
+    .business-card .bc-mark { width: 7mm; height: 7mm; border-radius: 2mm; background: linear-gradient(135deg, #6366f1, #818cf8); }
+    .business-card .bc-name { font-size: 4.6mm; font-weight: 700; letter-spacing: -0.02em; }
+    .business-card .bc-name .accent { color: #6366f1; }
+    .business-card .bc-tagline { font-size: 2.7mm; color: #5a5b6a; margin-top: 1mm; }
+    .business-card .bc-foot { align-self: end; display: flex; justify-content: space-between; align-items: flex-end; gap: 5mm; }
+    .business-card .bc-contacts { line-height: 1.4; }
+    .business-card .bc-contacts .bc-web { font-size: 2.7mm; font-weight: 700; color: #15161d; }
+    .business-card .bc-contacts .bc-person { margin-top: 1.4mm; font-size: 3.2mm; font-weight: 700; color: #6366f1; letter-spacing: -0.01em; }
+    .business-card .bc-contacts .bc-role { font-size: 2.4mm; color: #5a5b6a; }
+    .business-card .bc-contacts :is(.bc-mail, .bc-tel) { font-size: 2.7mm; color: #15161d; }
+    .business-card .bc-legal { font-size: 2.1mm; color: #9a9ba8; text-align: right; line-height: 1.45; white-space: nowrap; }
+    /* Ořezové značky v rozích — leží v okraji mimo vizitku, ať se snadno stříhá */
+    .business-card .crop { position: absolute; width: 3mm; height: 3mm; }
+    .business-card .crop.tl { top: -3mm; left: -3mm; border-right: 0.2mm solid #15161d; border-bottom: 0.2mm solid #15161d; }
+    .business-card .crop.tr { top: -3mm; right: -3mm; border-left: 0.2mm solid #15161d; border-bottom: 0.2mm solid #15161d; }
+    .business-card .crop.bl { bottom: -3mm; left: -3mm; border-right: 0.2mm solid #15161d; border-top: 0.2mm solid #15161d; }
+    .business-card .crop.br { bottom: -3mm; right: -3mm; border-left: 0.2mm solid #15161d; border-top: 0.2mm solid #15161d; }
+  }
+</style>
+<script src="/doodles.js"></script>
+<script src="/cursors.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Điều hướng chính">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Dịch vụ
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/vi/hosting">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/vi/training">
+            Đào tạo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/vi/projects">
+        Dự án tiêu biểu, sản phẩm mẫu và khách hàng
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Ngôn ngữ: </span>Tiếng Việt
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/" hreflang="en" lang="en">English</a>
+        <a class="nav-menu-link" href="/vi/" hreflang="vi" lang="vi" aria-current="true">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container hero">
+    <div>
+      <p class="eyebrow">Studio phần mềm · Praha</p>
+      <h1>Phần mềm theo yêu cầu: từ công cụ nội bộ đến sản phẩm dành cho công chúng</h1>
+      <p class="lead">Phát triển ứng dụng web, iOS và Android cho doanh nghiệp của Quý khách. Chúng tôi kết nối hệ thống của doanh nghiệp với Slack, Shoptet và nhiều dịch vụ khác, hoặc xây dựng tiện ích mở rộng cho Chrome và Safari. Từ sản phẩm hoàn chỉnh dành cho công chúng đến website giới thiệu — làm website đối với chúng tôi chỉ là việc nhỏ.</p>
+      <p class="lead-note">Chúng tôi cũng sẵn sàng <a href="/vi/development-takeover">tiếp quản phát triển từ nhà cung cấp trước</a>. Với chúng tôi,
+        <span class="tip" tabindex="0" aria-describedby="tip-privacy">quyền riêng tư<span class="tip-text" role="tooltip" id="tip-privacy">Chúng tôi chú trọng bảo vệ dữ liệu và chỉ thu thập dữ liệu cá nhân ở mức tối thiểu.</span></span>,
+        <span class="tip" tabindex="0" aria-describedby="tip-security">bảo mật<span class="tip-text" role="tooltip" id="tip-security">Chúng tôi xây dựng ứng dụng theo các tiêu chuẩn bảo mật mới nhất.</span></span>
+        và <span class="tip" tabindex="0" aria-describedby="tip-a11y">khả năng tiếp cận<span class="tip-text" role="tooltip" id="tip-a11y">Mã nguồn của chúng tôi đáp ứng tiêu chuẩn WCAG, để website có thể tiếp cận được với tất cả mọi người.</span></span> là điều đương nhiên.<br><br>
+        PS: Quý khách có biết rằng <a href="/vi/cookies">website của mình có thể hoàn toàn không cần thanh thông báo cookie</a>?</p>
+
+      <section class="panel cap-block" aria-label="Chúng tôi có thể làm gì cho Quý khách">
+        <h2>Chúng tôi có thể làm gì cho Quý khách?</h2>
+        <p class="panel-sub">Hãy nhập nhu cầu của Quý khách. Nếu không tìm thấy trong danh sách, gần như chắc chắn chúng tôi vẫn làm được.</p>
+        <div class="cap-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="capQ" type="search" autocomplete="off" placeholder="website, ứng dụng di động, tự động hóa, AI…" aria-label="Quý khách cần gì">
+        </div>
+        <p id="capAnswer" class="cap-answer" aria-live="polite" hidden></p>
+        <ul id="capList" class="cap-list chips"></ul>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="poptavka">
+      <h2 id="poptavka">Yêu cầu báo giá</h2>
+      <p class="panel-sub">Chỉ cần mô tả nhu cầu của Quý khách trong vài câu. Hãy chọn cách liên hệ thuận tiện nhất.</p>
+      <div class="cta-group">
+        <a class="cta cta-primary" data-mail href="mailto:info@indigostudio.cz?subject=Y%C3%AAu%20c%E1%BA%A7u%20b%C3%A1o%20gi%C3%A1">
+          <span class="cta-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </span>
+          <span class="cta-text">
+            <span class="cta-title">Gửi email</span>
+            <span class="cta-desc">info@indigostudio.cz</span>
+          </span>
+          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        </a>
+        <!-- WhatsApp: mezinárodní formát bez +, mezer a 0 na začátku -->
+        <a class="cta cta-wa" data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">
+          <span class="cta-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          </span>
+          <span class="cta-text">
+            <span class="cta-title">Nhắn tin qua WhatsApp</span>
+            <span class="cta-desc">+420&nbsp;777&nbsp;407&nbsp;690</span>
+          </span>
+          <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </div>
+      <p class="cta-note">Tôi sẽ trả lời tin nhắn hoặc gọi điện cho Quý khách chậm nhất trong vòng vài giờ.</p>
+      <p class="cta-call">Quý khách muốn gọi điện? <a href="tel:+420777407690">+420&nbsp;777&nbsp;407&nbsp;690</a></p>
+    </section>
+  </div>
+
+  <div class="container section">
+    <h2 class="section-label">Liên hệ</h2>
+    <nav class="contacts" aria-label="Liên hệ">
+      <div class="card">
+        <div class="card-main">
+          <span class="avatar"><img src="/team/info.jpg" alt="" loading="lazy" onerror="this.remove()"><span>IS</span></span>
+          <span class="meta">
+            <span class="name">Văn phòng</span>
+            <span class="role">Câu hỏi chung và sửa lỗi</span>
+            <a class="email" href="mailto:info@indigostudio.cz">info@indigostudio.cz</a>
+            <a class="phone" href="tel:+420777407690">+420&nbsp;777&nbsp;407&nbsp;690</a>
+            <span class="databox"><abbr title="Hộp dữ liệu (hộp thư điện tử chính phủ Séc)">fi4uxhj</abbr></span>
+          </span>
+        </div>
+        <a class="vcf" href="/team/info.vcf" download="Indigo Studio – Office.vcf" aria-label="Lưu liên hệ Văn phòng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Lưu liên hệ</a>
+      </div>
+      <div class="card">
+        <div class="card-main">
+          <span class="avatar"><img src="/team/veronika.jpg" alt="" loading="lazy" onerror="this.remove()"><span>VH</span></span>
+          <span class="meta">
+            <span class="name">Veronika</span>
+            <span class="role">Hóa đơn và hỗ trợ</span>
+            <a class="email" href="mailto:veronika@indigostudio.cz">veronika@indigostudio.cz</a>
+            <a class="phone" href="tel:+420737176622">+420&nbsp;737&nbsp;176&nbsp;622</a>
+          </span>
+        </div>
+        <a class="vcf" href="/team/veronika.vcf" download="Indigo Studio – Veronika Hallerová.vcf" aria-label="Lưu liên hệ của Veronika"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Lưu liên hệ</a>
+      </div>
+      <div class="card">
+        <div class="card-main">
+          <span class="avatar"><img src="/team/daniel.jpg" alt="" loading="lazy" onerror="this.remove()"><span>DH</span></span>
+          <span class="meta">
+            <span class="name">Daniel</span>
+            <span class="role">Phát triển và DevOps</span>
+            <a class="email" href="mailto:daniel@indigostudio.cz">daniel@indigostudio.cz</a>
+            <a class="phone" href="tel:+420604690539">+420&nbsp;604&nbsp;690&nbsp;539</a>
+          </span>
+        </div>
+        <a class="vcf" href="/team/daniel.vcf" download="Indigo Studio – Daniel Hromada.vcf" aria-label="Lưu liên hệ của Daniel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Lưu liên hệ</a>
+      </div>
+    </nav>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="company">
+      <strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Mã số doanh nghiệp&nbsp;14389096<span class="sep">·</span><wbr>Mã số thuế VAT&nbsp;CZ14389096<span class="sep">·</span><wbr><abbr title="Hộp dữ liệu (hộp thư điện tử chính phủ Séc)">fi4uxhj</abbr><br>
+      Chudenická 1059/30, Hostivař, 102 00 Praha, Cộng hòa Séc<br>
+      Số tài khoản 2802169026/2010 (Fio)<span class="sep">·</span>D‑U‑N‑S® 986792603
+    </p>
+    <nav class="footer-links" aria-label="Liên kết khác">
+      <a href="https://nastroje.indigostudio.cz/">Công cụ trực tuyến (tiếng Séc)</a>
+      <a href="https://ceska-republika.indigostudio.cz/">Cộng hòa Séc: dịch vụ trực tuyến (tiếng Séc)</a>
+      <a href="/vi/projects">Dự án và khách hàng</a>
+      <a href="/vi/hosting">Hosting website với Git phía sau</a>
+      <a href="/vi/training">Đào tạo Claude Code và Codex</a>
+      <a href="/vi/development-takeover">Tiếp quản phát triển từ nhà cung cấp trước</a>
+      <a href="/vi/cookies">Thanh thông báo cookie — và khi nào không cần</a>
+      <a href="https://github.com/junkycoder/indigostudio.cz" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        Mã nguồn
+      </a>
+    </nav>
+  </div>
+</footer>
+
+<!-- Vytiskne se jen při tisku (Ctrl/Cmd+P) — 3 vizitky 90×50 mm, každá na své stránce -->
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+    </div>
+    <div class="bc-tagline">Studio web · Tích hợp AI cho doanh nghiệp</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Văn phòng</div>
+        <div class="bc-role">Câu hỏi chung và sửa lỗi</div>
+        <div class="bc-mail">info@indigostudio.cz</div>
+        <div class="bc-tel">+420 777 407 690</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        Mã số doanh nghiệp 14389096<br>
+        Hộp dữ liệu fi4uxhj<br>
+        2802169026/2010
+      </div>
+    </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
+  </div>
+</aside>
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+    </div>
+    <div class="bc-tagline">Studio web · Tích hợp AI cho doanh nghiệp</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Veronika Hallerová</div>
+        <div class="bc-role">Hóa đơn và hỗ trợ</div>
+        <div class="bc-mail">veronika@indigostudio.cz</div>
+        <div class="bc-tel">+420 737 176 622</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        Mã số doanh nghiệp 14389096<br>
+        Hộp dữ liệu fi4uxhj<br>
+        2802169026/2010
+      </div>
+    </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
+  </div>
+</aside>
+<aside class="business-card" aria-hidden="true">
+  <div class="bc-trim">
+    <div class="bc-brand">
+      <span class="bc-mark"></span>
+      <span class="bc-name">Indigo<span class="accent"> Studio</span></span>
+    </div>
+    <div class="bc-tagline">Studio web · Tích hợp AI cho doanh nghiệp</div>
+    <div class="bc-foot">
+      <div class="bc-contacts">
+        <div class="bc-web">indigostudio.cz</div>
+        <div class="bc-person">Daniel Hromada</div>
+        <div class="bc-role">Phát triển và DevOps</div>
+        <div class="bc-mail">daniel@indigostudio.cz</div>
+        <div class="bc-tel">+420 604 690 539</div>
+      </div>
+      <div class="bc-legal">
+        Indigo Studio s.r.o.<br>
+        Mã số doanh nghiệp 14389096<br>
+        Hộp dữ liệu fi4uxhj<br>
+        2802169026/2010
+      </div>
+    </div>
+    <span class="crop tl"></span><span class="crop tr"></span>
+    <span class="crop bl"></span><span class="crop br"></span>
+  </div>
+</aside>
+
+<script>
+  // „Co umíme" — živé vyhledávání schopností + asertivní odpověď ano/ne
+  (function () {
+    var CAPS = [
+      { t: "Website và ứng dụng web", d: "Website giới thiệu, cửa hàng trực tuyến, cổng thông tin, landing page.", k: "web website trang web trang chu eshop e-shop cua hang truc tuyen ban hang online thuong mai dien tu thuong mai đien tu gioi thieu landing page landing cong thong tin portal wordpress ung dung app application react vue nuxt next nextjs node nodejs typescript javascript php laravel ruby rails python django graphql html css" },
+      { t: "Ứng dụng di động", d: "iOS và Android, native và đa nền tảng.", k: "ung dung di dong ung dung di đong di dong di đong dien thoai đien thoai smartphone mobile app ung dung ios android iphone swift swiftui kotlin flutter react native expo capacitor ionic arkit da nen tang đa nen tang cross-platform" },
+      { t: "Hệ thống nội bộ theo yêu cầu", d: "CRM, CSM, quản lý hồ sơ, kho hàng, đặt chỗ, trang quản trị.", k: "he thong noi bo he thong phan mem quan ly noi bo crm csm ho so luu tru quan ly kho kho hang ton kho dat cho đat cho dat lich đat lich lich hen co so du lieu database quan tri admin" },
+      { t: "AI agent và workflow", d: "Agent, chatbot, trợ lý ảo và xử lý tài liệu.", k: "ai tri tue nhan tao chatbot chat bot agent ai agent tro ly tro ly ao assistant workflow workflows quy trinh llm gpt openai chatgpt claude anthropic gemini mcp rag tu dong hoa tu đong hoa automation tai lieu xu ly tai lieu van ban" },
+      { t: "Tự động hóa quy trình", d: "Kết nối các công cụ qua API, tích hợp, macro.", k: "tu dong hoa tu đong hoa tu dong tu đong automation quy trinh tich hop integration api ket noi macro workflow zapier n8n" },
+      { t: "Tích hợp với các dịch vụ khác", d: "Kết nối với Slack, Stripe, Google, ERP và nhiều dịch vụ khác qua API.", k: "tich hop integration ket noi lien ket dich vu slack stripe google erp api webhook" },
+      { t: "Email doanh nghiệp và newsletter", d: "Hộp thư, webmail, SMTP, chuyển tiếp thư, newsletter, cùng email tự động và email AI (hỗ trợ khách hàng).", k: "email e-mail mail thu dien tu thu đien tu hop thu webmail smtp imap forwarding chuyen tiep newsletter ban tin gui hang loat email hang loat giao dich transactional tu dong tu đong tra loi tu dong tra loi tu đong autoresponder ai ho tro cham soc khach hang thong bao notification zoho resend dkim spf" },
+      { t: "Phân tích và trực quan hóa dữ liệu", d: "Dashboard, báo cáo, thu thập (scraping) và làm sạch dữ liệu.", k: "du lieu data phan tich analysis dashboard bao cao report thong ke truc quan hoa visualization scraping thu thap du lieu lam sach du lieu excel bi sql postgres postgresql mysql bigquery looker" },
+      { t: "Tiện ích mở rộng cho trình duyệt", d: "Tiện ích và plugin cho Chrome, Edge và Firefox.", k: "tien ich mo rong tien ich extension plugin addon add-on trinh duyet browser chrome edge firefox" },
+      { t: "Đào tạo và tư vấn", d: "Workshop và tư vấn cho doanh nghiệp và người mới bắt đầu. Chúng tôi đang chuẩn bị khóa đào tạo Claude Code và Codex.", k: "dao tao đao tao training khoa hoc khoa đao tao khoa dao tao tu van consulting workshop hoc giang day mentoring huong dan nguoi moi bat dau nguoi moi bat đau nguoi moi claude code codex ai tro ly lap trinh programming token tokens benchmark" },
+      { t: "Tiếp quản phát triển từ nhà cung cấp trước", d: "Chúng tôi tiếp quản phần mềm từ nhà cung cấp hoặc lập trình viên khác. Bước đầu tiên là rà soát miễn phí.", k: "tiep quan chuyen giao phat trien nha cung cap lap trinh vien developer takeover nghi viec bo di da nghi đa nghi legacy he thong cu bao tri quan ly audit kiem tra danh gia đanh gia ra soat review ma nguon code" },
+      // hidden: najde se vyhledáváním, ale nepřidává se do výchozích štítků
+      { t: "Cloud và hạ tầng", d: "Chúng tôi ưu tiên xây dựng trên Cloudflare, cũng thường xuyên dùng Firebase, Google Cloud và AWS. Chúng tôi cũng làm việc với máy chủ riêng (on-premise) và Docker.", k: "cloud dam may đam may cloudflare workers pages r2 d1 firebase firestore google cloud gcp cloud run aws azure onprem on-prem on-premise may chu rieng may chu server docker container kubernetes k8s vps ha tang infrastructure", hidden: true },
+      { t: "CI/CD và quản lý mã nguồn", d: "Tự động build, kiểm thử và triển khai. GitHub, GitLab và Gitea.", k: "ci cd ci/cd cicd pipeline build deploy trien khai github actions gitlab gitea git repository repo kho ma nguon quan ly ma nguon quan ly phien ban version control kiem thu test testing", hidden: true },
+      { t: "Giám sát và ghi nhận lỗi", d: "Sentry và các công cụ tương tự, log và cảnh báo khi hệ thống gặp sự cố.", k: "giam sat monitoring loi bao loi error handling sentry log logs ghi log nhat ky canh bao alert su co ngung hoat dong ngung hoat đong downtime uptime crash reporting", hidden: true },
+      { t: "Phát hành lên Google Play và App Store", d: "Phát hành ứng dụng, quản lý tài khoản nhà phát triển và cập nhật.", k: "google play play store app store appstore phat hanh xuat ban dang tai đang tai publish release testflight developer tai khoan nha phat trien cap nhat update", hidden: true },
+      { t: "Google Workspace và Apps Script", d: "Tự động hóa trên Sheets, Docs, Drive, Calendar và Gmail bằng Google Apps Script.", k: "google workspace gsuite g suite apps script appscript gas bang tinh trang tinh sheets sheet spreadsheet tai lieu docs drive tep files lich calendar gmail email bieu mau forms sites macro script tu dong hoa tu đong hoa automation workflow", hidden: true },
+      { t: "Google Ads", d: "Thiết lập tài khoản, chiến dịch và đo lường chuyển đổi.", k: "google ads adwords quang cao ppc chien dich campaign chuyen doi chuyen đoi conversion analytics ga4 tag manager gtm do luong đo luong", hidden: true },
+      { t: "Hosting website", d: "Hosting nhanh cho website tĩnh, tên miền và email doanh nghiệp. Chúng tôi chuyển website từ nhà cung cấp hiện tại sang, miễn phí đến một quy mô nhất định.", k: "hosting hosting website web website trang web may chu server chuyen website chuyen doi chuyen đoi migration di chuyen chuyen nha cung cap ten mien domain nha dang ky nha đang ky registrar subreg gransy wedos banan forpsi chung chi certificate https ssl sao luu backup website tinh static toc do toc đo nhanh cdn cloudflare git quan ly phien ban trien khai deploy preview email hop thu mail mx spf dkim dmarc" },
+      { t: "Bảo trì và vận hành", d: "Hosting, DevOps, sửa lỗi và hỗ trợ lâu dài.", k: "bao tri van hanh hosting devops ho tro sua loi sua chua quan ly server may chu linux sao luu backup" },
+      { t: "Rửa xe", d: "Phần mềm cho tiệm rửa xe và chăm sóc xe: đặt lịch, đơn hàng, chương trình khách hàng thân thiết và quản lý công việc.", k: "rua xe rua o to o to oto xe hoi xe tiem rua xe cham soc xe detailing car wash dat lich đat lich dat cho đat cho don hang đon hang khach hang than thiet chuong trinh tich diem tich điem quan ly cong viec" }
+    ];
+    // Zdroj kampaně bez cookies: ?k=… se propíše do předmětu e-mailu a textu zprávy
+    var src = new URLSearchParams(location.search).get("k");
+    src = src && /^[a-z0-9-]{1,20}$/.test(src) ? " [" + src + "]" : "";
+    var MAIL = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent("Yêu cầu báo giá" + src);
+    if (src) {
+      document.querySelectorAll("[data-mail]").forEach(function (a) { a.href = MAIL; });
+      document.querySelectorAll("[data-wa]").forEach(function (a) {
+        a.href = "https://wa.me/420777407690?text=" + encodeURIComponent("Xin chào, tôi muốn gửi yêu cầu báo giá." + src);
+      });
+    }
+    var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+
+    var input = document.getElementById("capQ");
+    var list = document.getElementById("capList");
+    var answer = document.getElementById("capAnswer");
+    if (!input || !list || !answer) return;
+
+    function hl(text, q) {
+      var i = norm(text).indexOf(q);
+      if (!q || i < 0) return text;
+      return text.slice(0, i) + "<mark>" + text.slice(i, i + q.length) + "</mark>" + text.slice(i + q.length);
+    }
+
+    function renderChips() {
+      answer.hidden = true;
+      list.className = "cap-list chips";
+      list.innerHTML = "";
+      CAPS.forEach(function (c) {
+        if (c.hidden) return;
+        var li = document.createElement("li");
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cap-chip";
+        b.textContent = c.t;
+        b.addEventListener("click", function () { input.value = c.t; run(); input.focus(); });
+        li.appendChild(b);
+        list.appendChild(li);
+      });
+    }
+
+    function run() {
+      var q = norm(input.value.trim());
+      if (!q) { renderChips(); return; }
+      var hits = CAPS.filter(function (c) {
+        return norm(c.t).indexOf(q) >= 0 || norm(c.d).indexOf(q) >= 0 || c.k.indexOf(q) >= 0;
+      });
+      list.className = "cap-list";
+      list.innerHTML = "";
+      answer.hidden = false;
+      if (hits.length) {
+        answer.innerHTML = '<span class="cap-verdict">Có.</span><span>Đây là việc chúng tôi làm — hãy gửi yêu cầu, chúng tôi sẽ liên hệ lại.</span>';
+        hits.forEach(function (c) {
+          var li = document.createElement("li");
+          li.className = "cap-row";
+          li.innerHTML = '<span class="cap-title">' + hl(c.t, q) + '</span><span class="cap-desc">' + c.d + '</span>';
+          list.appendChild(li);
+        });
+      } else {
+        answer.innerHTML = '<span class="cap-verdict">Nhiều khả năng là có.</span><span>Mục này chưa có trong danh sách, nhưng chúng tôi phát triển phần mềm cho nhiều lĩnh vực khác nhau. <a href="' + MAIL + '">Hãy gửi email cho chúng tôi</a> để trao đổi cụ thể hơn.</span>';
+        var li = document.createElement("li");
+        li.className = "cap-empty";
+        li.textContent = "Mẹo: hãy thử một từ khóa chung hơn — website, ứng dụng, hệ thống, tự động hóa, dữ liệu, AI.";
+        list.appendChild(li);
+      }
+    }
+
+    // Sekce je sbalená; výpis schopností se ukáže až při fokusu (nebo když je něco napsané)
+    var block = document.querySelector(".cap-block");
+    function sync() {
+      var open = block.contains(document.activeElement) || input.value.trim() !== "";
+      if (!open) { list.hidden = true; answer.hidden = true; return; }
+      list.hidden = false;
+      run();
+    }
+    input.addEventListener("input", sync);
+    block.addEventListener("focusin", sync);
+    // po blur necháme activeElement ustálit, pak vyhodnotíme (klik na chip drží fokus uvnitř)
+    block.addEventListener("focusout", function () { setTimeout(sync, 0); });
+    list.hidden = true;
+    answer.hidden = true;
+  })();
+</script>
+</body>
+</html>

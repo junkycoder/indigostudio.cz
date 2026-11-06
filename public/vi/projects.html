@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Dự án tiêu biểu, sản phẩm mẫu và khách hàng | Indigo Studio</title>
+<meta name="description" content="Ứng dụng, dự án tiêu biểu, khách hàng và sản phẩm mẫu của Indigo Studio — website, ứng dụng di động, hệ thống nội bộ và AI theo yêu cầu.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/vi/projects">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/projects">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/projekty">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Dự án tiêu biểu, sản phẩm mẫu và khách hàng — Indigo Studio">
+<meta property="og:description" content="Ứng dụng, dự án tiêu biểu, khách hàng và sản phẩm mẫu từ công việc của chúng tôi.">
+<meta property="og:url" content="https://indigostudio.cz/vi/projects">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://indigostudio.cz/og-vi.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dự án tiêu biểu, sản phẩm mẫu và khách hàng — Indigo Studio">
+<meta name="twitter:description" content="Ứng dụng, dự án tiêu biểu, khách hàng và sản phẩm mẫu từ công việc của chúng tôi.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-vi.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny a lišta jsou shodné s index.html — při změně upravit obě stránky */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.55; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  /* ---- Úvod feedu ---- */
+  main { flex: 1; }
+  .intro { padding-block: clamp(2.5rem, 7vh, 4.5rem) 1.8rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 1rem; }
+  .intro h1 { font-size: clamp(1.9rem, 4.4vw, 2.9rem); font-weight: 650; line-height: 1.12; letter-spacing: -0.03em; max-width: 20ch; margin-bottom: 1rem; }
+  .intro .lead { font-size: clamp(1.02rem, 1.6vw, 1.15rem); color: var(--fg-muted); max-width: 56ch; }
+
+  /* ---- Filtr kategorií (bez JS se nezobrazí, feed je pak celý) ---- */
+  .filters { display: flex; flex-wrap: wrap; gap: 0.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); margin-bottom: 1.6rem; }
+  .filter {
+    font: inherit; font-size: 0.86rem; font-weight: 550; color: var(--fg-muted);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 3px;
+    padding: 0.4rem 0.9rem; cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .filter:hover { border-color: var(--border-strong); color: var(--fg); }
+  .filter[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+  .filter .count { opacity: 0.6; margin-left: 0.3rem; font-weight: 500; }
+
+  /* ---- Feed ---- */
+  .feed { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; padding-bottom: clamp(2.5rem, 7vh, 4.5rem); }
+  .item {
+    display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow); padding: 1.5rem;
+    transition: border-color 0.2s var(--ease);
+  }
+  .item:hover { border-color: var(--border-strong); }
+  .item-kind { display: inline-flex; align-self: flex-start; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border-radius: 3px; padding: 0.2rem 0.5rem; margin-bottom: 1rem; }
+  .item h2 { font-size: 1.25rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 0.35rem; }
+  .item .item-sub { font-size: 0.92rem; color: var(--fg-muted); font-weight: 500; margin-bottom: 0.9rem; }
+  .item p { color: var(--fg-muted); font-size: 0.94rem; margin-bottom: 0.7rem; }
+  .item p strong { color: var(--fg); font-weight: 600; }
+  .tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.4rem 0 1.2rem; }
+  .tags li { font-size: 0.78rem; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 3px; padding: 0.15rem 0.5rem; }
+  .item-link { margin-top: auto; display: inline-flex; align-items: center; gap: 0.4rem; align-self: flex-start; font-size: 0.9rem; font-weight: 550; color: var(--accent); text-decoration: none; }
+  .item-link:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+  .item-link svg { width: 15px; height: 15px; }
+  /* zastavený projekt: vybledlá karta, při najetí se zvýrazní */
+  .item.stopped { opacity: 0.55; filter: grayscale(1); transition: opacity 0.2s var(--ease), border-color 0.2s var(--ease); }
+  .item.stopped:hover, .item.stopped:focus-within { opacity: 0.9; }
+  .item .item-note { margin: auto 0 0; font-size: 0.84rem; color: var(--fg-faint); }
+
+  /* reference = citace */
+  .item.quote blockquote { font-size: 1.05rem; line-height: 1.55; color: var(--fg); margin-bottom: 1.1rem; }
+  .item.quote figcaption { margin-top: auto; font-size: 0.88rem; color: var(--fg-muted); }
+  .item.quote figcaption strong { color: var(--fg); font-weight: 600; }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 760px) {
+    .feed { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .item, .closing { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script src="/doodles.js"></script>
+<script src="/cursors.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Điều hướng chính">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Dịch vụ
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/vi/hosting">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/vi/training">
+            Đào tạo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/vi/#poptavka">
+        Yêu cầu báo giá
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Ngôn ngữ: </span>Tiếng Việt
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/projekty" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/projects" hreflang="en" lang="en">English</a>
+        <a class="nav-menu-link" href="/vi/projects" hreflang="vi" lang="vi" aria-current="true">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container intro">
+    <p class="eyebrow">Dự án</p>
+    <h1>Dự án tiêu biểu, sản phẩm mẫu và khách hàng</h1>
+    <p class="lead">Studio do hai đối tác điều hành, và trong các dự án chúng tôi hợp tác với một mạng lưới chuyên gia đã được kiểm chứng. Dưới đây là một số công việc chúng tôi đã thực hiện.</p>
+  </div>
+
+  <div class="container">
+    <!-- Filtr skládá JS podle kategorií, které ve feedu opravdu jsou (prázdné se neukážou) -->
+    <div class="filters" id="filters" role="group" aria-label="Lọc theo loại" hidden></div>
+
+    <!--
+      Feed: každá položka má data-kind = app | case | reference | sample.
+      Pořadí kategorií ve filtru: Aplikace, Případové studie, Reference, Ukázky.
+    -->
+    <ul class="feed" id="feed">
+
+      <!-- ===== 1. Aplikace ===== -->
+      <li class="item" data-kind="app">
+        <span class="item-kind">Ứng dụng</span>
+        <h2>Signal Collector</h2>
+        <p class="item-sub">Ứng dụng Android đo tín hiệu và cảm biến, dành cho IntellMaps</p>
+        <p>IntellMaps cần một công cụ đơn giản để thu thập tín hiệu Wi‑Fi và di động. Từ đó, nó phát triển thành một bộ công cụ thu thập tín hiệu nói chung: cảm biến điện thoại, GNSS, Wi‑Fi, Bluetooth, cell mạng di động và kiểm tra chất lượng kết nối. Ứng dụng hoạt động offline và dữ liệu đo được vẫn nằm trên thiết bị. Đã phát hành trên Google Play.</p>
+        <ul class="tags"><li>Kotlin</li><li>Jetpack Compose</li><li>Room</li><li>Android</li></ul>
+        <a class="item-link" href="https://signalcollector.app" target="_blank" rel="noopener">
+          signalcollector.app
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </li>
+
+      <li class="item stopped" data-kind="app">
+        <span class="item-kind">Ứng dụng · MVP · đã dừng</span>
+        <h2>Pásek</h2>
+        <p class="item-sub">Hộ chiếu số cho bất động sản, tạo từ iPhone</p>
+        <p>MVP của một ứng dụng do chính chúng tôi phát triển: chủ một ngôi nhà cũ đi qua các phòng với iPhone và nhận được sơ đồ mặt bằng, số đo diện tích, mô hình 3D và bản xuất dữ liệu cho kiến trúc sư. Sản phẩm không thành công nên chúng tôi đã dừng dự án.</p>
+        <ul class="tags"><li>Swift</li><li>RoomPlan</li><li>ARKit</li><li>Capacitor</li><li>iOS</li></ul>
+        <a class="item-link" href="/vi/projects/pasek">
+          Đọc chi tiết dự án
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        </a>
+      </li>
+
+      <!-- ===== 2. Případové studie ===== -->
+      <li class="item" data-kind="case">
+        <span class="item-kind">Dự án tiêu biểu</span>
+        <h2>mBlue</h2>
+        <p class="item-sub">CRM và hệ thống tuyển dụng theo yêu cầu cho một công ty nhân sự</p>
+        <p>Thay thế hệ thống đã dùng nhiều năm: kinh doanh, tuyển dụng, bảng chấm công, hóa đơn và báo cáo trong cùng một ứng dụng, bao gồm cả việc chuyển dữ liệu lịch sử.</p>
+        <ul class="tags"><li>Ruby on Rails</li><li>Chuyển đổi dữ liệu</li><li>Design system</li></ul>
+        <a class="item-link" href="/vi/projects/mblue">
+          Đọc chi tiết dự án
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        </a>
+      </li>
+
+      <li class="item" data-kind="case">
+        <span class="item-kind">Dự án tiêu biểu</span>
+        <h2>Aseko</h2>
+        <p class="item-sub">Tiếp quản phát triển toàn bộ phần mềm cho một nhà sản xuất thiết bị hồ bơi</p>
+        <p>Aseko sản xuất phần cứng, còn phần mềm do đội ngũ chúng tôi tiếp quản cùng với Telion. Chúng tôi đã phát triển frontend cho các ứng dụng Aseko Live, Aseko Remote, phiên bản white label cho một khách hàng và backoffice — một mã nguồn cho web, iOS và Android, cùng quy trình phát hành và kiểm thử tự động.</p>
+        <ul class="tags"><li>Vue.js</li><li>Capacitor</li><li>GraphQL</li><li>White label</li><li>Web, iOS và Android</li></ul>
+        <a class="item-link" href="/vi/projects/aseko">
+          Đọc chi tiết dự án
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        </a>
+      </li>
+
+      <!-- ===== 3. Reference =====
+        Šablona (odkomentovat a vyplnit skutečnou citaci se svolením klienta):
+      <li class="item quote" data-kind="reference">
+        <span class="item-kind">Reference</span>
+        <figure>
+          <blockquote>„Text reference.“</blockquote>
+          <figcaption><strong>Jméno Příjmení</strong>, pozice, firma</figcaption>
+        </figure>
+      </li>
+      -->
+
+      <!-- ===== 4. Ukázky (menší zakázky a kusovky) ===== -->
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Sản phẩm mẫu · công cụ riêng · đang phát triển</span>
+        <h2>Web Editor</h2>
+        <p class="item-sub">Chỉ vào một phần tử trên website và nói cần làm gì với nó — từ đó tạo thành yêu cầu công việc cho agent</p>
+        <p>Công cụ riêng của studio. Trình duyệt cho iPhone và tiện ích mở rộng cho Chromium: chọn một phần tử trên trang, mô tả thay đổi, và công cụ xuất ra yêu cầu công việc kèm selector, anchor, style và ngữ cảnh xung quanh phần tử. Yêu cầu có thể được chuyển cho agent qua clipboard, file zip, tính năng chia sẻ hoặc MCP từ xa — agent tự đọc yêu cầu và tự đánh dấu hoàn thành. Bản thân công cụ không ghi vào mã nguồn, chỉ đọc trang, và nội dung được giữ trên thiết bị. Hiện vẫn đang phát triển, thử nghiệm theo lời mời.</p>
+        <ul class="tags"><li>Swift</li><li>WKWebView</li><li>Tiện ích MV3</li><li>MCP</li><li>Vanilla JS không phụ thuộc thư viện</li></ul>
+        <a class="item-link" href="https://webeditor.click" target="_blank" rel="noopener">
+          webeditor.click
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </li>
+
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Sản phẩm mẫu</span>
+        <h2>Hlídač shopů</h2>
+        <p class="item-sub">Tiện ích trình duyệt, ứng dụng iOS và theo dõi giá</p>
+        <p>Tiện ích trình duyệt ban đầu và ứng dụng iOS đầu tiên, hiển thị lịch sử giá của sản phẩm trên cửa hàng trực tuyến và phát hiện các đợt giảm giá giả. Ngoài ra còn có một số Apify actor tự động thu thập và kiểm tra giá trên các cửa hàng trực tuyến tại Séc.</p>
+        <ul class="tags"><li>Tiện ích trình duyệt</li><li>iOS</li><li>Apify</li><li>Scraping</li></ul>
+        <a class="item-link" href="https://www.hlidacshopu.cz" target="_blank" rel="noopener">
+          hlidacshopu.cz
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </li>
+
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Sản phẩm mẫu · tại TopMonks</span>
+        <h2>Invity</h2>
+        <p class="item-sub">So sánh dịch vụ mua và trao đổi tiền mã hóa cho SatoshiLabs</p>
+        <p>Chúng tôi tham gia từ những ngày đầu của Invity, khi còn là một đội ngũ tại TopMonks. Dịch vụ so sánh ưu đãi của các sàn giao dịch để mua, bán và trao đổi tiền mã hóa, và cũng có sẵn trực tiếp trong Trezor Suite.</p>
+        <ul class="tags"><li>Fintech</li><li>Tích hợp API</li><li>Trezor Suite</li></ul>
+        <a class="item-link" href="https://invity.io" target="_blank" rel="noopener">
+          invity.io
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </a>
+      </li>
+
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Sản phẩm mẫu</span>
+        <h2>Chương trình lễ hội trong ứng dụng lịch</h2>
+        <p class="item-sub">Chuyển chương trình của một lễ hội nhỏ vào ứng dụng lịch có sẵn trên điện thoại</p>
+        <p>Ban tổ chức quản lý chương trình trong Google Sheets, từ đó Google Apps Script chuyển thành lịch có thể đăng ký theo dõi (iCal) cho Apple và Google. Người tham gia có toàn bộ sự kiện kèm mô tả trên điện thoại ngay cả khi offline, đồng thời các thay đổi trong chương trình vẫn được cập nhật liên tục. Không cần cài thêm ứng dụng.</p>
+        <ul class="tags"><li>Google Sheets</li><li>Apps Script</li><li>iCalendar</li><li>Offline</li></ul>
+      </li>
+
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Sản phẩm mẫu · tại TopMonks</span>
+        <h2>Chấm công qua Slack</h2>
+        <p class="item-sub">Tích hợp Slack với hệ thống nội bộ</p>
+        <p>Ghi nhận thời gian làm việc cho từng dự án ngay trong Slack, không cần mở công cụ khác. Dữ liệu được lưu thẳng vào hệ thống nội bộ.</p>
+        <ul class="tags"><li>Slack API</li><li>Tích hợp</li><li>Công cụ nội bộ</li></ul>
+      </li>
+
+      <!-- Šablona ukázky:
+      <li class="item" data-kind="sample">
+        <span class="item-kind">Ukázka</span>
+        <h2>Název projektu</h2>
+        <p class="item-sub">Typ projektu, rok</p>
+        <p>Stručný popis — co bylo zadáním a co vzniklo.</p>
+        <ul class="tags"><li>Technologie</li></ul>
+        <a class="item-link" href="https://…" target="_blank" rel="noopener">odkaz</a>
+      </li>
+      -->
+
+    </ul>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Quý khách đang có dự án tương tự?</h2>
+        <p>Hãy gửi yêu cầu cho chúng tôi, chúng tôi sẽ phản hồi chậm nhất trong vòng vài giờ.</p>
+      </div>
+      <a class="button" href="mailto:info@indigostudio.cz?subject=Y%C3%AAu%20c%E1%BA%A7u%20b%C3%A1o%20gi%C3%A1">Gửi email tới info@indigostudio.cz</a>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Mã số doanh nghiệp&nbsp;14389096<span class="sep">·</span><wbr>Mã số thuế VAT&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha, Cộng hòa Séc</p>
+    <p><a href="/vi/">Về trang chủ</a></p>
+  </div>
+</footer>
+
+<script>
+  // Filtr feedu — tlačítka jen pro kategorie, které mají aspoň jednu položku
+  (function () {
+    var KINDS = [
+      { id: "app", label: "Ứng dụng" },
+      { id: "case", label: "Dự án tiêu biểu" },
+      { id: "reference", label: "Khách hàng" },
+      { id: "sample", label: "Sản phẩm mẫu" }
+    ];
+    var feed = document.getElementById("feed");
+    var bar = document.getElementById("filters");
+    if (!feed || !bar) return;
+    var items = Array.prototype.slice.call(feed.querySelectorAll(".item"));
+
+    var present = KINDS.map(function (k) {
+      return { id: k.id, label: k.label, n: items.filter(function (el) { return el.dataset.kind === k.id; }).length };
+    }).filter(function (k) { return k.n > 0; });
+
+    // s jednou kategorií filtr nedává smysl
+    if (present.length < 2) return;
+
+    var buttons = [];
+    function add(id, label, n) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "filter";
+      b.dataset.kind = id;
+      b.setAttribute("aria-pressed", "false");
+      b.innerHTML = label + '<span class="count">' + n + "</span>";
+      b.addEventListener("click", function () { select(id, true); });
+      bar.appendChild(b);
+      buttons.push(b);
+    }
+    add("all", "Tất cả", items.length);
+    present.forEach(function (k) { add(k.id, k.label, k.n); });
+
+    function select(id, push) {
+      buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.kind === id)); });
+      items.forEach(function (el) { el.hidden = id !== "all" && el.dataset.kind !== id; });
+      // filtr jde poslat odkazem (#aplikace apod.)
+      if (push) history.replaceState(null, "", id === "all" ? location.pathname : "#" + id);
+    }
+
+    var initial = location.hash.slice(1);
+    select(present.some(function (k) { return k.id === initial; }) ? initial : "all", false);
+    bar.hidden = false;
+  })();
+</script>
+</body>
+</html>

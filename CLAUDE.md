@@ -9,8 +9,9 @@ Jedna stránka, žádný build step, žádné frameworky.
 - střídmě, vycentrovaně, na jeden viewport, mobile-friendly
 - dark/light přepínač (respektuje `prefers-color-scheme`, ukládá do localStorage)
 - horní lišta s odkazem na `/projekty` (případové studie, ukázky a reference)
-- OG/Twitter share preview (`/og.png`)
+- OG/Twitter share preview (`/og.png`, anglicky `/og-en.png`, vietnamsky `/og-vi.png`)
 - kontakty na tým + firemní údaje
+- tři jazyky: čeština na kořeni, angličtina pod `/en/`, vietnamština pod `/vi/` (viz „Jazykové verze")
 
 ## Struktura
 
@@ -33,7 +34,9 @@ Jedna stránka, žádný build step, žádné frameworky.
   (značka podle typu karty), připojit hned za doodles.js; nová karta = řádek v `CARDS`
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
+- `public/en/`, `public/vi/` — anglická a vietnamská kopie každé stránky (i `404.html`)
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`
+  + přesměrování podle jazyka (`PAGES`, `languageRedirect`)
 - Online nástroje (`nastroje.`, subdomény nástrojů, `ceska-republika.`) tady nejsou: žijí
   v repozitáři `IndigoStudioCZ/nastroje` (`~/nastroje.indigostudio.cz`) na vlastním Workeru
   `nastroje`. Jejich domény do `wrangler.toml` nepřidávat — nasazení vizitky by si je přetáhlo.
@@ -51,6 +54,24 @@ Jedna stránka, žádný build step, žádné frameworky.
   Webmail mail.zoho.eu, IMAP/SMTP smtp.zoho.eu. (Dřív forwarding přes CF Email
   Routing — nahrazeno, viz README „Email".)
 
+## Jazykové verze
+
+- Adresy: česká `/skoleni` ↔ `/en/training` ↔ `/vi/training` — en i vi mají stejné anglické
+  slugy. Zdroj pravdy pro mapování je `PAGES` v `src/worker.js`.
+- Přesměrování (Worker): jen **české** adresy a jen při vstupu zvenku (ne při prokliku uvnitř
+  webu, ne pro roboty a náhledy odkazů). Přednost má cookie `lang` z přepínače, jinak
+  `Accept-Language`: cs/sk → čeština, vi → vietnamština, en i jakýkoli jiný jazyk → angličtina,
+  bez hlavičky čeština. `/en/…` a `/vi/…` se nepřesměrovávají nikdy. 302 + `Vary`.
+- Přepínač jazyka = `<details class="nav-group nav-lang">` za hlavní navigací, CSS blok
+  „přepínač jazyka" v každé stránce, cookie ukládá `public/nav.js` (technicky nezbytná, bez lišty).
+- Každá stránka má v `<head>` `hreflang` cs/en/vi/x-default (x-default = česká adresa)
+  a `og:locale` + `og:locale:alternate`; `sitemap.xml` má tytéž alternativy.
+- Formuláře posílají `lang` (`/api/poptavka`, `/api/odber`): hlášky, potvrzovací e-mail
+  odběru a návrat po potvrzení jsou v jazyce stránky; v poptávce je jazyk v předmětu.
+- **Změna textu nebo vzhledu stránky = změna ve všech třech verzích.** Nová stránka =
+  řádek v `PAGES`, tři soubory s `hreflang` a přepínačem, záznam v `sitemap.xml`.
+- Vietnamština oslovuje formálně („Quý khách", my = „chúng tôi"), angličtina věcně, americký pravopis.
+
 ## Pravidla
 
 - **Stack je striktní:** vanilla HTML/CSS/JS, žádný build, žádné frameworky, žádné npm
@@ -58,7 +79,7 @@ Jedna stránka, žádný build step, žádné frameworky.
 - **Texty na klienta:** vykání, stručně, asertivně, bez emoji a vykřičníků, bez žargonu.
 - Po změně smoke test: `npx wrangler deploy --dry-run`.
 - Deploy: push do main (Cloudflare Workers Builds) nebo `npm run deploy`.
-- OG po úpravě `scripts/og.svg` přegenerovat (návod v README).
+- OG po úpravě `scripts/og.svg` přegenerovat (návod v README) — i `og-en.svg` a `og-vi.svg`.
 
 ## TODO od zadavatele
 

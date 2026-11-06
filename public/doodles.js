@@ -298,13 +298,38 @@
   var PATTERN = ["d-mock", "d-mail", "d-code", "d-uml", "d-flow", "d-mail", "d-phone", "d-kanban", "d-code", "d-git", "d-meet", "d-desktop"];
   var RARE = ["d-chat", "d-call", "d-watch"];
   var CYCLE = 18000; // délka doodle-draw
-  // názvy motivů pro popis pozadí ve čtečce
-  var NAMES = {
-    "d-mock": "návrh webové stránky", "d-code": "editor s\u00a0kódem", "d-uml": "UML diagram tříd",
-    "d-flow": "diagram workflow", "d-mail": "odesílaný e-mail", "d-phone": "mobilní aplikace",
-    "d-kanban": "kanban s\u00a0úkoly", "d-git": "větvení v\u00a0gitu", "d-meet": "schůzka u\u00a0stolu",
-    "d-desktop": "počítač", "d-chat": "chat", "d-call": "příchozí hovor", "d-watch": "chytré hodinky"
+  // popis pozadí ve čtečce v jazyce stránky (<html lang>): úvodní věta a názvy motivů
+  var TEXTS = {
+    cs: {
+      intro: "Pozadí stránky: ručně kreslené malůvky naší práce, které se pomalu kreslí, mizí a\u00a0střídají. Právě je tu ",
+      names: {
+        "d-mock": "návrh webové stránky", "d-code": "editor s\u00a0kódem", "d-uml": "UML diagram tříd",
+        "d-flow": "diagram workflow", "d-mail": "odesílaný e-mail", "d-phone": "mobilní aplikace",
+        "d-kanban": "kanban s\u00a0úkoly", "d-git": "větvení v\u00a0gitu", "d-meet": "schůzka u\u00a0stolu",
+        "d-desktop": "počítač", "d-chat": "chat", "d-call": "příchozí hovor", "d-watch": "chytré hodinky"
+      }
+    },
+    en: {
+      intro: "Page background: hand-drawn sketches of our work that slowly draw themselves, fade and change. Right now there is ",
+      names: {
+        "d-mock": "a web page wireframe", "d-code": "a code editor", "d-uml": "a UML class diagram",
+        "d-flow": "a workflow diagram", "d-mail": "an email being sent", "d-phone": "a mobile app",
+        "d-kanban": "a kanban board with tasks", "d-git": "a git branch", "d-meet": "a meeting at a table",
+        "d-desktop": "a computer", "d-chat": "a chat", "d-call": "an incoming call", "d-watch": "a smartwatch"
+      }
+    },
+    vi: {
+      intro: "Hình nền trang: các hình vẽ tay về công việc của chúng tôi, lần lượt được vẽ, mờ đi và thay đổi. Hiện có ",
+      names: {
+        "d-mock": "bản phác thảo trang web", "d-code": "trình soạn thảo mã", "d-uml": "sơ đồ lớp UML",
+        "d-flow": "sơ đồ quy trình", "d-mail": "email đang gửi", "d-phone": "ứng dụng di động",
+        "d-kanban": "bảng kanban với các công việc", "d-git": "nhánh git", "d-meet": "cuộc họp bên bàn",
+        "d-desktop": "máy tính", "d-chat": "trò chuyện", "d-call": "cuộc gọi đến", "d-watch": "đồng hồ thông minh"
+      }
+    }
   };
+  var TEXT = TEXTS[(document.documentElement.lang || "cs").slice(0, 2)] || TEXTS.cs;
+  var NAMES = TEXT.names;
 
   // semínko na dobu návštěvy: při přechodu mezi stránkami zůstane rozvrh i fáze stejná,
   // nová návštěva = nové rozložení
@@ -426,7 +451,7 @@
         list.push(NAMES[name]);
       }
     });
-    desc.setAttribute("aria-label", "Pozadí stránky: ručně kreslené malůvky naší práce, které se pomalu kreslí, mizí a\u00a0střídají. Právě je tu " + list.join(", ") + ".");
+    desc.setAttribute("aria-label", TEXT.intro + list.join(", ") + ".");
   }
 
   // po každém cyklu (nakreslit → smazat) se na místě objeví jiná malůvka

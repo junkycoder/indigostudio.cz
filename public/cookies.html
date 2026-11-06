@@ -9,6 +9,10 @@
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/cookies">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/cookies">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/cookies">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/cookies">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/cookies">
 
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Indigo Studio">
@@ -16,6 +20,8 @@
 <meta property="og:description" content="Povinný není banner, ale souhlas se sledováním. Kdy lištu nepotřebujete a jak měřit návštěvnost bez cookies.">
 <meta property="og:url" content="https://indigostudio.cz/cookies">
 <meta property="og:locale" content="cs_CZ">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="vi_VN">
 <meta property="og:image" content="https://indigostudio.cz/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -121,6 +127,15 @@
   .nav-menu-link:hover { background: var(--surface-2); }
   .nav-menu-link:hover svg { transform: translateX(2px); }
   .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
 
   main { flex: 1; }
 
@@ -210,6 +225,17 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
       </a>
     </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Jazyk: </span>Čeština
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/cookies" hreflang="cs" lang="cs" aria-current="true">Čeština</a>
+        <a class="nav-menu-link" href="/en/cookies" hreflang="en" lang="en">English</a>
+        <a class="nav-menu-link" href="/vi/cookies" hreflang="vi" lang="vi">Tiếng Việt</a>
+      </div>
+    </details>
   </div>
 </header>
 

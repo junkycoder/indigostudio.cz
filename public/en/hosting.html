@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Fast website hosting with Git behind the scenes | Indigo Studio</title>
+<meta name="description" content="Static website hosting: fast loading, HTTPS, backups and Git behind the scenes. We migrate your website from your current host, free of charge up to a certain size. Send us your website address and what you pay for it — you will get a free quote by email.">
+<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://indigostudio.cz/en/hosting">
+<link rel="alternate" hreflang="cs" href="https://indigostudio.cz/hosting">
+<link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/hosting">
+<link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/hosting">
+<link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/hosting">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Indigo Studio">
+<meta property="og:title" content="Fast website hosting with Git behind the scenes">
+<meta property="og:description" content="We host your website and manage Git for you. Free migration up to a certain size. Send us your website address and what you pay today — you will get a free quote by email.">
+<meta property="og:url" content="https://indigostudio.cz/en/hosting">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="vi_VN">
+<meta property="og:image" content="https://indigostudio.cz/og-en.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fast website hosting with Git behind the scenes">
+<meta name="twitter:description" content="We host your website and manage Git for you. Free migration up to a certain size. Send us your website address and what you pay today — you will get a free quote by email.">
+<meta name="twitter:image" content="https://indigostudio.cz/og-en.png">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  /* Tokeny, lišta a patička jsou shodné s index.html a prevzeti-vyvoje.html */
+  :root {
+    --accent: #8b8ef8;
+    --accent-strong: #6366f1;
+    --accent-soft: rgba(129, 140, 248, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --bg: #0d0e13;
+    --surface: #14151c;
+    --surface-2: #1a1b23;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --fg: #ededf1;
+    --fg-muted: #a3a4ae;
+    --fg-faint: #6f707b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.08);
+      --bg: #f6f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9f9fb;
+      --border: rgba(16, 18, 32, 0.09);
+      --border-strong: rgba(16, 18, 32, 0.2);
+      --fg: #14151b;
+      --fg-muted: #555766;
+      --fg-faint: #8b8c98;
+      --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    line-height: 1.6; min-height: 100svh;
+    display: flex; flex-direction: column; overflow-x: hidden;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .container {
+    width: 100%; max-width: 1080px; margin: 0 auto;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  /* ---- Horní lišta ---- */
+  .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
+  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
+  .brand-name .studio { color: var(--accent); font-weight: 600; }
+  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
+    background: var(--surface); transition: border-color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
+  .nav-link:hover { border-color: var(--accent); }
+  .nav-link[aria-current="page"] { border-color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* rozbalovací nabídka služeb */
+  .nav-group { position: relative; }
+  .nav-group > summary { list-style: none; cursor: pointer; }
+  .nav-group > summary::-webkit-details-marker { display: none; }
+  .nav-group > summary:hover svg { transform: none; }
+  .nav-group[open] > summary,
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-menu {
+    position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
+    min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  }
+  .nav-menu-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    white-space: nowrap; font-size: 0.9rem; font-weight: 550;
+    color: var(--fg); text-decoration: none;
+    padding: 0.45rem 0.6rem; border-radius: 5px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-menu-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent); transition: transform 0.2s var(--ease); }
+  .nav-menu-link:hover { background: var(--surface-2); }
+  .nav-menu-link:hover svg { transform: translateX(2px); }
+  .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
+  .site-nav { margin-left: auto; }
+  .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
+  .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+  .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 560px) {
+    .site-nav { order: 2; flex-basis: 100%; }
+    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  }
+
+  main { flex: 1; }
+
+  /* ---- Úvod ---- */
+  .crumbs { font-size: 0.85rem; color: var(--fg-faint); padding-top: clamp(2rem, 5vh, 3rem); }
+  .crumbs a { color: var(--fg-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs .sep { opacity: 0.5; padding: 0 0.45rem; }
+
+  .hero { padding-block: 1.4rem 2.2rem; }
+  .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); font-weight: 650; line-height: 1.1; letter-spacing: -0.03em; max-width: 20ch; margin-bottom: 1.2rem; }
+  .hero .lead { font-size: clamp(1.05rem, 1.7vw, 1.2rem); color: var(--fg-muted); max-width: 62ch; }
+  .hero .lead + .lead { margin-top: 0.8rem; }
+
+  /* čísla */
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; padding-block: clamp(2.5rem, 6vh, 3.5rem); }
+  .stat { padding-top: 1rem; border-top: 2px solid var(--accent-strong); }
+  .stat strong { display: block; font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+  .stat span { display: block; font-size: 0.88rem; color: var(--fg-muted); margin-top: 0.3rem; line-height: 1.45; }
+
+  /* ---- Obsah: nadpis sekce vlevo, text vpravo ---- */
+  .block { display: grid; grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); gap: 1rem clamp(2rem, 5vw, 4rem); padding-block: clamp(2.2rem, 5vh, 3rem); border-top: 1px solid var(--border); }
+  .block > h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+  .block > h2 .num { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-faint); margin-bottom: 0.4rem; }
+  .prose p { color: var(--fg-muted); margin-bottom: 0.9rem; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose p strong { color: var(--fg); font-weight: 600; }
+  .prose a { color: var(--accent); text-underline-offset: 0.2em; }
+  .prose ul.list { list-style: none; margin: 0.2rem 0 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 64ch; }
+  .prose ul.list li { position: relative; padding-left: 1.2rem; color: var(--fg-muted); }
+  .prose ul.list li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--accent); }
+  .prose ul.list li strong { color: var(--fg); font-weight: 600; }
+
+  /* moduly */
+  .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1rem 1.1rem; }
+  .module h3 { font-size: 0.96rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .module p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.5; }
+  .module.link { display: flex; flex-direction: column; gap: 0.2rem; text-decoration: none; color: inherit; transition: border-color 0.2s var(--ease); }
+  .module.link:hover { border-color: var(--accent); }
+  .module.link .more { font-size: 0.85rem; font-weight: 550; color: var(--accent); margin-top: 0.5rem; }
+
+  /* ---- Postup ---- */
+  .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 0.6rem; }
+  .step { counter-increment: step; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.2rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.1rem 1.2rem; }
+  .step::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: 0.9rem; }
+  .step h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; align-self: center; }
+  .step h3 .badge { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-left: 0.5rem; }
+  .step p { font-size: 0.9rem; color: var(--fg-muted); line-height: 1.55; }
+
+  /* ---- Pro koho se hodí a pro koho ne ---- */
+  .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .col { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.2rem 1.3rem; }
+  .col h3 { font-size: 0.78rem; font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-faint); margin-bottom: 0.8rem; }
+  .col.yes h3 { color: var(--accent); }
+  .col ul { list-style: none; display: grid; gap: 0.45rem; }
+  .col li { color: var(--fg-muted); font-size: 0.92rem; padding-left: 1.2rem; position: relative; }
+  .col li::before { content: "—"; position: absolute; left: 0; color: var(--fg-faint); }
+  .col.yes li::before { content: "✓"; color: var(--accent); font-size: 0.85rem; }
+  .col p.after { font-size: 0.85rem; color: var(--fg-faint); margin-top: 0.9rem; line-height: 1.5; }
+
+  /* otázky */
+  .faq { display: flex; flex-direction: column; gap: 1.1rem; max-width: 64ch; }
+  .faq h3 { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+  .faq p { color: var(--fg-muted); }
+  .faq a { color: var(--accent); }
+
+  /* ---- Nabídka: formulář ---- */
+  .offer {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow); padding: 1.6rem; margin-top: clamp(2.2rem, 5vh, 3rem);
+    scroll-margin-top: 1rem;
+    display: grid; grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: 1.2rem 2.4rem;
+  }
+  .offer h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+  .offer-text p { color: var(--fg-muted); font-size: 0.93rem; margin-bottom: 0.7rem; }
+  .offer-text p:last-child { margin-bottom: 0; }
+  .offer-text .alt { font-size: 0.87rem; color: var(--fg-faint); }
+  .offer-text .alt a { color: var(--fg-muted); }
+  .offer-text .alt a:hover { color: var(--accent); }
+
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+  .field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .field.wide { grid-column: 1 / -1; }
+  .field label { font-size: 0.82rem; font-weight: 600; color: var(--fg); }
+  .field label .opt { font-weight: 500; color: var(--fg-faint); }
+  .field input, .field textarea {
+    font: inherit; font-size: 0.93rem; color: var(--fg); background: var(--bg);
+    border: 1px solid var(--border-strong); border-radius: 6px; padding: 0.6rem 0.75rem; width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 4.5rem; line-height: 1.5; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  /* honeypot — člověk nevidí, bot vyplní */
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .form-foot { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1rem; margin-top: 0.9rem; }
+  .form-note { font-size: 0.8rem; color: var(--fg-faint); line-height: 1.5; margin-top: 0.6rem; }
+  .form-msg { font-size: 0.88rem; }
+  .form-msg:empty { display: none; }
+  .form-msg.ok { color: var(--accent); }
+  .form-msg.err { color: #e5484d; }
+
+  /* ---- Závěrečná výzva ---- */
+  .closing { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 1.5rem; margin-block: 1rem clamp(2.5rem, 7vh, 4.5rem); }
+  .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .closing p { color: var(--fg-muted); font-size: 0.92rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border: 0; border-radius: 6px; padding: 0.7rem 1.1rem; font-family: inherit; cursor: pointer; transition: filter 0.2s var(--ease); }
+  .button:hover { filter: brightness(1.08); }
+  .button:disabled { opacity: 0.6; cursor: progress; }
+  .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
+  .button.ghost:hover { border-color: var(--accent); filter: none; }
+
+  /* ---- Patička ---- */
+  /* poloprůhledné pozadí — malůvky prosvítají jen jemně */
+  .site-footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 45%, transparent); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .site-footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; padding-block: 1.6rem 2rem; font-size: 0.84rem; color: var(--fg-muted); line-height: 1.7; }
+  .site-footer strong { color: var(--fg); font-weight: 600; }
+  .site-footer a { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer .sep { opacity: 0.4; padding: 0 0.4rem; }
+
+  @media (max-width: 880px) {
+    .stats { grid-template-columns: 1fr; gap: 1.2rem; }
+    .block { grid-template-columns: 1fr; }
+    .offer { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .modules, .cols, .fields { grid-template-columns: 1fr; }
+    .closing, .offer { padding: 1.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script src="/doodles.js"></script>
+<script src="/cursors.js"></script>
+<script src="/nav.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/en/" aria-label="Indigo Studio — home">
+      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <details class="nav-group">
+        <summary class="nav-link">
+          Our services
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </summary>
+        <div class="nav-menu">
+          <a class="nav-menu-link" href="/en/hosting" aria-current="page">
+            Hosting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+          <a class="nav-menu-link" href="/en/training">
+            Training
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+      <a class="nav-link" href="/en/projects">
+        Case studies, samples and references
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </nav>
+    <details class="nav-group nav-lang">
+      <summary class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="vh">Language: </span>English
+      </summary>
+      <div class="nav-menu">
+        <a class="nav-menu-link" href="/hosting" hreflang="cs" lang="cs">Čeština</a>
+        <a class="nav-menu-link" href="/en/hosting" hreflang="en" lang="en" aria-current="true">English</a>
+        <a class="nav-menu-link" href="/vi/hosting" hreflang="vi" lang="vi">Tiếng Việt</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/en/">Home</a><span class="sep">/</span><span aria-current="page">Hosting</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Hosting, domain and business email</p>
+      <h1>Fast website hosting. We handle Git for you.</h1>
+      <p class="lead">We publish your website on a network that serves each page from the node closest to the visitor. No waiting on a shared server, no admin panel you log into once a year without knowing where anything is.</p>
+      <p class="lead">Versioning, deployment, HTTPS and backups all run behind the scenes. All you need to do is sign up and transfer or buy a domain. We will migrate your existing website — free of charge up to a certain size — or build you a new one.</p>
+      <div class="actions" style="margin-top:1.4rem">
+        <a class="button" href="#poptavka">Get a free quote</a>
+        <a class="button ghost" data-mail href="mailto:info@indigostudio.cz?subject=Hosting">Send an email</a>
+      </div>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><strong>Free migration</strong><span>we move a typical business website at no charge; for large websites we agree on terms up front</span></div>
+      <div class="stat"><strong>Git behind the scenes</strong><span>every change has a history and can be undone; the repository is yours to take with you at any time</span></div>
+      <div class="stat"><strong>Quote by email</strong><span>send us your website address and what you pay for it today; you get a comparison free of charge and with no obligation</span></div>
+    </div>
+
+    <section class="block" aria-labelledby="s1">
+      <h2 id="s1"><span class="num">01</span>When to get in touch</h2>
+      <div class="modules">
+        <div class="module"><h3>Your website loads slowly</h3><p>Pages wait on an overloaded shared server. A static website has nothing to compute — the file is served straight away.</p></div>
+        <div class="module"><h3>The bill keeps growing and you are not sure what for</h3><p>Hosting, domain, certificate, backups and maintenance, each billed separately. Send us what you pay and we will compare it for you.</p></div>
+        <div class="module"><h3>Nobody knows who changed what</h3><p>Files get overwritten over FTP and the latest version lives on someone's hard drive. With us, every change has an author, a timestamp and a way back.</p></div>
+        <div class="module"><h3>Nobody has updated the website in ages</h3><p>An old content management system and outdated plugins are the most common way websites get hacked. A static website has nothing to attack.</p></div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s2">
+      <h2 id="s2"><span class="num">02</span>How it works</h2>
+      <ol class="steps">
+        <li class="step"><h3>Sign-up</h3><p>A few details, nothing to install. Your account is used for invoicing and gives you an overview of what runs on your website.</p></li>
+        <li class="step"><h3>Domain</h3><p>We transfer it from any registrar — Czech ones such as Subreg (Gransy), Wedos, Banán and Forpsi, or registrars abroad — or register a new one for you. You pay only the domain registration fee; the HTTPS certificate is included.</p></li>
+        <li class="step"><h3>Migration or a new build<span class="badge">free up to a certain size</span></h3><p>We move your existing website so that page addresses stay the same and search engines lose nothing. If you don't have a website or yours has had its day, we will build a new one.</p></li>
+        <li class="step"><h3>Operation</h3><p>Running the website, HTTPS, backups and uptime monitoring are on us. You send us the changes you want, or manage them yourself through Web&nbsp;Editor.</p></li>
+      </ol>
+    </section>
+
+    <section class="block" aria-labelledby="s3">
+      <h2 id="s3"><span class="num">03</span>Changes through Web&nbsp;Editor</h2>
+      <div class="prose">
+        <p><strong>Web Editor</strong> is our tool for pointing at an element of your website and saying what should happen to it. With hosting you get a connector for it, so an edit doesn't stop at a description: it goes straight into your website.</p>
+        <ul class="list">
+          <li><strong>Preview first.</strong> Every change is deployed to its own preview address, where you can review it at your own pace. The live website stays untouched for now.</li>
+          <li><strong>Then production.</strong> Once you approve the preview, the change goes live on its own. No manual deployment, no waiting for a developer.</li>
+          <li><strong>There is always a way back.</strong> Every deployment is kept in the history. Rolling back to a previous version takes moments.</li>
+        </ul>
+        <p>Web Editor is still in development and is being tested by invitation. Your hosting does not depend on it — it runs without it, and we make the changes for you. <a href="https://webeditor.click/">More about Web&nbsp;Editor</a>.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s4">
+      <h2 id="s4"><span class="num">04</span>Business email</h2>
+      <div class="prose">
+        <p>A domain comes with email. We set up mailboxes on your own domain, including the records that deliverability depends on — <strong>SPF, DKIM and DMARC</strong>. Without them, your messages end up in spam and anyone can send mail in your domain's name.</p>
+        <ul class="list">
+          <li><strong>On your account.</strong> We create the mailboxes with a trusted provider; the contract and the data are yours. We just set them up and hand them over.</li>
+          <li><strong>Or managed by us.</strong> Email runs as a service from us, and you sort out anything with a single email. We will go with whatever suits you.</li>
+        </ul>
+        <p>We also handle newsletters and automated emails from your website — order confirmations, form replies, notifications.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s5">
+      <h2 id="s5"><span class="num">05</span>Who it is for</h2>
+      <div class="cols">
+        <div class="col yes">
+          <h3>A good fit</h3>
+          <ul>
+            <li>Company websites and online business cards</li>
+            <li>Landing pages and campaign websites</li>
+            <li>Blogs, magazines and documentation</li>
+            <li>Catalogs and price lists without online ordering</li>
+            <li>Websites that only need to display content and collect inquiries</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h3>Not a fit</h3>
+          <ul>
+            <li>Websites that depend on PHP and a server-side database</li>
+            <li>Online stores with inventory and payments</li>
+            <li>Portals with logins and user-generated content</li>
+          </ul>
+          <p class="after">That doesn't mean we can't help. We will either convert your website to a static one or propose a different solution — we have been building custom applications all along.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="s6">
+      <h2 id="s6"><span class="num">06</span>Frequently asked questions</h2>
+      <div class="faq">
+        <div><h3>What does “free up to a certain size” mean?</h3><p>We move a typical business website of a handful to a few dozen pages at no charge. For large websites, or websites that first need to be extracted from an old system, we tell you the price up front — never after the fact.</p></div>
+        <div><h3>How much does hosting cost?</h3><p>We price it based on the size of your website and what you want with it. Send us your website address and what you pay for it today; you will get a comparison and a specific quote by email, free of charge and with no obligation.</p></div>
+        <div><h3>Will we lose our search engine rankings?</h3><p>No. We keep page addresses the same, and where that is not possible, we set up permanent redirects. Websites are usually faster after migration, which tends to help with search engines.</p></div>
+        <div><h3>Do we need to know Git?</h3><p>No. Git runs under the hood so that every change can be traced and undone. You don't have to work with it — if you want, we will give you access to the repository.</p></div>
+        <div><h3>How quickly can a website be moved?</h3><p>The move itself usually takes one to two days. The domain transfer at your current registrar typically takes longer — the whole time, your website keeps running at its old address, so there is no downtime to deal with.</p></div>
+        <div><h3>What if we want to leave?</h3><p>You get your website's content and its full history in the repository, and you transfer the domain wherever you like. Nothing keeps you with us except being happy with the service.</p></div>
+      </div>
+    </section>
+
+    <!-- Nabídka: POST /api/poptavka (stejný endpoint jako poptávka na úvodu) -->
+    <section class="offer" id="poptavka" aria-labelledby="poptavka-title">
+      <div class="offer-text">
+        <h2 id="poptavka-title">We will send you a free quote</h2>
+        <p>Tell us your website address and what you pay for it today. We will take a look and email you a comparison and a price — with no obligation and no charge.</p>
+        <p>If you don't have a website yet, say so in the note. We will send you a quote for building a new one.</p>
+        <p class="alt">Prefer to reach us directly? <a data-mail href="mailto:info@indigostudio.cz?subject=Hosting">info@indigostudio.cz</a> or <a data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">WhatsApp</a>.</p>
+      </div>
+      <form class="offer-form" novalidate>
+        <div class="fields">
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" placeholder="John Smith" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required>
+          </div>
+          <div class="field">
+            <label for="f-web">Website address <span class="opt">(optional)</span></label>
+            <input id="f-web" name="web" type="text" autocomplete="url" inputmode="url" placeholder="yourcompany.com">
+          </div>
+          <div class="field">
+            <label for="f-price">What you pay today <span class="opt">(optional)</span></label>
+            <input id="f-price" name="price" type="text" placeholder="e.g. CZK 4,000 a year">
+          </div>
+          <div class="field wide">
+            <label for="f-note">Note <span class="opt">(optional)</span></label>
+            <textarea id="f-note" name="note" rows="3" placeholder="What you need for your website, what bothers you about your current hosting, when you want to switch."></textarea>
+          </div>
+        </div>
+        <!-- honeypot: člověk nevidí, bot vyplní -->
+        <input class="hp" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="form-foot">
+          <button class="button" type="submit">Get a free quote</button>
+          <p class="form-msg" role="status" aria-live="polite"></p>
+        </div>
+        <p class="form-note">We use your details only to prepare the quote and reply to you. We do not pass them on to anyone and will not add you to any mailing list.</p>
+      </form>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div>
+        <h2 id="closing-title">Is your website hosted elsewhere?</h2>
+        <p>Tell us where it runs and what you pay for it. We will get back to you within a few hours at the latest.</p>
+      </div>
+      <div class="actions">
+        <a class="button ghost" data-wa href="https://wa.me/420777407690" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="button" data-mail href="mailto:info@indigostudio.cz?subject=Hosting">Email info@indigostudio.cz</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Company ID&nbsp;14389096<span class="sep">·</span><wbr>VAT ID&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Prague, Czech Republic</p>
+    <p><a href="/en/">Back to home</a></p>
+  </div>
+</footer>
+
+<script>
+  // Zdroj kampaně bez cookies: ?k=gads|sklik|li se propíše do předmětu e-mailu a textu zprávy
+  (function () {
+    var k = new URLSearchParams(location.search).get("k");
+    k = k && /^[a-z0-9-]{1,20}$/.test(k) ? " [" + k + "]" : "";
+    document.querySelectorAll("[data-mail]").forEach(function (a) {
+      a.href = "mailto:info@indigostudio.cz?subject=" + encodeURIComponent("Hosting" + k);
+    });
+    document.querySelectorAll("[data-wa]").forEach(function (a) {
+      a.href = "https://wa.me/420777407690?text=" + encodeURIComponent("Hello, I have a question about hosting." + k);
+    });
+
+    // Formulář: z polí složíme text zprávy a pošleme na stejný endpoint jako poptávku z úvodu
+    var form = document.querySelector(".offer-form");
+    if (!form) return;
+    var msg = form.querySelector(".form-msg");
+    var btn = form.querySelector("button");
+    // pozor: form.name je jméno formuláře, ne pole — pole se berou přes form.elements
+    var f = form.elements;
+    function say(text, kind) { msg.textContent = text; msg.className = "form-msg " + (kind || ""); }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = f.name.value.trim();
+      var email = f.email.value.trim();
+      if (!name) { say("Please enter your name.", "err"); f.name.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Please enter a valid email address.", "err"); f.email.focus(); return; }
+
+      var lines = ["Hosting inquiry" + k, ""];
+      lines.push("Website: " + (f.web.value.trim() || "not provided"));
+      lines.push("Currently pays: " + (f.price.value.trim() || "not provided"));
+      var note = f.note.value.trim();
+      if (note) lines.push("", "Note:", note);
+
+      btn.disabled = true;
+      say("Sending…");
+      fetch("/api/poptavka", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, email: email, message: lines.join("\n"), company: f.company.value, lang: "en" })
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (d) {
+          if (d.ok) { say("Got it. We will email you a quote within a few hours at the latest.", "ok"); form.reset(); }
+          else say(d.error || "Sending failed. Please email us at info@indigostudio.cz.", "err");
+        })
+        .catch(function () { say("Sending failed. Check your connection and try again.", "err"); })
+        .then(function () { btn.disabled = false; });
+    });
+  })();
+</script>
+</body>
+</html>
