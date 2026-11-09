@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>Cookie banners — and when you don't actually need one | Indigo Studio</title>
-<meta name="description" content="A cookie banner is often the only thing on a website that actually breaks accessibility rules. We explain why consent is required in the first place, when you don't need a banner and how to measure traffic without cookies.">
+<meta name="description" content="A cookie banner is often the only thing on a website that breaks accessibility rules. Learn when you don't need one and how to measure traffic without cookies.">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/en/cookies">
@@ -33,6 +33,55 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<!-- JSON-LD pro vyhledávače a agenty: drobečky, typ stránky, časté otázky -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://indigostudio.cz/en/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Cookie banner",
+          "item": "https://indigostudio.cz/en/cookies"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "Cookie banners and when you don't actually need one",
+      "description": "A cookie banner is often the only thing on a website that breaks accessibility rules. Learn when you don't need one and how to measure traffic without cookies.",
+      "url": "https://indigostudio.cz/en/cookies",
+      "mainEntityOfPage": "https://indigostudio.cz/en/cookies",
+      "inLanguage": "en",
+      "image": "https://indigostudio.cz/og-en.png",
+      "datePublished": "2026-06-16",
+      "dateModified": "2026-11-06",
+      "author": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      }
+    }
+  ]
+}
+</script>
+
 <style>
   /* Tokeny, lišta a patička jsou shodné s index.html, projekty.html a prevzeti-vyvoje.html */
   :root {
@@ -47,7 +96,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
@@ -61,7 +110,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -200,7 +249,7 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/en/" aria-label="Indigo Studio — home">
+    <a class="brand" href="/en/" aria-label="Indigo Studio s. r. o. — home">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">

@@ -50,6 +50,13 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // Jedna kanonická adresa: http a www trvale na https://indigostudio.cz,
+    // aby vyhledávače neviděly tentýž web pod třemi adresami. Schéma bereme z hlavičky Cloudflare,
+    // protože wrangler dev dosazuje do url produkční doménu a lokální vývoj běží na http.
+    if (url.hostname === "www.indigostudio.cz" || (url.hostname === "indigostudio.cz" && request.headers.get("X-Forwarded-Proto") === "http")) {
+      return Response.redirect(`https://indigostudio.cz${url.pathname}${url.search}`, 301);
+    }
+
     // Online nástroje se odstěhovaly do vlastního Workeru (IndigoStudioCZ/nastroje).
     // Dřív sdílené náhledy odkazují na obrázky OG tady, proto je přesměruj na novou adresu.
     if (url.pathname.startsWith("/tools/og/")) {
@@ -124,7 +131,11 @@ export default {
       headers.set("Content-Language", pathLang(url.pathname));
       // česká stránka může pro jiný jazyk prohlížeče odpovědět přesměrováním
       if (url.pathname in PAGES) headers.append("Vary", "Accept-Language, Cookie");
+      // strojově čitelné odkazy pro agenty (RFC 8288)
+      headers.set("Link", '<https://indigostudio.cz/llms.txt>; rel="describedby"; type="text/plain", <https://indigostudio.cz/sitemap.xml>; rel="sitemap"; type="application/xml"');
     }
+    // Assets kanonizují adresy (/hosting.html, /hosting/) přes 307; vyhledávačům patří trvalé 301.
+    if (res.status === 307) return new Response(null, { status: 301, headers });
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
   },
 };

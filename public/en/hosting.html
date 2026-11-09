@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>Fast website hosting with Git behind the scenes | Indigo Studio</title>
-<meta name="description" content="Static website hosting: fast loading, HTTPS, backups and Git behind the scenes. We migrate your website from your current host, free of charge up to a certain size. Send us your website address and what you pay for it — you will get a free quote by email.">
+<meta name="description" content="Static website hosting with HTTPS, backups and Git behind the scenes. We migrate your site, free up to a certain size. Send us the address for a free quote.">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/en/hosting">
@@ -33,6 +33,101 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<!-- JSON-LD pro vyhledávače a agenty: drobečky, typ stránky, časté otázky -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://indigostudio.cz/en/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Hosting",
+          "item": "https://indigostudio.cz/en/hosting"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "name": "Fast website hosting with Git behind the scenes",
+      "serviceType": "Static website hosting",
+      "description": "Static website hosting with HTTPS, backups and Git behind the scenes. We migrate your site, free up to a certain size. Send us the address for a free quote.",
+      "url": "https://indigostudio.cz/en/hosting",
+      "provider": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      },
+      "areaServed": "CZ"
+    },
+    {
+      "@type": "FAQPage",
+      "url": "https://indigostudio.cz/en/hosting",
+      "inLanguage": "en",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does “free up to a certain size” mean?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We move a typical business website of a handful to a few dozen pages at no charge. For large websites, or websites that first need to be extracted from an old system, we tell you the price up front — never after the fact."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does hosting cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We price it based on the size of your website and what you want with it. Send us your website address and what you pay for it today; you will get a comparison and a specific quote by email, free of charge and with no obligation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will we lose our search engine rankings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. We keep page addresses the same, and where that is not possible, we set up permanent redirects. Websites are usually faster after migration, which tends to help with search engines."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do we need to know Git?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Git runs under the hood so that every change can be traced and undone. You don't have to work with it — if you want, we will give you access to the repository."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How quickly can a website be moved?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The move itself usually takes one to two days. The domain transfer at your current registrar typically takes longer — the whole time, your website keeps running at its old address, so there is no downtime to deal with."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if we want to leave?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You get your website's content and its full history in the repository, and you transfer the domain wherever you like. Nothing keeps you with us except being happy with the service."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   /* Tokeny, lišta a patička jsou shodné s index.html a prevzeti-vyvoje.html */
   :root {
@@ -47,7 +142,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
@@ -61,7 +156,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -281,7 +376,7 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/en/" aria-label="Indigo Studio — home">
+    <a class="brand" href="/en/" aria-label="Indigo Studio s. r. o. — home">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">

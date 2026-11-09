@@ -69,7 +69,10 @@ Jedna stránka, žádný build step, žádné frameworky.
 - Formuláře posílají `lang` (`/api/poptavka`, `/api/odber`): hlášky, potvrzovací e-mail
   odběru a návrat po potvrzení jsou v jazyce stránky; v poptávce je jazyk v předmětu.
 - **Změna textu nebo vzhledu stránky = změna ve všech třech verzích.** Nová stránka =
-  řádek v `PAGES`, tři soubory s `hreflang` a přepínačem, záznam v `sitemap.xml`.
+  řádek v `PAGES`, tři soubory s `hreflang` a přepínačem, JSON-LD v `<head>`, záznam v `sitemap.xml`.
+- Po věcné změně obsahu stránky aktualizovat `<lastmod>` v `sitemap.xml` (u článků i `dateModified`
+  v JSON-LD). Logo pro strukturovaná data je `public/logo.png` (textové logo, ne favicon).
+  `public/362b6bbd0fe9c5a3df0163585f568639.txt` je klíč IndexNow (Bing, Seznam), nemazat.
 - Vietnamština oslovuje formálně („Quý khách", my = „chúng tôi"), angličtina věcně, americký pravopis.
 
 ## Pravidla

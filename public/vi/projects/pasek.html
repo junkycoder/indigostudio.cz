@@ -33,6 +33,61 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<!-- JSON-LD pro vyhledávače a agenty: drobečky, typ stránky, časté otázky -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Trang chủ",
+          "item": "https://indigostudio.cz/vi/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Dự án",
+          "item": "https://indigostudio.cz/vi/projects"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Pásek",
+          "item": "https://indigostudio.cz/vi/projects/pasek"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "Pásek: hộ chiếu số cho bất động sản từ iPhone",
+      "description": "Dự án tiêu biểu: Pásek, MVP ứng dụng riêng của Indigo Studio để đo đạc ngôi nhà bằng iPhone. Sau khi kiểm chứng, chúng tôi đã dừng dự án.",
+      "url": "https://indigostudio.cz/vi/projects/pasek",
+      "mainEntityOfPage": "https://indigostudio.cz/vi/projects/pasek",
+      "inLanguage": "vi",
+      "image": "https://indigostudio.cz/og-vi.png",
+      "datePublished": "2026-09-15",
+      "dateModified": "2026-11-06",
+      "author": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      }
+    }
+  ]
+}
+</script>
+
 <style>
   /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
   :root {
@@ -47,7 +102,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
@@ -61,7 +116,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -242,7 +297,7 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio s. r. o. — trang chủ">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Điều hướng chính">

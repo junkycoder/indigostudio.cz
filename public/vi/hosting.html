@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>Hosting website nhanh với Git phía sau | Indigo Studio</title>
-<meta name="description" content="Hosting website tĩnh: tải nhanh, HTTPS, sao lưu và Git phía sau. Chúng tôi chuyển website từ nhà cung cấp hosting hiện tại, miễn phí đến một quy mô nhất định. Gửi địa chỉ website và chi phí hiện tại — Quý khách sẽ nhận báo giá miễn phí qua email.">
+<meta name="description" content="Hosting website tĩnh với HTTPS, sao lưu và Git phía sau. Chúng tôi chuyển website miễn phí đến một quy mô nhất định. Gửi địa chỉ website để nhận báo giá miễn phí.">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/vi/hosting">
@@ -33,6 +33,101 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<!-- JSON-LD pro vyhledávače a agenty: drobečky, typ stránky, časté otázky -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Trang chủ",
+          "item": "https://indigostudio.cz/vi/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Hosting",
+          "item": "https://indigostudio.cz/vi/hosting"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "name": "Hosting website nhanh với Git phía sau",
+      "serviceType": "Hosting website tĩnh",
+      "description": "Hosting website tĩnh với HTTPS, sao lưu và Git phía sau. Chúng tôi chuyển website miễn phí đến một quy mô nhất định. Gửi địa chỉ website để nhận báo giá miễn phí.",
+      "url": "https://indigostudio.cz/vi/hosting",
+      "provider": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      },
+      "areaServed": "CZ"
+    },
+    {
+      "@type": "FAQPage",
+      "url": "https://indigostudio.cz/vi/hosting",
+      "inLanguage": "vi",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "“Miễn phí đến một quy mô nhất định” nghĩa là gì?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Website giới thiệu thông thường từ vài trang đến vài chục trang được chuyển không tính phí. Với website lớn hoặc website cần tách ra khỏi hệ thống cũ trước, chúng tôi báo giá trước — không bao giờ tính sau."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hosting giá bao nhiêu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Giá được tính theo quy mô website và những gì Quý khách cần kèm theo. Hãy gửi địa chỉ website và chi phí hiện tại; Quý khách sẽ nhận bảng so sánh và báo giá cụ thể qua email, miễn phí và không ràng buộc."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Website có bị mất thứ hạng trên công cụ tìm kiếm không?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Không. Chúng tôi giữ nguyên địa chỉ các trang, và ở chỗ nào không giữ được, chúng tôi thiết lập chuyển hướng vĩnh viễn. Sau khi chuyển, website thường nhanh hơn, điều này thường có lợi cho thứ hạng tìm kiếm."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Có cần biết dùng Git không?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Không. Git chạy ngầm bên dưới để mọi thay đổi đều có thể tra lại và hoàn tác. Quý khách không cần làm việc với Git — nếu muốn, chúng tôi sẽ cấp quyền truy cập kho mã nguồn."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Chuyển website mất bao lâu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bản thân việc chuyển thường chỉ mất một đến hai ngày. Lâu hơn thường là khâu chuyển tên miền tại nhà đăng ký cũ — trong suốt thời gian đó website vẫn chạy bình thường ở địa chỉ cũ, Quý khách không phải lo gián đoạn."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Nếu muốn chuyển sang nơi khác thì sao?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Quý khách nhận toàn bộ nội dung website cùng toàn bộ lịch sử trong kho mã nguồn và tự chuyển tên miền sang nơi khác. Điều duy nhất giữ Quý khách ở lại là dịch vụ phù hợp với Quý khách."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   /* Tokeny, lišta a patička jsou shodné s index.html a prevzeti-vyvoje.html */
   :root {
@@ -47,7 +142,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
@@ -61,7 +156,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -281,7 +376,7 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio s. r. o. — trang chủ">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Điều hướng chính">

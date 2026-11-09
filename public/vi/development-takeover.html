@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>Tiếp quản phát triển phần mềm từ nhà cung cấp trước | Indigo Studio</title>
-<meta name="description" content="Chúng tôi tiếp quản việc phát triển và quản lý phần mềm của Quý khách từ nhà cung cấp hoặc lập trình viên trước đó. Bắt đầu bằng buổi đánh giá miễn phí: tình trạng mã nguồn, rủi ro và kế hoạch tiếp quản.">
+<meta name="description" content="Chúng tôi tiếp quản việc phát triển và quản lý phần mềm từ nhà cung cấp trước. Bắt đầu bằng đánh giá miễn phí: tình trạng mã nguồn, rủi ro và kế hoạch tiếp quản.">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/vi/development-takeover">
@@ -33,6 +33,93 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<!-- JSON-LD pro vyhledávače a agenty: drobečky, typ stránky, časté otázky -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Trang chủ",
+          "item": "https://indigostudio.cz/vi/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tiếp quản phát triển",
+          "item": "https://indigostudio.cz/vi/development-takeover"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "name": "Tiếp quản phát triển phần mềm từ nhà cung cấp trước",
+      "serviceType": "Tiếp quản phát triển phần mềm",
+      "description": "Chúng tôi tiếp quản việc phát triển và quản lý phần mềm từ nhà cung cấp trước. Bắt đầu bằng đánh giá miễn phí: tình trạng mã nguồn, rủi ro và kế hoạch tiếp quản.",
+      "url": "https://indigostudio.cz/vi/development-takeover",
+      "provider": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      },
+      "areaServed": "CZ"
+    },
+    {
+      "@type": "FAQPage",
+      "url": "https://indigostudio.cz/vi/development-takeover",
+      "inLanguage": "vi",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Studio có thông thạo công nghệ mà phần mềm đang sử dụng không?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Chúng tôi làm việc với Vue.js, Ruby on Rails, Swift, Kotlin và ứng dụng hybrid trên Capacitor, cùng nhiều công nghệ khác. Nếu cả chúng tôi lẫn mạng lưới chuyên gia của chúng tôi đều không đảm nhận được công nghệ đó, chúng tôi sẽ nói rõ ngay tại buổi đánh giá."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Nếu không có quyền truy cập mã nguồn thì sao?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Việc này vẫn có thể giải quyết. Tại buổi đánh giá, chúng tôi sẽ tìm hiểu Quý khách đang có những gì, mã nguồn nhiều khả năng nằm ở đâu và làm sao để lấy được. Nếu không được, chúng tôi sẽ đề xuất phương án thay thế."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Chi phí tiếp quản là bao nhiêu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tùy thuộc vào quy mô và tình trạng của phần mềm. Buổi đánh giá miễn phí và bao gồm ước tính chi phí, vì vậy Quý khách biết giá trước khi cam kết bất cứ điều gì."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bao lâu thì có thể bắt đầu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Chúng tôi trả lời tin nhắn chậm nhất trong vòng vài giờ. Lịch đánh giá được sắp xếp tùy theo mức độ cấp bách của tình huống."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Studio có nhận mọi dự án không?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Không. Liên hệ với chúng tôi hoàn toàn miễn phí và không ràng buộc Quý khách điều gì. Tuy nhiên, chúng tôi có quyền từ chối yêu cầu nếu ngay từ tin nhắn hoặc buổi đánh giá đã nhận thấy việc tiếp quản sẽ không có lợi cho Quý khách cũng như cho chúng tôi. Khi đó, chúng tôi sẽ nói thẳng với Quý khách."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
   :root {
@@ -47,7 +134,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
@@ -61,7 +148,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -231,7 +318,7 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/vi/" aria-label="Indigo Studio — trang chủ">
+    <a class="brand" href="/vi/" aria-label="Indigo Studio s. r. o. — trang chủ">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Điều hướng chính">

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>Rychlý hosting webu s gitem na pozadí | Indigo Studio</title>
-<meta name="description" content="Hosting statických webů: rychlé načítání, HTTPS, zálohy a git na pozadí. Web z původního hostingu přeneseme, do jisté velikosti zdarma. Pošlete adresu webu a kolik za něj platíte — nabídku dostanete e-mailem zdarma.">
+<meta name="description" content="Hosting statických webů s HTTPS, zálohami a gitem na pozadí. Web přeneseme, do jisté velikosti zdarma. Pošlete adresu a dostanete nabídku e-mailem zdarma.">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/hosting">
@@ -33,6 +33,101 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<!-- JSON-LD pro vyhledávače a agenty: drobečky, typ stránky, časté otázky -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Úvod",
+          "item": "https://indigostudio.cz/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Hosting",
+          "item": "https://indigostudio.cz/hosting"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "name": "Rychlý hosting webu s gitem na pozadí",
+      "serviceType": "Hosting statických webů",
+      "description": "Hosting statických webů s HTTPS, zálohami a gitem na pozadí. Web přeneseme, do jisté velikosti zdarma. Pošlete adresu a dostanete nabídku e-mailem zdarma.",
+      "url": "https://indigostudio.cz/hosting",
+      "provider": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      },
+      "areaServed": "CZ"
+    },
+    {
+      "@type": "FAQPage",
+      "url": "https://indigostudio.cz/hosting",
+      "inLanguage": "cs",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Co znamená „zdarma do jisté velikosti\"?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Běžnou prezentaci o jednotkách až desítkách stránek přeneseme bez účtování. U rozsáhlých webů nebo webů, které je potřeba nejdřív vytáhnout ze starého systému, vám cenu řekneme předem — nikdy zpětně."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kolik hosting stojí?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cenu stavíme podle velikosti webu a toho, co k němu chcete. Pošlete adresu webu a co za něj dnes platíte; dostanete srovnání a konkrétní nabídku e-mailem, zdarma a nezávazně."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Přijdeme o pozice ve vyhledávačích?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ne. Adresy stránek zachováme, a kde to nejde, nastavíme trvalé přesměrování. Web po migraci bývá rychlejší, což vyhledávačům spíš pomáhá."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Musíme umět git?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ne. Git je pod kapotou proto, aby šlo dohledat a vrátit každou změnu. Pracovat s ním nemusíte — když chcete, přístup do repozitáře vám dáme."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Jak rychle se dá web přenést?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Samotné přenesení bývá otázka jednoho až dvou dnů. Déle většinou trvá převod domény u původního registrátora — po celou dobu web běží dál na staré adrese, výpadek neřešíte."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Co když od vás budeme chtít odejít?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Dostanete obsah webu i celou historii v repozitáři a doménu si převedete jinam. Nedržíme vás ničím jiným než tím, že vám služba vyhovuje."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   /* Tokeny, lišta a patička jsou shodné s index.html a prevzeti-vyvoje.html */
   :root {
@@ -47,7 +142,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
@@ -61,7 +156,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -281,7 +376,7 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+    <a class="brand" href="/" aria-label="Indigo Studio s. r. o. — úvod">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Hlavní navigace">

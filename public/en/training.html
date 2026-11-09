@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>Claude Code and Codex training backed by measurements | Indigo Studio</title>
-<meta name="description" content="Training on working with Claude Code and OpenAI Codex. We verify every tip by measurement: token usage, cost and success rate with and without the tip, across several models. We will publish the data and the benchmark.">
+<meta name="description" content="Claude Code and OpenAI Codex training. We verify every tip by measuring token usage, cost and success rate across several models, and will publish the data.">
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/en/training">
@@ -33,6 +33,83 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<!-- JSON-LD pro vyhledávače a agenty: drobečky, typ stránky, časté otázky -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://indigostudio.cz/en/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Training",
+          "item": "https://indigostudio.cz/en/training"
+        }
+      ]
+    },
+    {
+      "@type": "Course",
+      "name": "Claude Code and Codex training backed by measurements",
+      "description": "Claude Code and OpenAI Codex training. We verify every tip by measuring token usage, cost and success rate across several models, and will publish the data.",
+      "url": "https://indigostudio.cz/en/training",
+      "provider": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "url": "https://indigostudio.cz/en/training",
+      "inLanguage": "en",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Who is the training for?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For developers and technical teams who use Claude Code or Codex, or want to start, and want to know what really saves time and money."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When and where does it take place?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We will announce the date and price once the measurements are done. Subscribe to updates and you will be among the first to know."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the recording work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After the training, you can buy the recording as a one-off purchase for half the price of the training. Participants get it free."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can we book the training just for our team?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. We can also run the measurements on your repository, so the numbers will reflect your code."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
   :root {
@@ -47,7 +124,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
@@ -61,7 +138,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -265,7 +342,7 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/en/" aria-label="Indigo Studio — home">
+    <a class="brand" href="/en/" aria-label="Indigo Studio s. r. o. — home">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">

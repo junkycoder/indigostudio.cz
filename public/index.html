@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- ať iOS nedělá tel: odkazy z IČO a čísla účtu -->
 <meta name="format-detection" content="telephone=no">
-<title>Indigo Studio — software na míru: od interních nástrojů po veřejné produkty</title>
-<meta name="description" content="Indigo Studio s.r.o. — software na míru. Vývoj webových, iOS i Android aplikací, propojení se Slackem, Shoptetem a dalšími službami, rozšíření pro Chrome a Safari.">
+<title>Vývoj softwaru a aplikací na míru v Praze | Indigo Studio</title>
+<meta name="description" content="Softwarové studio v Praze. Vyvíjíme webové, iOS i Android aplikace a interní systémy, propojujeme Slack a Shoptet a přebíráme vývoj po jiných dodavatelích.">
 <!-- theme-color = barva pozadí, ať status bar splývá se stránkou -->
 <meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
@@ -42,11 +42,13 @@
 {
   "@context": "https://schema.org",
   "@type": ["Organization", "ProfessionalService"],
+  "@id": "https://indigostudio.cz/#organization",
   "name": "Indigo Studio",
   "legalName": "Indigo Studio s.r.o.",
   "url": "https://indigostudio.cz",
-  "logo": "https://indigostudio.cz/apple-touch-icon.png",
+  "logo": "https://indigostudio.cz/logo.png",
   "image": "https://indigostudio.cz/og.png",
+  "sameAs": ["https://github.com/IndigoStudioCZ"],
   "email": "info@indigostudio.cz",
   "telephone": "+420777407690",
   "description": "Softwarové studio. Od interních nástrojů po veřejné produkty.",
@@ -103,8 +105,19 @@
     "email": "info@indigostudio.cz",
     "telephone": "+420777407690",
     "areaServed": "CZ",
-    "availableLanguage": ["cs"]
+    "availableLanguage": ["cs", "en", "vi"]
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://indigostudio.cz/#website",
+  "url": "https://indigostudio.cz/",
+  "name": "Indigo Studio",
+  "inLanguage": ["cs", "en", "vi"],
+  "publisher": { "@id": "https://indigostudio.cz/#organization" }
 }
 </script>
 
@@ -124,7 +137,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     --cta-bg: #4f46e5;
     --cta-bg-hover: #5a52ee;
@@ -142,7 +155,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
       --cta-bg-hover: #4338ca;
       --wa: #16a34a;
@@ -404,6 +417,7 @@
   /* e-mail a telefon = samostatné odkazy, karta sama odkazem není */
   .card .email, .card .phone {
     width: fit-content; color: var(--fg-muted); font-size: 0.85rem; text-decoration: none;
+    display: flex; align-items: center; min-height: 24px; /* dotykový cíl aspoň 24 px (WCAG 2.5.8) */
     transition: color 0.2s var(--ease);
   }
   .card .email { overflow-wrap: anywhere; }
@@ -509,7 +523,7 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+    <a class="brand" href="/" aria-label="Indigo Studio s. r. o. — úvod">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Hlavní navigace">

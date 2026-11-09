@@ -33,6 +33,45 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<!-- JSON-LD pro vyhledávače a agenty: drobečky, typ stránky, časté otázky -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Úvod",
+          "item": "https://indigostudio.cz/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projekty",
+          "item": "https://indigostudio.cz/projekty"
+        }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "name": "Případové studie, ukázky a reference",
+      "description": "Aplikace, případové studie, reference a ukázky práce Indigo Studio — weby, mobilní aplikace, interní systémy a AI na míru.",
+      "url": "https://indigostudio.cz/projekty",
+      "inLanguage": "cs",
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://indigostudio.cz/#organization",
+        "name": "Indigo Studio s.r.o.",
+        "url": "https://indigostudio.cz/"
+      }
+    }
+  ]
+}
+</script>
+
 <style>
   /* Tokeny a lišta jsou shodné s index.html — při změně upravit obě stránky */
   :root {
@@ -47,7 +86,7 @@
     --border-strong: rgba(255, 255, 255, 0.16);
     --fg: #ededf1;
     --fg-muted: #a3a4ae;
-    --fg-faint: #6f707b;
+    --fg-faint: #8a8b96;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
@@ -61,7 +100,7 @@
       --border-strong: rgba(16, 18, 32, 0.2);
       --fg: #14151b;
       --fg-muted: #555766;
-      --fg-faint: #8b8c98;
+      --fg-faint: #6b6c78;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -216,7 +255,7 @@
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="/" aria-label="Indigo Studio — úvod">
+    <a class="brand" href="/" aria-label="Indigo Studio s. r. o. — úvod">
       <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
     </a>
     <nav class="site-nav" aria-label="Hlavní navigace">
