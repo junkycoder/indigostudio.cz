@@ -40,6 +40,9 @@ Jedna stránka, žádný build step, žádné frameworky.
 - Online nástroje (`nastroje.`, subdomény nástrojů, `ceska-republika.`) tady nejsou: žijí
   v repozitáři `IndigoStudioCZ/nastroje` (`~/nastroje.indigostudio.cz`) na vlastním Workeru
   `nastroje`. Jejich domény do `wrangler.toml` nepřidávat — nasazení vizitky by si je přetáhlo.
+- Weby místních podniků (`pho999.indigostudio.cz`, admin a e-maily zadání na `podniky.`) tady
+  nejsou: žijí v soukromém repozitáři `IndigoStudioCZ/podniky` (`~/podniky.indigostudio.cz`)
+  na Workeru `podniky`. Jejich domény do `wrangler.toml` nepřidávat.
 - `wrangler.toml` — Worker config (route `indigostudio.cz`, custom_domain, `send_email` binding)
 - auto-deploy: Cloudflare Workers Builds (git push → CF nasadí, bez tokenu)
 

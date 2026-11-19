@@ -19,6 +19,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["wrangler", "dev", "--port", "8787"],
       "port": 8787
+    },
+    {
+      "name": "podniky worker (wrangler dev)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--prefix", "/Users/junkycoder/podniky.indigostudio.cz", "wrangler", "dev", "--cwd", "/Users/junkycoder/podniky.indigostudio.cz", "--port", "8790"],
+      "port": 8790
     }
   ]
 }
