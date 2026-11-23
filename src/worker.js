@@ -35,6 +35,8 @@ const PAGES = {
   "/projekty/aseko": "/projects/aseko",
   "/prevzeti-vyvoje": "/development-takeover",
   "/cookies": "/cookies",
+  // kampaň pro podniky z Týnecka (QR z plakátu), poptávky do 30. 11. 2026
+  "/tynecko": "/tynecko",
 };
 // roboti a náhledy odkazů dostanou vždy adresu, na kterou se ptají (indexace jde přes hreflang)
 const BOTS = /bot|crawl|spider|slurp|preview|facebookexternalhit|embedly|whatsapp|telegram|discord|slack|linkedin|lighthouse|headless/i;

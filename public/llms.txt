@@ -10,6 +10,7 @@ In English: Indigo Studio is a software studio based in Prague. We build custom 
 
 - [Úvod](https://indigostudio.cz/): služby, poptávka a kontakty
 - [Hosting](https://indigostudio.cz/hosting): hosting statických webů s gitem, verzováním a nasazením na pozadí; převod nebo registrace domény, migrace webu od současného poskytovatele (do jisté velikosti zdarma), firemní e-mail včetně SPF/DKIM/DMARC; nezávazná nabídka e-mailem zdarma
+- [Web k Vánocům](https://indigostudio.cz/tynecko): nabídka pro živnostníky a firmy z okolí Týnce nad Sázavou, které už mají web: nový web zdarma jako dárek, nezávazný návrh, převod webu i domény; platí se jen provoz a podpora od 6 000 Kč ročně bez DPH s první fakturou splatnou 15. 1. 2027; poptávky do 30. 11. 2026
 - [Převzetí vývoje](https://indigostudio.cz/prevzeti-vyvoje): převzetí vývoje a správy softwaru po předchozím dodavateli, postup a revize zdarma
 - [Školení](https://indigostudio.cz/skoleni): školení Claude Code a OpenAI Codex (v přípravě); tipy ověřené měřením tokenů, ceny a úspěšnosti na několika modelech, veřejný benchmark a data; záznamy proběhlých školení
 - [Projekty](https://indigostudio.cz/projekty): případové studie, aplikace a reference
@@ -31,8 +32,8 @@ In English: Indigo Studio is a software studio based in Prague. We build custom 
 Celý web je i anglicky a vietnamsky se stejným obsahem. České adresy jsou na kořeni,
 ostatní pod předponou jazyka se společnými anglickými adresami (`/skoleni` → `/en/training`, `/vi/training`).
 
-- [English](https://indigostudio.cz/en/): https://indigostudio.cz/en/hosting, /en/development-takeover, /en/training, /en/projects, /en/cookies
-- [Tiếng Việt](https://indigostudio.cz/vi/): https://indigostudio.cz/vi/hosting, /vi/development-takeover, /vi/training, /vi/projects, /vi/cookies
+- [English](https://indigostudio.cz/en/): https://indigostudio.cz/en/hosting, /en/tynecko, /en/development-takeover, /en/training, /en/projects, /en/cookies
+- [Tiếng Việt](https://indigostudio.cz/vi/): https://indigostudio.cz/vi/hosting, /vi/tynecko, /vi/development-takeover, /vi/training, /vi/projects, /vi/cookies
 
 ## Technologie a nástroje
 
