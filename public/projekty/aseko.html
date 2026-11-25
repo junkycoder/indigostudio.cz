@@ -6,8 +6,8 @@
 <meta name="format-detection" content="telephone=no">
 <title>Aseko — převzetí vývoje softwaru pro bazénovou techniku | Indigo Studio</title>
 <meta name="description" content="Případová studie: s Telionem jsme převzali vývoj veškerého softwaru Aseko. Aplikace Aseko Live a Remote, whitelabel verze a backoffice pro web, iOS i Android.">
-<meta name="theme-color" content="#0d0e13" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0c16" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <link rel="canonical" href="https://indigostudio.cz/projekty/aseko">
 <link rel="alternate" hreflang="cs" href="https://indigostudio.cz/projekty/aseko">
 <link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/projects/aseko">
@@ -91,32 +91,34 @@
 <style>
   /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
   :root {
-    --accent: #8b8ef8;
-    --accent-strong: #6366f1;
-    --accent-soft: rgba(129, 140, 248, 0.12);
+    --accent: #b899ff;
+    --accent-strong: #3d16bf;
+    --accent-soft: rgba(184, 153, 255, 0.12);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --bg: #0d0e13;
-    --surface: #14151c;
-    --surface-2: #1a1b23;
+    --bg: #0e0c16;
+    --surface: #16131f;
+    --surface-2: #1c1927;
     --border: rgba(255, 255, 255, 0.08);
     --border-strong: rgba(255, 255, 255, 0.16);
-    --fg: #ededf1;
-    --fg-muted: #a3a4ae;
-    --fg-faint: #8a8b96;
+    --fg: #f1eff7;
+    --fg-muted: #aaa7b9;
+    --fg-faint: #908ca1;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   @media (prefers-color-scheme: light) {
     :root {
-      --accent: #4f46e5;
-      --accent-soft: rgba(79, 70, 229, 0.08);
-      --bg: #f6f6f8;
+      --accent: #2a018a;
+      --accent-strong: #2a018a;
+      --cta-bg: #2a018a;
+      --accent-soft: rgba(42, 1, 138, 0.07);
+      --bg: #ffffff;
       --surface: #ffffff;
-      --surface-2: #f9f9fb;
-      --border: rgba(16, 18, 32, 0.09);
-      --border-strong: rgba(16, 18, 32, 0.2);
-      --fg: #14151b;
-      --fg-muted: #555766;
-      --fg-faint: #6b6c78;
+      --surface-2: #f7f6fb;
+      --border: rgba(12, 13, 22, 0.1);
+      --border-strong: rgba(12, 13, 22, 0.2);
+      --fg: #0c0d16;
+      --fg-muted: #524f63;
+      --fg-faint: #696677;
       --shadow: 0 1px 2px rgba(16, 18, 32, 0.05);
     }
   }
@@ -138,38 +140,44 @@
     padding-right: max(1.25rem, env(safe-area-inset-right));
   }
 
-  /* ---- Horní lišta ---- */
+  /* ---- Horní lišta: logo, odkazy jako prostý text, jazyk ---- */
   .site-header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
   .site-header .container {
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 0.75rem 1.5rem; min-height: 68px; padding-block: 0.75rem;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 1rem;
+    min-height: 72px; padding-block: 0.75rem;
   }
-  .brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--fg); text-decoration: none; }
-  .brand-name { font-size: 1.05rem; font-weight: 650; letter-spacing: -0.015em; }
-  .brand-name .studio { color: var(--accent); font-weight: 600; }
-  .brand-name .legal { color: var(--fg-faint); font-size: 0.75em; font-weight: 500; letter-spacing: -0.07em; }
-  .nav-link {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    font-size: 0.9rem; font-weight: 550; color: var(--fg); text-decoration: none;
-    padding: 0.55rem 0.95rem; border: 1px solid var(--border-strong); border-radius: 6px;
-    background: var(--surface); transition: border-color 0.2s var(--ease);
-  }
-  .nav-link svg { width: 16px; height: 16px; color: var(--accent); }
-  .nav-link:hover { border-color: var(--accent); }
-  .site-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  /* logo: světlá a tmavá varianta přes <picture> podle prefers-color-scheme */
+  .brand { display: inline-flex; align-items: center; margin-right: auto; border-radius: 4px; }
+  .brand img { display: block; height: 38px; width: auto; }
 
-  /* rozbalovací nabídka služeb */
+  .site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.92rem; font-weight: 550; color: var(--fg); text-decoration: none;
+    padding: 0.5rem 0.7rem; border-radius: 6px;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-link svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--fg-faint); }
+  .site-nav .nav-link > svg { display: none; }
+  .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+  .nav-link[aria-current="page"] { color: var(--accent); }
+
+  /* rozbalovací nabídka (služby, jazyk) */
   .nav-group { position: relative; }
   .nav-group > summary { list-style: none; cursor: pointer; }
   .nav-group > summary::-webkit-details-marker { display: none; }
-  .nav-group > summary:hover svg { transform: none; }
+  .nav-group > summary::after {
+    content: ""; width: 0.38em; height: 0.38em; margin: 0 0.1rem 0.2em 0.1rem;
+    border: solid currentColor; border-width: 0 1.5px 1.5px 0; rotate: 45deg; opacity: 0.55;
+  }
+  .nav-group[open] > summary::after { rotate: 225deg; margin-bottom: -0.2em; }
   .nav-group[open] > summary,
-  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { border-color: var(--accent); }
+  .nav-group:has(.nav-menu-link[aria-current="page"]) > summary { color: var(--accent); }
   .nav-menu {
     position: absolute; z-index: 30; top: calc(100% + 0.4rem); left: 0;
     min-width: 100%; display: flex; flex-direction: column; gap: 0.15rem;
     padding: 0.35rem; border: 1px solid var(--border-strong); border-radius: 8px;
-    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+    background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
   }
   .nav-menu-link {
     display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
@@ -182,15 +190,16 @@
   .nav-menu-link:hover { background: var(--surface-2); }
   .nav-menu-link:hover svg { transform: translateX(2px); }
   .nav-menu-link[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
-  /* přepínač jazyka: vpravo v liště, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
-  .site-nav { margin-left: auto; }
+  /* přepínač jazyka: vpravo, na telefonu na řádku s logem (cookie lang ukládá nav.js) */
   .nav-lang .nav-menu { left: auto; right: 0; min-width: 9rem; }
   .nav-lang .nav-menu-link[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
   .nav-lang .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  @media (max-width: 560px) {
-    .site-nav { order: 2; flex-basis: 100%; }
-    .nav-group.nav-lang, .nav-lang > .nav-link { width: auto; }
+  @media (max-width: 760px) {
+    .brand img { height: 32px; }
+    .site-nav { order: 2; flex-basis: 100%; margin-left: -0.7rem; }
   }
+  /* značka (srdce s korunou) před názvem firmy v patičce */
+  .footer-mark img { display: inline-block; height: 1.4em; width: auto; vertical-align: -0.35em; margin-right: 0.45rem; }
 
   main { flex: 1; }
 
@@ -290,7 +299,10 @@
 <header class="site-header">
   <div class="container">
     <a class="brand" href="/" aria-label="Indigo Studio s. r. o. — úvod">
-      <span class="brand-name">Indigo <span class="studio">Studio</span>&nbsp;<span class="legal">s.&#8239;r.&#8239;o.</span></span>
+      <picture>
+        <source srcset="/logo-horizontal-dark.svg" media="(prefers-color-scheme: dark)">
+        <img src="/logo-horizontal.svg" alt="Indigo Studio" width="174" height="38">
+      </picture>
     </a>
     <nav class="site-nav" aria-label="Hlavní navigace">
       <details class="nav-group">
@@ -310,7 +322,7 @@
         </div>
       </details>
       <a class="nav-link" href="/projekty">
-        Případové studie, ukázky a&nbsp;reference
+        Projekty a&nbsp;reference
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
       </a>
     </nav>
@@ -447,7 +459,7 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>IČO&nbsp;14389096<span class="sep">·</span><wbr>DIČ&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
+    <p><picture class="footer-mark"><source srcset="/logo-mark-dark.svg" media="(prefers-color-scheme: dark)"><img src="/logo-mark.svg" alt="" width="17" height="20"></picture><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>IČO&nbsp;14389096<span class="sep">·</span><wbr>DIČ&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
     <p><a href="/">Zpět na&nbsp;úvod</a></p>
   </div>
 </footer>

@@ -9,14 +9,15 @@
      chvíli drží, pak se „smaže" a cyklus jede znovu. Pořadí tahů řídí --i.
      Vzor (cihlová mřížka přes celý viewport) skládá JS níže. */
   .doodles {
-    --c1: #818cf8; --c2: #f472b6; --c3: #2dd4bf; --c4: #fbbf24; --c5: #4ade80;
+    /* jednobarevné v barvě značky (Indigo); k1–k5 zůstávají jako háčky pro případné odstíny */
+    --c1: #b899ff; --c2: #b899ff; --c3: #b899ff; --c4: #b899ff; --c5: #b899ff;
     --cell: 290px;
     position: fixed; inset: 0; z-index: -1;
     pointer-events: none; overflow: hidden;
     opacity: 0.11;
   }
   @media (prefers-color-scheme: light) {
-    .doodles { --c1: #6366f1; --c2: #db2777; --c3: #0d9488; --c4: #d97706; --c5: #16a34a; opacity: 0.1; }
+    .doodles { --c1: #2a018a; --c2: #2a018a; --c3: #2a018a; --c4: #2a018a; --c5: #2a018a; opacity: 0.08; }
   }
   @media (max-width: 560px) { .doodles { opacity: 0.08; } }
   .doodle {
@@ -62,10 +63,10 @@
   /* světlo pod kurzorem: jemná indigová záře, tlumená stejně jako malůvky */
   .doodles-glow {
     position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 30%), rgba(99, 102, 241, 0.07), transparent 70%);
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 30%), rgba(184, 153, 255, 0.07), transparent 70%);
   }
   @media (prefers-color-scheme: light) {
-    .doodles-glow { background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 30%), rgba(99, 102, 241, 0.045), transparent 70%); }
+    .doodles-glow { background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 30%), rgba(42, 1, 138, 0.035), transparent 70%); }
   }
   @media (hover: none), (prefers-reduced-motion: reduce) { .doodles-glow { display: none; } }
   @media print { .doodles, .doodles-glow { display: none !important; } }

@@ -6,25 +6,26 @@
 <title>Stránka nenalezena (404) | Indigo Studio</title>
 <meta name="description" content="Tahle adresa na indigostudio.cz není. Vraťte se prosím na úvodní stránku.">
 <meta name="robots" content="noindex, follow">
-<meta name="theme-color" content="#16162d" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f6f6fe" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0c16" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <style>
   :root {
-    --indigo: #6366f1; --indigo-2: #818cf8; --indigo-soft: rgba(99,102,241,.14);
+    --indigo: #3d16bf; --indigo-2: #b899ff; --indigo-soft: rgba(184,153,255,.14);
     --ease: cubic-bezier(.22,1,.36,1);
-    --bg: #0b0b12; --bg-top: rgba(99,102,241,.12); --bg-elev: rgba(255,255,255,.035);
-    --border: rgba(255,255,255,.09); --border-hover: rgba(129,140,248,.45);
-    --fg: #f4f4f6; --fg-muted: #a1a1ad; --fg-faint: #8a8b96;
+    --bg: #0e0c16; --bg-top: rgba(184,153,255,.08); --bg-elev: rgba(255,255,255,.035);
+    --border: rgba(255,255,255,.09); --border-hover: rgba(184,153,255,.45);
+    --fg: #f1eff7; --fg-muted: #aaa7b9; --fg-faint: #908ca1;
   }
   @media (prefers-color-scheme: light) {
     :root {
-      --bg: #ffffff; --bg-top: rgba(99,102,241,.06); --bg-elev: rgba(15,18,40,.025);
-      --border: rgba(15,18,40,.10); --border-hover: rgba(99,102,241,.5);
-      --fg: #15161d; --fg-muted: #5a5b6a; --fg-faint: #6b6c78;
+      --indigo: #2a018a; --indigo-2: #2a018a; --indigo-soft: rgba(42,1,138,.07);
+      --bg: #ffffff; --bg-top: rgba(42,1,138,.04); --bg-elev: rgba(15,18,40,.025);
+      --border: rgba(15,18,40,.10); --border-hover: rgba(42,1,138,.45);
+      --fg: #0c0d16; --fg-muted: #524f63; --fg-faint: #696677;
     }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -43,12 +44,11 @@
     padding: max(2rem, env(safe-area-inset-top)) max(1.4rem, env(safe-area-inset-right))
              3rem max(1.4rem, env(safe-area-inset-left)); }
 
-  .mark { width: 40px; height: 40px; border-radius: 12px; margin: 0 auto 1.6rem;
-    background: linear-gradient(135deg, var(--indigo), var(--indigo-2)); box-shadow: 0 8px 30px -6px var(--indigo); }
+  .mark { display: block; width: fit-content; flex: 0 0 auto; margin: 0 auto 1.6rem; }
+  .mark img { display: block; height: 60px; width: auto; }
 
   .code { font-size: clamp(3.4rem, 16vw, 5.5rem); font-weight: 700; letter-spacing: -.04em; line-height: 1;
-    background: linear-gradient(135deg, var(--indigo-2), var(--indigo));
-    -webkit-background-clip: text; background-clip: text; color: transparent; }
+    color: var(--indigo-2); }
   h1 { font-size: clamp(1.3rem, 5vw, 1.7rem); font-weight: 650; letter-spacing: -.02em; margin: .8rem 0 .6rem; }
   p { color: var(--fg-muted); max-width: 34ch; margin: 0 auto 2rem; }
 
@@ -71,7 +71,7 @@
 </head>
 <body>
 <main class="wrap">
-  <span class="mark" aria-hidden="true"></span>
+  <picture class="mark"><source srcset="/logo-mark-dark.svg" media="(prefers-color-scheme: dark)"><img src="/logo-mark.svg" alt="" width="52" height="60"></picture>
   <p class="code" aria-hidden="true">404</p>
   <h1>Stránka nenalezena</h1>
   <p>Tahle adresa u nás není — nejspíš se přesunula, nebo nikdy neexistovala.</p>

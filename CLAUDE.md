@@ -7,8 +7,8 @@ Jedna stránka, žádný build step, žádné frameworky.
 
 `indigostudio.cz` — minimalistická one-page vizitka:
 - střídmě, vycentrovaně, na jeden viewport, mobile-friendly
-- dark/light přepínač (respektuje `prefers-color-scheme`, ukládá do localStorage)
-- horní lišta s odkazem na `/projekty` (případové studie, ukázky a reference)
+- dark/light podle systému (`prefers-color-scheme`, bez přepínače)
+- horní lišta: logo, „Naše služby", „Projekty a reference", přepínač jazyka (odkazy jako text)
 - OG/Twitter share preview (`/og.png`, anglicky `/og-en.png`, vietnamsky `/og-vi.png`)
 - kontakty na tým + firemní údaje
 - tři jazyky: čeština na kořeni, angličtina pod `/en/`, vietnamština pod `/vi/` (viz „Jazykové verze")
@@ -33,6 +33,10 @@ Jedna stránka, žádný build step, žádné frameworky.
 - `public/cursors.js` — kurzory jen nad kartami: klasická šipka / ruka s kulatým odznakem
   (značka podle typu karty), připojit hned za doodles.js; nová karta = řádek v `CARDS`
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`
+- Logo (od Veroniky, předloha `scripts/logo-zdroj.png`): `public/logo.svg` (celé se sloganem),
+  `logo-horizontal.svg` (lišta), `logo-mark.svg` (srdce s korunou), ke každému `-dark.svg`
+  pro tmavé pozadí; v HTML vždy přes `<picture>` se `<source media="(prefers-color-scheme: dark)">`.
+  Barva značky Indigo `#2A018A` (tmavý režim `#B899FF`), text `#0C0D16`. Tabulka v README „Logo a barvy".
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
 - `public/en/`, `public/vi/` — anglická a vietnamská kopie každé stránky (i `404.html`)
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`

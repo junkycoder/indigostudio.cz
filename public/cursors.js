@@ -7,8 +7,8 @@
 (function () {
   // fill = tělo kurzoru, line = obrys (kontrast vůči pozadí), badge = odznak, glyph = značka v odznaku
   var COLORS = {
-    dark:  { fill: "#ffffff", line: "#0d0e13", badge: "#6366f1", glyph: "#ffffff" },
-    light: { fill: "#14151b", line: "#ffffff", badge: "#4f46e5", glyph: "#ffffff" },
+    dark:  { fill: "#ffffff", line: "#0e0c16", badge: "#3d16bf", glyph: "#ffffff" },
+    light: { fill: "#0c0d16", line: "#ffffff", badge: "#2a018a", glyph: "#ffffff" },
   };
 
   // tvary v boxu 32×32

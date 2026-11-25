@@ -9,8 +9,13 @@ Servíruje ji jeden Cloudflare Worker.
 ```
 public/            statika (servíruje asset binding)
   index.html       vizitka — celá stránka (inline CSS + JS, žádný build)
-  og.png           share preview 1200×630
-  favicon.svg      ikona
+  og.png           share preview 1200×630 (og-en.png, og-vi.png)
+  logo.svg         logo celé (srdce s korunou, název, slogan „Tvoříme srdcem.") — světlé
+  logo-dark.svg    totéž pro tmavé pozadí
+  logo-horizontal(-dark).svg  vodorovná verze do lišty (bez sloganu)
+  logo-mark(-dark).svg        samotná značka (srdce s korunou)
+  logo.png         logo 1024×1024 na bílé (JSON-LD pro vyhledávače)
+  favicon.svg      značka, v tmavém režimu prohlížeče světlejší
   apple-touch-icon.png
   robots.txt, sitemap.xml
   team/            fotky týmu (info.jpg / veronika.jpg / daniel.jpg) — viz team/README.txt
@@ -18,6 +23,7 @@ public/            statika (servíruje asset binding)
 src/worker.js      Worker: servíruje public/ + bezpečnostní hlavičky + POST /api/poptavka
                    + přesměrování podle jazyka
 scripts/og.svg     zdroj pro og.png (regenerace viz níž)
+scripts/logo-zdroj.png  předloha loga od Veroniky (rastr), z ní vektorizované public/logo*.svg
 wrangler.toml      Worker config (route, send_email binding)
 ```
 
@@ -52,6 +58,21 @@ npm run deploy     # wrangler deploy
 spadne na Cloudflare `send_email` fallback (`hromada.dan@gmail.com`). Honeypot
 pole `company` + validace proti spamu. Adresy se mění v `src/worker.js`
 (`MAIL_FROM` / `MAIL_TO` / `MAIL_TO_FALLBACK`). Nastavení mailu viz níž.
+
+## Logo a barvy
+
+Logo navrhla Veronika (předloha `scripts/logo-zdroj.png`), na web je převedené do vektoru
+(potrace). Barvy jsou odebrané pipetou z loga:
+
+| | světlý režim | tmavý režim |
+|---|---|---|
+| Indigo (značka, „Studio", akcent) | `#2A018A` | `#B899FF` |
+| Text („Indigo", slogan) | `#0C0D16` | `#F4F2FA` |
+| Tlačítka (bílý text) | `#2A018A` | `#3D16BF` |
+
+Logo existuje jen pro světlé pozadí, tmavé varianty (`*-dark.svg`) mají stejné tvary
+ve světlejších barvách. Stránky přepínají variantu přes `<picture>` a
+`prefers-color-scheme`.
 
 ### Regenerace OG obrázku
 
