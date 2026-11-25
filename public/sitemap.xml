@@ -301,4 +301,34 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://indigostudio.cz/media</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/media"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/media"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/media"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/media"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/en/media</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/media"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/media"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/media"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/media"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://indigostudio.cz/vi/media</loc>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://indigostudio.cz/media"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://indigostudio.cz/en/media"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://indigostudio.cz/vi/media"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://indigostudio.cz/media"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
 </urlset>

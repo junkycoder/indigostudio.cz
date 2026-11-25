@@ -37,6 +37,8 @@ Jedna stránka, žádný build step, žádné frameworky.
   `logo-horizontal.svg` (lišta), `logo-mark.svg` (srdce s korunou), ke každému `-dark.svg`
   pro tmavé pozadí; v HTML vždy přes `<picture>` se `<source media="(prefers-color-scheme: dark)">`.
   Barva značky Indigo `#2A018A` (tmavý režim `#B899FF`), text `#0C0D16`. Tabulka v README „Logo a barvy".
+- `public/media.html` — pro média: logo (SVG z `public/logo*.svg`, PNG a ZIP v `public/podklady/`),
+  barvy, pravidla použití, kontakt; odkaz „Pro média" je v patičce všech stránek
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
 - `public/en/`, `public/vi/` — anglická a vietnamská kopie každé stránky (i `404.html`)
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`

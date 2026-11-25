@@ -35,6 +35,8 @@ const PAGES = {
   "/projekty/aseko": "/projects/aseko",
   "/prevzeti-vyvoje": "/development-takeover",
   "/cookies": "/cookies",
+  // pro média: logo, barvy, pravidla použití (podklady v /podklady/)
+  "/media": "/media",
   // kampaň pro podniky z Týnecka (QR z plakátu), poptávky do 30. 11. 2026
   "/tynecko": "/tynecko",
 };

@@ -18,6 +18,7 @@ In English: Indigo Studio is a software studio based in Prague. We build custom 
 - [mBlue](https://indigostudio.cz/projekty/mblue): CRM a náborový systém na míru pro personální agenturu, včetně migrace historických dat (Ruby on Rails)
 - [Pásek](https://indigostudio.cz/projekty/pasek): MVP aplikace pro digitální pas nemovitosti z iPhonu (Swift, RoomPlan, ARKit)
 - [Cookie lišta](https://indigostudio.cz/cookies): kdy web cookie lištu nepotřebuje
+- [Pro média](https://indigostudio.cz/media): logo (SVG, PNG), barvy značky a pravidla použití
 
 ## Vlastní produkty a veřejné projekty
 
@@ -32,8 +33,8 @@ In English: Indigo Studio is a software studio based in Prague. We build custom 
 Celý web je i anglicky a vietnamsky se stejným obsahem. České adresy jsou na kořeni,
 ostatní pod předponou jazyka se společnými anglickými adresami (`/skoleni` → `/en/training`, `/vi/training`).
 
-- [English](https://indigostudio.cz/en/): https://indigostudio.cz/en/hosting, /en/tynecko, /en/development-takeover, /en/training, /en/projects, /en/cookies
-- [Tiếng Việt](https://indigostudio.cz/vi/): https://indigostudio.cz/vi/hosting, /vi/tynecko, /vi/development-takeover, /vi/training, /vi/projects, /vi/cookies
+- [English](https://indigostudio.cz/en/): https://indigostudio.cz/en/hosting, /en/tynecko, /en/development-takeover, /en/training, /en/projects, /en/cookies, /en/media
+- [Tiếng Việt](https://indigostudio.cz/vi/): https://indigostudio.cz/vi/hosting, /vi/tynecko, /vi/development-takeover, /vi/training, /vi/projects, /vi/cookies, /vi/media
 
 ## Technologie a nástroje
 

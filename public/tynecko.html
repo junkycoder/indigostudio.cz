@@ -379,18 +379,22 @@
   .xmas-left { top: -34px; left: -18px; width: min(14vw, 150px); }
   .xmas-bottom { bottom: 0; right: -8px; width: min(20vw, 210px); }
   .hero { position: relative; }
-  .hero h1 { max-width: min(15em, calc(100% - 200px)); }
+  .hero h1 { max-width: min(15em, calc(100% - 230px)); }
   .hero h1 .star-ref { color: inherit; text-decoration: none; }
-  .gift-tag { position: absolute; right: 3%; top: 4.5rem; width: 150px; height: 158px; display: grid; place-items: center; padding-top: 1rem; background: #fffdf6; border: 3px solid #d9b46a; border-radius: 16px; box-shadow: 0 8px 18px rgba(120, 90, 40, 0.2); transform: rotate(5deg); transform-origin: 50% 0; }
+  .gift-tag { position: absolute; right: 3%; top: 4.5rem; width: 150px; height: 158px; display: grid; place-items: center; align-content: center; gap: 0.3rem; padding-top: 1.2rem; background: #fffdf6; border: 3px solid #d9b46a; border-radius: 16px; box-shadow: 0 8px 18px rgba(120, 90, 40, 0.2); transform: rotate(5deg); transform-origin: 50% 0; }
   .gift-tag::before { content: ""; position: absolute; left: calc(50% - 1px); bottom: 100%; width: 2px; height: 9.5rem; background: #b8893a; }
   .gift-tag .bow { position: absolute; top: -34px; left: 50%; width: 104px; height: auto; transform: translateX(-50%); }
-  .gift-tag span { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 700; font-size: 1.6rem; line-height: 1.08; text-align: center; color: #4b2aa8; }
+  .gift-tag span { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 700; font-size: 1.6rem; line-height: 1.08; text-align: center; color: #2a018a; }
+  .gift-tag .flake { width: 22px; height: 22px; fill: none; stroke: #d4a446; stroke-width: 1.8; stroke-linecap: round; }
+  /* baňka visí z větve vlevo od visačky (jako na plakátu) */
+  .bauble { position: absolute; right: calc(3% + 132px); top: -5.6rem; width: 72px; height: auto; pointer-events: none; transform-origin: 50% 0; transform: rotate(-3deg); }
   .sparkle { position: absolute; width: 18px; height: 18px; fill: #d4a446; pointer-events: none; }
   .hacek { margin-top: 1.8rem; padding-top: 0.9rem; border-top: 1px solid var(--border-strong); max-width: 62ch; font-size: 0.95rem; line-height: 1.55; color: var(--fg-muted); }
   .hacek .star { color: var(--accent); font-weight: 700; }
   .hacek strong { color: var(--fg); font-weight: 650; }
   @media (max-width: 880px) {
     .gift-tag, .sparkle, .xmas-left { display: none; }
+    .bauble { right: 16%; top: -4.2rem; width: 46px; }
     .hero h1 { max-width: none; }
   }
   @media (max-width: 560px) {
@@ -459,7 +463,8 @@
     </nav>
 
     <header class="hero">
-      <div class="gift-tag" aria-hidden="true"><img class="bow" src="/vanoce/masle.svg" alt="" width="160" height="90"><span>Vánoční<br>nabídka</span></div>
+      <img class="bauble" src="/vanoce/ozdoba.svg" alt="" width="80" height="150">
+      <div class="gift-tag" aria-hidden="true"><img class="bow" src="/vanoce/masle.svg" alt="" width="160" height="90"><span>Vánoční<br>nabídka</span><svg class="flake" viewBox="-12 -12 24 24"><path d="M0 0L0.0 -10.0M0.0 -6.0L-2.3 -8.3M0.0 -6.0L2.3 -8.3M0 0L8.7 -5.0M5.2 -3.0L6.0 -6.1M5.2 -3.0L8.3 -2.2M0 0L8.7 5.0M5.2 3.0L8.3 2.2M5.2 3.0L6.0 6.1M0 0L0.0 10.0M0.0 6.0L2.3 8.3M0.0 6.0L-2.3 8.3M0 0L-8.7 5.0M-5.2 3.0L-6.0 6.1M-5.2 3.0L-8.3 2.2M0 0L-8.7 -5.0M-5.2 -3.0L-8.3 -2.2M-5.2 -3.0L-6.0 -6.1"/></svg></div>
       <svg class="sparkle" style="right: 34%; top: -0.5rem" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10Q1.6 -1.6 10 0Q1.6 1.6 0 10Q-1.6 1.6 -10 0Q-1.6 -1.6 0 -10Z"/></svg>
       <svg class="sparkle" style="right: 1%; top: 17rem; width: 14px; height: 14px" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10Q1.6 -1.6 10 0Q1.6 1.6 0 10Q-1.6 1.6 -10 0Q-1.6 -1.6 0 -10Z"/></svg>
       <h1>Nové webové stránky pro Vás jako <span class="accent">dárek k&nbsp;Vánocům<a class="star-ref" href="#hacek" aria-label="viz poznámka pod čarou">*</a></span></h1>
@@ -585,7 +590,7 @@
 <footer class="site-footer">
   <div class="container">
     <p><picture class="footer-mark"><source srcset="/logo-mark-dark.svg" media="(prefers-color-scheme: dark)"><img src="/logo-mark.svg" alt="" width="17" height="20"></picture><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>IČO&nbsp;14389096<span class="sep">·</span><wbr>DIČ&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Praha</p>
-    <p><a href="/">Zpět na&nbsp;úvod</a></p>
+    <p><a href="/media">Pro média</a><span class="sep">·</span><a href="/">Zpět na&nbsp;úvod</a></p>
   </div>
 </footer>
 

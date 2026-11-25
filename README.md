@@ -16,6 +16,9 @@ public/            statika (servíruje asset binding)
   logo-mark(-dark).svg        samotná značka (srdce s korunou)
   logo.png         logo 1024×1024 na bílé (JSON-LD pro vyhledávače)
   favicon.svg      značka, v tmavém režimu prohlížeče světlejší
+  media.html       pro média: logo ke stažení, barvy, pravidla použití (+ en/, vi/)
+  podklady/        PNG loga ve vysokém rozlišení a ZIP se vším pro /media
+  vanoce/          ozdoby kampaně /tynecko (větve, mašle, baňka v barvě Indigo)
   apple-touch-icon.png
   robots.txt, sitemap.xml
   team/            fotky týmu (info.jpg / veronika.jpg / daniel.jpg) — viz team/README.txt
@@ -73,6 +76,9 @@ Logo navrhla Veronika (předloha `scripts/logo-zdroj.png`), na web je převeden�
 Logo existuje jen pro světlé pozadí, tmavé varianty (`*-dark.svg`) mají stejné tvary
 ve světlejších barvách. Stránky přepínají variantu přes `<picture>` a
 `prefers-color-scheme`.
+
+Pro novináře a partnery je vše ke stažení na [/media](https://indigostudio.cz/media).
+Po změně loga přegenerovat `public/podklady/` (PNG přes `rsvg-convert`, ZIP se SVG, PNG a `barvy.txt`).
 
 ### Regenerace OG obrázku
 
