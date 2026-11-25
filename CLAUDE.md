@@ -28,8 +28,14 @@ Jedna stránka, žádný build step, žádné frameworky.
   `migrations/odber/`, potvrzovací e-mail přes Resend)
 - `public/doodles.js` — sdílené animované pozadí (malůvky), připojit `<script src="/doodles.js" defer>`;
   pro čtečky jeden statický popis motivů na konci `<body>` (bez aria-live)
-- `public/nav.js` — rozbalovací nabídka „Naše služby" v horní liště (`<details class="nav-group">`,
-  uvnitř Hosting a Školení); skript jen zavírá menu kliknutím mimo a Escapem, bez něj funguje dál
+- `public/sluzby.html` (`/en/services`, `/vi/services`) — přehled šesti služeb v kartách
+  (software na míru, integrace, převzetí vývoje, hosting a provoz, weby pro podniky, školení);
+  kotvy `#na-miru` atd. (en/vi `#custom`, `#integrations`, `#local-business`…) míří z menu
+- Menu „Naše služby" = panel ve dvou sloupcích (`<details class="nav-group mega">`), v každé
+  stránce zvlášť mezi komentáři `MENU-SLUZBY:START/END`; liší se jen `aria-current="page"`
+  u aktuální položky. Změna menu = stejná úprava ve všech stránkách daného jazyka.
+- `public/nav.js` — zavírá rozbalovací nabídky (služby, jazyk) kliknutím mimo a Escapem,
+  bez skriptu fungují dál
 - `public/cursors.js` — kurzory jen nad kartami: klasická šipka / ruka s kulatým odznakem
   (značka podle typu karty), připojit hned za doodles.js; nová karta = řádek v `CARDS`
 - `public/og.png` (zdroj `scripts/og.svg`), `favicon.svg`, `apple-touch-icon.png`

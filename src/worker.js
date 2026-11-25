@@ -27,6 +27,7 @@ const MAIL_TO_FALLBACK = "hromada.dan@gmail.com";
 const LANGS = ["cs", "en", "vi"];
 const PAGES = {
   "/": "/",
+  "/sluzby": "/services",
   "/hosting": "/hosting",
   "/skoleni": "/training",
   "/projekty": "/projects",
