@@ -114,7 +114,8 @@
   /* Tokeny, lišta a patička jsou shodné s index.html a projekty.html */
   :root {
     --accent: #b899ff;
-    --accent-strong: #3d16bf;
+    --accent-strong: #b899ff;
+    --on-accent: #0e0c16;     /* text na tlačítku v barvě značky */
     --accent-soft: rgba(184, 153, 255, 0.12);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
     --bg: #0e0c16;
@@ -131,6 +132,7 @@
     :root {
       --accent: #2a018a;
       --accent-strong: #2a018a;
+      --on-accent: #ffffff;
       --cta-bg: #2a018a;
       --accent-soft: rgba(42, 1, 138, 0.07);
       --bg: #ffffff;
@@ -316,7 +318,7 @@
   .closing h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
   .closing p { color: var(--fg-muted); font-size: 0.92rem; }
   .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: #ffffff; background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
+  .button { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 550; font-size: 0.92rem; text-decoration: none; color: var(--on-accent); background: var(--accent-strong); border-radius: 6px; padding: 0.7rem 1.1rem; transition: filter 0.2s var(--ease); }
   .button:hover { filter: brightness(1.08); }
   .button.ghost { color: var(--fg); background: transparent; border: 1px solid var(--border-strong); }
   .button.ghost:hover { border-color: var(--accent); filter: none; }

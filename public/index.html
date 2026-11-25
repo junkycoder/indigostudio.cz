@@ -125,7 +125,8 @@
   /* ---- Téma: čistě podle systému (prefers-color-scheme), bez přepínače ---- */
   :root {
     --accent: #b899ff;          /* odkazy, ikony, zvýraznění */
-    --accent-strong: #3d16bf;   /* značka */
+    --accent-strong: #b899ff;   /* značka */
+    --on-accent: #0e0c16;     /* text na tlačítku v barvě značky */
     --accent-soft: rgba(184, 153, 255, 0.12);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -139,8 +140,8 @@
     --fg-muted: #aaa7b9;
     --fg-faint: #908ca1;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --cta-bg: #3d16bf;
-    --cta-bg-hover: #4b26d1;
+    --cta-bg: #b899ff;
+    --cta-bg-hover: #cbb5ff;
     --wa: #25d366;
     --wa-soft: rgba(37, 211, 102, 0.12);
   }
@@ -148,6 +149,7 @@
     :root {
       --accent: #2a018a;
       --accent-strong: #2a018a;
+      --on-accent: #ffffff;
       --cta-bg: #2a018a;
       --accent-soft: rgba(42, 1, 138, 0.07);
       --bg: #ffffff;
@@ -329,13 +331,13 @@
   .cta:hover .cta-arrow { color: var(--accent); transform: translateX(3px); }
 
   .cta-primary {
-    color: #fff; background: var(--cta-bg); border-color: transparent;
+    color: var(--on-accent); background: var(--cta-bg); border-color: transparent;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
   .cta-primary:hover { background: var(--cta-bg-hover); border-color: transparent; }
-  .cta-primary .cta-ico { background: rgba(255, 255, 255, 0.14); color: #fff; }
-  .cta-primary .cta-desc { color: rgba(255, 255, 255, 0.8); }
-  .cta-primary .cta-arrow, .cta-primary:hover .cta-arrow { color: #fff; }
+  .cta-primary .cta-ico { background: color-mix(in srgb, var(--on-accent) 14%, transparent); color: var(--on-accent); }
+  .cta-primary .cta-desc { color: color-mix(in srgb, var(--on-accent) 80%, transparent); }
+  .cta-primary .cta-arrow, .cta-primary:hover .cta-arrow { color: var(--on-accent); }
 
   .cta-wa .cta-ico { background: var(--wa-soft); color: var(--wa); }
   .cta-wa:hover .cta-arrow { transform: translate(2px, -2px); }

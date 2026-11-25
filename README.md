@@ -71,7 +71,7 @@ Logo navrhla Veronika (předloha `scripts/logo-zdroj.png`), na web je převeden�
 |---|---|---|
 | Indigo (značka, „Studio", akcent) | `#2A018A` | `#B899FF` |
 | Text („Indigo", slogan) | `#0C0D16` | `#F4F2FA` |
-| Tlačítka (bílý text) | `#2A018A` | `#3D16BF` |
+| Tlačítka (plná) | `#2A018A`, bílý text | `#B899FF`, text `#0E0C16` |
 
 Logo existuje jen pro světlé pozadí, tmavé varianty (`*-dark.svg`) mají stejné tvary
 ve světlejších barvách. Stránky přepínají variantu přes `<picture>` a
