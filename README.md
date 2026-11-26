@@ -18,7 +18,9 @@ public/            statika (servíruje asset binding)
   favicon.svg      značka, v tmavém režimu prohlížeče světlejší
   media.html       pro média: logo ke stažení, barvy, pravidla použití (+ en/, vi/)
   podklady/        PNG loga ve vysokém rozlišení a ZIP se vším pro /media
-  vanoce/          ozdoby kampaně /tynecko (větve, mašle, baňka v barvě Indigo)
+  vanoce/          vánoční motivy (dodané webp, neupravovat) pro vanoce.js a /tynecko
+  vanoce.js        sezónní vánoční výzdoba všech stránek (do 6. 1. 2027)
+  og-vanoce*.png, og-tynecko*.png  vánoční share preview (do 6. 1. 2027)
   apple-touch-icon.png
   robots.txt, sitemap.xml
   team/            fotky týmu (info.jpg / veronika.jpg / daniel.jpg) — viz team/README.txt
@@ -86,6 +88,15 @@ Po úpravě `scripts/og.svg` (a jazykových kopií `og-en.svg`, `og-vi.svg`):
 ```bash
 for f in og og-en og-vi; do node -e "const s=require('sharp');s(require('fs').readFileSync('scripts/$f.svg')).png().toFile('public/$f.png')"; done
 ```
+
+Vánoční varianty (`public/og-vanoce*.png` pro celý web, `public/og-tynecko*.png` pro /tynecko)
+skládá `scripts/og-vanoce.mjs` z loga ve `scripts/og*.svg` a motivů v `public/vanoce/`.
+Renderuje je headless Chrome, protože sharp webp ve SVG nevykreslí:
+```bash
+node scripts/og-vanoce.mjs
+```
+Po 6. 1. 2027 vrátit `og:image` a `twitter:image` na `og.png` / `og-en.png` / `og-vi.png`
+(i na /tynecko) a odpojit `vanoce.js`.
 
 ## Jazykové verze
 

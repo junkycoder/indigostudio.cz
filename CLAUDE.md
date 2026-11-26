@@ -29,6 +29,9 @@ Jedna stránka, žádný build step, žádné frameworky.
 - `public/vanoce.js` — sezónní vánoční výzdoba všech stránek (motivy v `public/vanoce/` jsou
   dodané, neupravovat), připojená za doodles.js; po 6. 1. 2027 nic nevloží, pak ji ze stránek odpojit;
   stránku s vlastní výzdobou (`.xmas`, /tynecko) přeskočí
+- Vánoční share preview (do 6. 1. 2027): `og:image`/`twitter:image` vedou na `og-vanoce(-en|-vi).png`,
+  /tynecko na `og-tynecko(-en|-vi).png`; zdroj `scripts/og-vanoce.mjs` (README „Regenerace OG obrázku").
+  Po 6. 1. vrátit na `og.png`/`og-en.png`/`og-vi.png` spolu s odpojením vanoce.js.
 - `public/doodles.js` — sdílené animované pozadí (malůvky), připojit `<script src="/doodles.js" defer>`;
   pro čtečky jeden statický popis motivů na konci `<body>` (bez aria-live)
 - `public/sluzby.html` (`/en/services`, `/vi/services`) — přehled šesti služeb v kartách
