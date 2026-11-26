@@ -145,7 +145,9 @@
   }
   /* logo: světlá a tmavá varianta přes <picture> podle prefers-color-scheme */
   .brand { display: inline-flex; align-items: center; margin-right: auto; border-radius: 4px; }
-  .brand img { display: block; height: 38px; width: auto; }
+  /* animované logo: plátno má kolem místo na vlny (vlevo 30 %, nahoře 10 %, dole 25 % výšky loga),
+     záporné okraje ho vyrovnají, takže logo sedí jako dřív a vlny jdou přes okolí */
+  .brand img { --h: 38px; display: block; height: calc(var(--h) * 1.35); width: auto; margin: calc(var(--h) * -0.1) 0 calc(var(--h) * -0.25) calc(var(--h) * -0.3); }
 
   .site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem; }
   .nav-link {
@@ -220,11 +222,12 @@
     .mega-link .d { display: none; }
   }
   @media (max-width: 760px) {
-    .brand img { height: 32px; }
+    .brand img { --h: 32px; }
     .site-nav { order: 2; flex-basis: 100%; margin-left: -0.7rem; }
   }
-  /* značka (srdce s korunou) před názvem firmy v patičce */
-  .footer-mark img { display: inline-block; height: 1.4em; width: auto; vertical-align: -0.35em; margin-right: 0.45rem; }
+  /* velké animované logo (srdce tepe) v patičce nad údaji o firmě */
+  .footer-logo { flex-basis: 100%; }
+  .footer-logo img { display: block; width: 200px; height: auto; }
 
   main { flex: 1; }
 
@@ -291,8 +294,8 @@
   <div class="container">
     <a class="brand" href="/en/" aria-label="Indigo Studio s. r. o. — home">
       <picture>
-        <source srcset="/logo-horizontal-dark.svg" media="(prefers-color-scheme: dark)">
-        <img src="/logo-horizontal.svg" alt="Indigo Studio" width="174" height="38">
+        <source srcset="/logo-horizontal-animated-dark.svg" media="(prefers-color-scheme: dark)">
+        <img src="/logo-horizontal-animated.svg" alt="Indigo Studio" width="186" height="51">
       </picture>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
@@ -426,7 +429,8 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p><picture class="footer-mark"><source srcset="/logo-mark-dark.svg" media="(prefers-color-scheme: dark)"><img src="/logo-mark.svg" alt="" width="17" height="20"></picture><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Company ID&nbsp;14389096<span class="sep">·</span><wbr>VAT ID&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Prague, Czech Republic</p>
+    <picture class="footer-logo"><source srcset="/logo-animated-dark.svg" media="(prefers-color-scheme: dark)"><img src="/logo-animated.svg" alt="" width="200" height="178" loading="lazy"></picture>
+    <p><strong>Indigo&nbsp;Studio&nbsp;s.r.o.</strong><span class="sep">·</span><wbr>Company ID&nbsp;14389096<span class="sep">·</span><wbr>VAT ID&nbsp;CZ14389096<br>Chudenická 1059/30, Hostivař, 102 00 Prague, Czech Republic</p>
     <p><a href="/en/media">Media kit</a><span class="sep">·</span><a href="/en/">Back to home</a></p>
   </div>
 </footer>

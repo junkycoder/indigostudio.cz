@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animované logo — náhled</title>
+<style>
+  /* Náhled výstupů build.mjs: světlé a tmavé pozadí, logo vložené jako <img> */
+  body { margin: 0; font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif; color: #0C0D16; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  figure { margin: 0; padding: 32px; display: grid; place-items: center; gap: 12px; min-height: 420px; }
+  figure.light { background: #fff; }
+  figure.dark { background: #0C0D16; color: #F4F2FA; }
+  img { width: min(100%, 420px); height: auto; }
+  figcaption { opacity: .7; }
+</style>
+</head>
+<body>
+<div class="grid">
+  <figure class="light"><img src="logo-animovane.svg" alt="Indigo Studio — Tvoříme srdcem."><figcaption>logo-animovane.svg</figcaption></figure>
+  <figure class="dark"><img src="logo-animovane-dark.svg" alt="Indigo Studio — Tvoříme srdcem."><figcaption>logo-animovane-dark.svg</figcaption></figure>
+  <figure class="light"><img src="srdce-animovane.svg" alt="Indigo Studio"><figcaption>srdce-animovane.svg</figcaption></figure>
+  <figure class="dark"><img src="srdce-animovane-dark.svg" alt="Indigo Studio"><figcaption>srdce-animovane-dark.svg</figcaption></figure>
+</div>
+</body>
+</html>
