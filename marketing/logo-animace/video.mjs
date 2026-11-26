@@ -2,17 +2,20 @@
 // Snímky kreslí skutečný prohlížeč (headless Chrome přes DevTools Protocol), takže video vypadá
 // přesně jako SVG na webu. Snímkuje se deterministicky: animace se pozastaví a pro každý snímek
 // se nastaví čas, takže smyčka navazuje bez skoku.
-// Spuštění: node marketing/logo-animace/video.mjs (nejdřív build.mjs, pokud se měnilo logo)
+// Spuštění: node marketing/logo-animace/video.mjs (nejdřív build.mjs, pokud se měnilo logo);
+// jen vybrané varianty: node marketing/logo-animace/video.mjs logo-vodorovne-animovane
+// Výstup jde sem (české názvy) a zároveň do public/podklady/ (anglické názvy, ke stažení na /media).
 // Potřebuje Google Chrome (jinde než v /Applications nastavit cestu v proměnné CHROME) a ffmpeg
 // s libx264 (na macOS brew install ffmpeg). Žádné npm závislosti: WebSocket je v Node 22 vestavěný.
 
 import { spawn, execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const out = (path) => fileURLToPath(new URL(path, import.meta.url));
+const podklady = (path) => fileURLToPath(new URL(`../../public/podklady/${path}`, import.meta.url));
 
 const CHROME = process.env.CHROME || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
@@ -23,15 +26,20 @@ const START_MS = 5600;
 // Logo zabírá 80 % plátna, okraj 10 % z každé strany
 const LOGO_SHARE = 0.8;
 
+// name = SVG vedle a název výstupu tady, web = název v public/podklady/,
+// aspect = výška plátna vůči šířce (vodorovné logo na podlouhlém plátně, ostatní na čtverci)
 const VARIANTS = [
-  { name: "logo-animovane", background: "#FFFFFF" },
-  { name: "logo-animovane-dark", background: "#0C0D16" },
-  { name: "srdce-animovane", background: "#FFFFFF" },
-  { name: "srdce-animovane-dark", background: "#0C0D16" },
+  { name: "logo-animovane", web: "indigo-studio-logo-animated", background: "#FFFFFF" },
+  { name: "logo-animovane-dark", web: "indigo-studio-logo-animated-dark", background: "#0C0D16" },
+  { name: "logo-vodorovne-animovane", web: "indigo-studio-logo-horizontal-animated", background: "#FFFFFF", aspect: 1 / 3 },
+  { name: "logo-vodorovne-animovane-dark", web: "indigo-studio-logo-horizontal-animated-dark", background: "#0C0D16", aspect: 1 / 3 },
+  { name: "srdce-animovane", web: "indigo-studio-mark-animated", background: "#FFFFFF" },
+  { name: "srdce-animovane-dark", web: "indigo-studio-mark-animated-dark", background: "#0C0D16" },
 ];
 
 // MP4: čtverec pro feed, 30 fps (84 snímků na periodu), perioda 4× za sebou ≈ 11 s.
 // GIF: menší, 25 fps (70 snímků, zpoždění přesně 4 setiny), jedna perioda a nekonečná smyčka.
+// size je šířka plátna; výška = šířka × aspect (zaokrouhleno na sudé číslo kvůli H.264).
 const FORMATS = [
   { ext: "mp4", size: 1080, fps: 30, repeat: 4 },
   { ext: "gif", size: 600, fps: 25 },
@@ -152,7 +160,11 @@ async function main() {
       features: [{ name: "prefers-reduced-motion", value: "no-preference" }],
     });
 
-    for (const variant of VARIANTS) {
+    const only = process.argv.slice(2);
+    const variants = only.length ? VARIANTS.filter((v) => only.includes(v.name)) : VARIANTS;
+    if (!variants.length) throw new Error(`Neznámá varianta: ${only.join(", ")}`);
+
+    for (const variant of variants) {
       const svg = readFileSync(out(`${variant.name}.svg`), "utf8");
       const htmlFile = join(work, `${variant.name}.html`);
       writeFileSync(htmlFile, wrapperHtml(svg, variant.background));
@@ -165,7 +177,7 @@ async function main() {
       for (const format of FORMATS) {
         await page("Emulation.setDeviceMetricsOverride", {
           width: format.size,
-          height: format.size,
+          height: Math.round((format.size * (variant.aspect ?? 1)) / 2) * 2,
           deviceScaleFactor: 1,
           mobile: false,
         });
@@ -183,7 +195,8 @@ async function main() {
           writeFileSync(join(framesDir, `${String(i).padStart(4, "0")}.png`), Buffer.from(data, "base64"));
         }
         encode(format, frames, join(framesDir, "%04d.png"), out(`${variant.name}.${format.ext}`));
-        console.log(`${variant.name}.${format.ext}`);
+        copyFileSync(out(`${variant.name}.${format.ext}`), podklady(`${variant.web}.${format.ext}`));
+        console.log(`${variant.name}.${format.ext} → public/podklady/${variant.web}.${format.ext}`);
       }
     }
   } finally {

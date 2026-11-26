@@ -275,10 +275,10 @@ const hzFade = {
 for (const theme of ["light", "dark"]) {
   const suffix = theme === "dark" ? "-dark" : "";
   const t = THEMES[theme];
-  writeFileSync(
-    out(`srdce-animovane${suffix}.svg`),
-    animatedSvg({ viewBox: markViewBox, label: "Indigo Studio", markD, staticPaths: [], heart, theme }),
-  );
+  const markSvg = animatedSvg({ viewBox: markViewBox, label: "Indigo Studio", markD, staticPaths: [], heart, theme });
+  writeFileSync(out(`srdce-animovane${suffix}.svg`), markSvg);
+  // Web: ke stažení na /media
+  writeFileSync(publicFile(`logo-mark-animated${suffix}.svg`), markSvg);
   const vertical = animatedSvg({
     viewBox: logo.viewBox,
     label: "Indigo Studio — Tvoříme srdcem.",
@@ -294,26 +294,25 @@ for (const theme of ["light", "dark"]) {
   writeFileSync(out(`logo-animovane${suffix}.svg`), vertical);
   // Web: velké logo v patičce, podlouhlé v liště
   writeFileSync(publicFile(`logo-animated${suffix}.svg`), vertical);
-  writeFileSync(
-    publicFile(`logo-horizontal-animated${suffix}.svg`),
-    animatedSvg({
-      viewBox: hzViewBox,
-      label: "Indigo Studio",
-      markD,
-      markTransform: hzMark.transform,
-      staticPaths: [
-        { fill: t.text, d: hzText.d, transform: hzTextGroup[1] },
-        { fill: t.mark, d: hzStudio.d, transform: hzTextGroup[1] },
-      ],
-      heart,
-      theme,
-      fade: hzFade,
-      size: WAVES_SMALL,
-    }),
-  );
+  const horizontalSvg = animatedSvg({
+    viewBox: hzViewBox,
+    label: "Indigo Studio",
+    markD,
+    markTransform: hzMark.transform,
+    staticPaths: [
+      { fill: t.text, d: hzText.d, transform: hzTextGroup[1] },
+      { fill: t.mark, d: hzStudio.d, transform: hzTextGroup[1] },
+    ],
+    heart,
+    theme,
+    fade: hzFade,
+    size: WAVES_SMALL,
+  });
+  writeFileSync(out(`logo-vodorovne-animovane${suffix}.svg`), horizontalSvg);
+  writeFileSync(publicFile(`logo-horizontal-animated${suffix}.svg`), horizontalSvg);
 }
 
 console.log(
-  "Hotovo: srdce-animovane(-dark).svg, logo-animovane(-dark).svg,",
-  "public/logo-animated(-dark).svg, public/logo-horizontal-animated(-dark).svg",
+  "Hotovo: srdce-animovane(-dark).svg, logo-animovane(-dark).svg, logo-vodorovne-animovane(-dark).svg,",
+  "public/logo-animated(-dark).svg, public/logo-horizontal-animated(-dark).svg, public/logo-mark-animated(-dark).svg",
 );

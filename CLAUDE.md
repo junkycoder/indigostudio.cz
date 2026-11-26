@@ -50,9 +50,11 @@ Jedna stránka, žádný build step, žádné frameworky.
   pro tmavé pozadí; v HTML vždy přes `<picture>` se `<source media="(prefers-color-scheme: dark)">`.
   Barva značky Indigo `#2A018A` (tmavý režim `#B899FF`), text `#0C0D16`. Tabulka v README „Logo a barvy".
   Animované varianty (srdce tepe, barevné vlny; čisté CSS v SVG): `logo-horizontal-animated*.svg` v liště,
-  `logo-animated*.svg` velké v patičce. Generuje je `marketing/logo-animace/build.mjs` z výše uvedených SVG.
+  `logo-animated*.svg` velké v patičce, `logo-mark-animated*.svg` jen ke stažení na /media.
+  Generuje je `marketing/logo-animace/build.mjs` z výše uvedených SVG; GIF a MP4 dělá `video.mjs` tamtéž
+  (zapíše je i do `public/podklady/` jako `indigo-studio-*-animated*.gif|mp4`).
 - `public/media.html` — pro média: logo (SVG z `public/logo*.svg`, PNG a ZIP v `public/podklady/`),
-  barvy, pravidla použití, kontakt; odkaz „Pro média" je v patičce všech stránek
+  animované logo (bijící srdce: SVG, GIF, MP4; celé, vodorovné, srdce × světlé/tmavé), barvy, pravidla použití, kontakt; odkaz „Pro média" je v patičce všech stránek
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
 - `public/en/`, `public/vi/` — anglická a vietnamská kopie každé stránky (i `404.html`)
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`
