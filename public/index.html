@@ -421,6 +421,10 @@
   .cap-chip:hover { border-color: var(--accent); color: var(--fg); }
   .cap-row { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.65rem 0.85rem; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); }
   .cap-row .cap-title { font-weight: 600; font-size: 0.92rem; }
+  .cap-row a.cap-title { align-self: flex-start; color: inherit; text-decoration: none; }
+  .cap-row a.cap-title::after { content: "\2192"; margin-left: 0.35em; color: var(--fg-faint); transition: color 0.2s var(--ease); }
+  .cap-row a.cap-title:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 0.18em; }
+  .cap-row a.cap-title:hover::after { color: var(--accent); }
   .cap-row .cap-desc { color: var(--fg-muted); font-size: 0.82rem; line-height: 1.45; }
   .cap-row mark { background: var(--accent-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
   .cap-empty { font-size: 0.86rem; color: var(--fg-faint); padding: 0.3rem 0; }
@@ -829,27 +833,28 @@
   // „Co umíme" — živé vyhledávání schopností + asertivní odpověď ano/ne
   (function () {
     var CAPS = [
-      { t: "Weby a webové aplikace", d: "Prezentace, e-shopy, portály, landing pages.", k: "web weby webovka stranky eshop e-shop prezentace landing portal wordpress aplikace react vue nuxt next nextjs node nodejs typescript javascript php laravel ruby rails python django graphql html css" },
-      { t: "Mobilní aplikace", d: "iOS i Android, nativně i multiplatformně.", k: "mobilni mobil aplikace appka app ios android iphone telefon swift swiftui kotlin flutter react native expo capacitor ionic arkit" },
-      { t: "Interní systémy na míru", d: "CRM, CSM, evidence, sklady, rezervace, admin.", k: "interni system systemy crm csm evidence sklad rezervace agenda databaze admin" },
-      { t: "AI agenty a workflows", d: "Agenti, chatboti, asistenti a zpracování dokumentů.", k: "ai umela inteligence chatbot agent agenti asistent workflow workflows llm gpt openai chatgpt claude anthropic gemini mcp rag automatizace dokumenty" },
-      { t: "Automatizace procesů", d: "Propojení nástrojů přes API, integrace, makra.", k: "automatizace automat integrace api propojeni makro workflow zapier n8n" },
-      { t: "Integrace do ostatních služeb", d: "Napojení na Slack, Stripe, Google, ERP a další přes API.", k: "integrace integrace napojeni propojeni sluzba sluzby slack stripe google erp api webhook" },
-      { t: "Firemní e-maily a newslettery", d: "Schránky, webmail, SMTP, přeposílání, newslettery i automatické a AI e-maily (podpora).", k: "email e-mail mail maily posta schranka schranky webmail smtp imap forwarding preposilani presmerovani newsletter newslettery rozesilka hromadne transakcni automaticky autoresponder ai podpora notifikace zoho resend dkim spf" },
-      { t: "Analýza a vizualizace dat", d: "Dashboardy, reporty, scraping a čištění dat.", k: "data analyza dashboard report statistika vizualizace scraping excel bi sql postgres postgresql mysql bigquery looker" },
-      { t: "Rozšíření do prohlížeče", d: "Doplňky a pluginy pro Chrome, Edge i Firefox.", k: "rozsireni plugin doplnek extension addon prohlizec browser chrome edge firefox" },
-      { t: "Školení a konzultace", d: "Workshopy a konzultace pro firmy i začátečníky. Připravujeme školení Claude Code a Codex.", k: "skoleni konzultace workshop kurz vyuka mentoring zacatecnik claude code codex ai asistent programovani tokeny benchmark" },
-      { t: "Převzetí vývoje po dodavateli", d: "Převezmeme software po jiném dodavateli nebo vývojáři. Začínáme revizí zdarma.", k: "prevzeti prevzit vyvoj dodavatel vyvojar odesel skoncil legacy stary system sprava audit revize kod" },
-      // hidden: najde se vyhledáváním, ale nepřidává se do výchozích štítků
-      { t: "Cloud a infrastruktura", d: "Nejraději stavíme na Cloudflare, běžně i na Firebase, Google Cloud a AWS. Umíme i vlastní servery (on-premise) a Docker.", k: "cloud cloudflare workers pages r2 d1 firebase firestore google cloud gcp cloud run aws azure onprem on-prem on-premise vlastni server docker kontejner kubernetes k8s vps infrastruktura", hidden: true },
-      { t: "CI/CD a správa kódu", d: "Automatické buildy, testy a nasazení. GitHub, GitLab i Gitea.", k: "ci cd ci/cd cicd pipeline build deploy nasazeni github actions gitlab gitea git repozitar verzovani testy", hidden: true },
-      { t: "Monitoring a zachytávání chyb", d: "Sentry a podobné nástroje, logy a upozornění na výpadky.", k: "monitoring error handler handling chyby chyba sentry logy logovani alert vypadek uptime crash reporting", hidden: true },
-      { t: "Publikace do Google Play a App Store", d: "Vydání aplikace, správa vývojářských účtů a aktualizace.", k: "google play play store app store appstore publikace vydani testflight developer ucet", hidden: true },
-      { t: "Google Workspace a Apps Script", d: "Automatizace nad Tabulkami, Dokumenty, Diskem, Kalendářem a Gmailem přes Google Apps Script.", k: "google workspace gsuite g suite apps script appscript gas tabulky tabulka sheets sheet spreadsheet dokumenty docs disk drive soubory files kalendar calendar gmail email formulare forms sites stranky makro skript automatizace workflow", hidden: true },
-      { t: "Google Ads", d: "Nastavení účtu, kampaní a měření konverzí.", k: "google ads adwords reklama ppc kampan kampane konverze analytics ga4 tag manager gtm mereni", hidden: true },
-      { t: "Hosting webu", d: "Rychlý hosting statických webů, doména a firemní e-mail. Web od současného poskytovatele přeneseme, do jisté velikosti zdarma.", k: "hosting hosting webu web stranky server prenos migrace prevod stehovani domena registrator subreg gransy wedos banan forpsi certifikat https ssl zalohy staticky web rychlost cdn cloudflare git verzovani nasazeni preview email schranka posta mx spf dkim dmarc" },
-      { t: "Údržba a provoz", d: "Hosting, DevOps, opravy a dlouhodobá podpora.", k: "udrzba provoz hosting devops podpora oprava sprava server linux zalohy" },
-      { t: "Mytí aut", d: "Software pro myčky a autokosmetiku: rezervace, objednávky, věrnostní program i&nbsp;evidence zakázek.", k: "myti aut auto automobil vuz mycka mycky autokosmetika detailing rucni myti rezervace objednavky vernostni program zakazky" }
+      // Nabídka: stejných šest služeb a odkazů jako menu „Naše služby" (u = stránka služby)
+      { t: "Software na míru", d: "Webové a mobilní aplikace, interní systémy (CRM, evidence, rezervace, sklady) a rozšíření pro Chrome a Safari.", u: "/sluzby#na-miru", k: "software na miru vyvoj aplikace appka app program programovani web weby webova aplikace portal portaly mobilni ios android interni system systemy crm csm evidence rezervace sklad sklady agenda databaze admin rozsireni chrome safari" },
+      { t: "Integrace a automatizace", d: "Napojení na Slack, Shoptet, Stripe nebo ERP přes API, automatizace v Google Workspace, AI asistenti a přehledy z vašich dat.", u: "/sluzby#integrace", k: "integrace automatizace automat propojeni napojeni api webhook sluzba sluzby slack shoptet stripe google erp workspace tabulky makro workflow zapier n8n ai asistent dokumenty reporty prehledy data" },
+      { t: "Převzetí vývoje", d: "Převezmeme software po jiném dodavateli nebo vývojáři a postaráme se, aby fungoval dál. Začínáme revizí zdarma.", u: "/prevzeti-vyvoje", k: "prevzeti prevzit vyvoj dodavatel vyvojar odesel skoncil legacy stary system sprava audit revize kod" },
+      { t: "Hosting a provoz", d: "Rychlý hosting webu, doména a firemní e-mail na jednom místě. Web přeneseme, do jisté velikosti zdarma. Aktualizace, zálohy a sledování výpadků.", u: "/hosting", k: "hosting web stranky server prenos migrace prevod stehovani domena registrator subreg gransy wedos banan forpsi certifikat https ssl zalohy staticky rychlost cdn cloudflare git verzovani nasazeni preview email schranka posta mx spf dkim dmarc udrzba provoz devops podpora oprava sprava linux aktualizace vypadek" },
+      { t: "Weby pro podniky", d: "Jednoduchý web pro restauraci, obchod nebo řemeslo. Postaráme se o něj a změny stačí poslat e-mailem.", u: "/sluzby#podniky", k: "web weby stranky podnik podniky restaurace bistro kavarna hospoda obchod prodejna remeslo remeslnik zivnostnik firma mistni vizitka jidelni listek menu oteviraci doba cookie lista navrh" },
+      { t: "Školení a konzultace", d: "Workshopy a konzultace pro firmy i začátečníky. Připravujeme školení Claude Code a Codex.", u: "/skoleni", k: "skoleni konzultace workshop kurz vyuka mentoring zacatecnik claude code codex ai asistent programovani tokeny benchmark" },
+      // hidden: najde se vyhledáváním, ale nepřidává se do výchozích štítků; u = služba, pod kterou patří
+      { t: "Weby a webové aplikace", d: "Prezentace, e-shopy, portály, landing pages.", u: "/sluzby#na-miru", k: "web weby webovka stranky eshop e-shop prezentace landing portal wordpress aplikace react vue nuxt next nextjs node nodejs typescript javascript php laravel ruby rails python django graphql html css", hidden: true },
+      { t: "Mobilní aplikace", d: "iOS i Android, nativně i multiplatformně.", u: "/sluzby#na-miru", k: "mobilni mobil aplikace appka app ios android iphone telefon swift swiftui kotlin flutter react native expo capacitor ionic arkit", hidden: true },
+      { t: "Interní systémy na míru", d: "CRM, CSM, evidence, sklady, rezervace, admin.", u: "/sluzby#na-miru", k: "interni system systemy crm csm evidence sklad rezervace agenda databaze admin", hidden: true },
+      { t: "Rozšíření do prohlížeče", d: "Doplňky a pluginy pro Chrome, Safari, Edge i Firefox.", u: "/sluzby#na-miru", k: "rozsireni plugin doplnek extension addon prohlizec browser chrome safari edge firefox", hidden: true },
+      { t: "Publikace do Google Play a App Store", d: "Vydání aplikace, správa vývojářských účtů a aktualizace.", u: "/sluzby#na-miru", k: "google play play store app store appstore publikace vydani testflight developer ucet", hidden: true },
+      { t: "Mytí aut", d: "Software pro myčky a autokosmetiku: rezervace, objednávky, věrnostní program i evidence zakázek.", u: "/sluzby#na-miru", k: "myti aut auto automobil vuz mycka mycky autokosmetika detailing rucni myti rezervace objednavky vernostni program zakazky", hidden: true },
+      { t: "AI agenty a workflows", d: "Agenti, chatboti, asistenti a zpracování dokumentů.", u: "/sluzby#integrace", k: "ai umela inteligence chatbot agent agenti asistent workflow workflows llm gpt openai chatgpt claude anthropic gemini mcp rag automatizace dokumenty", hidden: true },
+      { t: "Google Workspace a Apps Script", d: "Automatizace nad Tabulkami, Dokumenty, Diskem, Kalendářem a Gmailem přes Google Apps Script.", u: "/sluzby#integrace", k: "google workspace gsuite g suite apps script appscript gas tabulky tabulka sheets sheet spreadsheet dokumenty docs disk drive soubory files kalendar calendar gmail email formulare forms sites stranky makro skript automatizace workflow", hidden: true },
+      { t: "Analýza a vizualizace dat", d: "Dashboardy, reporty, scraping a čištění dat.", u: "/sluzby#integrace", k: "data analyza dashboard report statistika vizualizace scraping excel bi sql postgres postgresql mysql bigquery looker", hidden: true },
+      { t: "Firemní e-maily a newslettery", d: "Schránky, webmail, SMTP, přeposílání, newslettery i automatické a AI e-maily (podpora).", u: "/hosting", k: "email e-mail mail maily posta schranka schranky webmail smtp imap forwarding preposilani presmerovani newsletter newslettery rozesilka hromadne transakcni automaticky autoresponder ai podpora notifikace zoho resend dkim spf", hidden: true },
+      { t: "Cloud a infrastruktura", d: "Nejraději stavíme na Cloudflare, běžně i na Firebase, Google Cloud a AWS. Umíme i vlastní servery (on-premise) a Docker.", u: "/sluzby#hosting", k: "cloud cloudflare workers pages r2 d1 firebase firestore google cloud gcp cloud run aws azure onprem on-prem on-premise vlastni server docker kontejner kubernetes k8s vps infrastruktura", hidden: true },
+      { t: "CI/CD a správa kódu", d: "Automatické buildy, testy a nasazení. GitHub, GitLab i Gitea.", u: "/sluzby#hosting", k: "ci cd ci/cd cicd pipeline build deploy nasazeni github actions gitlab gitea git repozitar verzovani testy", hidden: true },
+      { t: "Monitoring a zachytávání chyb", d: "Sentry a podobné nástroje, logy a upozornění na výpadky.", u: "/sluzby#hosting", k: "monitoring error handler handling chyby chyba sentry logy logovani alert vypadek uptime crash reporting", hidden: true },
+      { t: "Google Ads", d: "Nastavení účtu, kampaní a měření konverzí.", k: "google ads adwords reklama ppc kampan kampane konverze analytics ga4 tag manager gtm mereni", hidden: true }
     ];
     // Zdroj kampaně bez cookies: ?k=… se propíše do předmětu e-mailu a textu zprávy
     var src = new URLSearchParams(location.search).get("k");
@@ -861,7 +866,7 @@
         a.href = "https://wa.me/420777407690?text=" + encodeURIComponent("Dobrý den, mám poptávku." + src);
       });
     }
-    var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+    var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\u00a0/g, " "); };
 
     var input = document.getElementById("capQ");
     var list = document.getElementById("capList");
@@ -905,7 +910,8 @@
         hits.forEach(function (c) {
           var li = document.createElement("li");
           li.className = "cap-row";
-          li.innerHTML = '<span class="cap-title">' + hl(c.t, q) + '</span><span class="cap-desc">' + c.d + '</span>';
+          var title = c.u ? '<a class="cap-title" href="' + c.u + '">' + hl(c.t, q) + '</a>' : '<span class="cap-title">' + hl(c.t, q) + '</span>';
+          li.innerHTML = title + '<span class="cap-desc">' + c.d + '</span>';
           list.appendChild(li);
         });
       } else {
