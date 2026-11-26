@@ -890,6 +890,8 @@
         b.type = "button";
         b.className = "cap-chip";
         b.textContent = c.t;
+        // fokus zůstane v poli: Safari tlačítka klikem nefokusuje, sekce by se při stisku sbalila
+        b.addEventListener("mousedown", function (e) { e.preventDefault(); });
         b.addEventListener("click", function () { input.value = c.t; run(); input.focus(); });
         li.appendChild(b);
         list.appendChild(li);
@@ -928,10 +930,10 @@
     function sync() {
       var open = block.contains(document.activeElement) || input.value.trim() !== "";
       if (!open) { list.hidden = true; answer.hidden = true; return; }
-      list.hidden = false;
-      run();
+      // výpis se vykreslí jen při otevření: přesun fokusu na štítek nebo odkaz ho nesmí překreslit, jinak se klik ztratí
+      if (list.hidden) { list.hidden = false; run(); }
     }
-    input.addEventListener("input", sync);
+    input.addEventListener("input", function () { list.hidden = false; run(); });
     block.addEventListener("focusin", sync);
     // po blur necháme activeElement ustálit, pak vyhodnotíme (klik na chip drží fokus uvnitř)
     block.addEventListener("focusout", function () { setTimeout(sync, 0); });
