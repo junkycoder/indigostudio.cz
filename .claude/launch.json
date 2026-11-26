@@ -4,27 +4,151 @@
     {
       "name": "fakan.cz static server",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["-y", "http-server", "public", "-p", "8080", "-e", "html", "-c-1", "--silent"],
+      "runtimeArgs": [
+        "-y",
+        "http-server",
+        "public",
+        "-p",
+        "8080",
+        "-e",
+        "html",
+        "-c-1",
+        "--silent"
+      ],
       "port": 8080
     },
     {
       "name": "indigostudio static (auto port)",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["-y", "http-server", "public", "-e", "html", "-c-1", "--silent"],
+      "runtimeArgs": [
+        "-y",
+        "http-server",
+        "public",
+        "-e",
+        "html",
+        "-c-1",
+        "--silent"
+      ],
       "port": 8081,
+      "autoPort": true
+    },
+    {
+      "name": "marketing static (auto port)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "-y",
+        "http-server",
+        "marketing",
+        "-c-1",
+        "--silent"
+      ],
+      "port": 8082,
       "autoPort": true
     },
     {
       "name": "indigostudio worker (wrangler dev)",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["wrangler", "dev", "--port", "8787"],
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--port",
+        "8787"
+      ],
       "port": 8787
     },
     {
       "name": "podniky worker (wrangler dev)",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["--prefix", "/Users/junkycoder/podniky.indigostudio.cz", "wrangler", "dev", "--cwd", "/Users/junkycoder/podniky.indigostudio.cz", "--port", "8790"],
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/junkycoder/podniky.indigostudio.cz",
+        "wrangler",
+        "dev",
+        "--cwd",
+        "/Users/junkycoder/podniky.indigostudio.cz",
+        "--port",
+        "8790"
+      ],
       "port": 8790
+    },
+    {
+      "name": "podniky worker – výkup Nekvasil",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/junkycoder/podniky.indigostudio.cz",
+        "wrangler",
+        "dev",
+        "--cwd",
+        "/Users/junkycoder/podniky.indigostudio.cz",
+        "--local-upstream",
+        "nekvasil.indigostudio.cz",
+        "--test-scheduled",
+        "--port",
+        "8791"
+      ],
+      "port": 8791
+    },
+    {
+      "name": "kvetiny worker (wrangler dev)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/junkycoder/kvetiny.indigostudio.cz",
+        "wrangler",
+        "dev",
+        "--cwd",
+        "/Users/junkycoder/kvetiny.indigostudio.cz",
+        "--port",
+        "8792"
+      ],
+      "port": 8792
+    },
+    {
+      "name": "nastroje worker – přehled",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/junkycoder/nastroje.indigostudio.cz",
+        "wrangler",
+        "dev",
+        "--cwd",
+        "/Users/junkycoder/nastroje.indigostudio.cz",
+        "--port",
+        "8793"
+      ],
+      "port": 8793
+    },
+    {
+      "name": "nastroje worker – kalkulačka",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/junkycoder/nastroje.indigostudio.cz",
+        "wrangler",
+        "dev",
+        "--cwd",
+        "/Users/junkycoder/nastroje.indigostudio.cz",
+        "--local-upstream",
+        "kalkulacka.indigostudio.cz",
+        "--port",
+        "8794"
+      ],
+      "port": 8794
+    },
+    {
+      "name": "fakan.cz web (wrangler dev)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "-y",
+        "wrangler@4.146.0",
+        "dev",
+        "--cwd",
+        "/Users/junkycoder/fakan.cz/web",
+        "--port",
+        "8795"
+      ],
+      "port": 8795
     }
   ]
 }

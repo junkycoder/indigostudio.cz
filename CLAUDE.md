@@ -60,6 +60,9 @@ Jedna stránka, žádný build step, žádné frameworky.
 - Weby místních podniků (`pho999.indigostudio.cz`, admin a e-maily zadání na `podniky.`) tady
   nejsou: žijí v soukromém repozitáři `IndigoStudioCZ/podniky` (`~/podniky.indigostudio.cz`)
   na Workeru `podniky`. Jejich domény do `wrangler.toml` nepřidávat.
+- Květinová burza Benešov (`kvetiny.indigostudio.cz`, pilot tržiště pro květinářství) tady není:
+  žije v `~/kvetiny.indigostudio.cz` na Workeru `kvetiny` (D1 `kvetiny`, R2 `kvetiny-foto`).
+  Její doménu do `wrangler.toml` nepřidávat.
 - `wrangler.toml` — Worker config (route `indigostudio.cz`, custom_domain, `send_email` binding)
 - auto-deploy: Cloudflare Workers Builds (git push → CF nasadí, bez tokenu)
 
