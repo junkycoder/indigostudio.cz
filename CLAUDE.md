@@ -26,6 +26,9 @@ Jedna stránka, žádný build step, žádné frameworky.
   „Proběhlá školení" (záznam za ½ ceny, účastníci zdarma + článek; šablona v komentáři)
   a odběr novinek → `src/odber.js` (double opt-in, D1 `indigostudio-odber`, schéma
   `migrations/odber/`, potvrzovací e-mail přes Resend)
+- `public/vanoce.js` — sezónní vánoční výzdoba všech stránek (motivy v `public/vanoce/` jsou
+  dodané, neupravovat), připojená za doodles.js; po 6. 1. 2027 nic nevloží, pak ji ze stránek odpojit;
+  stránku s vlastní výzdobou (`.xmas`, /tynecko) přeskočí
 - `public/doodles.js` — sdílené animované pozadí (malůvky), připojit `<script src="/doodles.js" defer>`;
   pro čtečky jeden statický popis motivů na konci `<body>` (bez aria-live)
 - `public/sluzby.html` (`/en/services`, `/vi/services`) — přehled šesti služeb v kartách

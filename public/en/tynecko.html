@@ -405,40 +405,44 @@
     .modules, .fields { grid-template-columns: 1fr; }
     .closing, .offer, .price { padding: 1.2rem; }
   }
-  /* ---- Vánoční ozdoby kampaně (vektory v /vanoce/, jen dekorace) ---- */
-  main { position: relative; overflow-x: clip; }
+  /* ---- Vánoční ozdoby kampaně (dodané motivy v /vanoce/ — neupravovat, jen umisťovat) ---- */
+  /* --cw = šířka rohové větve; visačka se k ní dopočítává, aby visela pod větví vlevo od baňky */
+  main { position: relative; overflow-x: clip; --cw: min(40vw, 480px); }
   main > .container { position: relative; z-index: 1; }
   .xmas { position: absolute; z-index: 0; pointer-events: none; user-select: none; height: auto; }
-  .xmas-corner { top: -6px; right: -10px; width: min(44vw, 520px); }
-  .xmas-left { top: -34px; left: -18px; width: min(14vw, 150px); }
-  .xmas-bottom { bottom: 0; right: -8px; width: min(20vw, 210px); }
+  .xmas-corner { top: 0; right: 0; width: var(--cw); }
+  .xmas-bottom { bottom: 0; left: 0; width: min(24vw, 280px); }
   .hero { position: relative; }
-  .hero h1 { max-width: min(15em, calc(100% - 230px)); }
+  .hero h1 { max-width: min(15em, calc(100% - 290px)); }
   .hero h1 .star-ref { color: inherit; text-decoration: none; }
-  .gift-tag { position: absolute; right: 3%; top: 4.5rem; width: 150px; height: 158px; display: grid; place-items: center; align-content: center; gap: 0.3rem; padding-top: 1.2rem; background: #fffdf6; border: 3px solid #d9b46a; border-radius: 16px; box-shadow: 0 8px 18px rgba(120, 90, 40, 0.2); transform: rotate(5deg); transform-origin: 50% 0; }
-  .gift-tag::before { content: ""; position: absolute; left: calc(50% - 1px); bottom: 100%; width: 2px; height: 9.5rem; background: #b8893a; }
-  .gift-tag .bow { position: absolute; top: -34px; left: 50%; width: 104px; height: auto; transform: translateX(-50%); }
+  /* zlatá linka se srdcem pod úvodem (jako na plakátu); výřez jen skryje průhledný okraj souboru */
+  .heart-line { display: block; width: min(420px, 85%); height: auto; aspect-ratio: 6 / 1; object-fit: cover; margin: 0.3rem 0 0.5rem; pointer-events: none; user-select: none; }
+  .gift-tag { position: absolute; z-index: 1; right: calc(var(--cw) * 0.56 - 75px); top: calc(var(--cw) * 0.36); width: 150px; height: 158px; display: grid; place-items: center; align-content: center; gap: 0.3rem; padding-top: 1.2rem; background: #fffdf6; border: 3px solid #d9b46a; border-radius: 16px; box-shadow: 0 8px 18px rgba(120, 90, 40, 0.2); transform: rotate(5deg); transform-origin: 50% 0; }
+  .gift-tag::before { content: ""; position: absolute; left: calc(50% - 1px); bottom: calc(100% - 16px); width: 2px; height: calc(var(--cw) * 0.2 + 16px); background: #b8893a; }
+  .gift-tag::after { content: ""; position: absolute; top: 10px; left: calc(50% - 7px); width: 14px; height: 14px; box-sizing: border-box; border: 2px solid #d9b46a; border-radius: 50%; background: var(--bg, #fff); }
   .gift-tag span { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 700; font-size: 1.6rem; line-height: 1.08; text-align: center; color: #2a018a; }
   .gift-tag .flake { width: 22px; height: 22px; fill: none; stroke: #d4a446; stroke-width: 1.8; stroke-linecap: round; }
-  /* baňka visí z větve vlevo od visačky (jako na plakátu) */
-  .bauble { position: absolute; right: calc(3% + 132px); top: -5.6rem; width: 72px; height: auto; pointer-events: none; transform-origin: 50% 0; transform: rotate(-3deg); }
   .sparkle { position: absolute; width: 18px; height: 18px; fill: #d4a446; pointer-events: none; }
+  /* světýlka zavěšená přes horní hranu poptávky */
+  .offer { position: relative; }
+  .offer-lights { position: absolute; right: 3%; top: 0; width: min(520px, 62%); height: auto; translate: 0 -54%; pointer-events: none; user-select: none; }
   .hacek { margin-top: 1.8rem; padding-top: 0.9rem; border-top: 1px solid var(--border-strong); max-width: 62ch; font-size: 0.95rem; line-height: 1.55; color: var(--fg-muted); }
   .hacek .star { color: var(--accent); font-weight: 700; }
   .hacek strong { color: var(--fg); font-weight: 650; }
   @media (max-width: 880px) {
-    .gift-tag, .sparkle, .xmas-left { display: none; }
-    .bauble { right: 16%; top: -4.2rem; width: 46px; }
+    .gift-tag, .sparkle { display: none; }
     .hero h1 { max-width: none; }
   }
   @media (max-width: 560px) {
     .crumbs { padding-top: 6.5rem; }
     .xmas-corner { width: 62vw; }
     .xmas-bottom { display: none; }
+    .offer-lights { width: 84%; right: 8%; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 <script src="/doodles.js"></script>
+<script src="/vanoce.js" defer></script>
 <script src="/cursors.js"></script>
 <script src="/nav.js" defer></script>
 </head>
@@ -521,21 +525,20 @@
 </header>
 
 <main>
-  <img class="xmas xmas-corner" src="/vanoce/vetve-roh.svg" alt="" width="560" height="330">
-  <img class="xmas xmas-left" src="/vanoce/vetev-levy.svg" alt="" width="300" height="190">
-  <img class="xmas xmas-bottom" src="/vanoce/vetev-dolni.svg" alt="" width="260" height="190">
+  <img class="xmas xmas-corner" src="/vanoce/vetev-roh-ozdoba.webp" alt="" width="1448" height="1086">
+  <img class="xmas xmas-bottom" src="/vanoce/vetev-roh-dolni.webp" alt="" width="1448" height="1086" loading="lazy">
+  <div class="gift-tag" aria-hidden="true"><span>Christmas<br>offer</span><svg class="flake" viewBox="-12 -12 24 24"><path d="M0 0L0.0 -10.0M0.0 -6.0L-2.3 -8.3M0.0 -6.0L2.3 -8.3M0 0L8.7 -5.0M5.2 -3.0L6.0 -6.1M5.2 -3.0L8.3 -2.2M0 0L8.7 5.0M5.2 3.0L8.3 2.2M5.2 3.0L6.0 6.1M0 0L0.0 10.0M0.0 6.0L2.3 8.3M0.0 6.0L-2.3 8.3M0 0L-8.7 5.0M-5.2 3.0L-6.0 6.1M-5.2 3.0L-8.3 2.2M0 0L-8.7 -5.0M-5.2 -3.0L-8.3 -2.2M-5.2 -3.0L-6.0 -6.1"/></svg></div>
   <div class="container">
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="/en/">Home</a><span class="sep">/</span><span aria-current="page">Website for Christmas</span>
     </nav>
 
     <header class="hero">
-      <img class="bauble" src="/vanoce/ozdoba.svg" alt="" width="80" height="150">
-      <div class="gift-tag" aria-hidden="true"><img class="bow" src="/vanoce/masle.svg" alt="" width="160" height="90"><span>Christmas<br>offer</span><svg class="flake" viewBox="-12 -12 24 24"><path d="M0 0L0.0 -10.0M0.0 -6.0L-2.3 -8.3M0.0 -6.0L2.3 -8.3M0 0L8.7 -5.0M5.2 -3.0L6.0 -6.1M5.2 -3.0L8.3 -2.2M0 0L8.7 5.0M5.2 3.0L8.3 2.2M5.2 3.0L6.0 6.1M0 0L0.0 10.0M0.0 6.0L2.3 8.3M0.0 6.0L-2.3 8.3M0 0L-8.7 5.0M-5.2 3.0L-6.0 6.1M-5.2 3.0L-8.3 2.2M0 0L-8.7 -5.0M-5.2 -3.0L-8.3 -2.2M-5.2 -3.0L-6.0 -6.1"/></svg></div>
       <svg class="sparkle" style="right: 34%; top: -0.5rem" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10Q1.6 -1.6 10 0Q1.6 1.6 0 10Q-1.6 1.6 -10 0Q-1.6 -1.6 0 -10Z"/></svg>
       <svg class="sparkle" style="right: 1%; top: 17rem; width: 14px; height: 14px" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -10Q1.6 -1.6 10 0Q1.6 1.6 0 10Q-1.6 1.6 -10 0Q-1.6 -1.6 0 -10Z"/></svg>
       <h1>A new website for you as a <span class="accent">Christmas gift<a class="star-ref" href="#hacek" aria-label="see the note below">*</a></span></h1>
       <p class="lead">We are Daniel and Veronika, a family business. We recently moved to the area around Týnec nad Sázavou. To introduce ourselves, we will build you a new website free of charge.</p>
+      <img class="heart-line" src="/vanoce/linka-srdce.webp" alt="" width="2000" height="667">
       <p class="deadline">We are taking inquiries until December 23 so we can get everything done this year.</p>
       <p class="ended-note" hidden>This offer applied to inquiries received by December 23, 2026. You are still welcome to get in touch; we will gladly take a look at your website.</p>
       <div class="actions" style="margin-top:1.4rem">
@@ -602,6 +605,7 @@
 
     <!-- Poptávka: POST /api/poptavka (stejný endpoint jako poptávka na úvodu a na /hosting) -->
     <section class="offer" id="poptavka" aria-labelledby="poptavka-title">
+      <img class="offer-lights" src="/vanoce/svetylka.webp" alt="" width="2000" height="667" loading="lazy">
       <div class="offer-text">
         <h2 id="poptavka-title">Get in touch</h2>
         <p>Tell us where your website is today and we will arrange a meeting. The design comes with no obligation.</p>
