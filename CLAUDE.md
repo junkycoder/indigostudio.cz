@@ -54,7 +54,8 @@ Jedna stránka, žádný build step, žádné frameworky.
   Generuje je `marketing/logo-animace/build.mjs` z výše uvedených SVG; GIF a MP4 dělá `video.mjs` tamtéž
   (zapíše je i do `public/podklady/` jako `indigo-studio-*-animated*.gif|mp4`).
 - `public/media.html` — pro média: logo (SVG z `public/logo*.svg`, PNG a ZIP v `public/podklady/`),
-  animované logo (bijící srdce: SVG, GIF, MP4; celé, vodorovné, srdce × světlé/tmavé), barvy, pravidla použití, kontakt; odkaz „Pro média" je v patičce všech stránek
+  animované logo (bijící srdce: SVG, GIF, MP4; celé, vodorovné, srdce × světlé/tmavé), černobílá značka
+  (`logo-mark-mono*.svg`, generuje `marketing/logo-animace/mono.mjs`), barvy, pravidla použití, kontakt; odkaz „Pro média" je v patičce všech stránek
 - `public/team/` — fotky (`info.jpg`/`veronika.jpg`/`daniel.jpg`); chybí-li, web zobrazí iniciály
 - `public/en/`, `public/vi/` — anglická a vietnamská kopie každé stránky (i `404.html`)
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`

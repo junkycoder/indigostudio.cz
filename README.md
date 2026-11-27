@@ -83,6 +83,8 @@ Pro novináře a partnery je vše ke stažení na [/media](https://indigostudio.
 Po změně loga přegenerovat `public/podklady/` (PNG přes `rsvg-convert`, ZIP se SVG, PNG a `barvy.txt`).
 Animované logo: `node marketing/logo-animace/build.mjs` (SVG) a `node marketing/logo-animace/video.mjs`
 (GIF a MP4, zapíše je i do `public/podklady/`); do ZIPu patří i animovaná SVG (`*-animated*.svg`).
+Černobílá značka (srdce v půlce tepu se šedými vlnami, jako tónovaná ikona iOS aplikace):
+`node marketing/logo-animace/mono.mjs` (po `build.mjs`) zapíše `public/logo-mark-mono*.svg` a PNG do `public/podklady/`.
 
 ### Regenerace OG obrázku
 
