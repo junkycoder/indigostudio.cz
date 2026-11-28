@@ -41,6 +41,14 @@ const PAGES = {
   // kampaň pro podniky z Týnecka (QR z plakátu), poptávky do 30. 11. 2026
   "/tynecko": "/tynecko",
 };
+// ----- Zkracovač indg.cz -----
+// indg.cz/<cesta> vede na indigostudio.cz/<cesta> (i s parametry), takže indg.cz/hosting funguje
+// bez dalšího nastavení. Vlastní zkratky na jiné cíle patří sem: klíč = cesta na indg.cz,
+// hodnota = celá cílová adresa, např. "/t": "https://indigostudio.cz/tynecko?utm_source=plakat".
+// Přesměrování je dočasné (302), aby šlo cíl zkratky později změnit bez mezipaměti v prohlížečích.
+const SHORT_HOSTS = ["indg.cz", "www.indg.cz"];
+const SHORT_LINKS = {};
+
 // roboti a náhledy odkazů dostanou vždy adresu, na kterou se ptají (indexace jde přes hreflang)
 const BOTS = /bot|crawl|spider|slurp|preview|facebookexternalhit|embedly|whatsapp|telegram|discord|slack|linkedin|lighthouse|headless/i;
 
@@ -54,6 +62,13 @@ const json = (obj, status = 200) =>
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // zkracovač: vlastní zkratka, jinak stejná cesta na indigostudio.cz
+    if (SHORT_HOSTS.includes(url.hostname)) {
+      const path = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, "") : url.pathname;
+      const target = Object.hasOwn(SHORT_LINKS, path) ? SHORT_LINKS[path] : `https://indigostudio.cz${url.pathname}${url.search}`;
+      return Response.redirect(target, 302);
+    }
 
     // Jedna kanonická adresa: http a www trvale na https://indigostudio.cz,
     // aby vyhledávače neviděly tentýž web pod třemi adresami. Schéma bereme z hlavičky Cloudflare,

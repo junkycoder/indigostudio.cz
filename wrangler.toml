@@ -37,6 +37,19 @@ pattern = "weed.indigostudio.cz"
 zone_name = "indigostudio.cz"
 custom_domain = true
 
+# ----- Zkracovač indg.cz -----
+# Krátká doména jen přesměruje na indigostudio.cz se zachovanou cestou,
+# vlastní zkratky jsou v SHORT_LINKS v src/worker.js.
+[[routes]]
+pattern = "indg.cz"
+zone_name = "indg.cz"
+custom_domain = true
+
+[[routes]]
+pattern = "www.indg.cz"
+zone_name = "indg.cz"
+custom_domain = true
+
 # ----- Online nástroje -----
 # nastroje.indigostudio.cz, nástroje na vlastních subdoménách a ceska-republika.indigostudio.cz
 # obsluhuje samostatný Worker `nastroje` z repozitáře IndigoStudioCZ/nastroje.

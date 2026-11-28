@@ -60,6 +60,8 @@ Jedna stránka, žádný build step, žádné frameworky.
 - `public/en/`, `public/vi/` — anglická a vietnamská kopie každé stránky (i `404.html`)
 - `src/worker.js` — servíruje `public/` + bezpečnostní hlavičky + `POST /api/poptavka`
   + přesměrování podle jazyka (`PAGES`, `languageRedirect`)
+- Zkracovač `indg.cz` (+ `www.`, zóna ve stejném CF účtu, registrace Subreg): stejný Worker,
+  `indg.cz/<cesta>` → 302 na `indigostudio.cz/<cesta>`; vlastní zkratky v `SHORT_LINKS` (`src/worker.js`)
 - Online nástroje (`nastroje.`, subdomény nástrojů, `ceska-republika.`) tady nejsou: žijí
   v repozitáři `IndigoStudioCZ/nastroje` (`~/nastroje.indigostudio.cz`) na vlastním Workeru
   `nastroje`. Jejich domény do `wrangler.toml` nepřidávat — nasazení vizitky by si je přetáhlo.
