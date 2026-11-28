@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Objížďka Týnecko 28. 11. | Indigo Studio</title>
+<!-- unlisted: interní jízdní list na objížďku podniků, neodkazovaný a neindexovaný (adresa s náhodným tokenem) -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#121019" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3f2f7" media="(prefers-color-scheme: light)">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  /* Jízdní list do telefonu: jeden sloupec zastávek, čas vlevo jako v jízdním řádu, akce velké na palec. */
+  :root {
+    --bg: #f3f2f7;
+    --card: #ffffff;
+    --fg: #16141f;
+    --muted: #5d5a6e;
+    --line: #dcd9e6;
+    --accent: #2A018A;
+    --accent-fg: #ffffff;
+    --warn-bg: #fff1d6;
+    --warn-fg: #7a4a00;
+    --info-bg: #ebe6fb;
+    --info-fg: #2A018A;
+    --done: #8f8ca0;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121019; --card: #1c1a26; --fg: #f1effa; --muted: #a9a5bd; --line: #2f2c3d;
+      --accent: #B899FF; --accent-fg: #14102a; --warn-bg: #3a2b10; --warn-fg: #ffd58a;
+      --info-bg: #2a2342; --info-fg: #cdb9ff; --done: #6f6b82; color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px; line-height: 1.45;
+    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(40px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  .wrap { max-width: 640px; margin: 0 auto; display: grid; gap: 20px; }
+  header { display: grid; gap: 6px; }
+  .eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  h1 { font-weight: 800; font-size: 30px; line-height: 1.1; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .sum { color: var(--muted); margin: 0; font-variant-numeric: tabular-nums; }
+  .route {
+    display: flex; align-items: center; justify-content: center; min-height: 52px;
+    background: var(--accent); color: var(--accent-fg); text-decoration: none; font-weight: 600;
+    border-radius: 14px; padding: 12px 16px; text-align: center;
+  }
+  a:focus-visible, input:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
+  .hint { font-size: 13px; color: var(--muted); margin: -10px 0 0; }
+  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .stop {
+    display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 4px 12px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px;
+  }
+  .time { font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .body { display: grid; gap: 6px; min-width: 0; }
+  .name { font-weight: 600; font-size: 17px; margin: 0; }
+  .name label { display: flex; gap: 10px; align-items: baseline; cursor: pointer; }
+  .name input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; transform: translateY(3px); }
+  .addr { color: var(--muted); font-size: 14px; margin: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: 12.5px; font-weight: 500; padding: 3px 9px; border-radius: 999px; background: var(--info-bg); color: var(--info-fg); }
+  .chip.warn { background: var(--warn-bg); color: var(--warn-fg); }
+  .note { font-size: 14px; margin: 0; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+  .nav, .tel {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 8px 14px; border-radius: 10px;
+    text-decoration: none; font-weight: 600; font-size: 14px;
+  }
+  .nav { background: var(--info-bg); color: var(--info-fg); }
+  .tel { border: 1px solid var(--line); color: var(--fg); font-variant-numeric: tabular-nums; }
+  .leg { font-size: 13px; color: var(--muted); padding-left: 70px; font-variant-numeric: tabular-nums; }
+  .leg.bridge { color: var(--warn-fg); }
+  .stop.done .name, .stop.done .addr, .stop.done .time { color: var(--done); text-decoration: line-through; }
+  footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
+  footer p { margin: 0; }
+  @media (max-width: 380px) { .stop { grid-template-columns: 1fr; } .leg { padding-left: 0; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Sobota 28. 11. 2026 · autem</div>
+    <h1>Objížďka Týnecko</h1>
+    <p class="sum">10 zastávek · 10:15–15:15 · jízda asi 57&nbsp;min, 41&nbsp;km · 15&nbsp;min na podnik</p>
+  </header>
+
+  <a class="route" id="route" href="https://www.google.com/maps/dir/?api=1&amp;travelmode=driving" target="_blank" rel="noopener">Celá trasa v&nbsp;Google Mapách</a>
+  <p class="hint">Trasa začíná u&nbsp;vás a&nbsp;vede přes zastávky v&nbsp;tomto pořadí. Jednotlivé zastávky otevírají Apple Mapy.</p>
+
+  <ol id="stops"></ol>
+
+  <footer>
+    <p>Časy jízdy spočítané přes OpenStreetMap (OSRM), v&nbsp;sobotu dopoledne mohou být kratší. Otevírací doby jsou od Veroniky a&nbsp;z&nbsp;návrhů (Firmy.cz).</p>
+    <p>Zavřený podnik v&nbsp;aplikaci: přejeďte řádek doleva, Vyřazeno, Zavřeno.</p>
+  </footer>
+</div>
+
+<script>
+// Zastávky v pořadí jízdy. time = příjezd, leg = jízda z předchozí zastávky (OSRM).
+const STOPS = [
+  { id: "na-zastavce", time: "10:15", name: "Restaurace Na zastávce", addr: "Prosečnice 19, Krhanice", lat: 49.8636475, lng: 14.5322175,
+    chips: [["So 10:00–22:00"]] },
+  { id: "vemenac", time: "10:34", name: "Pivnice U Vemenáče", addr: "Kamenný Přívoz 12", lat: 49.8628130556, lng: 14.5037236111,
+    chips: [["So 10:30–22:00"]], tel: "+420 778 029 193", leg: "4 min · 3,0 km",
+    note: "V aplikaci nově (K oslovení). Má vlastní web uvemenace.cz." },
+  { id: "tronicek", time: "11:00", name: "Penzion Troníček", addr: "Žampach 2, Kamenný Přívoz", lat: 49.8710033, lng: 14.4946292,
+    chips: [["So 11:00–22:00"], ["Čekat asi 6 min", "warn"]], tel: "+420 241 951 413", leg: "5 min · 3,7 km" },
+  { id: "veselka", time: "11:21", name: "Občerstvení u Veselky", addr: "Kamenný Přívoz 351", lat: 49.8669763889, lng: 14.5143622222,
+    chips: [["Od 11:00"]], tel: "+420 777 941 555", leg: "6 min · 3,3 km" },
+  { id: "stara-posta", time: "11:52", name: "Hostinec Na Staré Poště", addr: "Kamenný Přívoz 33", lat: 49.8610013889, lng: 14.5035908333,
+    chips: [["So 11:00–15:00, pak až 19:00"]], tel: "+420 730 146 892", leg: "16 min · 11,6 km · přes most na druhý břeh Sázavy", bridge: true },
+  { id: "hastrman", time: "12:08", name: "Restaurace u Hastrmana", addr: "Kamenný Přívoz 283", lat: 49.8627036, lng: 14.5011631,
+    chips: [["So 11:00–20:00"]], tel: "+420 607 938 920", leg: "1 min · 0,2 km" },
+  { id: "brozku", time: "12:25", name: "Restaurace U Brožků", addr: "Hostěradice 13, Kamenný Přívoz", lat: 49.8618755, lng: 14.4920606,
+    chips: [["Hodiny neznáme", "warn"]], leg: "2 min · 1,3 km" },
+  { id: "tumova", time: "12:43", name: "Tůmova Restaurace", addr: "Krňany 1", lat: 49.8445942, lng: 14.4772331,
+    chips: [["So 11:00–23:00"]], tel: "+420 315 622 463", leg: "3 min · 2,7 km",
+    note: "Oběd tady, odjezd ve 14:25 (do Chrástu se otvírá až v 15:00)." },
+  { id: "podelusy", time: "14:38", name: "Hospoda Podělusy", addr: "Podělusy 43, Týnec nad Sázavou", lat: 49.8362739, lng: 14.574355,
+    chips: [["Hodiny neznáme", "warn"]], leg: "13 min · 10,3 km" },
+  { id: "na-poste", time: "15:00", name: "Hostinec Na poště", addr: "Chrást nad Sázavou 44", lat: 49.846665, lng: 14.5542925,
+    chips: [["Od 15:00"], ["Ověřit, že funguje", "warn"]], tel: "+420 736 108 178", leg: "7 min · 4,9 km",
+    note: "Veronika píše od 15:00, návrh má v sobotu až od 17:00." },
+];
+
+// Odškrtnuté zastávky si pamatuje jen tento prohlížeč.
+const KEY = "objizdka-2026-11-28";
+let done = {};
+try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { done = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} };
+
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+const list = document.getElementById("stops");
+
+STOPS.forEach((s, i) => {
+  if (i > 0) list.append(el("li", "leg" + (s.bridge ? " bridge" : ""), "↓ " + s.leg));
+  const li = el("li", "stop" + (done[s.id] ? " done" : ""));
+  li.append(el("div", "time", s.time));
+  const body = el("div", "body");
+
+  const name = el("p", "name");
+  const label = el("label");
+  const box = document.createElement("input");
+  box.type = "checkbox"; box.id = "hotovo-" + s.id; box.checked = !!done[s.id];
+  box.setAttribute("aria-label", "Hotovo: " + s.name);
+  box.addEventListener("change", () => { done[s.id] = box.checked; li.classList.toggle("done", box.checked); save(); });
+  label.append(box, el("span", null, s.name));
+  name.append(label);
+  body.append(name, el("p", "addr", s.addr));
+
+  const chips = el("div", "chips");
+  s.chips.forEach(([t, kind]) => chips.append(el("span", "chip" + (kind ? " " + kind : ""), t)));
+  body.append(chips);
+  if (s.note) body.append(el("p", "note", s.note));
+
+  const actions = el("div", "actions");
+  const nav = el("a", "nav", "Navigovat");
+  nav.href = `https://maps.apple.com/?daddr=${s.lat},${s.lng}&dirflg=d`;
+  nav.target = "_blank"; nav.rel = "noopener";
+  actions.append(nav);
+  if (s.tel) {
+    const tel = el("a", "tel", s.tel);
+    tel.href = "tel:" + s.tel.replace(/\s/g, "");
+    actions.append(tel);
+  }
+  body.append(actions);
+  li.append(body);
+  list.append(li);
+});
+
+// Celá trasa: Google Mapy berou start z polohy telefonu, 9 zastávek po cestě a cíl.
+const pts = STOPS.map(s => `${s.lat},${s.lng}`);
+const dest = pts.pop();
+document.getElementById("route").href =
+  "https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=" + encodeURIComponent(dest) +
+  "&waypoints=" + encodeURIComponent(pts.join("|"));
+</script>
+</body>
+</html>
